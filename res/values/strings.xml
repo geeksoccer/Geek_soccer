@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Geek_soccer</string>
+    <string name="action_team">Team</string>
+
+    <string name="sign_in_gmail">Sign In with Gmail</string>
+    
+    <string name="video_title_error">Sorry, this video can not be played.</string>
+    <string name="video_message_error">There are a problem while playing.</string>
+    <string name="ok">OK</string>
+    
+    <string name="title_bar_news">News</string>
+    <string name="title_bar_live_score">Live Score</string>
+    <string name="title_bar_chat">Chat</string>
+    <string name="title_bar_score_broads">Score Broads</string>
+    <string name="title_bar_hilight">Hilights</string>
+    
+    <string name="table_head_seq">#</string>
+    <string name="table_head_team">Team</string>
+    <string name="table_head_match">P</string>
+    <string name="table_head_win">W</string>
+    <string name="table_head_draw">D</string>
+    <string name="table_head_lose">L</string>
+    <string name="table_head_get_goal">F</string>
+    <string name="table_head_lose_goal">A</string>
+    <string name="table_head_result_goal">GD</string>
+    <string name="table_head_mark">Pts</string>
+    
+    <string name="table_ucl">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า แชมเปี้ยนส์ ลีก (รอบแบ่งกลุ่ม รอบสุดท้าย)</string>
+    <string name="table_acl">ได้สิทธิ์แข่งขันฟุตบอลเอเอฟซีแชมเปี้ยนส์ลีก</string>
+    <string name="table_ucl_match">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า แชมเปี้ยนส์ ลีก (รอบคัดเลือก )</string>
+    <string name="table_upl">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า ยูโรป้า ลีก (รอบเพลย์ออฟ )</string>
+    <string name="table_bundes_match">ไปเตะเพลย์ออฟ กับทีมอันดับ 3 ของ บุนเดสลีก้า 2 เพื่อหาทีมตกชั้น</string>
+    <string name="table_fail">ได้สิทธิ์ ตกชั้น</string>
+    <string name="table_par">ได้สิทธิเล่นลีกเดิม</string>
+    
+    <string name="pull_to_refresh_pull_label">Pull to refresh...</string>
+    <string name="pull_to_refresh_release_label">Release to refresh...</string>
+    <string name="pull_to_refresh_refreshing_label">Loading...</string>
+    <string name="pull_to_refresh_tap_label">Tap to refresh...</string>
+</resources>

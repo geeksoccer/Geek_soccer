@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="label_credit">Credit: </string>
+    
+    <string name="str_today_news">Today</string>
+    <string name="str_yesterday_news">Yesterday</string>
+    <string name="str_comments_news">Comments</string>
+    <string name="str_comment_news_send">Post</string>
+
+</resources>

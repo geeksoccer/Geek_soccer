@@ -1,0 +1,79 @@
+<RelativeLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#CCC">
+	
+    <LinearLayout 
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="40dp"
+        android:background="@drawable/sport_football_pitch"
+        android:orientation="vertical">
+        
+        <ImageView 
+        	android:src="@drawable/score"
+        	android:layout_width="match_parent"
+        	android:layout_height="150dp"
+        	android:layout_centerInParent="true"/>
+        
+    	<!-- <EditText 
+    	    android:gravity="center"
+    	    android:layout_marginTop="5dp"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="wrap_content"
+    	    android:hint="Username"
+    	    android:background="@android:drawable/edit_text"
+    	    android:ems="10"/>
+    	
+    	<EditText 
+    	    android:gravity="center"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="wrap_content"
+    	    android:hint="Password"
+    	    android:background="@android:drawable/edit_text"
+    	    android:ems="10"/>
+    	
+    	<Button
+	    	android:id="@+id/sign_in_button"
+	    	android:layout_marginTop="5dp"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:background="@android:drawable/btn_default"
+	    	android:text="Sign In"/>
+    	<Button
+	    	android:id="@+id/sign_in_button"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:background="@android:drawable/btn_default"
+	    	android:text="Sign Up"/>
+
+    	<ProgressBar
+    	    android:id="@+id/progressBar"
+    	    style="?android:attr/progressBarStyleHorizontal"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="wrap_content"
+    	    android:layout_gravity="center_vertical"
+    	    android:layout_marginTop="5dp"/>  -->
+        
+    	<Button
+	    	android:id="@+id/sign_in_google_button"
+	    	android:layout_margin="10dp"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:background="@drawable/bg_googlebutton"
+	    	android:textColor="@color/white"
+	    	android:text="@string/sign_in_gmail"/>
+    	
+    	<ProgressBar
+	    	android:id="@+id/sign_progressbar"
+	    	android:layout_margin="10dp"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:visibility="gone"/>
+        
+    </LinearLayout>
+    
+</RelativeLayout>

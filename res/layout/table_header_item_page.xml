@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#666"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp" >
+
+    <TextView 
+        android:id="@+id/table_seq"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_seq" /> 
+
+    <TextView
+        android:id="@+id/table_team"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.7"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_team" />
+
+    <TextView
+        android:id="@+id/table_match"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_match" />
+
+    <TextView
+        android:id="@+id/table_win"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_win" />
+
+    <TextView
+        android:id="@+id/table_draw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_draw" />
+
+    <TextView
+        android:id="@+id/table_lose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_lose" />
+
+    <TextView
+        android:id="@+id/table_get_goal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_get_goal" />
+
+    <TextView
+        android:id="@+id/table_lose_goal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_lose_goal" />
+
+    <TextView
+        android:id="@+id/table_result_goal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_result_goal" />
+
+    <TextView
+        android:id="@+id/table_mark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/table_head_mark" />
+
+</LinearLayout>

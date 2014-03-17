@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+    
+    <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/tabhost"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+        
+        <RelativeLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent">
+               
+				<HorizontalScrollView
+				    android:id="@+id/scroll_tab"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:scrollbars="none"
+		            android:fillViewport="true">
+		            
+				    <LinearLayout 
+				        android:orientation="horizontal"
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content">
+			            <TabWidget 
+			                android:id="@android:id/tabs"
+			                android:layout_width="600dp"
+			                android:layout_height="wrap_content"
+			                android:layout_gravity="center_vertical" />
+			        </LinearLayout>
+		        </HorizontalScrollView>
+	        
+	        <FrameLayout
+	            android:id="@android:id/tabcontent"
+	            android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:layout_above="@+id/hilight_loading_footer_processbar"
+	            android:layout_below="@+id/scroll_tab" >
+				
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_all"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_pl"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_bl"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_ll"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_gl"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_fl"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_ucl"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_upl"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_champ"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	            <com.excelente.geek_soccer.view.PullToRefreshListView
+			        android:id="@+id/hilight_listview_capital"
+			        android:layout_width="fill_parent"
+			        android:layout_height="match_parent"
+			        android:layout_marginTop="0dp"
+			        android:background="@color/news_gray"
+			        android:clipToPadding="false"
+			        android:divider="@null"
+			        android:dividerHeight="5dp"
+			        android:fadingEdge="none"
+			        android:padding="10dp"
+			        android:scrollbarStyle="outsideOverlay" />
+	        </FrameLayout>
+	        
+	        <ProgressBar
+		        android:id="@+id/hilight_wait_processbar"
+		        style="?android:attr/progressBarStyle"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerInParent="true" />
+	        
+	        <ProgressBar
+		        android:id="@+id/hilight_loading_footer_processbar"
+		        style="?android:attr/progressBarStyle"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentBottom="true"
+		        android:background="@color/news_gray" />
+        </RelativeLayout>
+    </TabHost>

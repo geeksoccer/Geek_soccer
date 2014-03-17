@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/news_gray" >
+    
+    <RelativeLayout
+        android:id="@+id/Content_Layout"
+        android:layout_height="match_parent"
+		android:layout_width="match_parent">
+    </RelativeLayout>
+    
+    <ListView
+    	android:id="@+id/hilight_comment_listview"
+    	android:layout_below="@+id/Header_Layout"
+    	android:layout_above="@+id/Footer_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:background="@color/news_gray"
+        android:clipToPadding="false"
+        android:divider="@null"
+        android:dividerHeight="5dp"
+        android:fadingEdge="none"
+        android:padding="10dp"
+        android:scrollbarStyle="outsideOverlay" />
+    
+    <RelativeLayout
+        android:id="@+id/Header_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        style="?backgroundTheme"
+        android:layout_alignParentTop="true" >
+		
+        <LinearLayout 
+            android:id="@+id/Up_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_press"
+            android:layout_centerVertical="true">
+            <ImageView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/ic_action_previous_item"
+	            android:layout_gravity="center_vertical|right"
+	            android:cropToPadding="true"
+	            android:layout_marginLeft="-7dp"/>
+            <ImageView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/comment"
+	            android:layout_gravity="center_vertical"
+	            android:layout_marginLeft="-7dp" />
+        </LinearLayout>
+        
+        <TextView 
+            android:id="@+id/Head_Title"
+            android:layout_width="fill_parent"
+	        android:layout_height="match_parent"
+	        android:gravity="center_vertical|left"
+	        android:layout_toRightOf="@+id/Up_btn"
+    		android:singleLine="true"
+    		android:ellipsize="marquee" 
+    		android:marqueeRepeatLimit="marquee_forever"
+    		android:scrollHorizontally="true" 
+    		android:paddingLeft="10dp" 
+    		android:paddingRight="10dp" 
+    		android:focusable="true" 
+    		android:focusableInTouchMode="true" 
+    		android:freezesText="true"
+	        android:textColor="@color/white"/>
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/Footer_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?backgroundTheme"
+        android:layout_alignParentBottom="true" >
+
+        <EditText
+            android:id="@+id/Hilight_Comments"
+            android:layout_toLeftOf="@+id/Hilight_Comments_Send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/comment"
+            android:background="@android:drawable/edit_text"
+            android:textSize="20sp"
+            android:hint="@string/str_comments_news"
+            android:layout_margin="5dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+        <Button
+            android:id="@+id/Hilight_Comments_Send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/str_comment_news_send"
+            android:background="@android:drawable/btn_default_small"
+            android:layout_margin="5dp"/>
+    </RelativeLayout>
+    
+    <ProgressBar
+        android:id="@+id/hilight_wait_processbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="false"
+        android:maxHeight="10dip"
+        android:minHeight="10dip"
+        android:progress="50"
+        android:progressDrawable="@drawable/custom_progressbar_horizontol"
+        android:layout_alignParentTop="true" />
+</RelativeLayout>

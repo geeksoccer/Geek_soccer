@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.excelente.geek_soccer"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<uses-permission android:name="android.permission.NETWORK" />
+	<uses-permission android:name="android.permission.USE_CREDENTIALS" />
+	
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <uses-sdk
+        android:minSdkVersion="13"
+        android:targetSdkVersion="17" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@android:style/Theme.Holo.Light.NoActionBar"
+        android:hardwareAccelerated="true" >
+        
+        <meta-data 
+            android:name="com.google.android.gms.version" 
+            android:value="@integer/google_play_services_version" />
+        
+        <activity
+            android:name="com.excelente.geek_soccer.Sign_In_Page"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.MainActivity"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.News_Page"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.News_Item_Page"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.Live_Score_Page"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.LiveScore_Yesterday"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.LiveScore_Today"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.LiveScore_Tomorrow"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.Live_Score_Detail"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.Chat_Page"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.Chat_All"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.Chat_Team"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.Table_Page"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.Game_Page" 
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name="com.excelente.geek_soccer.Hilight_Item_Page" 
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity android:name="com.excelente.geek_soccer.player.VideoPlayer"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
+        </activity>
+        
+        <receiver
+            android:name="com.excelente.geek_soccer.receiver.NetWorkChageReceiver"
+            android:label="NetworkChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        
+       <!-- 
+       <service 
+            android:name="com.excelente.geek_soccer.MemberSession" 
+            android:process=":MemberSession_service"></service>
+       -->
+    </application>
+
+</manifest>

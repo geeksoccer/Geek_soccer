@@ -1,0 +1,94 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="btnStyleOrange" parent="@android:style/Widget.Button">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:gravity">center</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">0.6</item>
+        <item name="android:background">@drawable/custom_btn_orange</item>
+        <item name="android:padding">10dip</item>
+    </style>
+    
+    <!-- ===================== Theme Any Team ======================== -->
+    
+    <attr name="backgroundTheme" format="reference"></attr>
+    <attr name="logoTheme" format="reference"></attr>
+    
+    <style name="Theme" parent="android:Theme.Holo.Light.NoActionBar">
+  	</style>
+
+    <style name="Theme.DefaultTheme">
+        <item name="backgroundTheme">@style/bg_default</item>
+        <item name="logoTheme">@style/logo_default</item>
+    </style>
+    <style name="Theme.Aresenal">
+        <item name="backgroundTheme">@style/bg_arsenal</item>
+        <item name="logoTheme">@style/logo_arsenal</item>
+    </style>
+    <style name="Theme.Chelsea">
+        <item name="backgroundTheme">@style/bg_chelsea</item>
+        <item name="logoTheme">@style/logo_chelsea</item>
+    </style>
+    <style name="Theme.Liverpool">
+        <item name="backgroundTheme">@style/bg_liverpool</item>
+        <item name="logoTheme">@style/logo_liverpool</item>
+    </style>
+    <style name="Theme.Manu">
+        <item name="backgroundTheme">@style/bg_manu</item>
+        <item name="logoTheme">@style/logo_manu</item>
+    </style>
+    
+    <style name="bg_default">
+      	<item name="android:background">@color/news_default</item>
+	</style>
+    <style name="bg_arsenal">
+      	<item name="android:background">@color/news_arsenal</item>
+	</style>
+	<style name="bg_chelsea">
+      	<item name="android:background">@color/news_chelsea</item>
+	</style>
+	<style name="bg_liverpool">
+      	<item name="android:background">@color/news_liverpool</item>
+	</style>
+	<style name="bg_manu">
+      	<item name="android:background">@color/news_manu</item>
+	</style>
+	
+	<style name="logo_default">
+      	<item name="android:src">@drawable/ic_launcher</item>
+	</style>
+    <style name="logo_arsenal">
+      	<item name="android:src">@drawable/logo_arsenal</item>
+	</style>
+	<style name="logo_chelsea">
+      	<item name="android:src">@drawable/logo_chelsea</item>
+	</style>
+	<style name="logo_liverpool">
+      	<item name="android:src">@drawable/logo_liverpool</item>
+	</style>
+	<style name="logo_manu">
+      	<item name="android:src">@drawable/logo_manchester_united</item>
+	</style>
+
+</resources>

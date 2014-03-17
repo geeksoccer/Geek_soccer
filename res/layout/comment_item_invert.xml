@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+    
+	<RelativeLayout
+        android:id="@+id/comment_image_layout"
+        android:layout_below="@+id/comment_update_time_textview"
+        android:layout_width="40dp"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentBottom="true">
+	
+	    <ProgressBar
+	        android:id="@+id/comment_image_processbar"
+	        style="?android:attr/progressBarStyle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerInParent="true" />
+	     
+	    <ImageView
+	        android:id="@+id/comment_image_imageview"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentBottom="true"
+	        android:background="@drawable/bg_round_image"
+	        android:scaleType="fitXY"
+	        android:src="@drawable/soccer_icon" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/comment_content_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/comment_update_time_textview"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/comment_image_layout"
+        android:textColor="@android:color/black"
+        android:background="@drawable/bubble_blue"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/comment_update_time_textview"
+        android:textColor="@color/gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="10dp"
+        android:textSize="12sp" />
+    
+    <RelativeLayout
+        android:id="@+id/comment_foot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/comment_content_textview"
+        android:layout_toLeftOf="@+id/comment_image_layout"
+        android:gravity="right" >
+
+        <TextView
+            android:id="@+id/comment_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:textColor="@color/gray"
+            android:textSize="12sp" />
+    </RelativeLayout>
+    
+</RelativeLayout>
