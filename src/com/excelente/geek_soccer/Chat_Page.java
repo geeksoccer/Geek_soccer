@@ -66,13 +66,12 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 			Featured.setIndicator("Manchester United Room");
 		}        
         
+        
         Intent browseIntent = new Intent().setClass(myView.getContext(), Chat_All.class);
         TabSpec browse = tabHost
       		  .newTabSpec("All")
       		  .setIndicator("Global Room")
       		  .setContent(browseIntent);
-        
-        
         
         tabHost.addTab(Featured);
         tabHost.addTab(browse);

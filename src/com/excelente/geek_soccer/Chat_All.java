@@ -58,10 +58,6 @@ public class Chat_All extends Activity{
 	JSONParser jParser = new JSONParser();
 	private Handler handler = new Handler();
 	String Msg_Send = "";
-	long time = System.currentTimeMillis() / 1000L;
-	String Name_Send = String.valueOf(MemberSession.getMember().getUid());//"";//String.valueOf(time);//"477774";
-	int teamID = MemberSession.getMember().getTeamId();
-	String ProFile_pic = MemberSession.getMember().getPhoto();
 	
 	String TimeStamp_Send = "0";
 	String old_timeStamp = "0";
@@ -114,13 +110,13 @@ public class Chat_All extends Activity{
 		(Chat_list_LayOut).addView(lstView);
 		//Chat_list_LayOut.removeAllViews();
 		//Chat_list_LayOut.addView(lstView);
-		if(teamID == 1){
+		if(data.teamID == 1){
 			data.SocketSelect = "5001";
-		}else if(teamID == 2){
+		}else if(data.teamID == 2){
 			data.SocketSelect = "5002";
-		}else if(teamID == 3){
+		}else if(data.teamID == 3){
 			data.SocketSelect = "5003";
-		}else if(teamID == 4){
+		}else if(data.teamID == 4){
 			data.SocketSelect = "5004";
 		}
 		if(data.Chat_Item_list_All.size()>0){
@@ -277,25 +273,25 @@ public class Chat_All extends Activity{
 				Profile_layout.addView(Profile_Pic);
 				
 				String Split_item[] = txt_Item.split("::");
-				txt_N.setText(Split_item[0]);
-				if(data.BitMapHash.get(Split_item[3])!=null){
-					Profile_Pic.setImageBitmap(data.BitMapHash.get(Split_item[3]));
+				txt_N.setText(Split_item[1]);
+				if(data.BitMapHash.get(Split_item[4])!=null){
+					Profile_Pic.setImageBitmap(data.BitMapHash.get(Split_item[4]));
 				}else{
-					startDownload(Split_item[3], Profile_Pic);
+					startDownload(Split_item[4], Profile_Pic);
 				}
-				if(Split_item[0].equals(Name_Send)){
-					if(Split_item[2].contains("S")){
-						if(data.BitMapHash.get(Split_item[1])!=null){
-							Sticker.setImageBitmap(data.BitMapHash.get(Split_item[1]));
+				if(Split_item[0].equals(data.ID_Send)){
+					if(Split_item[3].contains("S")){
+						if(data.BitMapHash.get(Split_item[2])!=null){
+							Sticker.setImageBitmap(data.BitMapHash.get(Split_item[2]));
 						}else{
 							Sticker.setImageResource(R.drawable.soccer_icon);
-							startDownload(Split_item[1], Sticker);
+							startDownload(Split_item[2], Sticker);
 						}						
 						txt_layout.setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
 						txt_layout.addView(Sticker);
 						retval.addView(txt_layout);
 					}else{
-						txt_M.setText(Split_item[1]+" " );
+						txt_M.setText(Split_item[2]+" " );
 						txt_M.setBackgroundResource(R.drawable.bubble_green_n);
 						txt_layout.setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
 						txt_layout.addView(txt_M);
@@ -306,17 +302,17 @@ public class Chat_All extends Activity{
 				}else{
 					retval.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
 					retval.addView(Profile_layout);
-					if(Split_item[2].contains("S")){
-						if(data.BitMapHash.get(Split_item[1])!=null){
-							Sticker.setImageBitmap(data.BitMapHash.get(Split_item[1]));
+					if(Split_item[3].contains("S")){
+						if(data.BitMapHash.get(Split_item[2])!=null){
+							Sticker.setImageBitmap(data.BitMapHash.get(Split_item[2]));
 						}else{
 							Sticker.setImageResource(R.drawable.soccer_icon);
-							startDownload(Split_item[1], Sticker);
+							startDownload(Split_item[2], Sticker);
 						}
 						txt_layout.addView(Sticker);
 						retval.addView(txt_layout);
 					}else{
-						txt_M.setText(" " + Split_item[1]);
+						txt_M.setText(" " + Split_item[2]);
 						txt_M.setBackgroundResource(R.drawable.bubble_yellow);
 						txt_layout.addView(txt_M);
 						retval.addView(txt_layout);
@@ -378,15 +374,15 @@ public class Chat_All extends Activity{
 			            @Override
 			            public void on(String event, IOAcknowledge ack, Object... args) {
 			            	String out = "";
-			            	if (event.equals("updatechat")&&args.length > 1) {
+			            	if (event.equals("updatechat")&&args.length >= 4) {
 			            		if(!args[1].toString().equals("")){
-				                    out = args[0].toString()+"::"+args[1].toString()+"::"+args[2].toString()+"::"+args[3].toString();
+				                    out = args[0].toString()+"::"+args[1].toString()+"::"+args[2].toString()+"::"+args[3].toString()+"::"+args[4].toString();
 			            		}			                    
 			                }else if(event.equals("updateusers")&&args.length > 0){
 			                	String Name_list[] = args[0].toString().split(",");
 			                	for (String Name_item : Name_list) {
 			                		Name_item = Name_item.split(":")[0].replaceAll("\"", "").replaceAll("\\{|\\}", "");
-			                		if(!Name_item.equals(Name_Send)){
+			                		if(!Name_item.equals(data.ID_Send)){
 
 			                		}
 								}
@@ -400,9 +396,10 @@ public class Chat_All extends Activity{
 										
 										for(int i=0; i<json_arr.length(); i++){
 											JSONObject json_ob = json_arr.getJSONObject(i);
-											String name = json_ob.getString("ch_uid");
+											String id = json_ob.getString("ch_uid");
 											String type = json_ob.getString("ch_type");
 											String Profile_Pic = json_ob.getString("m_photo");
+											String name = json_ob.getString("m_nickname");
 											String msg = "";
 											if(type.equals("T")){
 												msg = json_ob.getString("ch_msg");
@@ -410,7 +407,7 @@ public class Chat_All extends Activity{
 												msg = json_ob.getString("sk_img");
 											}
 
-											data.Chat_Item_list_All.add(name+"::"+msg+"::"+type+"::"+Profile_Pic);
+											data.Chat_Item_list_All.add(id+"::"+name+"::"+msg+"::"+type+"::"+Profile_Pic);
 										}
 										
 									} catch (JSONException e) {
@@ -488,7 +485,7 @@ public class Chat_All extends Activity{
 			            	
 			            }
 			        });
-					data.socket_All.emit("adduser", Name_Send, ProFile_pic);
+					data.socket_All.emit("adduser", data.ID_Send, data.ProFile_pic, data.Name_Send);
 					/*
 					if(!data.chat_on_Team){
 						socket.emit("adduser", Name_Send);

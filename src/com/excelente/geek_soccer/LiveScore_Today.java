@@ -92,6 +92,7 @@ public class LiveScore_Today extends Activity {
 	
 	//SocketIO socket = null;
 	
+	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.livescore_today);

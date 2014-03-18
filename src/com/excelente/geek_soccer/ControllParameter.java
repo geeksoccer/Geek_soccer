@@ -39,6 +39,11 @@ public class ControllParameter {
 	String Last_League_SET="";
 	String Date_Select="c";
 	String SocketSelect;
+	String ID_Send = String.valueOf(MemberSession.getMember().getUid());
+	int teamID = MemberSession.getMember().getTeamId();
+	String ProFile_pic = MemberSession.getMember().getPhoto();
+	String Name_Send = MemberSession.getMember().getNickname();
+	
 	Boolean app_Status=true;
 	Boolean chat_on_All = false;
 	Boolean chat_on_Team = false;
@@ -48,6 +53,7 @@ public class ControllParameter {
 	SocketIO socket_All = null;
 	SocketIO socket_Team = null;
 	SocketIO socket_LiveScore = null;
+	
 	
 	ArrayList<String> Chat_Item_list_Team = new ArrayList<String>();
 	ArrayList<String> Chat_Item_list_All = new ArrayList<String>();
