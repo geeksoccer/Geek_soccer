@@ -42,7 +42,6 @@
                 android:layout_marginBottom="1dp"
                 android:layout_marginTop="1dp"
                 android:layout_weight="1"
-                android:background="@drawable/msg_box"
                 android:ems="10"
                 android:hint=" Put message"
                 android:paddingLeft="5dp"

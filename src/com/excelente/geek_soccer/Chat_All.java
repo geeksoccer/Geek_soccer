@@ -260,16 +260,6 @@ public class Chat_All extends Activity{
 				txt_Item = data.Chat_Item_list_Team.get(position);
 				int colors = Integer.parseInt("000000", 16) + (0xFF000000);
 				
-				TextView txt_T = new TextView(mContext);
-				txt_T.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 30));
-				txt_T.setBackgroundColor(Color.GRAY);
-				txt_T.setGravity(Gravity.CENTER);
-				txt_T.setTextSize(12);
-				txt_T.setPadding(5, 5, 5, 5);
-				txt_T.setText("16:29");
-				txt_T.setTextColor(colors);
-				retval_Main.addView(txt_T);
-				
 				LinearLayout txt_layout = new LinearLayout(mContext);
 				txt_layout.setOrientation(LinearLayout.VERTICAL);
 				txt_layout.setPadding(10, 0, 10, 0);
@@ -294,13 +284,14 @@ public class Chat_All extends Activity{
 				Profile_layout.addView(Profile_Pic);
 				
 				String Split_item[] = txt_Item.split("::");
-				txt_N.setText(Split_item[1]);
+				
 				if(data.BitMapHash.get(Split_item[4])!=null){
 					Profile_Pic.setImageBitmap(data.BitMapHash.get(Split_item[4]));
 				}else{
 					startDownload(Split_item[4], Profile_Pic);
 				}
 				if(Split_item[0].equals(data.ID_Send)){
+					txt_N.setText("(12:00) "+Split_item[1]);
 					if(Split_item[3].contains("S")){
 						if(data.BitMapHash.get(Split_item[2])!=null){
 							Sticker.setImageBitmap(data.BitMapHash.get(Split_item[2]));
@@ -321,6 +312,7 @@ public class Chat_All extends Activity{
 					retval.setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
 					retval.addView(Profile_layout);
 				}else{
+					txt_N.setText(Split_item[1]+" (12:00)");
 					retval.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
 					retval.addView(Profile_layout);
 					if(Split_item[3].contains("S")){

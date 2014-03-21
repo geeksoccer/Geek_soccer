@@ -356,16 +356,18 @@ public class LiveScore_Today extends Activity {
 					for(int i=0; i<json_itArr.length(); i++){
 						JSONObject json_it = json_itArr.getJSONObject(i);
 						String League = json_it.getString("ln");
-						if(League.contains("(ENG)")){
+						if(League.contains("UEFA Champions League")){
 							League = "[1]"+League;
-						}else if(League.contains("(ESP)")){
+						}else if(League.contains("Premier League")){
 							League = "[2]"+League;
-						}else if(League.contains("(GER)")){
+						}else if(League.contains("Primera Divisi—n")){
 							League = "[3]"+League;
-						}else if(League.contains("(ITA)")){
+						}else if(League.contains("Bundesliga")){
 							League = "[4]"+League;
-						}else if(League.contains("(FRA)")){
+						}else if(League.contains("Serie A")){
 							League = "[5]"+League;
+						}else if(League.contains("Ligue 1")){
+							League = "[6]"+League;
 						}
 						data.Match_list_c.add(League);
 						JSONArray json_dtArr = json_it.getJSONArray("dt");
@@ -416,9 +418,8 @@ public class LiveScore_Today extends Activity {
 							}
 							if (away.contains("Arsenal")
 									|| Home.contains("Arsenal")) {
-								League = "Tag";
-								data.Match_list_c.add("[0]" + "Your Team");
-								data.Match_list_c.add("[0]" + "Your Team"
+								data.Match_list_c.add("[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
+								data.Match_list_c.add("[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)
 										+ "\n" + "[0]" + Time
 										+ "\n" + stat + "\n" + Home
 										+ "\n" + score + "\n"
@@ -528,16 +529,18 @@ public class LiveScore_Today extends Activity {
 									for(int i=0; i<json_itArr.length(); i++){
 										JSONObject json_it = json_itArr.getJSONObject(i);
 										String League = json_it.getString("ln");
-										if(League.contains("(ENG)")){
+										if(League.contains("UEFA Champions League")){
 											League = "[1]"+League;
-										}else if(League.contains("(ESP)")){
+										}else if(League.contains("Premier League")){
 											League = "[2]"+League;
-										}else if(League.contains("(GER)")){
+										}else if(League.contains("Primera Divisi—n")){
 											League = "[3]"+League;
-										}else if(League.contains("(ITA)")){
+										}else if(League.contains("Bundesliga")){
 											League = "[4]"+League;
-										}else if(League.contains("(FRA)")){
+										}else if(League.contains("Serie A")){
 											League = "[5]"+League;
+										}else if(League.contains("Ligue 1")){
+											League = "[6]"+League;
 										}
 										data.Match_list_c.add(League);
 										JSONArray json_dtArr = json_it.getJSONArray("dt");
@@ -586,8 +589,8 @@ public class LiveScore_Today extends Activity {
 											}
 											if (away.contains("Arsenal")
 													|| Home.contains("Arsenal")) {
-												data.Match_list_c.add("[0]" + "Your Team");
-												data.Match_list_c.add("[0]" + "Your Team"
+												data.Match_list_c.add("[0]" + "Your Team in " +League);
+												data.Match_list_c.add("[0]" + "Your Team in " +League
 														+ "\n" + "[0]" + Time
 														+ "\n" + stat + "\n" + Home
 														+ "\n" + score + "\n"
