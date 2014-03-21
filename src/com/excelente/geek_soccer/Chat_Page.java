@@ -43,7 +43,6 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		data.fragement_Section_set(2);
 		myView = getView();
 		mContext = myView.getContext();
 		LocalActivityManager mLocalActivityManager = new LocalActivityManager(getActivity(), false);

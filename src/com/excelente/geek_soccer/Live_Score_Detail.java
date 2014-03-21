@@ -92,7 +92,7 @@ public class Live_Score_Detail extends Activity{
 		Away_name.setText(getValue[5]);
 		
 		if(getValue.length>9){
-			txt_Aggregate.setText("AGGREGATE:"+getValue[9]);
+			txt_Aggregate.setText("AGGREGATE: "+getValue[9]);
 		}
 		
 		new Live_score_Loader().execute();
@@ -167,7 +167,7 @@ public class Live_Score_Detail extends Activity{
 				retval.addView(img_EY);
 				img_E.setImageResource(R.drawable.red);
 			}else if(Split_item[1].contains("ยิงจุดโทษได้")){
-				Event = "(P)";
+				Event = "(PG)";
 				img_E.setImageResource(R.drawable.goal);
 			}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
 				Event = "(OG)";

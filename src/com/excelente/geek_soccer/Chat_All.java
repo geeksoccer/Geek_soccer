@@ -31,6 +31,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -159,7 +160,12 @@ public class Chat_All extends Activity{
 					StikerV.setVisibility(RelativeLayout.ABOVE);
 					Sticker_Layout_Stat = true;
 					for (String key : data.Sticker_UrlSet.keySet()) {
-						startDownload(data.Sticker_UrlSet.get(key), Sticker_ImgVSet.get(key));
+						Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet.get(key));
+						if(bit!=null){
+							Sticker_ImgVSet.get(key).setImageBitmap(bit);
+						}else{
+							startDownload(data.Sticker_UrlSet.get(key), Sticker_ImgVSet.get(key));
+						}
 					}
 				}
 			}
@@ -255,7 +261,7 @@ public class Chat_All extends Activity{
 				txt_layout.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
 				TextView txt_N = new TextView(mContext);
 				txt_N.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				txt_N.setText("Name");
+				txt_N.setTypeface(Typeface.DEFAULT_BOLD);
 				txt_layout.addView(txt_N);
 				
 				TextView txt_M = new TextView(mContext);
@@ -404,7 +410,7 @@ public class Chat_All extends Activity{
 											if(type.equals("T")){
 												msg = json_ob.getString("ch_msg");
 											}else if(type.equals("S")){
-												msg = json_ob.getString("sk_img");
+												msg = json_ob.getString("sk_img")+"."+json_ob.getString("sk_type");
 											}
 
 											data.Chat_Item_list_All.add(id+"::"+name+"::"+msg+"::"+type+"::"+Profile_Pic);
@@ -460,28 +466,26 @@ public class Chat_All extends Activity{
 			                	
 			                }
 			            	final String _out = out;
-			            	if(data.fragement_Section_get()==2){
-			            		handler.post(new Runnable() {
-			    					@Override
-			    					public void run() {
-			    						if( (data.Chat_Item_list_All.size()==imageAdapter.getCount()) 
-			    								&& !_out.equals("")
-			    								&& !_out.contains("has connected")){
-			    							if(_out.contains("updateoldchat\n<geek>")){
-			    							}else{
-			    								data.Chat_Item_list_All.add(_out);
-			    							}
-			    							imageAdapter.notifyDataSetChanged();
-			    							lstView.setSelection(data.Chat_Item_list_All.size());
-			    						}else{
-			    							imageAdapter.notifyDataSetChanged();
-			    							lstView.setSelection(data.Chat_Item_list_All.size());
-			    						}
-			    						
-			    						
-			    					}
-			    			});
-			            	}
+			            	handler.post(new Runnable() {
+		    					@Override
+		    					public void run() {
+		    						if( (data.Chat_Item_list_All.size()==imageAdapter.getCount()) 
+		    								&& !_out.equals("")
+		    								&& !_out.contains("has connected")){
+		    							if(_out.contains("updateoldchat\n<geek>")){
+		    							}else{
+		    								data.Chat_Item_list_All.add(_out);
+		    							}
+		    							imageAdapter.notifyDataSetChanged();
+		    							lstView.setSelection(data.Chat_Item_list_All.size());
+		    						}else{
+		    							imageAdapter.notifyDataSetChanged();
+		    							lstView.setSelection(data.Chat_Item_list_All.size());
+		    						}
+		    						
+		    						
+		    					}
+		            		});
 			            	
 			            }
 			        });

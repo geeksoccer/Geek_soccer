@@ -44,8 +44,6 @@ public class Live_Score_Page extends Fragment implements
 		super.onActivityCreated(savedInstanceState);
 		myView = getView();
 		mContext = myView.getContext();
-		data.fragement_Section_set(1);
-		Log.d("TEST", "fragement_Section_set::"+data.fragement_Section_get());
 		/*
 		 * Button Next_Date = (Button) myView.findViewById(R.id.Next); Button
 		 * Previous_Date = (Button) myView.findViewById(R.id.Previous);

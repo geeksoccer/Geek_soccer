@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -137,6 +138,7 @@ public class LiveScore_Tomorrow extends Activity {
 			int colors = Integer.parseInt("000000", 16) + (0xFF000000);
 			TextView txt = new TextView(mContext);
 			txt.setTextColor(colors);
+			txt.setTypeface(Typeface.DEFAULT_BOLD);
 			
 			if (txt_Item.contains("\n")) {
 				txt.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -149,6 +151,7 @@ public class LiveScore_Tomorrow extends Activity {
 				
 				txt.setTextSize(14);
 				txt.setText(" "+text_Sprite[1].substring(3));
+				txt.setPadding(5, 0, 5, 0);
 				txt.setGravity(Gravity.LEFT);
 
 				TextView txt_Home = new TextView(mContext);
@@ -162,11 +165,12 @@ public class LiveScore_Tomorrow extends Activity {
 				TextView txt_Score = new TextView(mContext);
 				txt_Score.setLayoutParams(new LayoutParams(70, 40));
 				txt_Score.setTextSize(14);
+				txt_Score.setTypeface(Typeface.DEFAULT_BOLD);
 				txt_Score.setText(text_Sprite[4].replaceAll("&nbsp;", " "));
 				txt_Score.setGravity(Gravity.CENTER);
 				txt_Score.setBackgroundResource(R.drawable.score_bg_layer);
 				if(!text_Sprite[4].replaceAll("&nbsp;", " ").equals("vs")){
-					txt_Score.setTextColor(Color.CYAN);
+					txt_Score.setTextColor(Color.WHITE);
 				}
 
 				TextView txt_Away = new TextView(mContext);
@@ -239,7 +243,7 @@ public class LiveScore_Tomorrow extends Activity {
 							LayoutParams.WRAP_CONTENT, 1f));
 					txt_Aggregate.setGravity(Gravity.RIGHT);
 					txt_Aggregate.setTextSize(14);
-					txt_Aggregate.setText("AGGREGATE:"+text_Sprite[9]+" ");
+					txt_Aggregate.setText("AGGREGATE: "+text_Sprite[9]+" ");
 					layOut_time.addView(txt_Aggregate);
 				}
 				
@@ -338,12 +342,12 @@ public class LiveScore_Tomorrow extends Activity {
 
 							if(json_dt.getString("ty").equals("playing")){
 								if(json_dt.getString("pr").equals("ht")){
-									Time = "Half Time";
+									Time = "HT";
 								}else{
 									Time = json_dt.getString("tc")+"'";
 								}
 							}else if(json_dt.getString("ty").equals("played")){
-								Time = "Full Time";
+								Time = "FT";
 							}else if(json_dt.getString("ty").equals("postponed")){
 								Time = json_dt.getString("ty");
 							}else if(json_dt.getString("ty").equals("fixture")){
@@ -361,6 +365,16 @@ public class LiveScore_Tomorrow extends Activity {
 							}
 							if(score_ag==null){
 								score_ag="";
+							}else{
+								if(!score.equals("vs")){
+									String AG[] = score_ag.replaceAll(" ", "").split("-");
+									int Ag_home = Integer.parseInt(AG[0]);
+									int Ag_away = Integer.parseInt(AG[1]);
+									String SC[] = score.replaceAll(" ", "").split("-");
+									int Sc_home = Integer.parseInt(SC[0]);
+									int SC_away = Integer.parseInt(SC[1]);
+									score_ag = String.valueOf(Ag_home+Sc_home)+ " - " + String.valueOf(Ag_away+SC_away);
+								}
 							}
 							if (away.contains("Arsenal")
 									|| Home.contains("Arsenal")) {
