@@ -31,6 +31,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -247,13 +248,27 @@ public class Chat_All extends Activity{
 
 			
 			if(position<data.Chat_Item_list_All.size()){
+				LinearLayout retval_Main = new LinearLayout(mContext);
+				retval_Main.setOrientation(LinearLayout.VERTICAL);
+				retval_Main.setGravity(Gravity.CENTER);
+				
 				LinearLayout retval = new LinearLayout(mContext);
 				retval.setOrientation(LinearLayout.HORIZONTAL);
 				retval.setPadding(0, 5, 0, 5);
 				
 				String txt_Item = "";
-				txt_Item = data.Chat_Item_list_All.get(position);
+				txt_Item = data.Chat_Item_list_Team.get(position);
 				int colors = Integer.parseInt("000000", 16) + (0xFF000000);
+				
+				TextView txt_T = new TextView(mContext);
+				txt_T.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 30));
+				txt_T.setBackgroundColor(Color.GRAY);
+				txt_T.setGravity(Gravity.CENTER);
+				txt_T.setTextSize(12);
+				txt_T.setPadding(5, 5, 5, 5);
+				txt_T.setText("16:29");
+				txt_T.setTextColor(colors);
+				retval_Main.addView(txt_T);
 				
 				LinearLayout txt_layout = new LinearLayout(mContext);
 				txt_layout.setOrientation(LinearLayout.VERTICAL);
@@ -324,7 +339,8 @@ public class Chat_All extends Activity{
 						retval.addView(txt_layout);
 					}
 				}
-				return retval;
+				retval_Main.addView(retval);
+				return retval_Main;
 			}else{
 				return null;
 			}
