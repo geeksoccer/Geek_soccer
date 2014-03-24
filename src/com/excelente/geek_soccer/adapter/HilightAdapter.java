@@ -31,9 +31,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
@@ -45,6 +45,8 @@ public class HilightAdapter extends BaseAdapter{
     int count_ani=-1;
     
     boolean showHead; 
+    
+    HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
 	
 	public HilightAdapter(Context context, List<HilightModel> hilightList) {
 		this.context = context;
@@ -110,25 +112,33 @@ public class HilightAdapter extends BaseAdapter{
 	        hilightHolder.hilightCreateTimeTextview = (TextView) convertView.findViewById(R.id.hilight_create_time_textview);
 	        hilightHolder.hilightImageProgressBar = (ProgressBar) convertView.findViewById(R.id.hilight_image_processbar);
         
-        	ImageLoader.getInstance().displayImage(hilightModel.getHilightImage().replace(".gif", ".png"), hilightHolder.hilightImageImageview, getOptionImageLoader(hilightModel.getHilightImage()), new SimpleImageLoadingListener(){
-            	
-            	public void onLoadingStarted(String imageUri, View view) { 
-            		hilightHolder.hilightImageImageview.setVisibility(View.GONE);
-            		hilightHolder.hilightImageProgressBar.setVisibility(View.VISIBLE);
-            	};
-            	
-            	@Override
-            	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
-            		super.onLoadingFailed(imageUri, view, failReason);
-            		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
-            		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
-            	}
-            	
-            	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
-            		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
-            	};
-            }); 
+	        if(urlBitmap.containsKey(hilightModel.getHilightImage().replace(".gif", ".png"))){
+	        	hilightHolder.hilightImageImageview.setImageBitmap(urlBitmap.get(hilightModel.getHilightImage().replace(".gif", ".png"))); 
+	        }else{
+	        	ImageLoader.getInstance().displayImage(hilightModel.getHilightImage().replace(".gif", ".png"), hilightHolder.hilightImageImageview, getOptionImageLoader(hilightModel.getHilightImage()), new ImageLoadingListener(){
+	            	
+	            	public void onLoadingStarted(String imageUri, View view) { 
+	            		hilightHolder.hilightImageImageview.setVisibility(View.GONE);
+	            		hilightHolder.hilightImageProgressBar.setVisibility(View.VISIBLE);
+	            	};
+	            	
+	            	@Override
+	            	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
+	            		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
+	            		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
+	            	}
+	            	
+	            	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+	            		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
+	            		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
+	            	}
+
+					@Override
+					public void onLoadingCancelled(String arg0, View arg1) {
+						
+					};
+	            }); 
+	        }
         
         	hilightHolder.hilightTopicTextview.setText(hilightModel.getHilightTopic().trim());
         	hilightHolder.hilightTypeTextview.setText(hilightModel.getHilightType().replace("&nbsp;", "").trim());
@@ -202,7 +212,7 @@ public class HilightAdapter extends BaseAdapter{
 	        .showImageOnFail(R.drawable.soccer_icon) // resource or drawable
 	        .resetViewBeforeLoading(false)  // default
 	        //.delayBeforeLoading(500)
-	        .cacheInMemory(true)
+	        .cacheInMemory(false)
 	        .cacheOnDisc(true)
 	        .considerExifParams(false) // default
 	        .imageScaleType(ImageScaleType.NONE) // default

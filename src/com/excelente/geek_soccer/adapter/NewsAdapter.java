@@ -17,9 +17,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
@@ -46,6 +46,8 @@ public class NewsAdapter extends BaseAdapter{
     
     boolean showHead; 
 	
+    HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
+    
 	public NewsAdapter(Context context, List<NewsModel> newsList) {
 		this.context = context;
 		this.newsList = newsList;
@@ -91,25 +93,34 @@ public class NewsAdapter extends BaseAdapter{
         TextView newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
         final ProgressBar newsImageProgressBar = (ProgressBar) convertView.findViewById(R.id.news_image_processbar);
         
-        	ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage()), new SimpleImageLoadingListener(){
-            	
-            	public void onLoadingStarted(String imageUri, View view) {
-            		 newsImageImageview.setVisibility(View.GONE);
-            		 newsImageProgressBar.setVisibility(View.VISIBLE);
-            	};
-            	
-            	@Override
-            	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
-            		super.onLoadingFailed(imageUri, view, failReason);
-            		newsImageImageview.setVisibility(View.VISIBLE);
-           		 	newsImageProgressBar.setVisibility(View.GONE);
-            	}
-            	
-            	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            		newsImageImageview.setVisibility(View.VISIBLE);
-            		newsImageProgressBar.setVisibility(View.GONE);
-            	};
-            });
+        if(urlBitmap.containsKey(newsModel.getNewsImage().replace(".gif", ".png"))){
+        	newsImageImageview.setImageBitmap(urlBitmap.get(newsModel.getNewsImage().replace(".gif", ".png"))); 
+        }else{
+		    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
+				
+		    	public void onLoadingStarted(String imageUri, View view) {
+           		 	newsImageImageview.setVisibility(View.GONE);
+           		 	newsImageProgressBar.setVisibility(View.VISIBLE);
+	           	};
+	           	
+	           	@Override
+	           	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
+	           		newsImageImageview.setVisibility(View.VISIBLE);
+	          		newsImageProgressBar.setVisibility(View.GONE);
+	           	}
+	           	
+	           	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+	           		newsImageImageview.setVisibility(View.VISIBLE);
+	           		newsImageProgressBar.setVisibility(View.GONE);
+	           		urlBitmap.put(imageUri, loadedImage);
+	           	}
+
+				@Override
+				public void onLoadingCancelled(String imageUri, View view) {
+					
+				};
+			});
+        }
         
         newsTopicTextview.setText(newsModel.getNewsTopic());
 		newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(context, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime())));
@@ -182,7 +193,7 @@ public class NewsAdapter extends BaseAdapter{
 	        //.showImageOnFail(R.drawable.soccer_icon) // resource or drawable
 	        .resetViewBeforeLoading(false)  // default
 	        //.delayBeforeLoading(500)
-	        .cacheInMemory(true)
+	        .cacheInMemory(false)
 	        .cacheOnDisc(true)
 	        .considerExifParams(false) // default
 	        .imageScaleType(ImageScaleType.NONE) // default

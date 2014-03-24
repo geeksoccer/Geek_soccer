@@ -16,6 +16,8 @@ import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
@@ -40,6 +42,8 @@ public class TableAdapter extends BaseAdapter{
 	Context context;
 	List<TableModel> tableList;
 	private int count_ani = -1;
+	
+	HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
 	
 	public TableAdapter(Context context, List<TableModel> tableList) {
 		this.context = context;
@@ -90,9 +94,35 @@ public class TableAdapter extends BaseAdapter{
         	tableHolder = (TableHolder) convertView.getTag();
         }
      
+        if(urlBitmap.containsKey(tableModel.getTableTeamImage().replace(".gif", ".png"))){
+        	tableHolder.tableTeamImage.setImageBitmap(urlBitmap.get(tableModel.getTableTeamImage().replace(".gif", ".png"))); 
+        }else{
 		    doConfigImageLoader(10, 10);
-		    ImageLoader.getInstance().displayImage(tableModel.getTableTeamImage().replace(".gif", ".png"), tableHolder.tableTeamImage, getOptionImageLoader(tableModel.getTableTeamImage().replace(".gif", ".png")));
-
+		    ImageLoader.getInstance().displayImage(tableModel.getTableTeamImage().replace(".gif", ".png"), tableHolder.tableTeamImage, getOptionImageLoader(tableModel.getTableTeamImage().replace(".gif", ".png")), new ImageLoadingListener() {
+				
+				@Override
+				public void onLoadingStarted(String arg0, View arg1) {
+					
+				}
+				
+				@Override
+				public void onLoadingFailed(String arg0, View arg1, FailReason arg2) {
+					
+				}
+				
+				@Override
+				public void onLoadingComplete(String url, View arg1, Bitmap bitmap) {
+					//Log.e("IMAGELOADER", url);
+					urlBitmap.put(url, bitmap);
+				}
+				
+				@Override
+				public void onLoadingCancelled(String arg0, View arg1) {
+					
+				}
+			});
+        }
+		    
     		tableHolder.tableSeq.setText(String.valueOf(tableModel.getTableSeq())); 
     		tableHolder.tableTeam.setText(tableModel.getTableTeam());
     		tableHolder.tableMatch.setText(String.valueOf(tableModel.getTableMatch()));
@@ -257,7 +287,7 @@ public class TableAdapter extends BaseAdapter{
 	        .showImageOnFail(R.drawable.soccer_icon) // resource or drawable
 	        .resetViewBeforeLoading(true)  // default
 	        //.delayBeforeLoading(500)
-	        .cacheInMemory(true)
+	        .cacheInMemory(false)
 	        .cacheOnDisc(true)
 	        .considerExifParams(false) // default
 	        .imageScaleType(ImageScaleType.EXACTLY_STRETCHED) // default
