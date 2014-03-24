@@ -202,7 +202,7 @@ public class HilightAdapter extends BaseAdapter{
 	        .showImageOnFail(R.drawable.soccer_icon) // resource or drawable
 	        .resetViewBeforeLoading(false)  // default
 	        //.delayBeforeLoading(500)
-	        .cacheInMemory(false)
+	        .cacheInMemory(true)
 	        .cacheOnDisc(true)
 	        .considerExifParams(false) // default
 	        .imageScaleType(ImageScaleType.NONE) // default

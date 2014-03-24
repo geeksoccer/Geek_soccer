@@ -67,7 +67,7 @@ public class NewsItemsAdapter extends BaseAdapter{
 		this.call = call;
 	}
 	
-	public class NewsItemView{
+	public class NewsItemView {
 		TextView newsTopicTextview; 
 		TextView newsCreateTimeTextview;
 		WebView newsContentWebview;

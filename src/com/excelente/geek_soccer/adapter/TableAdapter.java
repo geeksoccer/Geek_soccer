@@ -91,9 +91,8 @@ public class TableAdapter extends BaseAdapter{
         }
      
 		    doConfigImageLoader(10, 10);
-			ImageLoader.getInstance().displayImage(tableModel.getTableTeamImage().replace(".gif", ".png"), tableHolder.tableTeamImage, getOptionImageLoader(tableModel.getTableTeamImage().replace(".gif", ".png")));
+		    ImageLoader.getInstance().displayImage(tableModel.getTableTeamImage().replace(".gif", ".png"), tableHolder.tableTeamImage, getOptionImageLoader(tableModel.getTableTeamImage().replace(".gif", ".png")));
 
-    		
     		tableHolder.tableSeq.setText(String.valueOf(tableModel.getTableSeq())); 
     		tableHolder.tableTeam.setText(tableModel.getTableTeam());
     		tableHolder.tableMatch.setText(String.valueOf(tableModel.getTableMatch()));
@@ -258,7 +257,7 @@ public class TableAdapter extends BaseAdapter{
 	        .showImageOnFail(R.drawable.soccer_icon) // resource or drawable
 	        .resetViewBeforeLoading(true)  // default
 	        //.delayBeforeLoading(500)
-	        .cacheInMemory(false)
+	        .cacheInMemory(true)
 	        .cacheOnDisc(true)
 	        .considerExifParams(false) // default
 	        .imageScaleType(ImageScaleType.EXACTLY_STRETCHED) // default
