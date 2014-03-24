@@ -39,4 +39,14 @@
     <string name="pull_to_refresh_release_label">Release to refresh...</string>
     <string name="pull_to_refresh_refreshing_label">Loading...</string>
     <string name="pull_to_refresh_tap_label">Tap to refresh...</string>
+    
+    <string name="HILIGHT_TYPE_PREMIER_LEAGUE">พรีเมียร์ลีก</string>
+    <string name="HILIGHT_TYPE_LALIGA">ลาลีกา</string>
+    <string name="HILIGHT_TYPE_CALCAIO_SERIE_A">กัลโช่ เซเรีย อา</string>
+    <string name="HILIGHT_TYPE_LEAGUE_DE_LEAGUE1">ลีกเอิง</string>
+    <string name="HILIGHT_TYPE_BUNDESLIGA">บุนเดสลีกา</string>
+    <string name="HILIGHT_TYPE_UCL">ยูฟ่า แชมป์เปี้ยนส์ ลีก</string>
+    <string name="HILIGHT_TYPE_UPL">ยูฟ่า ยูโรป้า ลีก</string>
+    <string name="HILIGHT_TYPE_CHAMPIAN_CHIP">แชมเปี้ยนชิพ อังกฤษ</string>
+    <string name="HILIGHT_TYPE_CAPITAL_ONE_CUP">แคปิตอล วัน คัพ</string>
 </resources>

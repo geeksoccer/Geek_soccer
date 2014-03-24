@@ -41,16 +41,6 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 	
 	public static final String HILIGHT_TYPE_ALL = "All";
 	
-	public static final String HILIGHT_TYPE_PREMIER_LEAGUE = "&nbsp;พรีเมียร์ลีก";
-	public static final String HILIGHT_TYPE_LALIGA = "&nbsp;ลาลีกา";
-	public static final String HILIGHT_TYPE_CALCAIO_SERIE_A = "&nbsp;กัลโช่ เซเรีย อา";
-	public static final String HILIGHT_TYPE_LEAGUE_DE_LEAGUE1 = "&nbsp;ลีกเอิง";
-	public static final String HILIGHT_TYPE_BUNDESLIGA = "&nbsp;บุนเดสลีกา";
-	public static final String HILIGHT_TYPE_UCL = "&nbsp;ยูฟ่า แชมป์เปี้ยนส์ ลีก";
-	public static final String HILIGHT_TYPE_UPL = "&nbsp;ยูฟ่า ยูโรป้า ลีก";
-	public static final String HILIGHT_TYPE_CHAMPIAN_CHIP = "&nbsp;แชมเปี้ยนชิพ อังกฤษ";
-	public static final String HILIGHT_TYPE_CAPITAL_ONE_CUP = "&nbsp;แคปิตอล วัน คัพ";
-	
 	public static List<HilightModel> hilightListAll;
 	public static List<HilightModel> hilightListPl; 
 	public static List<HilightModel> hilightListBl;
@@ -243,23 +233,23 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			if(tag.equals("tag0")){
 				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + HILIGHT_TYPE_ALL + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag1")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_PREMIER_LEAGUE, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_PREMIER_LEAGUE), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag2")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_BUNDESLIGA, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_BUNDESLIGA), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag3")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_LALIGA, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_LALIGA), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag4")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_CALCAIO_SERIE_A, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_CALCAIO_SERIE_A), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag5")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_LEAGUE_DE_LEAGUE1, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_LEAGUE_DE_LEAGUE1), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag6")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_UCL, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_UCL), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag7")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_UPL, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_UPL), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag8")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_CHAMPIAN_CHIP, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_CHAMPIAN_CHIP), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag9")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_CAPITAL_ONE_CUP, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_CAPITAL_ONE_CUP), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
