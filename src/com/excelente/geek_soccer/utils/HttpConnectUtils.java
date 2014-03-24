@@ -14,6 +14,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -24,6 +27,8 @@ public class HttpConnectUtils {
 	
 	public static final String CHARSET_ENCODE_UTF8 = "UTF-8";
 	public static final String MIMETYPE_HTML = "text/html";
+	public static int timeoutConnection = 10*1000;
+	public static int timeoutSocket = 10*1000;
 	
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@SuppressLint("NewApi")
@@ -34,18 +39,21 @@ public class HttpConnectUtils {
 	    }
 	}
 	
-	public static String getStrHttpGetConnect(String url){
-		setStrictMode();
+public static String getStrHttpGetConnect(String url){
 		
 		String result = "";
 
-	    HttpClient httpclient = new DefaultHttpClient();
+	    HttpGet httpget = new HttpGet(url);
+	    
+	    HttpParams httpParameters = new BasicHttpParams();
+	    HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+	    HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+	    
+	    HttpClient httpclient = new DefaultHttpClient(httpParameters);
 
-	    HttpGet httpget = new HttpGet(url); 
-
-	    HttpResponse response;
 	    try {
-	        response = httpclient.execute(httpget);
+	    	
+	    	HttpResponse response = httpclient.execute(httpget);
 
 	        HttpEntity entity = response.getEntity();
 	        
@@ -67,12 +75,18 @@ public class HttpConnectUtils {
 	public static String getStrHttpPostConnect(String url,List<NameValuePair> params) {
 
 		String result = "";
-		HttpClient client = new DefaultHttpClient();
+		
 		HttpPost httpPost = new HttpPost(url);
 		
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+		    
+		HttpClient httpclient = new DefaultHttpClient(httpParameters);
+		    
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-			HttpResponse response = client.execute(httpPost);
+			HttpResponse response = httpclient.execute(httpPost);
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
 				

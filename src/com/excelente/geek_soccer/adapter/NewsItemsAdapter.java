@@ -19,6 +19,7 @@ import com.excelente.geek_soccer.model.CommentModel;
 import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
+import com.excelente.geek_soccer.utils.NetworkUtils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -39,6 +40,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NewsItemsAdapter extends BaseAdapter{
 	
@@ -80,18 +82,25 @@ public class NewsItemsAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = mInflater.inflate(R.layout.news_item_item_page, parent, false);
         
-        final NewsItemView newsItemView = new NewsItemView();
-        newsItemView.newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
-        newsItemView.newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
-        newsItemView.newsContentWebview = (WebView) convertView.findViewById(R.id.news_content_webview);
-        newsItemView.newsCreditTextview = (TextView) convertView.findViewById(R.id.news_credit_textview);
-        newsItemView.newsLikeImageview = (ImageView) convertView.findViewById(R.id.news_like); 
-        newsItemView.newsLikesTextview = (TextView) convertView.findViewById(R.id.news_likes_textview);
-        newsItemView.newsReadsTextview = (TextView) convertView.findViewById(R.id.news_reads_textview);
-        newsItemView.newsCommentImageview = (ImageView) convertView.findViewById(R.id.news_comment_imageView);
-        newsItemView.newsCommentsTextview = (TextView) convertView.findViewById(R.id.news_comments_textview);
+        NewsItemView newsItemView;
+        
+        if(convertView==null){
+        	newsItemView = new NewsItemView();
+        	convertView = mInflater.inflate(R.layout.news_item_item_page, parent, false);
+	        newsItemView.newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
+	        newsItemView.newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
+	        newsItemView.newsContentWebview = (WebView) convertView.findViewById(R.id.news_content_webview);
+	        newsItemView.newsCreditTextview = (TextView) convertView.findViewById(R.id.news_credit_textview);
+	        newsItemView.newsLikeImageview = (ImageView) convertView.findViewById(R.id.news_like); 
+	        newsItemView.newsLikesTextview = (TextView) convertView.findViewById(R.id.news_likes_textview);
+	        newsItemView.newsReadsTextview = (TextView) convertView.findViewById(R.id.news_reads_textview);
+	        newsItemView.newsCommentImageview = (ImageView) convertView.findViewById(R.id.news_comment_imageView);
+	        newsItemView.newsCommentsTextview = (TextView) convertView.findViewById(R.id.news_comments_textview);
+	        convertView.setTag(newsItemView);
+        }else{
+        	newsItemView = (NewsItemView)convertView.getTag();
+        }
         
         NewsModel newsModel = (NewsModel) getItem(position);
         
@@ -101,7 +110,6 @@ public class NewsItemsAdapter extends BaseAdapter{
 		return convertView;
 	}
 	
-	@SuppressWarnings("deprecation")
 	@SuppressLint({ "NewApi", "SetJavaScriptEnabled" })  
 	private void doLoadNewsToViews(final int position, final NewsModel newsModel, final NewsItemView newsItemView) { 
 		
@@ -244,17 +252,20 @@ public class NewsItemsAdapter extends BaseAdapter{
 			@Override
 			public void onClick(View v) {
 				
-				new PostNewsLikes().execute(newsModel);
-				
-				if(newsModel.getStatusLike()==0){
-					newsItemView.newsLikeImageview.setImageResource(R.drawable.news_likes_selected);
-					newsModel.setNewsLikes(newsModel.getNewsLikes() + 1);
-					newsModel.setStatusLike(1);
-				}else{
-					newsItemView.newsLikeImageview.setImageResource(R.drawable.news_likes);
-					newsModel.setNewsLikes(newsModel.getNewsLikes() - 1);
-					newsModel.setStatusLike(0);
-				}
+				if (NetworkUtils.isNetworkAvailable(mContext)){
+					if(newsModel.getStatusLike()==0){
+						newsItemView.newsLikeImageview.setImageResource(R.drawable.news_likes_selected);
+						newsModel.setNewsLikes(newsModel.getNewsLikes() + 1);
+						newsModel.setStatusLike(1);
+					}else{
+						newsItemView.newsLikeImageview.setImageResource(R.drawable.news_likes);
+						newsModel.setNewsLikes(newsModel.getNewsLikes() - 1);
+						newsModel.setStatusLike(0);
+					}
+					
+					new PostNewsLikes().execute(newsModel);
+				}else
+					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
 				
 				newsItemView.newsLikesTextview.setText(String.valueOf(newsModel.getNewsLikes()));
 			}
@@ -320,12 +331,7 @@ public class NewsItemsAdapter extends BaseAdapter{
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0].getNewsId())));
 			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(MemberSession.getMember().getUid())));
-			
-			if(params[0].getStatusLike()==0){
-				paramsPost.add(new BasicNameValuePair("status_like", String.valueOf(1)));
-			}else{
-				paramsPost.add(new BasicNameValuePair("status_like", String.valueOf(0)));
-			}
+			paramsPost.add(new BasicNameValuePair("status_like", String.valueOf(params[0].getStatusLike())));
 			
 			return HttpConnectUtils.getStrHttpPostConnect(NEWS_LIKES_URL, paramsPost);
 		}

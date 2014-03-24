@@ -4,6 +4,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import com.excelente.geek_soccer.adapter.HilightAdapter;
 import com.excelente.geek_soccer.model.HilightModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
@@ -238,25 +241,25 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		
 		try{
 			if(tag.equals("tag0")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + HILIGHT_TYPE_ALL;
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + HILIGHT_TYPE_ALL + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag1")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_PREMIER_LEAGUE, "utf-8");
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_PREMIER_LEAGUE, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag2")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_BUNDESLIGA, "utf-8");
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_BUNDESLIGA, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag3")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_LALIGA, "utf-8");
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_LALIGA, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag4")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_CALCAIO_SERIE_A, "utf-8");
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_CALCAIO_SERIE_A, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag5")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_LEAGUE_DE_LEAGUE1, "utf-8");
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_LEAGUE_DE_LEAGUE1, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag6")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_UCL, "utf-8");
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_UCL, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag7")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_UPL, "utf-8");
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_UPL, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag8")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_CHAMPIAN_CHIP, "utf-8");
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_CHAMPIAN_CHIP, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}else if(tag.equals("tag9")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_CAPITAL_ONE_CUP, "utf-8");
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode(HILIGHT_TYPE_CAPITAL_ONE_CUP, "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -514,8 +517,12 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 				if((lastVisibleItem == totalItemCount) && loaded && totalItemCount>0){
 					HilightModel hm = (HilightModel)view.getAdapter().getItem(totalItemCount-1);  
 					if(!hm.equals(oldHilight)){
-						hilightLoadingFooterProcessbar.setVisibility(View.VISIBLE);
-						new LoadOldHilightTask(hilightListview, hilightAdapter, tag).execute(getURLbyTag(hm.getHilightId(), tag));  
+						
+						if(NetworkUtils.isNetworkAvailable(getActivity())){
+							hilightLoadingFooterProcessbar.setVisibility(View.VISIBLE);
+							new LoadOldHilightTask(hilightListview, hilightAdapter, tag).execute(getURLbyTag(hm.getHilightId(), tag));  
+						}else
+							Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						//Toast.makeText(getActivity(), "Toast " + i++, Toast.LENGTH_SHORT).show();
 					}
 					
@@ -529,7 +536,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			@Override
 			public void onRefresh() {
-				new LoadLastHilightTask(hilightListview, tag).execute(getURLbyTag(0, tabs.getCurrentTabTag())); 
+				if(NetworkUtils.isNetworkAvailable(getActivity())){
+					new LoadLastHilightTask(hilightListview, tag).execute(getURLbyTag(0, tabs.getCurrentTabTag())); 
+				}else
+					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 			}
 		});
 		
@@ -537,16 +547,41 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	@Override
 	public void onItemClick(AdapterView<?> adap, View v, int pos, long id) {
-		//HilightModel hilight = (HilightModel) adap.getAdapter().getItem(pos); 
-		//news.setNewsReads(news.getNewsReads()+1);
+		HilightModel hilight = (HilightModel) adap.getAdapter().getItem(pos); 
 		
-		//new PostNewsReads().execute(news.getNewsId()); 
+		if(NetworkUtils.isNetworkAvailable(getActivity())){
+			hilight.setHilightViews(hilight.getHilightViews()+1);
+			hilight.setStatusView(1);
+			
+			new PostHilightReads().execute(hilight.getHilightId()); 
+		}else
+			Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 		
 		Intent hilightItemPage = new Intent(getActivity(), Hilight_Item_Page.class);
 		hilightItemPage.putExtra(HILIGHT_ITEM_INDEX, pos-1);
 		hilightItemPage.putExtra(HILIGHT_TAG, tabs.getCurrentTabTag());
 		startActivity(hilightItemPage);
 	}
+	
+	public class PostHilightReads extends AsyncTask<Integer, Void, String>{
+		
+		@Override
+		protected String doInBackground(Integer... params) {
+			
+			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
+			paramsPost.add(new BasicNameValuePair("hilight_id", String.valueOf(params[0])));
+			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(MemberSession.getMember().getUid())));
+			
+			return HttpConnectUtils.getStrHttpPostConnect(Hilight_Item_Page.HILIGHT_READS_URL, paramsPost);
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			//Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+		}
+
+	} 
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -789,5 +824,56 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	public static void setHilightListCapital(List<HilightModel> hilightListCapital) {
 		Hilight_Page.hilightListCapital = hilightListCapital;
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		if(tabs.getCurrentTabTag().equals("tag0")){ 
+			if(hilightAdapterAll != null){
+				hilightAdapterAll.notifyDataSetChanged();
+			}
+		}else if(tabs.getCurrentTabTag().equals("tag1")){
+			if(hilightAdapterPl != null){
+				hilightAdapterPl.notifyDataSetChanged();
+			}
+		}else if(tabs.getCurrentTabTag().equals("tag2")){
+			if(hilightAdapterBl != null){
+				hilightAdapterBl.notifyDataSetChanged();
+			}
+			
+		}else if(tabs.getCurrentTabTag().equals("tag3")){
+			if(hilightAdapterLl != null){
+				hilightAdapterLl.notifyDataSetChanged();
+			}
+			
+		}else if(tabs.getCurrentTabTag().equals("tag4")){
+			if(hilightAdapterGl != null){
+				hilightAdapterGl.notifyDataSetChanged();
+			}
+			
+		}else if(tabs.getCurrentTabTag().equals("tag5")){
+			if(hilightAdapterFl != null){
+				hilightAdapterFl.notifyDataSetChanged();
+			}
+			
+		}else if(tabs.getCurrentTabTag().equals("tag6")){
+			if(hilightAdapterUcl != null){
+				hilightAdapterUcl.notifyDataSetChanged();
+			}
+		}else if(tabs.getCurrentTabTag().equals("tag7")){
+			if(hilightAdapterUpl != null){
+				hilightAdapterUpl.notifyDataSetChanged();
+			}
+		}else if(tabs.getCurrentTabTag().equals("tag8")){
+			if(hilightAdapterChamp != null){
+				hilightAdapterChamp.notifyDataSetChanged();
+			}
+		}else if(tabs.getCurrentTabTag().equals("tag9")){
+			if(hilightAdapterCapital != null){
+				hilightAdapterCapital.notifyDataSetChanged();
+			}
+		}
 	}
 }

@@ -58,7 +58,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	public static List<NewsModel> newsModelTeamList;
 	public static List<NewsModel> newsModelGlobalList;
 	public static String NEWS_TAG = "NEWS_TAG";
-
+	
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (container == null) {
             return null;
@@ -70,7 +70,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        
         initView();
         initSubview();
 	}
@@ -300,9 +300,13 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 				int lastVisibleItem = firstVisibleItem + visibleItemCount;
 				if((lastVisibleItem == totalItemCount) && loaded && totalItemCount>0){
 					NewsModel nm = (NewsModel)view.getAdapter().getItem(totalItemCount-1);
-					if(!nm.equals(oldNews)){ 
-						newsLoadingFooterProcessbar.setVisibility(View.VISIBLE);
-						new LoadOldNewsTask(newsListView, newsAdapter, tag).execute(getURLbyTag(nm.getNewsId(), tag));
+					if(!nm.equals(oldNews)){
+						
+						if (NetworkUtils.isNetworkAvailable(getActivity())){
+							newsLoadingFooterProcessbar.setVisibility(View.VISIBLE);
+							new LoadOldNewsTask(newsListView, newsAdapter, tag).execute(getURLbyTag(nm.getNewsId(), tag));
+						}else
+							Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						//Toast.makeText(getActivity(), "Toast " + i++, Toast.LENGTH_SHORT).show();
 					}
 					
@@ -316,7 +320,10 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			@Override
 			public void onRefresh() {
-				new LoadLastNewsTask(newsListView, tag).execute(getURLbyTag(0, tag));
+				if (NetworkUtils.isNetworkAvailable(getActivity())){
+					new LoadLastNewsTask(newsListView, tag).execute(getURLbyTag(0, tag));
+				}else
+					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 			}
 		});
 		

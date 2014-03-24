@@ -185,7 +185,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
     	AlertDialog.Builder dialog = new AlertDialog.Builder(Sign_In_Page.this);
 		dialog.setTitle("Select Favorite Team");
 		
-		CharSequence[] teams = new CharSequence[]{"Arsenal", "Chelsea","Liverpool", "Manchester United"};
+		CharSequence[] teams = new CharSequence[]{"Arsenal", "Chelsea","Liverpool", "Manchester United", "Others"};
 		dialog.setSingleChoiceItems(teams, 0, new DialogInterface.OnClickListener() {
 			
 			@Override
@@ -202,6 +202,9 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 						break;
 					case 3:
 						doRegister(3);
+						break;
+					case 4:
+						doRegister(4);
 						break;
 				}
 				dialog.dismiss();

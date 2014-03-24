@@ -61,6 +61,9 @@ public class HilightAdapter extends BaseAdapter{
         TextView hilightTypeTextview;
         TextView hilightCreateTimeTextview;
         ProgressBar hilightImageProgressBar; 
+        
+        ImageView hilightLikes;
+        ImageView hilightView;
 	}
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -85,9 +88,20 @@ public class HilightAdapter extends BaseAdapter{
 	    		hilightHolder.hilightReadsTextview = (TextView) convertView.findViewById(R.id.hilight_reads_textview);
 	    		hilightHolder.hilightCommentsTextview = (TextView) convertView.findViewById(R.id.hilight_comments_textview);
 	    		
+	    		hilightHolder.hilightLikes = (ImageView) convertView.findViewById(R.id.hilight_likes);
+	    		hilightHolder.hilightView = (ImageView) convertView.findViewById(R.id.hilight_view);
+	    		
 	    		hilightHolder.hilightLikesTextview.setText(String.valueOf(hilightModel.getHilightLikes())); 
 	    		hilightHolder.hilightReadsTextview.setText(String.valueOf(hilightModel.getHilightViews())); 
 	    		hilightHolder.hilightCommentsTextview.setText(String.valueOf(hilightModel.getHilightComments()));
+	    		
+	    		if(hilightModel.getStatusLike()==1){
+	    			hilightHolder.hilightLikes.setImageResource(R.drawable.news_likes_selected);
+	    		}
+	    		
+	    		if(hilightModel.getStatusView()==1){
+	    			hilightHolder.hilightView.setImageResource(R.drawable.news_view_selected);
+	    		}
 	    	}
 	        
 	        hilightHolder.hilightImageImageview = (ImageView) convertView.findViewById(R.id.hilight_image_imageview);

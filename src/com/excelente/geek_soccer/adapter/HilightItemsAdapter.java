@@ -1,9 +1,14 @@
 package com.excelente.geek_soccer.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +30,7 @@ import com.excelente.geek_soccer.model.HilightItemModel;
 import com.excelente.geek_soccer.model.HilightModel;
 import com.excelente.geek_soccer.player.VideoPlayer;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
+import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 
 public class HilightItemsAdapter extends BaseAdapter{
@@ -57,18 +63,27 @@ public class HilightItemsAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = mInflater.inflate(R.layout.hilight_item_item_page, parent, false);
         
-        final HilightItemView hilightItemView = new HilightItemView(); 
-        hilightItemView.hilightTopicTextview = (TextView) convertView.findViewById(R.id.hilight_topic_textview);
-        hilightItemView.hilightCreateTimeTextview = (TextView) convertView.findViewById(R.id.hilight_create_time_textview);
-        hilightItemView.hilightContentListview = (ListView) convertView.findViewById(R.id.hilight_content_listview);
-        hilightItemView.hilightLikeImageview = (ImageView) convertView.findViewById(R.id.hilight_like); 
-        hilightItemView.hilightLikesTextview = (TextView) convertView.findViewById(R.id.hilight_likes_textview);
-        hilightItemView.hilightReadsTextview = (TextView) convertView.findViewById(R.id.hilight_reads_textview);
-        hilightItemView.hilightCommentImageview = (ImageView) convertView.findViewById(R.id.hilight_comment_imageView);
-        hilightItemView.hilightCommentsTextview = (TextView) convertView.findViewById(R.id.hilight_comments_textview);
-        hilightItemView.hilightTypeTextview = (TextView) convertView.findViewById(R.id.hilight_type_textview);
+        HilightItemView hilightItemView; 
+        
+        if(convertView==null){
+        	convertView = mInflater.inflate(R.layout.hilight_item_item_page, parent, false);
+        	
+        	hilightItemView = new HilightItemView(); 
+	        hilightItemView.hilightTopicTextview = (TextView) convertView.findViewById(R.id.hilight_topic_textview);
+	        hilightItemView.hilightCreateTimeTextview = (TextView) convertView.findViewById(R.id.hilight_create_time_textview);
+	        hilightItemView.hilightContentListview = (ListView) convertView.findViewById(R.id.hilight_content_listview);
+	        hilightItemView.hilightLikeImageview = (ImageView) convertView.findViewById(R.id.hilight_like); 
+	        hilightItemView.hilightLikesTextview = (TextView) convertView.findViewById(R.id.hilight_likes_textview);
+	        hilightItemView.hilightReadsTextview = (TextView) convertView.findViewById(R.id.hilight_reads_textview);
+	        hilightItemView.hilightCommentImageview = (ImageView) convertView.findViewById(R.id.hilight_comment_imageView);
+	        hilightItemView.hilightCommentsTextview = (TextView) convertView.findViewById(R.id.hilight_comments_textview);
+	        hilightItemView.hilightTypeTextview = (TextView) convertView.findViewById(R.id.hilight_type_textview);
+	        
+	        convertView.setTag(hilightItemView);
+        }else{
+        	hilightItemView = (HilightItemView)convertView.getTag();
+        }
         
         HilightModel hilightModel = (HilightModel) getItem(position); 
         
@@ -87,10 +102,24 @@ public class HilightItemsAdapter extends BaseAdapter{
 			
 			@Override
 			public void onClick(View v) {
-				hilightItemView.hilightLikeImageview.setImageResource(R.drawable.news_likes_selected);
-				//new PostNewsLikes().execute(hilightModel.getNewsId());
 				
-				//hilightModel.setNewsLikes(hilightModel.getNewsLikes() + 1);
+				if(NetworkUtils.isNetworkAvailable(mContext)){
+					
+					if(hilightModel.getStatusLike()==0){
+						hilightItemView.hilightLikeImageview.setImageResource(R.drawable.news_likes_selected);
+						hilightModel.setHilightLikes(hilightModel.getHilightLikes() + 1);
+						hilightModel.setStatusLike(1);
+					}else{
+						hilightItemView.hilightLikeImageview.setImageResource(R.drawable.news_likes);
+						hilightModel.setHilightLikes(hilightModel.getHilightLikes() - 1);
+						hilightModel.setStatusLike(0);
+					}
+					
+					new PostHilightLikes().execute(hilightModel);
+				}else{
+					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
+				}
+				 
 				hilightItemView.hilightLikesTextview.setText(String.valueOf(hilightModel.getHilightLikes()));
 			}
 		});
@@ -132,6 +161,12 @@ public class HilightItemsAdapter extends BaseAdapter{
         hilightItemView.hilightContentListview.setOnTouchListener(new SwipeDetector());
         //setVisibleHilightContent(true, hilightItemView);
         hilightItemView.hilightTypeTextview.setText(hilightModel.getHilightType().replace("&nbsp;", "").trim());
+        
+        if(hilightModel.getStatusLike()==0){
+        	hilightItemView.hilightLikeImageview.setImageResource(R.drawable.news_likes);
+		}else{
+			hilightItemView.hilightLikeImageview.setImageResource(R.drawable.news_likes_selected);
+		}
 	}
 
 	private void setVisibleHilightContent(boolean visible, HilightItemView hilightItemView) {
@@ -158,23 +193,25 @@ public class HilightItemsAdapter extends BaseAdapter{
 	public long getItemId(int position) {
 		return mHilightList.indexOf(mHilightList.get(position)); 
 	}
-	
-	/*public class PostNewsLikes extends AsyncTask<Integer, Void, Void>{
+	 
+	public class PostHilightLikes extends AsyncTask<HilightModel, Void, Void>{
 		
-		private static final String NEWS_LIKES_URL = "http://183.90.171.209/gs_news/post_news_like.php"; 
+		private static final String HILIGHT_LIKES_URL = "http://183.90.171.209/gs_hilight/post_hilight_like.php"; 
 
-		@Override
-		protected Void doInBackground(Integer... params) {
+		@Override 
+		protected Void doInBackground(HilightModel... params) {
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
-			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0])));
-			
-			HttpConnectUtils.getStrHttpPostConnect(NEWS_LIKES_URL, paramsPost);
+			paramsPost.add(new BasicNameValuePair("hilight_id", String.valueOf(params[0].getHilightId())));
+			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(MemberSession.getMember().getUid())));
+			paramsPost.add(new BasicNameValuePair("status_like", String.valueOf(params[0].getStatusLike())));
+				
+			HttpConnectUtils.getStrHttpPostConnect(HILIGHT_LIKES_URL, paramsPost);
 			
 			return null;
 		}
 
-	}*/
+	}
 	
 	public class SwipeDetector implements View.OnTouchListener {
 

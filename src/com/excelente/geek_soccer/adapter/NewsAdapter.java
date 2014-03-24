@@ -29,7 +29,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -164,7 +163,7 @@ public class NewsAdapter extends BaseAdapter{
 				headers.put("Referer", "http://localhost");
 				headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36");
 			}else if(url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com)){ 
-				Log.e("URL___________________OK", url);
+				//Log.e("URL___________________OK", url);
 				headers.put("Accept", "image/webp,*/*;q=0.8");
 				headers.put("Accept-Encoding", "gzip,deflate,sdch");
 				headers.put("Accept-Language", "th-TH,th;q=0.8,en;q=0.6");
@@ -178,9 +177,9 @@ public class NewsAdapter extends BaseAdapter{
 		}
 		
 		DisplayImageOptions options = new DisplayImageOptions.Builder()
-	        .showImageOnLoading(R.drawable.soccer_icon) // resource or drawable
-	        .showImageForEmptyUri(R.drawable.soccer_icon) // resource or drawable
-	        .showImageOnFail(R.drawable.soccer_icon) // resource or drawable
+	        //.showImageOnLoading(R.drawable.soccer_icon) // resource or drawable
+	        //.showImageForEmptyUri(R.drawable.soccer_icon) // resource or drawable
+	        //.showImageOnFail(R.drawable.soccer_icon) // resource or drawable
 	        .resetViewBeforeLoading(false)  // default
 	        //.delayBeforeLoading(500)
 	        .cacheInMemory(false)

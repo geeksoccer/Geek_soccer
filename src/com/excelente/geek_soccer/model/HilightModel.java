@@ -23,6 +23,8 @@ public class HilightModel implements Serializable{
 	public static final String HILIGHT_VIEWS = "hilight_views";
 	public static final String HILIGHT_CREATE_TIME = "hilight_create_time";
 	public static final String HILIGHT_UPDATE_TIME = "hilight_update_time";
+	public static final String HILIGHT_STATUS_VIEW = "status_view";
+	public static final String HILIGHT_STATUS_LIKE = "status_like";
 	
 	int hilightId;
 	String hilightLink; 
@@ -35,6 +37,9 @@ public class HilightModel implements Serializable{
 	int hilightViews;
 	String hilightCreateTime;
 	String hilightUpdateTime;
+	int statusView;
+	int statusLike;
+	
 	public int getHilightId() {
 		return hilightId;
 	}
@@ -102,6 +107,18 @@ public class HilightModel implements Serializable{
 		this.hilightUpdateTime = hilightUpdateTime;
 	}
 
+	public int getStatusView() {
+		return statusView;
+	}
+	public void setStatusView(int statusView) {
+		this.statusView = statusView;
+	}
+	public int getStatusLike() {
+		return statusLike;
+	}
+	public void setStatusLike(int statusLike) {
+		this.statusLike = statusLike;
+	}
 	public static List<HilightModel> convertHilightStrToList(String result) { 
 		//Log.e("+++++++++++++++++++", result);
 		List<HilightModel> hilightList = new ArrayList<HilightModel>();
@@ -119,9 +136,12 @@ public class HilightModel implements Serializable{
 				hilight.setHilightTopic(hilightObj.getString(HILIGHT_TOPIC));
 				hilight.setHilightImage(hilightObj.getString(HILIGHT_IMAGE));
 				hilight.setHilightLikes(hilightObj.getInt(HILIGHT_LIKES));
+				hilight.setHilightViews(hilightObj.getInt(HILIGHT_VIEWS));
 				hilight.setHilightComments(hilightObj.getInt(HILIGHT_COMMENTS));
 				hilight.setHilightCreateTime(hilightObj.getString(HILIGHT_CREATE_TIME));
 				hilight.setHilightUpdateTime(hilightObj.getString(HILIGHT_UPDATE_TIME));
+				hilight.setStatusLike(hilightObj.getInt(HILIGHT_STATUS_LIKE));
+				hilight.setStatusView(hilightObj.getInt(HILIGHT_STATUS_VIEW));
 				
 				JSONArray hilightItemArr = hilightObj.getJSONArray(HILIGHT_LINK_LIST);
 				
