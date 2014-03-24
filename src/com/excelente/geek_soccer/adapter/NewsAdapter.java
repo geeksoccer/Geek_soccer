@@ -92,6 +92,7 @@ public class NewsAdapter extends BaseAdapter{
         TextView newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
         TextView newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
         final ProgressBar newsImageProgressBar = (ProgressBar) convertView.findViewById(R.id.news_image_processbar);
+        ImageView newsNewImageview = (ImageView) convertView.findViewById(R.id.news_new);
         
         if(urlBitmap.containsKey(newsModel.getNewsImage().replace(".gif", ".png"))){
         	newsImageImageview.setImageBitmap(urlBitmap.get(newsModel.getNewsImage().replace(".gif", ".png"))); 
@@ -117,13 +118,20 @@ public class NewsAdapter extends BaseAdapter{
 
 				@Override
 				public void onLoadingCancelled(String imageUri, View view) {
-					
+					newsImageImageview.setVisibility(View.VISIBLE);
+					newsImageProgressBar.setVisibility(View.GONE);
 				};
 			});
         }
         
         newsTopicTextview.setText(newsModel.getNewsTopic());
 		newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(context, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime())));
+		
+		if(newsCreateTimeTextview.getText().toString().contains(context.getResources().getString(R.string.str_today_news)) && newsModel.getStatusView()==0){
+			newsNewImageview.setVisibility(View.VISIBLE);
+		}else{ 
+			newsNewImageview.setVisibility(View.GONE);
+		}
 		
         if(count_ani<position){
         	convertView.setAnimation(AnimationUtils.loadAnimation(context, R.drawable.listview_anim));

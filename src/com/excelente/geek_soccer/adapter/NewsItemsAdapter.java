@@ -240,7 +240,7 @@ public class NewsItemsAdapter extends BaseAdapter{
         });
         
 		String htmlData = "";
-		if(MemberSession.getMember().getTeamId() == 2 || MemberSession.getMember().getTeamId() == 4)
+		if(MemberSession.getMember().getTeamId() == 2)
 			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"</body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
 		else
 			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"</body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";

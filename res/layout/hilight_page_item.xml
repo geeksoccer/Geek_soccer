@@ -135,5 +135,15 @@
             android:textColor="@color/gray"
             android:textSize="16sp" />
     </RelativeLayout>
+    
+    <ImageView 
+        android:id="@+id/hilight_new"
+        android:src="@drawable/news_new"
+        android:layout_marginTop="-2dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
 
 </RelativeLayout>

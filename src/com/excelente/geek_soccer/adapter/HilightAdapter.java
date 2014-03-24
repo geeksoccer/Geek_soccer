@@ -66,6 +66,8 @@ public class HilightAdapter extends BaseAdapter{
         
         ImageView hilightLikes;
         ImageView hilightView;
+        
+        ImageView hilightNew;
 	}
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -111,6 +113,8 @@ public class HilightAdapter extends BaseAdapter{
 	        hilightHolder.hilightTypeTextview = (TextView) convertView.findViewById(R.id.hilight_type_textview);
 	        hilightHolder.hilightCreateTimeTextview = (TextView) convertView.findViewById(R.id.hilight_create_time_textview);
 	        hilightHolder.hilightImageProgressBar = (ProgressBar) convertView.findViewById(R.id.hilight_image_processbar);
+	        
+	        hilightHolder.hilightNew = (ImageView) convertView.findViewById(R.id.hilight_new);
         
 	        if(urlBitmap.containsKey(hilightModel.getHilightImage().replace(".gif", ".png"))){
 	        	hilightHolder.hilightImageImageview.setImageBitmap(urlBitmap.get(hilightModel.getHilightImage().replace(".gif", ".png"))); 
@@ -135,7 +139,8 @@ public class HilightAdapter extends BaseAdapter{
 
 					@Override
 					public void onLoadingCancelled(String arg0, View arg1) {
-						
+						hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
+	            		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
 					};
 	            }); 
 	        }
@@ -144,6 +149,12 @@ public class HilightAdapter extends BaseAdapter{
         	hilightHolder.hilightTypeTextview.setText(hilightModel.getHilightType().replace("&nbsp;", "").trim());
         	hilightHolder.hilightCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(context, DateNewsUtils.convertStrDateTimeDate(hilightModel.getHilightCreateTime())));
 		
+        	if(hilightHolder.hilightCreateTimeTextview.getText().toString().contains(context.getResources().getString(R.string.str_today_news)) && hilightModel.getStatusView()==0){
+        		hilightHolder.hilightNew.setVisibility(View.VISIBLE);
+    		}else{ 
+    			hilightHolder.hilightNew.setVisibility(View.GONE);
+    		}
+        	
         if(count_ani<position){
         	convertView.setAnimation(AnimationUtils.loadAnimation(context, R.drawable.listview_anim));
         	count_ani=position;
