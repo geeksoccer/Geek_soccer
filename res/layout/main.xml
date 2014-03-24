@@ -49,20 +49,12 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/Contain_Layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <com.excelente.geek_soccer.CustomViewPager 
+    <com.excelente.geek_soccer.CustomViewPager 
     		android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+        	android:layout_weight="1"
              />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/Tab_Layout"

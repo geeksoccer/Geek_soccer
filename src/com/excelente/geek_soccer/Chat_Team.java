@@ -32,10 +32,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -58,7 +58,7 @@ public class Chat_Team extends Activity{
 	private static ControllParameter data = ControllParameter.getInstance();
 	Context mContext;
 	JSONParser jParser = new JSONParser();
-	private Handler handler = new Handler();
+	private Handler handler = new Handler(Looper.getMainLooper());
 	String Msg_Send = "";
 	long time = System.currentTimeMillis() / 1000L;
 	
@@ -245,7 +245,6 @@ public class Chat_Team extends Activity{
 
 		public View getView(final int position, View convertView, ViewGroup parent) {
 
-			
 			if(position<data.Chat_Item_list_Team.size()){
 				LinearLayout retval_Main = new LinearLayout(mContext);
 				retval_Main.setOrientation(LinearLayout.VERTICAL);
@@ -289,7 +288,7 @@ public class Chat_Team extends Activity{
 					startDownload(Split_item[4], Profile_Pic);
 				}
 				if(Split_item[0].equals(data.ID_Send)){
-					txt_N.setText("(12:00) "+Split_item[1]);
+					txt_N.setText("("+Split_item[5]+") "+Split_item[1]);
 					if(Split_item[3].contains("S")){
 						if(data.BitMapHash.get(Split_item[2])!=null){
 							Sticker.setImageBitmap(data.BitMapHash.get(Split_item[2]));
@@ -310,7 +309,7 @@ public class Chat_Team extends Activity{
 					retval.setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
 					retval.addView(Profile_layout);
 				}else{
-					txt_N.setText(Split_item[1]+" (12:00)");
+					txt_N.setText(Split_item[1]+" ("+Split_item[5]+")");
 					retval.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
 					retval.addView(Profile_layout);
 					if(Split_item[3].contains("S")){
@@ -332,7 +331,7 @@ public class Chat_Team extends Activity{
 				retval_Main.addView(retval);
 				return retval_Main;
 			}else{
-				return null;
+				return convertView;
 			}
 			
 			//STICKERPATH :: http://183.90.171.209/chat/stk/
@@ -393,7 +392,13 @@ public class Chat_Team extends Activity{
 			            	String out = "";
 			            	if (event.equals("updatechat")&&args.length >= 4) {
 			            		if(!args[1].toString().equals("")){
-				                    out = args[0].toString()+"::"+args[1].toString()+"::"+args[2].toString()+"::"+args[3].toString()+"::"+args[4].toString();
+				                    out = args[0].toString()+"::"
+				                    		+args[1].toString()+"::"
+				                    		+args[2].toString()+"::"
+				                    		+args[3].toString()+"::"
+				                    		+args[4].toString()+"::"
+						                    +args[5].toString();
+				                    chatHandle(out);
 			            		}			                    
 			                }else if(event.equals("updateusers")&&args.length > 0){
 			                	String Name_list[] = args[0].toString().split(",");
@@ -407,7 +412,6 @@ public class Chat_Team extends Activity{
 			                	data.Chat_Item_list_Team.clear();
 			                	for (Object object : args) {
 			                		try {
-										//JSONObject json_arr = new JSONObject(object.toString());
 										JSONArray json_arr = new JSONArray(object.toString());
 										
 										for(int i=0; i<json_arr.length(); i++){
@@ -416,13 +420,14 @@ public class Chat_Team extends Activity{
 											String type = json_ob.getString("ch_type");
 											String Profile_Pic = json_ob.getString("m_photo");
 											String name = json_ob.getString("m_nickname");
+											String time = json_ob.getString("ch_time");
 											String msg = "";
 											if(type.equals("T")){
 												msg = json_ob.getString("ch_msg");
 											}else if(type.equals("S")){
 												msg = json_ob.getString("sk_img")+"."+json_ob.getString("sk_type");
 											}
-											data.Chat_Item_list_Team.add(id+"::"+name+"::"+msg+"::"+type+"::"+Profile_Pic);
+											data.Chat_Item_list_Team.add(id+"::"+name+"::"+msg+"::"+type+"::"+Profile_Pic+"::"+time);
 										}
 										
 									} catch (JSONException e) {
@@ -431,6 +436,7 @@ public class Chat_Team extends Activity{
 									}
 									
 								}
+			                	chatHandle(out);
 			                }else if(event.equals("getsticker")){
 			                	for (Object object : args) {
 			                		try {
@@ -449,29 +455,10 @@ public class Chat_Team extends Activity{
 										e.printStackTrace();
 									}
 			                	}
-			                	
+			                	if(data.Sticker_UrlSet.size()<=0){
+			                		chatHandle(out);
+			                	}
 			                }
-			            	final String _out = out;
-			            	handler.post(new Runnable() {
-		    					@Override
-		    					public void run() {
-		    						if( (data.Chat_Item_list_Team.size()==imageAdapter.getCount()) 
-		    								&& !_out.equals("")
-		    								&& !_out.contains("has connected")){
-		    							if(_out.contains("updateoldchat\n<geek>")){
-		    							}else{
-		    								data.Chat_Item_list_Team.add(_out);
-		    							}
-		    							imageAdapter.notifyDataSetChanged();
-		    							lstView.setSelection(data.Chat_Item_list_Team.size());
-		    						}else{
-		    							imageAdapter.notifyDataSetChanged();
-		    							lstView.setSelection(data.Chat_Item_list_Team.size());
-		    						}
-		    						
-		    						
-		    					}
-			            	});
 			            				            	
 			            }
 			        });
@@ -483,6 +470,29 @@ public class Chat_Team extends Activity{
 					*/
 				}
 		}).start();
+	}
+	
+	public void chatHandle(final String _out){
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				if (Looper.myLooper() == Looper.getMainLooper()) {
+					if( (data.Chat_Item_list_Team.size()==imageAdapter.getCount()) 
+							&& !_out.equals("")
+							&& !_out.contains("has connected")){
+						if(_out.contains("updateoldchat\n<geek>")){
+						}else{
+							data.Chat_Item_list_Team.add(_out);
+						}
+						imageAdapter.notifyDataSetChanged();
+						lstView.setSelection(data.Chat_Item_list_Team.size());
+					}else{
+						imageAdapter.notifyDataSetChanged();
+						lstView.setSelection(data.Chat_Item_list_Team.size());
+					}
+		        }
+			}
+    	});
 	}
 
 	public void chat_Sender() {

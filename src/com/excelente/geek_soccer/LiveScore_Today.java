@@ -43,6 +43,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -83,7 +84,7 @@ public class LiveScore_Today extends Activity {
 	static Bitmap bitmap;
 	HashMap<String, Bitmap> HomeMap = new HashMap<String, Bitmap>();
 	HashMap<String, Bitmap> AwayMap = new HashMap<String, Bitmap>();
-	private Handler handler = new Handler();
+	private Handler handler = new Handler(Looper.getMainLooper());
 	Boolean checkScrolling = true;
 	Boolean chk_ani = true;
 	int last_ItemView = 0;
@@ -619,12 +620,12 @@ public class LiveScore_Today extends Activity {
 								}
 							});
 		            		Log.d("TEST", "data.fragement_Section_get()::"+data.fragement_Section_get() );
-		            		if(data.fragement_Section_get()==1){
-		            			handler.post(new Runnable() {
+		            		handler.post(new Runnable() {
 
-			    					@Override
-			    					public void run() {
-			    						chk_D_Stat=false;
+		    					@Override
+		    					public void run() {
+		    						if (Looper.myLooper() == Looper.getMainLooper()) {
+		    							chk_D_Stat=false;
 			    						Toast.makeText(mContext, "Load_End", Toast.LENGTH_LONG)
 			    								.show();
 
@@ -633,10 +634,9 @@ public class LiveScore_Today extends Activity {
 			    						((LinearLayout) layOutlist).addView(lstView);
 			    						chk_ani = false;
 			    						imageAdapter.notifyDataSetChanged();
-			    					}
-			    				});
-		            		}
-		    				
+		    						}		    						
+		    					}
+		    				});		    				
 		                }
 		            }
 		        });
