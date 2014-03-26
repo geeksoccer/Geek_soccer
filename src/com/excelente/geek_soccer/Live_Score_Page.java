@@ -90,7 +90,7 @@ public class Live_Score_Page extends Fragment implements
 			tabHost.getTabWidget().getChildAt(i)
 					.setBackgroundResource(R.color.tran);
 		}
-		if(data.Match_list_t.size()==0){
+		if(data.Match_list_t_JSON.size()==0){
 			tabHost.setCurrentTab(2);
 		}
 		

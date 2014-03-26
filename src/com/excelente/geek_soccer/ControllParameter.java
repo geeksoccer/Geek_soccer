@@ -1,11 +1,15 @@
 package com.excelente.geek_soccer;
 
 import io.socket.SocketIO;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.JSONObject;
+
+import com.excelente.geek_soccer.Chat_Team.ImageAdapter;
+
 import android.graphics.Bitmap;
+import android.widget.ListView;
 
 public class ControllParameter {
 	private static ControllParameter instance = null;
@@ -24,9 +28,9 @@ public class ControllParameter {
     ArrayList<String> item_Type_list_display = new ArrayList<String>();
 	ArrayList<String> Match_list_Sub_display = new ArrayList<String>();
     ArrayList<String> item_Type_list = new ArrayList<String>();
-    ArrayList<String> Match_list_y = new ArrayList<String>();
-    ArrayList<String> Match_list_c = new ArrayList<String>();
-    ArrayList<String> Match_list_t = new ArrayList<String>();
+    ArrayList<JSONObject> Match_list_y_JSON = new ArrayList<JSONObject>();
+    ArrayList<JSONObject> Match_list_c_JSON = new ArrayList<JSONObject>();
+    ArrayList<JSONObject> Match_list_t_JSON = new ArrayList<JSONObject>();
 	ArrayList<String> Match_list_Sub = new ArrayList<String>();
 	HashMap<String, String> League_Map = new HashMap<String, String>();
 	HashMap<String, String> League_Map_index = new HashMap<String, String>();
@@ -40,7 +44,6 @@ public class ControllParameter {
 	String Date_Select="c";
 	String SocketSelect;
 	String ID_Send = String.valueOf(MemberSession.getMember().getUid());
-	int teamID = MemberSession.getMember().getTeamId();
 	String ProFile_pic = MemberSession.getMember().getPhoto();
 	String Name_Send = MemberSession.getMember().getNickname();
 	
@@ -55,10 +58,15 @@ public class ControllParameter {
 	SocketIO socket_LiveScore = null;
 	
 	
-	ArrayList<String> Chat_Item_list_Team = new ArrayList<String>();
-	ArrayList<String> Chat_Item_list_All = new ArrayList<String>();
-    //private ArrayList<String> League_list = new ArrayList<String>();
-    
+	ArrayList<JSONObject> Chat_Item_list_Team = new ArrayList<JSONObject>();
+	ArrayList<JSONObject> Chat_Item_list_All = new ArrayList<JSONObject>();
+
+	ListView lstViewChatTeam;
+	com.excelente.geek_soccer.Chat_Team.ImageAdapter imageAdapterChatTeam;
+	ListView lstViewChatAll;
+	com.excelente.geek_soccer.Chat_All.ImageAdapter imageAdapterChatAll;
+	ListView lstViewLiveScore;
+	com.excelente.geek_soccer.LiveScore_Today.ImageAdapter imageAdapterLiveScore;
     
     public void fragement_Section_set(int section) {
         this.fragement_Section = section;
