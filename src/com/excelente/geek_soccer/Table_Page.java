@@ -2,6 +2,8 @@ package com.excelente.geek_soccer;
 
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.excelente.geek_soccer.adapter.TableAdapter;
 import com.excelente.geek_soccer.model.TableModel;
@@ -70,9 +72,21 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        
         initView();
-		initSubView();
+        Timer timeStart = new Timer();
+        timeStart.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				getActivity().runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						 initSubView();
+					}
+				});
+			}
+		}, 500);
 	}
 
 	private void initView() {
@@ -136,9 +150,9 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		
 		if(plAdapter == null){
 			try{ 
-				if(NetworkUtils.isNetworkAvailable(getActivity()))
+				if(NetworkUtils.isNetworkAvailable(getActivity())){
 					new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-				else
+				}else
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 			}catch(Exception e){
 				e.printStackTrace();

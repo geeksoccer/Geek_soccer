@@ -32,7 +32,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -137,7 +136,7 @@ public class TableAdapter extends BaseAdapter{
     		setSeqColor(convertView, tableModel);
     		
     		if(count_ani < position){
-            	convertView.setAnimation(AnimationUtils.loadAnimation(context, R.drawable.listview_anim));
+            	//convertView.setAnimation(AnimationUtils.loadAnimation(context, R.drawable.listview_anim));
             }
     		count_ani = position;
 		

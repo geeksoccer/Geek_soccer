@@ -2,6 +2,8 @@ package com.excelente.geek_soccer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -74,9 +76,21 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        
         initView();
-        initSubview();
+        Timer timeStart = new Timer();
+        timeStart.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				getActivity().runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+				        initSubview();
+					}
+				});
+			}
+		}, 0);
 	}
 
 	private void initSubview() {
