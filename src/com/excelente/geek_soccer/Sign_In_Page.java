@@ -11,6 +11,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.excelente.geek_soccer.model.MemberModel;
+import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.google.android.gms.auth.GoogleAuthException;
@@ -60,6 +61,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		cancelNotify();
 		
 		if(MemberSession.hasMember()){
 			gotoMainPage(MemberSession.getMember());
@@ -192,6 +194,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	
 	private void gotoMainPage(MemberModel memberSignedIn) {
         Intent intent = new Intent(Sign_In_Page.this, MainActivity.class);
+        intent.putExtra(NewsModel.NEWS_ID+"tag", getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0));  
         startActivity(intent);
         finish();
 	}

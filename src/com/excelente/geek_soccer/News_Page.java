@@ -104,9 +104,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		newsAdapterGlobal = null;
 		 
 		if (newsAdapterTeam == null) {
-			if (NetworkUtils.isNetworkAvailable(getActivity()))
-				new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(0, "tag0"));
-			else
+			if (NetworkUtils.isNetworkAvailable(getActivity())){
+				if(getActivity().getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0)==0)
+					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(0, "tag0"));
+				else
+					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(0, "tag1"));
+			}else
 				Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 		}
 	} 
@@ -115,7 +118,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		newsPage = getView();  
 		
 		tabs = (TabHost)newsPage.findViewById(R.id.tabhost); 
-		tabs.setup(); 
+		tabs.setup();
         
 		TabHost.TabSpec spec = tabs.newTabSpec("tag0");  
 		spec.setContent(R.id.news_listview_team);
@@ -128,7 +131,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		spec.setIndicator("global news");
 		tabs.addTab(spec); 
 		
-		tabs.setCurrentTab(0);
+		tabs.setCurrentTab(getActivity().getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0)); 
 		tabs.setOnTabChangedListener(this);
 		
 		TextView tvTeam = (TextView) tabs.getTabWidget().getChildAt(0).findViewById(android.R.id.title);
@@ -142,6 +145,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		tvGlobal.setCompoundDrawables(null, imgGlobal, null, null);
 		
 		tabWidget = (TabWidget) newsPage.findViewById(android.R.id.tabs); 
+		
 		if(MemberSession.getMember().getTeamId()>4){
 			tabWidget.setVisibility(View.GONE);
 			tabs.setCurrentTab(1);
