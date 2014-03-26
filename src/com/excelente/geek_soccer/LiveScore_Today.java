@@ -16,7 +16,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -64,14 +63,8 @@ public class LiveScore_Today extends Activity {
 	Context mContext;
 	JSONParser jParser = new JSONParser();
 	JSONObject products = null;
-	ArrayList<String> item_Type_list = new ArrayList<String>();
-	ArrayList<String> URL_list = new ArrayList<String>();
-	ArrayList<String> Match_list = new ArrayList<String>();
-	ArrayList<String> Match_list_Sub = new ArrayList<String>();
-	HashMap<String, String> League_Map = new HashMap<String, String>();
-	HashMap<String, String> League_Map_index = new HashMap<String, String>();
-	private ListView lstView;
-	private ImageAdapter imageAdapter;
+	//private ListView lstView;
+	//private ImageAdapter imageAdapter;
 	View myView;
 	int dd, yy, mm;
 	// String Date_Select;
@@ -82,8 +75,6 @@ public class LiveScore_Today extends Activity {
 	String Last_League_SET = "";
 	Integer count_Item = 0;
 	static Bitmap bitmap;
-	HashMap<String, Bitmap> HomeMap = new HashMap<String, Bitmap>();
-	HashMap<String, Bitmap> AwayMap = new HashMap<String, Bitmap>();
 	private Handler handler = new Handler(Looper.getMainLooper());
 	Boolean checkScrolling = true;
 	Boolean chk_ani = true;
@@ -99,44 +90,52 @@ public class LiveScore_Today extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.livescore_today);
         mContext = this;
-		lstView = new ListView(mContext);
-		lstView.setLayoutParams(new LinearLayout.LayoutParams(
+		data.lstViewLiveScore = new ListView(mContext);
+		data.lstViewLiveScore.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 
-		lstView.setClipToPadding(false);
-		imageAdapter = new ImageAdapter(mContext.getApplicationContext());
-		lstView.setAdapter(imageAdapter);
+		data.lstViewLiveScore.setClipToPadding(false);
+		data.imageAdapterLiveScore = new ImageAdapter(mContext.getApplicationContext());
+		data.lstViewLiveScore.setAdapter(data.imageAdapterLiveScore);
 		
-		lstView.setOnItemClickListener(new OnItemClickListener() {
+		data.lstViewLiveScore.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				if(data.Match_list_c.get(position).contains("\n")){
-					Intent Detail_Page = new Intent(mContext,
-							Live_Score_Detail.class);
-					Detail_Page.putExtra("URL", position);
-					Detail_Page.putExtra("TYPE", "c");
-					startActivity(Detail_Page);
+				if(!data.Match_list_c_JSON.get(position).isNull("score")){
+					String score = "";
+					String link = "";
+					try {
+						score = data.Match_list_c_JSON.get(position).getString("score");
+						link = data.Match_list_c_JSON.get(position).getString("link");
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if(score.contains("vs") || link.length()<=0){
+						Toast.makeText(mContext, "No data available now", Toast.LENGTH_LONG).show();
+					}else{
+						Intent Detail_Page = new Intent(mContext,
+								Live_Score_Detail.class);
+						Detail_Page.putExtra("URL", position);
+						Detail_Page.putExtra("TYPE", "c");
+						startActivity(Detail_Page);
+					}
 					
 				}
 				
 			}
 		});
-		if(data.socket_LiveScore!=null){
-			if(data.socket_LiveScore.isConnected()){
-				data.socket_LiveScore.disconnect();
-				Live_score_Loader();
-			}
-		}
-
-		if(data.Match_list_c.size()>0){
+		
+		
+		if(data.Match_list_c_JSON.size()>0){
 			layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
 			layOutlist.removeAllViews();
-			((LinearLayout) layOutlist).addView(lstView);
+			((LinearLayout) layOutlist).addView(data.lstViewLiveScore);
 			chk_ani = false;
-			imageAdapter.notifyDataSetChanged();
+			data.imageAdapterLiveScore.notifyDataSetChanged();
 		}else{
 			new Live_score_1stLoader().execute();
 		}
@@ -151,7 +150,7 @@ public class LiveScore_Today extends Activity {
 		}
 
 		public int getCount() {
-			return data.Match_list_c.size();// +League_list.size();
+			return data.Match_list_c_JSON.size();// +League_list.size();
 		}
 
 		public Object getItem(int position) {
@@ -169,154 +168,163 @@ public class LiveScore_Today extends Activity {
 			retval.setOrientation(LinearLayout.VERTICAL);
 
 			retval.setMinimumHeight(50);
-			String txt_Item = "false";
-			if(data.Match_list_c.size()-1>=position){
-				txt_Item = data.Match_list_c.get(position);
-			}
-
-			int colors = Integer.parseInt("000000", 16) + (0xFF000000);
-			TextView txt = new TextView(mContext);
-			txt.setTextColor(colors);
-			txt.setTypeface(Typeface.DEFAULT_BOLD);
-			if (txt_Item.contains("\n")) {
-				txt.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT));
-				txt.setGravity(Gravity.CENTER);
-				String text_Sprite[] = txt_Item.split("\n");
-
-				LinearLayout layOut_Detail = new LinearLayout(mContext);
-				layOut_Detail.setOrientation(LinearLayout.HORIZONTAL);
-				
-				txt.setTextSize(14);
-				txt.setText(" "+text_Sprite[1].substring(3));
-				txt.setPadding(5, 0, 5, 0);
-				txt.setGravity(Gravity.LEFT);
-
-				TextView txt_Home = new TextView(mContext);
-				txt_Home.setLayoutParams(new LinearLayout.LayoutParams(0,
-						LayoutParams.WRAP_CONTENT, 1f));
-				txt_Home.setTextSize(16);
-				txt_Home.setText(text_Sprite[3]);
-				txt_Home.setTextColor(Color.DKGRAY);
-				
-
-				TextView txt_Score = new TextView(mContext);
-				txt_Score.setLayoutParams(new LayoutParams(70, 40));
-				txt_Score.setTextSize(14);
-				txt_Score.setTypeface(Typeface.DEFAULT_BOLD);
-				txt_Score.setText(text_Sprite[4].replaceAll("&nbsp;", " "));
-				txt_Score.setGravity(Gravity.CENTER);
-				txt_Score.setBackgroundResource(R.drawable.score_bg_layer);
-				if(!text_Sprite[4].replaceAll("&nbsp;", " ").equals("vs")){
-					txt_Score.setTextColor(Color.WHITE);
+			JSONObject txt_Item = null;
+			try {
+				if(data.Match_list_c_JSON.size()-1>=position){
+					txt_Item = data.Match_list_c_JSON.get(position);
 				}
 
-				TextView txt_Away = new TextView(mContext);
-				txt_Away.setLayoutParams(new LinearLayout.LayoutParams(0,
-						LayoutParams.WRAP_CONTENT, 1f));
-				txt_Away.setTextSize(16);
-				txt_Away.setGravity(Gravity.RIGHT);
-				txt_Away.setText(text_Sprite[5]);
-				txt_Away.setTextColor(Color.DKGRAY);
-				
-				final ImageView image_Home = new ImageView(mContext);
-				image_Home.setLayoutParams(new LayoutParams(50, 50));
-				final ImageView image_Away = new ImageView(mContext);
-				image_Away.setLayoutParams(new LayoutParams(50, 50));
-				if (data.get_HomeMap(text_Sprite[6]) != null) {
-					image_Home.setImageBitmap(data.get_HomeMap(text_Sprite[6]));
-				} else {
-					image_Home.setImageResource(R.drawable.soccer_icon);
-					startDownload_Home(position, image_Home);
-				}
-				if (data.get_AwayMap(text_Sprite[7]) != null) {
-					image_Away.setImageBitmap(data.get_AwayMap(text_Sprite[7]));
-				} else {
-					image_Away.setImageResource(R.drawable.soccer_icon);
-					startDownload_Away(position, image_Away);
-				}
-				
-				LinearLayout layOut_1 = new LinearLayout(mContext);
-				layOut_1.setLayoutParams(new LinearLayout.LayoutParams(0,
-						LayoutParams.WRAP_CONTENT, 1f));
-				layOut_1.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-				layOut_1.setOrientation(LinearLayout.HORIZONTAL);
+				int colors = Integer.parseInt("000000", 16) + (0xFF000000);
+				TextView txt = new TextView(mContext);
+				txt.setTextColor(colors);
+				txt.setTypeface(Typeface.DEFAULT_BOLD);
+				if (!txt_Item.isNull("score")) {
+					txt.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT));
+					txt.setGravity(Gravity.CENTER);
+					//String text_Sprite[] = txt_Item.split("\n");
 
-				LinearLayout layOut_2 = new LinearLayout(mContext);
-				layOut_2.setLayoutParams(new LinearLayout.LayoutParams(
-						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				layOut_2.setGravity(Gravity.CENTER);
+					LinearLayout layOut_Detail = new LinearLayout(mContext);
+					layOut_Detail.setOrientation(LinearLayout.HORIZONTAL);
+					
+					txt.setTextSize(14);
+					txt.setText(" "+txt_Item.getString("Time").substring(3));
+					txt.setPadding(5, 0, 5, 0);
+					txt.setGravity(Gravity.LEFT);
 
-				LinearLayout layOut_3 = new LinearLayout(mContext);
-				layOut_3.setLayoutParams(new LinearLayout.LayoutParams(0,
-						LayoutParams.WRAP_CONTENT, 1f));
-				layOut_3.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
-				layOut_3.setOrientation(LinearLayout.HORIZONTAL);
-
-				layOut_1.setPadding(5, 0, 5, 0);
-				image_Home.setPadding(5, 0, 5, 0);
-				txt_Home.setPadding(5, 0, 5, 0);
-				layOut_1.addView(image_Home);
-				layOut_1.addView(txt_Home);
-				
-				layOut_2.setPadding(5, 0, 5, 0);
-				txt_Score.setPadding(5, 0, 5, 0);
-				layOut_2.addView(txt_Score);
-				
-				layOut_3.setPadding(5, 0, 5, 0);
-				txt_Away.setPadding(5, 0, 5, 0);
-				image_Away.setPadding(5, 0, 5, 0);
-				layOut_3.addView(txt_Away);
-				layOut_3.addView(image_Away);
-				
-				LinearLayout layOut_time = new LinearLayout(mContext);
-				layOut_time.setOrientation(LinearLayout.HORIZONTAL);
-				layOut_time.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-						LayoutParams.WRAP_CONTENT));
-				layOut_time.addView(txt);
-
-				if(text_Sprite.length>9){
-					TextView txt_Aggregate = new TextView(mContext);
-					txt_Aggregate.setLayoutParams(new LinearLayout.LayoutParams(0,
+					TextView txt_Home = new TextView(mContext);
+					txt_Home.setLayoutParams(new LinearLayout.LayoutParams(0,
 							LayoutParams.WRAP_CONTENT, 1f));
-					txt_Aggregate.setTextSize(14);
-					txt_Aggregate.setGravity(Gravity.RIGHT);
-					txt_Aggregate.setText("AGGREGATE: "+text_Sprite[9]+" ");
-					layOut_time.addView(txt_Aggregate);
-				}
-				
-				layOut_Detail.addView(layOut_1);
-				layOut_Detail.addView(layOut_2);
-				layOut_Detail.addView(layOut_3);
+					txt_Home.setTextSize(16);
+					txt_Home.setText(txt_Item.getString("Home"));
+					txt_Home.setTextColor(Color.DKGRAY);
+					
 
-				retval.addView(layOut_time);
-				retval.addView(layOut_Detail);
-				if (chk_ani && last_ItemView - 1 < position) {
-					layOut_time.setAnimation(AnimationUtils.loadAnimation(
-							mContext, R.drawable.listview_anim));
-					layOut_Detail.setAnimation(AnimationUtils.loadAnimation(
-							mContext, R.drawable.listview_anim));
+					TextView txt_Score = new TextView(mContext);
+					txt_Score.setLayoutParams(new LayoutParams(70, 40));
+					txt_Score.setTextSize(14);
+					txt_Score.setTypeface(Typeface.DEFAULT_BOLD);
+					txt_Score.setText(txt_Item.getString("score").replaceAll("&nbsp;", " "));
+					txt_Score.setGravity(Gravity.CENTER);
+					txt_Score.setBackgroundResource(R.drawable.score_bg_layer);
+					if(!txt_Item.getString("score").replaceAll("&nbsp;", " ").equals("vs")){
+						txt_Score.setTextColor(Color.WHITE);
+					}
+
+					TextView txt_Away = new TextView(mContext);
+					txt_Away.setLayoutParams(new LinearLayout.LayoutParams(0,
+							LayoutParams.WRAP_CONTENT, 1f));
+					txt_Away.setTextSize(16);
+					txt_Away.setGravity(Gravity.RIGHT);
+					txt_Away.setText(txt_Item.getString("Away"));
+					txt_Away.setTextColor(Color.DKGRAY);
+					
+					final ImageView image_Home = new ImageView(mContext);
+					image_Home.setLayoutParams(new LayoutParams(50, 50));
+					final ImageView image_Away = new ImageView(mContext);
+					image_Away.setLayoutParams(new LayoutParams(50, 50));
+					if (data.get_HomeMap(txt_Item.getString("Home_img")) != null) {
+						image_Home.setImageBitmap(data.get_HomeMap(txt_Item.getString("Home_img")));
+					} else {
+						image_Home.setImageResource(R.drawable.soccer_icon);
+						startDownload_Home(position, image_Home);
+					}
+					if (data.get_AwayMap(txt_Item.getString("Away_img")) != null) {
+						image_Away.setImageBitmap(data.get_AwayMap(txt_Item.getString("Away_img")));
+					} else {
+						image_Away.setImageResource(R.drawable.soccer_icon);
+						startDownload_Away(position, image_Away);
+					}
+					
+					LinearLayout layOut_1 = new LinearLayout(mContext);
+					layOut_1.setLayoutParams(new LinearLayout.LayoutParams(0,
+							LayoutParams.WRAP_CONTENT, 1f));
+					layOut_1.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+					layOut_1.setOrientation(LinearLayout.HORIZONTAL);
+
+					LinearLayout layOut_2 = new LinearLayout(mContext);
+					layOut_2.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+					layOut_2.setGravity(Gravity.CENTER);
+
+					LinearLayout layOut_3 = new LinearLayout(mContext);
+					layOut_3.setLayoutParams(new LinearLayout.LayoutParams(0,
+							LayoutParams.WRAP_CONTENT, 1f));
+					layOut_3.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+					layOut_3.setOrientation(LinearLayout.HORIZONTAL);
+
+					layOut_1.setPadding(5, 0, 5, 0);
+					image_Home.setPadding(5, 0, 5, 0);
+					txt_Home.setPadding(5, 0, 5, 0);
+					layOut_1.addView(image_Home);
+					layOut_1.addView(txt_Home);
+					
+					layOut_2.setPadding(5, 0, 5, 0);
+					txt_Score.setPadding(5, 0, 5, 0);
+					layOut_2.addView(txt_Score);
+					
+					layOut_3.setPadding(5, 0, 5, 0);
+					txt_Away.setPadding(5, 0, 5, 0);
+					image_Away.setPadding(5, 0, 5, 0);
+					layOut_3.addView(txt_Away);
+					layOut_3.addView(image_Away);
+					
+					LinearLayout layOut_time = new LinearLayout(mContext);
+					layOut_time.setOrientation(LinearLayout.HORIZONTAL);
+					layOut_time.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+							LayoutParams.WRAP_CONTENT));
+					layOut_time.addView(txt);
+
+					if(txt_Item.isNull("score_ag")){
+						TextView txt_Aggregate = new TextView(mContext);
+						txt_Aggregate.setLayoutParams(new LinearLayout.LayoutParams(0,
+								LayoutParams.WRAP_CONTENT, 1f));
+						txt_Aggregate.setTextSize(14);
+						txt_Aggregate.setGravity(Gravity.RIGHT);
+						txt_Aggregate.setText("AGGREGATE: "+txt_Item.getString("score_ag")+" ");
+						layOut_time.addView(txt_Aggregate);
+					}
+					
+					layOut_Detail.addView(layOut_1);
+					layOut_Detail.addView(layOut_2);
+					layOut_Detail.addView(layOut_3);
+
+					retval.addView(layOut_time);
+					retval.addView(layOut_Detail);
+					if (chk_ani && last_ItemView - 1 < position) {
+						layOut_time.setAnimation(AnimationUtils.loadAnimation(
+								mContext, R.drawable.listview_anim));
+						layOut_Detail.setAnimation(AnimationUtils.loadAnimation(
+								mContext, R.drawable.listview_anim));
+					}
+					retval.setBackgroundColor(Color.GRAY);
+					retval.getBackground().setAlpha(200);
+				} else {
+					txt.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+							LayoutParams.WRAP_CONTENT));
+					txt.setGravity(Gravity.CENTER);
+					
+					
+						txt.setText(txt_Item.getString("League").substring(txt_Item.getString("League").lastIndexOf("]") + 1)
+								.replaceAll("&lrm;", " "));
+					
+					txt.setTextSize(24);
+					retval.addView(txt);
+					if (chk_ani && last_ItemView - 1 < position) {
+						txt.setAnimation(AnimationUtils.loadAnimation(mContext,
+								R.drawable.listview_anim));
+					}
+					retval.setBackgroundColor(Color.DKGRAY);
+					retval.getBackground().setAlpha(200);
 				}
-				retval.setBackgroundColor(Color.GRAY);
-				retval.getBackground().setAlpha(200);
-			} else {
-				txt.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-						LayoutParams.WRAP_CONTENT));
-				txt.setGravity(Gravity.CENTER);
-				
-				txt.setText(txt_Item.substring(txt_Item.lastIndexOf("]") + 1)
-						.replaceAll("&lrm;", " "));
-				txt.setTextSize(24);
-				retval.addView(txt);
-				if (chk_ani && last_ItemView - 1 < position) {
-					txt.setAnimation(AnimationUtils.loadAnimation(mContext,
-							R.drawable.listview_anim));
-				}
-				retval.setBackgroundColor(Color.DKGRAY);
-				retval.getBackground().setAlpha(200);
+
+				return retval;
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-
 			return retval;
+			
 
 		}
 
@@ -350,7 +358,7 @@ public class LiveScore_Today extends Activity {
 								"POST", params);
 				
 				if (json != null) {
-					data.Match_list_c.clear();
+					data.Match_list_c_JSON.clear();
 					JSONObject json_ob = json;
 
 					JSONArray json_itArr = json_ob.getJSONArray("it");
@@ -370,7 +378,7 @@ public class LiveScore_Today extends Activity {
 						}else if(League.contains("Ligue 1")){
 							League = "[6]"+League;
 						}
-						data.Match_list_c.add(League);
+						data.Match_list_c_JSON.add(new JSONObject().put("League", League));
 						JSONArray json_dtArr = json_it.getJSONArray("dt");
 						
 						for(int j=0; j<json_dtArr.length(); j++){
@@ -404,7 +412,7 @@ public class LiveScore_Today extends Activity {
 							if(score.equals("")){
 								score = "vs";
 							}
-							if(score_ag==null){
+							if(score_ag==null || score_ag.length()<5){
 								score_ag="";
 							}else{
 								if(!score.equals("vs")){
@@ -419,28 +427,50 @@ public class LiveScore_Today extends Activity {
 							}
 							if (away.contains("Arsenal")
 									|| Home.contains("Arsenal")) {
-								data.Match_list_c.add("[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
-								data.Match_list_c.add("[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)
-										+ "\n" + "[0]" + Time
-										+ "\n" + stat + "\n" + Home
-										+ "\n" + score + "\n"
-										+ away + "\n" + Home_img
-										+ "\n" +away_img + "\n" +link+"\n"+score_ag);
-							} else {
-								data.Match_list_c.add(League + "\n"
-										+ "[1]" + Time + "\n"
-										+ stat + "\n" + Home + "\n"
-										+ score + "\n" + away + "\n" + Home_img
-										+ "\n" +away_img + "\n" +link+"\n"+score_ag);
+								data.Match_list_c_JSON.add(new JSONObject().put("League"
+										, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
+								JSONObject j_data = new JSONObject();
+								j_data.put("League", "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
+								j_data.put("Time", "[0]" + Time);
+								j_data.put("stat", stat);
+								j_data.put("Home", Home);
+								j_data.put("score", score);
+								j_data.put("Away", away);
+								j_data.put("Home_img", Home_img);
+								j_data.put("Away_img", away_img);
+								j_data.put("link", link);
+								j_data.put("score_ag", score_ag);
+								data.Match_list_c_JSON.add(j_data);
 							}
+							JSONObject j_data = new JSONObject();
+							j_data.put("League", League);
+							j_data.put("Time", "[1]" + Time);
+							j_data.put("stat", stat);
+							j_data.put("Home", Home);
+							j_data.put("score", score);
+							j_data.put("Away", away);
+							j_data.put("Home_img", Home_img);
+							j_data.put("Away_img", away_img);
+							j_data.put("link", link);
+							j_data.put("score_ag", score_ag);
+							data.Match_list_c_JSON.add(j_data);
+							
 						}
 					}
-					Collections.sort(data.Match_list_c, new Comparator<String>() {
+					
+					Collections.sort(data.Match_list_c_JSON, new Comparator<JSONObject>() {
 						@Override
-						public int compare(String s1, String s2) {
-							return s1.compareToIgnoreCase(s2);
+						public int compare(JSONObject s1, JSONObject s2) {
+							try {
+								return s1.getString("League").compareToIgnoreCase(s2.getString("League"));
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							return 0;
 						}
 					});
+					
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -454,18 +484,12 @@ public class LiveScore_Today extends Activity {
 					chk_D_Stat=false;
 					layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
 					layOutlist.removeAllViews();
-					((LinearLayout) layOutlist).addView(lstView);
+					((LinearLayout) layOutlist).addView(data.lstViewLiveScore);
 					chk_ani = false;
-					imageAdapter.notifyDataSetChanged();
+					data.imageAdapterLiveScore.notifyDataSetChanged();
 					
-					if(data.Date_Select.equals("c")){
-						if(data.liveScore_on==null){
-							Live_score_Loader();
-						}else{
-							if(!data.liveScore_on){
-								Live_score_Loader();
-							}
-						}
+					if(data.socket_LiveScore==null){
+						Live_score_Loader();
 					}
 				}
 			});
@@ -476,6 +500,7 @@ public class LiveScore_Today extends Activity {
 
 		Runnable runnable = new Runnable() {
 			public void run() {
+				
 				try {
 					data.socket_LiveScore = new SocketIO("http://183.90.171.209:5070");
 				} catch (MalformedURLException e1) {
@@ -520,7 +545,7 @@ public class LiveScore_Today extends Activity {
 		            public void on(String event, IOAcknowledge ack, Object... args) {
 		            	
 		            	if (event.equals("update-score")) {
-		            		data.Match_list_c.clear();
+		            		data.Match_list_c_JSON.clear();
 		            		
 		            		for (Object object : args) {
 		                		try {
@@ -543,7 +568,7 @@ public class LiveScore_Today extends Activity {
 										}else if(League.contains("Ligue 1")){
 											League = "[6]"+League;
 										}
-										data.Match_list_c.add(League);
+										data.Match_list_c_JSON.add(new JSONObject().put("League", League));
 										JSONArray json_dtArr = json_it.getJSONArray("dt");
 										
 										for(int j=0; j<json_dtArr.length(); j++){
@@ -552,10 +577,9 @@ public class LiveScore_Today extends Activity {
 											String Home_img  = json_dt.getString("hl");
 											String away  = json_dt.getString("at");
 											String away_img  = json_dt.getString("al");
-											String stat = "[no]";
-											String score = json_dt.getString("sc");
 											String link = json_dt.getString("lk");
-											String Time = "";
+											String Time = "";//json_dt.getString("tp");
+											
 											if(json_dt.getString("ty").equals("playing")){
 												if(json_dt.getString("pr").equals("ht")){
 													Time = "HT";
@@ -571,11 +595,14 @@ public class LiveScore_Today extends Activity {
 											}else{
 												Time = json_dt.getString("tp");
 											}
+											
+											String stat = "[no]";
+											String score = json_dt.getString("sc");
 											String score_ag = json_dt.getString("ag");
 											if(score.equals("")){
 												score = "vs";
 											}
-											if(score_ag==null){
+											if(score_ag==null || score_ag.length()<5){
 												score_ag="";
 											}else{
 												if(!score.equals("vs")){
@@ -590,20 +617,34 @@ public class LiveScore_Today extends Activity {
 											}
 											if (away.contains("Arsenal")
 													|| Home.contains("Arsenal")) {
-												data.Match_list_c.add("[0]" + "Your Team in " +League);
-												data.Match_list_c.add("[0]" + "Your Team in " +League
-														+ "\n" + "[0]" + Time
-														+ "\n" + stat + "\n" + Home
-														+ "\n" + score + "\n"
-														+ away + "\n" + Home_img
-														+ "\n" +away_img + "\n" +link+"\n"+score_ag);
-											} else {
-												data.Match_list_c.add(League + "\n"
-														+ "[1]" + Time + "\n"
-														+ stat + "\n" + Home + "\n"
-														+ score + "\n" + away + "\n" + Home_img
-														+ "\n" +away_img + "\n" +link+"\n"+score_ag);
+												data.Match_list_c_JSON.add(new JSONObject().put("League"
+														, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
+												JSONObject j_data = new JSONObject();
+												j_data.put("League", "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
+												j_data.put("Time", "[0]" + Time);
+												j_data.put("stat", stat);
+												j_data.put("Home", Home);
+												j_data.put("score", score);
+												j_data.put("Away", away);
+												j_data.put("Home_img", Home_img);
+												j_data.put("Away_img", away_img);
+												j_data.put("link", link);
+												j_data.put("score_ag", score_ag);
+												data.Match_list_c_JSON.add(j_data);
 											}
+											JSONObject j_data = new JSONObject();
+											j_data.put("League", League);
+											j_data.put("Time", "[1]" + Time);
+											j_data.put("stat", stat);
+											j_data.put("Home", Home);
+											j_data.put("score", score);
+											j_data.put("Away", away);
+											j_data.put("Home_img", Home_img);
+											j_data.put("Away_img", away_img);
+											j_data.put("link", link);
+											j_data.put("score_ag", score_ag);
+											data.Match_list_c_JSON.add(j_data);
+											
 										}
 									
 									}
@@ -613,13 +654,18 @@ public class LiveScore_Today extends Activity {
 								}
 								
 							}
-		            		Collections.sort(data.Match_list_c, new Comparator<String>() {
+		            		Collections.sort(data.Match_list_c_JSON, new Comparator<JSONObject>() {
 								@Override
-								public int compare(String s1, String s2) {
-									return s1.compareToIgnoreCase(s2);
+								public int compare(JSONObject s1, JSONObject s2) {
+									try {
+										return s1.getString("League").compareToIgnoreCase(s2.getString("League"));
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									return 0;
 								}
 							});
-		            		Log.d("TEST", "data.fragement_Section_get()::"+data.fragement_Section_get() );
 		            		handler.post(new Runnable() {
 
 		    					@Override
@@ -628,12 +674,8 @@ public class LiveScore_Today extends Activity {
 		    							chk_D_Stat=false;
 			    						Toast.makeText(mContext, "Load_End", Toast.LENGTH_LONG)
 			    								.show();
-
-			    						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
-			    						layOutlist.removeAllViews();
-			    						((LinearLayout) layOutlist).addView(lstView);
 			    						chk_ani = false;
-			    						imageAdapter.notifyDataSetChanged();
+			    						data.imageAdapterLiveScore.notifyDataSetChanged();
 		    						}		    						
 		    					}
 		    				});		    				
@@ -735,11 +777,17 @@ public class LiveScore_Today extends Activity {
 
 		Runnable runnable = new Runnable() {
 			public void run() {
-				String txt_Item = data.Match_list_c.get(position);
+				String txt_Item="";
+				try {
+					txt_Item = data.Match_list_c_JSON.get(position).getString("Home_img");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
-				if (txt_Item.contains("\n")) {
+				if (txt_Item.length()>0) {
 					
-					if (data.get_HomeMap(txt_Item.split("\n")[6]) != null) {
+					if (data.get_HomeMap(txt_Item) != null) {
 						handler.post(new Runnable() {
 							@Override
 							public void run() {
@@ -748,11 +796,11 @@ public class LiveScore_Today extends Activity {
 							}
 						});
 					} else {
-						if (!txt_Item.split("\n")[6]
+						if (!txt_Item
 								.contains("/images/placeholder-64x64.png")) {
 							final Bitmap pic;
-							pic = loadImageFromUrl(txt_Item.split("\n")[6]);
-							data.set_HomeMap(txt_Item.split("\n")[6], pic);
+							pic = loadImageFromUrl(txt_Item);
+							data.set_HomeMap(txt_Item, pic);
 							handler.post(new Runnable() {
 								@Override
 								public void run() {
@@ -776,11 +824,17 @@ public class LiveScore_Today extends Activity {
 
 		Runnable runnable = new Runnable() {
 			public void run() {
-				String txt_Item = data.Match_list_c.get(position);
+				String txt_Item="";
+				try {
+					txt_Item = data.Match_list_c_JSON.get(position).getString("Away_img");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
-				if (txt_Item.contains("\n")) {
+				if (txt_Item.length()>0) {
 					
-					if (data.get_AwayMap(txt_Item.split("\n")[7]) != null) {
+					if (data.get_AwayMap(txt_Item) != null) {
 						handler.post(new Runnable() {
 							@Override
 							public void run() {
@@ -789,11 +843,11 @@ public class LiveScore_Today extends Activity {
 							}
 						});
 					} else {
-						if (!txt_Item.split("\n")[7]
+						if (!txt_Item
 								.contains("/images/placeholder-64x64.png")) {
 							final Bitmap pic;
-							pic = loadImageFromUrl(txt_Item.split("\n")[7]);
-							data.set_AwayMap(txt_Item.split("\n")[7], pic);
+							pic = loadImageFromUrl(txt_Item);
+							data.set_AwayMap(txt_Item, pic);
 							
 							handler.post(new Runnable() {
 								@Override

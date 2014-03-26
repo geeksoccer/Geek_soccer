@@ -69,8 +69,8 @@ public class Chat_All extends Activity{
 	Button send_Btn;
 	Button sendSticker_Btn;
 	
-	private ListView lstView;
-	private ImageAdapter imageAdapter;
+	//private ListView data.lstViewChatAll;
+	//private ImageAdapter imageAdapter;
 	
 	WindowManager wm;
 	Boolean Sticker_Layout_Stat=false;
@@ -99,38 +99,23 @@ public class Chat_All extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_layout);
         mContext=this;
-        lstView = new ListView(mContext);
-		lstView.setLayoutParams(new LinearLayout.LayoutParams(
+        data.lstViewChatAll = new ListView(mContext);
+		data.lstViewChatAll.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 
-		lstView.setClipToPadding(false);
-		imageAdapter = new ImageAdapter(mContext.getApplicationContext());
-		lstView.setAdapter(imageAdapter);
-		lstView.setDividerHeight(0);
+		data.lstViewChatAll.setClipToPadding(false);
+		data.imageAdapterChatAll = new ImageAdapter(mContext.getApplicationContext());
+		data.lstViewChatAll.setAdapter(data.imageAdapterChatAll);
+		data.lstViewChatAll.setDividerHeight(0);
 		Chat_list_LayOut = (LinearLayout)findViewById(R.id.Chat_list_Layout);
-		(Chat_list_LayOut).addView(lstView);
-		//Chat_list_LayOut.removeAllViews();
-		//Chat_list_LayOut.addView(lstView);
-		if(data.teamID == 1){
-			data.SocketSelect = "5001";
-		}else if(data.teamID == 2){
-			data.SocketSelect = "5002";
-		}else if(data.teamID == 3){
-			data.SocketSelect = "5003";
-		}else if(data.teamID == 4){
-			data.SocketSelect = "5004";
-		}
+		(Chat_list_LayOut).addView(data.lstViewChatAll);
 		if(data.Chat_Item_list_All.size()>0){
-			imageAdapter.notifyDataSetChanged();
-			lstView.setSelection(data.Chat_Item_list_All.size());
+			data.imageAdapterChatAll.notifyDataSetChanged();
+			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 		}
 		Log.d("TEST", "chat_on_::"+data.chat_on_All);
-		if(data.socket_All!=null){
-			if(data.socket_All.isConnected()){
-				data.socket_All.disconnect();
-			}
-		}
+		
 		//data.Chat_Item_list_All.clear();
 		Chat_Loader();
        
@@ -244,98 +229,147 @@ public class Chat_All extends Activity{
 			return position;
 		}
 
-		public View getView(final int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView,
+				ViewGroup parent) {
 
-			
-			if(position<data.Chat_Item_list_All.size()){
-				LinearLayout retval_Main = new LinearLayout(mContext);
-				retval_Main.setOrientation(LinearLayout.VERTICAL);
-				retval_Main.setGravity(Gravity.CENTER);
-				
-				LinearLayout retval = new LinearLayout(mContext);
-				retval.setOrientation(LinearLayout.HORIZONTAL);
-				retval.setPadding(0, 5, 0, 5);
-				
-				String txt_Item = "";
-				txt_Item = data.Chat_Item_list_All.get(position);
-				int colors = Integer.parseInt("000000", 16) + (0xFF000000);
-				
-				LinearLayout txt_layout = new LinearLayout(mContext);
-				txt_layout.setOrientation(LinearLayout.VERTICAL);
-				txt_layout.setPadding(10, 0, 10, 0);
-				txt_layout.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
-				TextView txt_N = new TextView(mContext);
-				txt_N.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				txt_N.setTypeface(Typeface.DEFAULT_BOLD);
-				txt_layout.addView(txt_N);
-				
-				TextView txt_M = new TextView(mContext);
-				txt_M.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				txt_M.setTextColor(colors);
+			if (position < data.Chat_Item_list_All.size()) {
+				try {
+					LinearLayout retval_Main = new LinearLayout(mContext);
+					retval_Main.setOrientation(LinearLayout.VERTICAL);
+					retval_Main.setGravity(Gravity.CENTER);
 
-				ImageView Sticker = new ImageView(mContext);
-				Sticker.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+					LinearLayout retval = new LinearLayout(mContext);
+					retval.setOrientation(LinearLayout.HORIZONTAL);
+					retval.setPadding(0, 5, 0, 5);
 
-				LinearLayout Profile_layout = new LinearLayout(mContext);
-				Profile_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
-				ImageView Profile_Pic = new ImageView(mContext);
-				Profile_Pic.setLayoutParams(new LinearLayout.LayoutParams(50, 50));
-				Profile_Pic.setImageResource(R.drawable.test_profile_pic);
-				Profile_layout.addView(Profile_Pic);
-				
-				String Split_item[] = txt_Item.split("::");
-				
-				if(data.BitMapHash.get(Split_item[4])!=null){
-					Profile_Pic.setImageBitmap(data.BitMapHash.get(Split_item[4]));
-				}else{
-					startDownload(Split_item[4], Profile_Pic);
-				}
-				if(Split_item[0].equals(data.ID_Send)){
-					txt_N.setText("("+Split_item[5]+") "+Split_item[1]);
-					if(Split_item[3].contains("S")){
-						if(data.BitMapHash.get(Split_item[2])!=null){
-							Sticker.setImageBitmap(data.BitMapHash.get(Split_item[2]));
-						}else{
-							Sticker.setImageResource(R.drawable.soccer_icon);
-							startDownload(Split_item[2], Sticker);
-						}						
-						txt_layout.setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
-						txt_layout.addView(Sticker);
-						retval.addView(txt_layout);
-					}else{
-						txt_M.setText(Split_item[2]+" " );
-						txt_M.setBackgroundResource(R.drawable.bubble_green_n);
-						txt_layout.setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
-						txt_layout.addView(txt_M);
-						retval.addView(txt_layout);
+					JSONObject txt_Item = null;
+					txt_Item = data.Chat_Item_list_All.get(position);
+					int colors = Integer.parseInt("000000", 16) + (0xFF000000);
+
+					LinearLayout txt_layout = new LinearLayout(mContext);
+					txt_layout.setOrientation(LinearLayout.VERTICAL);
+					txt_layout.setLayoutParams(new LinearLayout.LayoutParams(0,
+							LayoutParams.WRAP_CONTENT, 1));
+					txt_layout.setPadding(10, 0, 10, 0);
+
+					LinearLayout name_layout = new LinearLayout(mContext);
+					txt_layout.setOrientation(LinearLayout.VERTICAL);
+					name_layout.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT));
+					name_layout.setOrientation(LinearLayout.HORIZONTAL);
+					TextView txt_N = new TextView(mContext);
+					txt_N.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT));
+					txt_N.setTypeface(Typeface.DEFAULT_BOLD);
+					// txt_layout.addView(txt_N);
+
+					TextView txt_T = new TextView(mContext);
+					txt_T.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT));
+					// txt_T.setTypeface(Typeface.DEFAULT_BOLD);
+					// txt_layout.addView(txt_T);
+
+					TextView txt_M = new TextView(mContext);
+					txt_M.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT));
+					txt_M.setTextColor(colors);
+
+					ImageView Sticker = new ImageView(mContext);
+					Sticker.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT));
+
+					LinearLayout Profile_layout = new LinearLayout(mContext);
+					Profile_layout
+							.setLayoutParams(new LinearLayout.LayoutParams(
+									LayoutParams.WRAP_CONTENT,
+									LayoutParams.MATCH_PARENT));
+					ImageView Profile_Pic = new ImageView(mContext);
+					Profile_Pic.setLayoutParams(new LinearLayout.LayoutParams(
+							50, 50));
+					Profile_Pic.setImageResource(R.drawable.test_profile_pic);
+					Profile_layout.addView(Profile_Pic);
+
+					txt_N.setText(txt_Item.getString("m_nickname"));
+					txt_T.setPadding(5, 0, 5, 0);
+					txt_T.setText("(" + txt_Item.getString("ch_time") + ")");
+
+					txt_layout.addView(name_layout);
+					if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
+						Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
+								.getString("m_photo")));
+					} else {
+						startDownload(txt_Item.getString("m_photo"),
+								Profile_Pic);
 					}
-					retval.setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
-					retval.addView(Profile_layout);
-				}else{
-					txt_N.setText(Split_item[1]+" ("+Split_item[5]+")");
-					retval.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-					retval.addView(Profile_layout);
-					if(Split_item[3].contains("S")){
-						if(data.BitMapHash.get(Split_item[2])!=null){
-							Sticker.setImageBitmap(data.BitMapHash.get(Split_item[2]));
-						}else{
-							Sticker.setImageResource(R.drawable.soccer_icon);
-							startDownload(Split_item[2], Sticker);
+					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
+						name_layout.addView(txt_T);
+						name_layout.addView(txt_N);
+						if (txt_Item.getString("ch_type").contains("S")) {
+							if (data.BitMapHash.get(txt_Item
+									.getString("ch_msg")) != null) {
+								Sticker.setImageBitmap(data.BitMapHash
+										.get(txt_Item.getString("ch_msg")));
+							} else {
+								Sticker.setImageResource(R.drawable.soccer_icon);
+								startDownload(txt_Item.getString("ch_msg"),
+										Sticker);
+							}
+							txt_layout.setGravity(Gravity.RIGHT
+									| Gravity.CENTER_VERTICAL);
+							txt_layout.addView(Sticker);
+							retval.addView(txt_layout);
+						} else {
+							txt_M.setText(txt_Item.getString("ch_msg") + " ");
+							txt_M.setBackgroundResource(R.drawable.bubble_green_n);
+							txt_layout.setGravity(Gravity.RIGHT
+									| Gravity.CENTER_VERTICAL);
+							txt_layout.addView(txt_M);
+							retval.addView(txt_layout);
 						}
-						txt_layout.addView(Sticker);
-						retval.addView(txt_layout);
-					}else{
-						txt_M.setText(" " + Split_item[2]);
-						txt_M.setBackgroundResource(R.drawable.bubble_yellow);
-						txt_layout.addView(txt_M);
-						retval.addView(txt_layout);
+						retval.setGravity(Gravity.RIGHT
+								| Gravity.CENTER_VERTICAL);
+						retval.addView(Profile_layout);
+					} else {
+						name_layout.addView(txt_N);
+						name_layout.addView(txt_T);
+						retval.setGravity(Gravity.LEFT
+								| Gravity.CENTER_VERTICAL);
+						retval.addView(Profile_layout);
+						if (txt_Item.getString("ch_type").contains("S")) {
+							if (data.BitMapHash.get(txt_Item
+									.getString("ch_msg")) != null) {
+								Sticker.setImageBitmap(data.BitMapHash
+										.get(txt_Item.getString("ch_msg")));
+							} else {
+								Sticker.setImageResource(R.drawable.soccer_icon);
+								startDownload(txt_Item.getString("ch_msg"),
+										Sticker);
+							}
+							txt_layout.addView(Sticker);
+							retval.addView(txt_layout);
+						} else {
+							txt_M.setText(" " + txt_Item.getString("ch_msg"));
+							txt_M.setBackgroundResource(R.drawable.bubble_yellow);
+							txt_layout.addView(txt_M);
+							retval.addView(txt_layout);
+						}
 					}
+					retval_Main.addView(retval);
+					return retval_Main;
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				retval_Main.addView(retval);
-				return retval_Main;
-			}else{
+				return convertView;
+			} else {
 				return convertView;
 			}
+
 		}
 
 	}
@@ -345,6 +379,11 @@ public class Chat_All extends Activity{
 			@Override
 			public void run() {
 					try {
+						if(data.socket_All!=null){
+							if(data.socket_All.isConnected()){
+								data.socket_All.disconnect();
+							}
+						}
 						data.socket_All = new SocketIO("http://183.90.171.209:5000");
 					} catch (MalformedURLException e1) {
 						
@@ -386,136 +425,110 @@ public class Chat_All extends Activity{
 			            }
 
 			            @Override
-			            public void on(String event, IOAcknowledge ack, Object... args) {
-			            	String out = "";
-			            	if (event.equals("updatechat")&&args.length >= 4) {
-			            		if(!args[1].toString().equals("")){
-			            			out = args[0].toString()+"::"
-				                    		+args[1].toString()+"::"
-				                    		+args[2].toString()+"::"
-				                    		+args[3].toString()+"::"
-				                    		+args[4].toString()+"::"
-						                    +args[5].toString();
-			            			chatHandle(out);
-			            		}		                    
-			                }else if(event.equals("updateusers")&&args.length > 0){
-			                	String Name_list[] = args[0].toString().split(",");
-			                	for (String Name_item : Name_list) {
-			                		Name_item = Name_item.split(":")[0].replaceAll("\"", "").replaceAll("\\{|\\}", "");
-			                		if(!Name_item.equals(data.ID_Send)){
-
-			                		}
-								}
-			                	
-			                }else if(event.equals("updateoldchat")){
-			                	data.Chat_Item_list_All.clear();
-			                	for (Object object : args) {
-			                		try {
-										JSONArray json_arr = new JSONArray(object.toString());
-										
-										for(int i=0; i<json_arr.length(); i++){
-											JSONObject json_ob = json_arr.getJSONObject(i);
-											String id = json_ob.getString("ch_uid");
-											String type = json_ob.getString("ch_type");
-											String Profile_Pic = json_ob.getString("m_photo");
-											String name = json_ob.getString("m_nickname");
-											String time = json_ob.getString("ch_time");
-											String msg = "";
-											if(type.equals("T")){
-												msg = json_ob.getString("ch_msg");
-											}else if(type.equals("S")){
-												msg = json_ob.getString("sk_img")+"."+json_ob.getString("sk_type");
-											}
-
-											data.Chat_Item_list_All.add(id+"::"+name+"::"+msg+"::"+type+"::"+Profile_Pic+"::"+time);
-										}
-										
+						public void on(String event, IOAcknowledge ack,
+								Object... args) {
+							if (event.equals("updatechat") && args.length >= 4) {
+								if (!args[1].toString().equals("")) {
+									JSONObject json_ob = new JSONObject();
+									try {
+										json_ob.put("ch_uid", args[0].toString());
+										json_ob.put("m_nickname",
+												args[1].toString());
+										json_ob.put("ch_msg", args[2].toString());
+										json_ob.put("ch_type", args[3].toString());
+										json_ob.put("m_photo", args[4].toString());
+										json_ob.put("ch_time", args[5].toString());
+										data.Chat_Item_list_All.add(json_ob);
 									} catch (JSONException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-									
+									chatHandle();
 								}
-			                	chatHandle(out);
-			                }else if(event.equals("getsticker")){
-			                	for (Object object : args) {
-			                		try {
-										JSONObject json_arr = new JSONObject(object.toString());
-										//for (Iterator<String> iterator : json_arr.) {
-										for (Iterator<?> league_Item_key = json_arr
-												.keys(); league_Item_key
-												.hasNext();) {
-											String key_Item = (String) league_Item_key
-													.next();
-											data.Sticker_UrlSet.put(key_Item, json_arr.getString(key_Item));
-											if(key_Item.contains("_10")){
-												startDownload(json_arr.getString(key_Item), Stick_10);
-											}else if(key_Item.contains("_11")){
-												startDownload(json_arr.getString(key_Item), Stick_11);
-											}else if(key_Item.contains("_12")){
-												startDownload(json_arr.getString(key_Item), Stick_12);
-											}else if(key_Item.contains("_1")){
-												startDownload(json_arr.getString(key_Item), Stick_1);
-											}else if(key_Item.contains("_2")){
-												startDownload(json_arr.getString(key_Item), Stick_2);
-											}else if(key_Item.contains("_3")){
-												startDownload(json_arr.getString(key_Item), Stick_3);
-											}else if(key_Item.contains("_4")){
-												startDownload(json_arr.getString(key_Item), Stick_4);
-											}else if(key_Item.contains("_5")){
-												startDownload(json_arr.getString(key_Item), Stick_5);
-											}else if(key_Item.contains("_6")){
-												startDownload(json_arr.getString(key_Item), Stick_6);
-											}else if(key_Item.contains("_7")){
-												startDownload(json_arr.getString(key_Item), Stick_7);
-											}else if(key_Item.contains("_8")){
-												startDownload(json_arr.getString(key_Item), Stick_8);
-											}else if(key_Item.contains("_9")){
-												startDownload(json_arr.getString(key_Item), Stick_9);
+							} else if (event.equals("updateusers")
+									&& args.length > 0) {
+								String Name_list[] = args[0].toString().split(",");
+								for (String Name_item : Name_list) {
+									Name_item = Name_item.split(":")[0].replaceAll(
+											"\"", "").replaceAll("\\{|\\}", "");
+									if (!Name_item.equals(data.ID_Send)) {
+									}
+								}
+
+							} else if (event.equals("updateoldchat")) {
+								data.Chat_Item_list_All.clear();
+								for (Object object : args) {
+									try {
+										JSONArray json_arr = new JSONArray(object
+												.toString());
+
+										for (int i = 0; i < json_arr.length(); i++) {
+											JSONObject json_ob = json_arr
+													.getJSONObject(i);
+											if (json_ob.getString("ch_type")
+													.equals("S")) {
+												json_ob.put(
+														"ch_msg",
+														json_ob.getString("sk_img")
+																+ "."
+																+ json_ob
+																		.getString("sk_type"));
 											}
+											data.Chat_Item_list_All.add(json_ob);
 										}
-			                		} catch (JSONException e) {
+
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-			                	}
-			                	if(data.Sticker_UrlSet.size()<=0){
-			                		chatHandle(out);
-			                	}			                	
-			                }
-			            	
-			            	
-			            }
-			        });
+								}
+								chatHandle();
+							} else if (event.equals("getsticker")) {
+								for (Object object : args) {
+									try {
+										JSONObject json_arr = new JSONObject(object
+												.toString());
+										// for (Iterator<String> iterator :
+										// json_arr.) {
+										for (Iterator<?> league_Item_key = json_arr
+												.keys(); league_Item_key.hasNext();) {
+											String key_Item = (String) league_Item_key
+													.next();
+											data.Sticker_UrlSet.put(key_Item,
+													json_arr.getString(key_Item));
+										}
+
+										//
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+								}
+								if (data.Sticker_UrlSet.size() <= 0
+										&& data.fragement_Section_get() == 2) {
+									chatHandle();
+								}
+							}
+						}
+					});
 					data.socket_All.emit("adduser", data.ID_Send, data.ProFile_pic, data.Name_Send);
-					/*
-					if(!data.chat_on_Team){
-						socket.emit("adduser", Name_Send);
-					}
-					*/
 				}
 		}).start();
 
 	}
 	
-	public void chatHandle(final String _out){
+	public void chatHandle() {
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
-				if (Looper.myLooper() == Looper.getMainLooper()) {
-					if( (data.Chat_Item_list_All.size()==imageAdapter.getCount()) 
-							&& !_out.equals("")
-							&& !_out.contains("has connected")){
-						if(_out.contains("updateoldchat\n<geek>")){
-						}else{
-							data.Chat_Item_list_All.add(_out);
-						}
-						imageAdapter.notifyDataSetChanged();
-						lstView.setSelection(data.Chat_Item_list_All.size());
-					}else{
-						imageAdapter.notifyDataSetChanged();
-						lstView.setSelection(data.Chat_Item_list_All.size());
+				try {
+					if (Looper.myLooper() == Looper.getMainLooper()) {
+						data.imageAdapterChatAll.notifyDataSetChanged();
+						data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 					}
-				}
+				}catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
 			}
 		});
 	}

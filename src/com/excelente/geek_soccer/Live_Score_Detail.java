@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
@@ -38,7 +40,7 @@ public class Live_Score_Detail extends Activity{
 	TextView Away_name;
 	ImageView Home_Pic;
 	ImageView Away_Pic;
-	String getValue[];
+	JSONObject getValue;
 	String get_Time = "";
 	String get_Score = "";
 	String get_Home_name = "";
@@ -71,28 +73,49 @@ public class Live_Score_Detail extends Activity{
 		position = getIntent().getExtras().getInt("URL");
 		String type = getIntent().getExtras().getString("TYPE");
 		if(type.equals("y")){
-			getValue = data.Match_list_y.get(position).split("\n");
+			getValue = data.Match_list_y_JSON.get(position);
 		}else if(type.equals("c")){
-			getValue = data.Match_list_c.get(position).split("\n");
+			getValue = data.Match_list_c_JSON.get(position);
 		}else if(type.equals("t")){
-			getValue = data.Match_list_t.get(position).split("\n");
+			getValue = data.Match_list_t_JSON.get(position);
 		}
-		Time.setText(getValue[1].substring(3));
-		URL+=getValue[8].replace("/en/", "/th/")+"/play-by-play";
-		Log.d("tEST", "URL::"+URL);
-		if (data.get_HomeMap(getValue[6]) != null) {
-			Home_Pic.setImageBitmap(data.get_HomeMap(getValue[6]));
-		}
-		if (data.get_AwayMap(getValue[7]) != null) {
-			Away_Pic.setImageBitmap(data.get_AwayMap(getValue[7]));
+		String Time_t = "";
+		String link_t = "";
+		String Home_img_t = "";
+		String Away_img_t = "";
+		String Home_name_t = "";
+		String score_t = "";
+		String Away_name_t = "";
+		String score_ag_t = "";
+		try {
+			Time_t = getValue.getString("Time").substring(3);
+			link_t = getValue.getString("link").replace("/en/", "/th/")+"/play-by-play";
+			Home_img_t = getValue.getString("Home_img");
+			Away_img_t = getValue.getString("Away_img");
+			Home_name_t = getValue.getString("Home");
+			score_t = getValue.getString("score").replaceAll("&nbsp;", " ");
+			Away_name_t = getValue.getString("Away");
+			score_ag_t = getValue.getString("score_ag");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		Score.setText(getValue[4].replaceAll("&nbsp;", " ") );
-		Home_name.setText(getValue[3]);
-		Away_name.setText(getValue[5]);
+		Time.setText(Time_t);
+		URL+=link_t;
+		if (data.get_HomeMap(Home_img_t) != null) {
+			Home_Pic.setImageBitmap(data.get_HomeMap(Home_img_t));
+		}
+		if (data.get_AwayMap(Away_img_t) != null) {
+			Away_Pic.setImageBitmap(data.get_AwayMap(Away_img_t));
+		}
 		
-		if(getValue.length>9){
-			txt_Aggregate.setText("AGGREGATE: "+getValue[9]);
+		Score.setText(score_t);
+		Home_name.setText(Home_name_t);
+		Away_name.setText(Away_name_t);
+		
+		if(score_ag_t.length()>=5){
+			txt_Aggregate.setText("AGGREGATE: "+score_ag_t);
 		}
 		
 		new Live_score_Loader().execute();
