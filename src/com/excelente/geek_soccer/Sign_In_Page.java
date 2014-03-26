@@ -24,7 +24,9 @@ import com.google.android.gms.plus.PlusClient;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -52,7 +54,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
     private ConnectionResult mConnectionResult;
     
     private Button signInGoogleButton;
-	private ProgressBar signProgressbar;  
+	private ProgressBar signProgressbar;
+	private NotificationManager mNotification;  
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +66,20 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		}else{
 			setContentView(R.layout.sign_in_page);
 			initView();
-			doCheckToken();
+			doCheckToken(); 
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		cancelNotify();
+	}
+
+	private void cancelNotify() {
+		mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
+		mNotification.cancel(0);
+		mNotification.cancel(1); 
 	}
 
 	private void initView() {

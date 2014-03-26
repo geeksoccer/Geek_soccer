@@ -1,0 +1,224 @@
+package com.excelente.geek_soccer.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.Sign_In_Page;
+import com.excelente.geek_soccer.model.MemberModel;
+import com.excelente.geek_soccer.model.NewsModel;
+import com.excelente.geek_soccer.utils.HttpConnectUtils;
+import com.excelente.geek_soccer.utils.NetworkUtils;
+
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
+import android.os.IBinder;
+import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
+
+@SuppressLint("CommitPrefEdits")
+public class NewsUpdateService extends Service{
+	
+	public static final String GET_NEWS_UPDATE_URL = "http://183.90.171.209/gs_news/get_news_update.php";
+	
+	public static final String NOTIFY_INTENT = "NOTIFY_INTENT";
+	public static final int NOTIFY_INTENT_CODE = 1000;
+	public static final long NOTIFY_REPEAT = 1*60*60*1000; 
+	public static final String NOTIFY_CONNECT_FIRST = "NOTIFY_CONNECT_FIRST"; 
+	public static final String SHARE_PERFERENCE = "SHARE_PERFERENCE";
+	
+	public final static String NOTIFY_NEWS_UPDATE = "com.pilarit.chettha.manfindjob.service.NOTIFY_NEWS_UPDATE";
+	public final static int NOTIFY_NEWS_UPDATE_VALUE = 1001;
+	
+	private Vibrator mVibrator;
+	
+	int dot = 200; // Length of a Morse Code "dot" in milliseconds
+    int dash = 500; // Length of a Morse Code "dash" in milliseconds
+    int short_gap = 200; // Length of Gap Between dots/dashes
+    int medium_gap = 500; // Length of Gap Between Letters
+    int long_gap = 1000; // Length of Gap Between Words
+ 
+    long[] pattern = { 0, dot, short_gap, dot, short_gap, dot};
+	
+	private SharedPreferences sharePre; 
+	TimerTask newsTask = null;
+	
+	MemberModel mMember;
+	
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		if(newsTask == null){
+			MemberModel member = (MemberModel)intent.getSerializableExtra(MemberModel.MEMBER_KEY);
+			if(member!=null){
+				mMember = member;
+				runUpdateNews(mMember);
+			}
+		}
+		return Service.START_STICKY;
+	}
+
+	private void runUpdateNews(final MemberModel member) { 
+		 
+		newsTask = new TimerTask() {
+			
+			@Override 
+			public void run() {
+				sharePre = getApplicationContext().getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
+				int newsIdTag0 = sharePre.getInt(NewsModel.NEWS_ID+"tag0", 0);
+				int newsIdTag1 = sharePre.getInt(NewsModel.NEWS_ID+"tag1", 0);
+				if(NetworkUtils.isNetworkAvailable(getApplicationContext())){
+					if(!isForeground(getApplicationContext().getPackageName())){ 
+						new LoadLastNewsTask("tag0").execute(getURLbyTag(member, newsIdTag0, "tag0"));
+						new LoadLastNewsTask("tag1").execute(getURLbyTag(member, newsIdTag1, "tag1")); 
+					}else{
+						//updateMainActivity();
+					}
+				}else{
+					Editor editShare = sharePre.edit();
+					editShare.putBoolean(NOTIFY_CONNECT_FIRST, false);
+					editShare.commit();
+				}
+			}
+
+		};
+		
+		Timer timer = new Timer();
+		timer.schedule(newsTask, getTimeUpdate(), NOTIFY_REPEAT);
+	}
+
+	private String getURLbyTag(MemberModel member, int id, String tag) {
+		String url = ""; 
+		
+		if(tag.equals("tag0")){
+			url = GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + member.getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
+		}else if(tag.equals("tag1")){
+			url = GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
+		}
+		
+		return url;
+	}
+	
+	/*private void updateMainActivity() {
+		Intent nextToMain = new Intent(); 
+		nextToMain.setAction(NOTIFY_NEWS_UPDATE);
+		nextToMain.putExtra(NOTIFY_NEWS_UPDATE, NOTIFY_NEWS_UPDATE_VALUE);
+		sendBroadcast(nextToMain);
+	}*/
+	
+	@SuppressWarnings("deprecation")
+	private Date getTimeUpdate() {
+		Date now = new Date();
+		now.setMinutes(0);
+		
+		for (int i = 0; i < 24; i++) {
+			if(now.getHours() < i){
+				now.setHours(i);
+				break;
+			}else if(i==23){
+				now.setHours(0);
+				break;
+			}
+		}
+		
+		return now;
+	}
+
+	public class LoadLastNewsTask extends AsyncTask<String, Void, List<NewsModel>>{
+		
+		private NotificationManager mNotification;
+		String tag;
+		
+		public LoadLastNewsTask(String string) {
+			tag = string;
+		}
+
+		@Override
+		protected List<NewsModel> doInBackground(String... params) {
+			
+			String result = HttpConnectUtils.getStrHttpGetConnect(params[0]); 
+			
+			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
+				return null;
+			}
+		
+			List<NewsModel> newsList = NewsModel.convertNewsStrToList(result);
+			
+			return newsList;
+		}
+
+		@Override
+		protected void onPostExecute(List<NewsModel> result) {
+			super.onPostExecute(result);
+			if(result!=null && !result.isEmpty()){
+				setNotify(result);
+			}
+			
+		}
+
+		private void setNotify(List<NewsModel> result) {
+			sharePre = getApplicationContext().getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
+			Editor editSharePre = sharePre.edit();
+			editSharePre.putInt(NewsModel.NEWS_ID, result.get(0).getNewsId());
+			editSharePre.commit();
+			
+			Intent nextToMain = new Intent(getApplicationContext(), Sign_In_Page.class);
+			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE);
+			PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, nextToMain, 0);
+				
+			mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
+			if(tag.equals("tag0")){
+				Notification notification = new NotificationCompat.Builder(getApplicationContext())
+				.setContentTitle(getResources().getString(R.string.team_news)) 
+				.setContentText(result.get(0).getNewsTopic())
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentIntent(pIntent)
+				.build();
+				
+				mNotification.cancel(0);
+				mNotification.notify(0, notification);
+			}else{
+				
+				Notification notification = new NotificationCompat.Builder(getApplicationContext())
+				.setContentTitle(getResources().getString(R.string.global_news)) 
+				.setContentText(result.get(0).getNewsTopic())
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentIntent(pIntent)
+				.build();
+				mNotification.cancel(1);
+				mNotification.notify(1, notification);
+			}
+			
+			mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+			mVibrator.vibrate(pattern, -1);
+		}
+
+	}
+	
+	public boolean isForeground(String myPackage){
+		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+		List< ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1); 
+
+		ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
+		if(componentInfo.getPackageName().equals(myPackage)) return true;
+		
+		return false;
+	}
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		return null;
+	}
+
+}

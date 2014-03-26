@@ -49,4 +49,9 @@
     <string name="HILIGHT_TYPE_UPL">ยูฟ่า ยูโรป้า ลีก</string>
     <string name="HILIGHT_TYPE_CHAMPIAN_CHIP">แชมเปี้ยนชิพ อังกฤษ</string>
     <string name="HILIGHT_TYPE_CAPITAL_ONE_CUP">แคปิตอล วัน คัพ</string>
+    
+    <string name="warning_internet">โปรดตรวจสอบการเชื่อมต่ออินเตอร์เน็ต</string> 
+    
+    <string name="global_news">Global News</string> 
+    <string name="team_news">Team News</string> 
 </resources>

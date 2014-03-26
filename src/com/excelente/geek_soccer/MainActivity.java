@@ -1,9 +1,12 @@
 package com.excelente.geek_soccer;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
+import com.excelente.geek_soccer.model.MemberModel;
+import com.excelente.geek_soccer.service.NewsUpdateService;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
@@ -49,6 +52,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		super.onCreate(savedInstanceState);
 		
 		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
+		
+		Intent serviceIntent = new Intent(this, NewsUpdateService.class);
+		serviceIntent.putExtra(MemberModel.MEMBER_KEY, (Serializable)MemberSession.getMember()); 
+		startService(serviceIntent);
 		
 		setContentView(R.layout.main);
 		mContext = this;

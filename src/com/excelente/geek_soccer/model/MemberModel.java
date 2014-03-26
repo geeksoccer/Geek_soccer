@@ -10,6 +10,8 @@ public class MemberModel implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	public static final String MEMBER_KEY = "MEMBER_KEY";
+	
 	public static final String MEMBER_UID = "m_uid";
 	public static final String MEMBER_USER = "m_user";
 	public static final String MEMBER_PASS = "m_pass";

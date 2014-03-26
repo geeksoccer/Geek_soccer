@@ -13,7 +13,11 @@ import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.PullToRefreshListView;
 import com.excelente.geek_soccer.view.PullToRefreshListView.OnRefreshListener;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -95,6 +99,9 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		loaded = false;
 		
 		oldNews = null;
+		
+		newsModelTeamList = null;
+		newsAdapterGlobal = null;
 		 
 		if (newsAdapterTeam == null) {
 			if (NetworkUtils.isNetworkAvailable(getActivity()))
@@ -221,7 +228,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
 				return null;
 			}
-		
+			//Log.e("000000000000", result);
 			List<NewsModel> newsList = NewsModel.convertNewsStrToList(result);
 			
 			return newsList;
@@ -231,7 +238,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		protected void onPostExecute(List<NewsModel> result) {
 			super.onPostExecute(result);
 			if(!result.isEmpty()){
-				doLoadRefeshToListView(result, tag);
+				doLoadNewsToListView(result, tag);
 			}else{
 				Toast.makeText(getActivity(), "No News Update", Toast.LENGTH_SHORT).show();
 			}
@@ -243,22 +250,57 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	
 	private void doLoadNewsToListView(List<NewsModel> newsList , String tag) {
 		
-		if(newsList == null || newsList.isEmpty()){
-			Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		
 		if(tag.equals("tag0")){
-			newsModelTeamList = newsList;
+			if(newsList == null || newsList.isEmpty()){
+				//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show();
+				if(newsModelTeamList == null){  
+					newsModelTeamList = new ArrayList<NewsModel>(); 
+					Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
+				}
+			}else{
+				if(newsModelTeamList == null || newsModelTeamList.isEmpty()){
+					newsModelTeamList = newsList;
+					loaded = true;
+					storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+tag);
+					//intentNewsUpdate(newsList.get(0));
+				}else if(newsModelTeamList.get(0).getNewsId() < newsList.get(0).getNewsId()){
+					newsModelTeamList = newsList; 
+					loaded = true;
+					storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+tag);
+					//intentNewsUpdate(newsList.get(0));
+				}else{
+					return;
+				}
+			}
 			
-			newsAdapterTeam = new NewsAdapter(getActivity(), newsList);
+			newsAdapterTeam = new NewsAdapter(getActivity(), newsModelTeamList);
 			newsListViewTeam.setAdapter(newsAdapterTeam);
 			newsListViewTeam.setVisibility(View.VISIBLE);
 			setListViewEvents(newsListViewTeam, newsAdapterTeam, tag);
 		}else if(tag.equals("tag1")){
-			newsModelGlobalList = newsList;
+			if(newsList == null || newsList.isEmpty()){
+				//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show();
+				if(newsModelGlobalList == null){  
+					newsModelGlobalList = new ArrayList<NewsModel>(); 
+					Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
+				}
+			}else{
+				if(newsModelGlobalList == null || newsModelGlobalList.isEmpty()){
+					newsModelGlobalList = newsList;
+					loaded = true;
+					storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+tag);
+					//intentNewsUpdate(newsList.get(0));
+				}else if(newsList.get(0).getNewsId() < newsList.get(0).getNewsId()){
+					newsModelGlobalList = newsList; 
+					loaded = true;
+					storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+tag);
+					//intentNewsUpdate(newsList.get(0));
+				}else{
+					return;
+				}
+			}
 			
-			newsAdapterGlobal = new NewsAdapter(getActivity(), newsList);
+			newsAdapterGlobal = new NewsAdapter(getActivity(), newsModelGlobalList);
 			newsListViewGlobal.setAdapter(newsAdapterGlobal);
 			newsListViewGlobal.setVisibility(View.VISIBLE);
 			setListViewEvents(newsListViewGlobal, newsAdapterGlobal, tag);
@@ -266,17 +308,26 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		
 	}
 	
-	private void doLoadRefeshToListView(List<NewsModel> result, String tag) {
+	@SuppressLint("CommitPrefEdits")
+	private void storeMaxIdToPerference(NewsModel newsModel, String tag) {
+		SharedPreferences sharePre = getActivity().getSharedPreferences(com.excelente.geek_soccer.service.NewsUpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
+		Editor editSharePre = sharePre.edit();
+		editSharePre.putInt(tag, newsModel.getNewsId());
+		editSharePre.commit();
+	}
+	
+	/*private void doLoadRefeshToListView(List<NewsModel> result, String tag) {
 		if(tag.equals("tag0")){
 			newsAdapterTeam.addHead(result);
 		}else if(tag.equals("tag1")){
 			newsAdapterGlobal.addHead(result);
 		} 
-	}
+	}*/
 	
 	private void doLoadOldNewsToListView(List<NewsModel> result, String tag) { 
 		if(result == null || result.isEmpty()){
-			Toast.makeText(getActivity(), "No Old News", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(getActivity(), "No Old News", Toast.LENGTH_SHORT).show();
+			oldNews=null;
 			return;
 		}
 		
@@ -300,7 +351,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 				int lastVisibleItem = firstVisibleItem + visibleItemCount;
 				if((lastVisibleItem == totalItemCount) && loaded && totalItemCount>0){
 					NewsModel nm = (NewsModel)view.getAdapter().getItem(totalItemCount-1);
-					if(!nm.equals(oldNews)){
+					if(nm!=null && !nm.equals(oldNews)){
 						
 						if (NetworkUtils.isNetworkAvailable(getActivity())){
 							newsLoadingFooterProcessbar.setVisibility(View.VISIBLE);
