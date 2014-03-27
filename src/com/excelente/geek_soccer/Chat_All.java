@@ -302,7 +302,7 @@ public class Chat_All extends Activity{
 					
 					if(position>0){
 						if(!txt_Item.getString("ch_date")
-								.equals(data.Chat_Item_list_Team.get(position-1).getString("ch_date")) ){
+								.equals(data.Chat_Item_list_All.get(position-1).getString("ch_date")) ){
 							TextView txt_D = new TextView(mContext);
 							txt_D.setLayoutParams(new LinearLayout.LayoutParams(
 									LayoutParams.MATCH_PARENT,
