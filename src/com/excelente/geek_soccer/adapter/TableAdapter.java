@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.Table_Page;
+import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.model.TableModel;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
