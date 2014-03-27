@@ -27,6 +27,7 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;

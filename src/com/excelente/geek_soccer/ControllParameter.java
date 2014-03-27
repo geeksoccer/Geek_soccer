@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONObject;
-
-import com.excelente.geek_soccer.Chat_Team.ImageAdapter;
-
 import android.graphics.Bitmap;
 import android.widget.ListView;
 

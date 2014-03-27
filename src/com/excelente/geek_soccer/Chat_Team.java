@@ -32,6 +32,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -69,9 +70,6 @@ public class Chat_Team extends Activity {
 	EditText Chat_input;
 	Button send_Btn;
 	Button sendSticker_Btn;
-
-	//private ListView lstView;
-	//private ImageAdapter imageAdapter;
 
 	WindowManager wm;
 	Boolean Sticker_Layout_Stat = false;
@@ -125,7 +123,7 @@ public class Chat_Team extends Activity {
 			data.imageAdapterChatTeam.notifyDataSetChanged();
 			data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
 		}
-		if(data.socket_Team==null){
+		if(data.socket_Team==null|| !data.socket_Team.isConnected()){
 			Chat_Loader();
 		}
 
@@ -281,8 +279,7 @@ public class Chat_Team extends Activity {
 					txt_T.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
-					// txt_T.setTypeface(Typeface.DEFAULT_BOLD);
-					// txt_layout.addView(txt_T);
+					txt_T.setTypeface(Typeface.DEFAULT_BOLD);
 
 					TextView txt_M = new TextView(mContext);
 					txt_M.setLayoutParams(new LinearLayout.LayoutParams(
@@ -300,17 +297,47 @@ public class Chat_Team extends Activity {
 							.setLayoutParams(new LinearLayout.LayoutParams(
 									LayoutParams.WRAP_CONTENT,
 									LayoutParams.MATCH_PARENT));
+					Profile_layout.setOrientation(LinearLayout.VERTICAL);
+					Profile_layout.setGravity(Gravity.CENTER_HORIZONTAL);
 					ImageView Profile_Pic = new ImageView(mContext);
 					Profile_Pic.setLayoutParams(new LinearLayout.LayoutParams(
 							50, 50));
+					
 					Profile_Pic.setImageResource(R.drawable.test_profile_pic);
 					Profile_layout.addView(Profile_Pic);
 
 					txt_N.setText(txt_Item.getString("m_nickname"));
 					txt_T.setPadding(5, 0, 5, 0);
 					txt_T.setText("(" + txt_Item.getString("ch_time") + ")");
-
+					Profile_layout.addView(txt_T);
+					
 					txt_layout.addView(name_layout);
+					if(position>0){
+						if(!txt_Item.getString("ch_date")
+								.equals(data.Chat_Item_list_Team.get(position-1).getString("ch_date")) ){
+							TextView txt_D = new TextView(mContext);
+							txt_D.setLayoutParams(new LinearLayout.LayoutParams(
+									LayoutParams.MATCH_PARENT,
+									LayoutParams.WRAP_CONTENT));
+							txt_D.setGravity(Gravity.CENTER);
+							txt_D.setText(txt_Item.getString("ch_date"));
+							txt_D.setTextColor(Color.BLACK);
+							txt_D.setTypeface(Typeface.DEFAULT_BOLD);
+							retval_Main.addView(txt_D);
+						}
+					}else{
+						TextView txt_D = new TextView(mContext);
+						txt_D.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.MATCH_PARENT,
+								LayoutParams.WRAP_CONTENT));
+						txt_D.setGravity(Gravity.CENTER);
+						txt_D.setText(txt_Item.getString("ch_date"));
+						txt_D.setTextColor(Color.BLACK);
+						txt_D.setTypeface(Typeface.DEFAULT_BOLD);
+						retval_Main.addView(txt_D);
+					}
+					
+					name_layout.addView(txt_N);
 					if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
 						Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
 								.getString("m_photo")));
@@ -319,8 +346,6 @@ public class Chat_Team extends Activity {
 								Profile_Pic);
 					}
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
-						name_layout.addView(txt_T);
-						name_layout.addView(txt_N);
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (data.BitMapHash.get(txt_Item
 									.getString("ch_msg")) != null) {
@@ -347,8 +372,6 @@ public class Chat_Team extends Activity {
 								| Gravity.CENTER_VERTICAL);
 						retval.addView(Profile_layout);
 					} else {
-						name_layout.addView(txt_N);
-						name_layout.addView(txt_T);
 						retval.setGravity(Gravity.LEFT
 								| Gravity.CENTER_VERTICAL);
 						retval.addView(Profile_layout);
@@ -437,24 +460,22 @@ public class Chat_Team extends Activity {
 					@Override
 					public void on(String event, IOAcknowledge ack,
 							Object... args) {
-						if (event.equals("updatechat") && args.length >= 4) {
-							if (!args[1].toString().equals("")) {
-								JSONObject json_ob = new JSONObject();
-								try {
-									json_ob.put("ch_uid", args[0].toString());
-									json_ob.put("m_nickname",
-											args[1].toString());
-									json_ob.put("ch_msg", args[2].toString());
-									json_ob.put("ch_type", args[3].toString());
-									json_ob.put("m_photo", args[4].toString());
-									json_ob.put("ch_time", args[5].toString());
-									data.Chat_Item_list_Team.add(json_ob);
-									chatHandle();
-								} catch (JSONException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
+						if (event.equals("updatechat") && args.length >= 1) {
+							try {
+								JSONObject json_ob = new JSONObject(args[0].toString());
+								json_ob.put("ch_uid", json_ob.getString("us"));
+								json_ob.put("m_nickname",json_ob.getString("nn"));
+								json_ob.put("ch_msg", json_ob.getString("ms"));
+								json_ob.put("ch_type", json_ob.getString("ty"));
+								json_ob.put("m_photo", json_ob.getString("ui"));
+								json_ob.put("ch_time", json_ob.getString("ft"));
+								json_ob.put("ch_date", json_ob.getString("fd"));
 								
+								data.Chat_Item_list_Team.add(json_ob);
+								chatHandle();
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
 						} else if (event.equals("updateusers")
 								&& args.length > 0) {

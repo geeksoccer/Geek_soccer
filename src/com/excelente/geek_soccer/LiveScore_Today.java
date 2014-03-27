@@ -136,6 +136,9 @@ public class LiveScore_Today extends Activity {
 			((LinearLayout) layOutlist).addView(data.lstViewLiveScore);
 			chk_ani = false;
 			data.imageAdapterLiveScore.notifyDataSetChanged();
+			if(data.socket_LiveScore==null || !data.socket_LiveScore.isConnected()){
+				Live_score_Loader();
+			}
 		}else{
 			new Live_score_1stLoader().execute();
 		}
@@ -442,6 +445,7 @@ public class LiveScore_Today extends Activity {
 								j_data.put("score_ag", score_ag);
 								data.Match_list_c_JSON.add(j_data);
 							}
+							
 							JSONObject j_data = new JSONObject();
 							j_data.put("League", League);
 							j_data.put("Time", "[1]" + Time);
@@ -488,7 +492,7 @@ public class LiveScore_Today extends Activity {
 					chk_ani = false;
 					data.imageAdapterLiveScore.notifyDataSetChanged();
 					
-					if(data.socket_LiveScore==null){
+					if(data.socket_LiveScore==null || !data.socket_LiveScore.isConnected()){
 						Live_score_Loader();
 					}
 				}
