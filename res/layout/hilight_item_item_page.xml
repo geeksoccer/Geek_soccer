@@ -64,7 +64,7 @@
     	        android:layout_marginLeft="10dp"
     	        android:layout_toRightOf="@+id/hilight_comments_textview"
     	        android:scaleType="fitXY"
-    	        android:src="@drawable/news_view" />
+    	        android:src="@drawable/news_view_selected" />
 
     	    <TextView
     	        android:id="@+id/hilight_reads_textview"

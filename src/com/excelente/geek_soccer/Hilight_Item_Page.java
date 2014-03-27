@@ -57,7 +57,6 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 	private FlipViewController contentFlipView;
 	private ListView commentListview;
 	private RelativeLayout footerLayout;
-	//private EditText commentHilightEdittext;
 	private Button commentSendButton;
 	
 	boolean loaded = false;
@@ -72,6 +71,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 	private CommentAdapter commentAdapter;
 
 	private EditText commentHilightEdittext;
+	private HilightItemsAdapter hilightItemAdaptor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +117,8 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		contentFlipView.setLayoutParams(params);
 		contentFlipView.setAnimationBitmapFormat(Bitmap.Config.RGB_565);
 		
-		HilightItemsAdapter hilightItemAdaptor = new HilightItemsAdapter(Hilight_Item_Page.this, hilightWaitProcessbar, Hilight_Page.getHilightListbyTag(tag)); 
-		 
+		hilightItemAdaptor = new HilightItemsAdapter(Hilight_Item_Page.this, hilightWaitProcessbar, Hilight_Page.getHilightListbyTag(tag)); 
+		  
 		contentFlipView.setAdapter(hilightItemAdaptor);
 		contentFlipView.setSelection(position);
 		contentFlipView.setOnTouchListener(new View.OnTouchListener() {
@@ -130,21 +130,35 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		});
 		
 		contentFlipView.setOnViewFlipListener(new ViewFlipListener() {
+			int oldPosition=-1;
 			
 			@Override
 			public void onViewFlipped(View view, int position) {
 				HilightModel hilight = (HilightModel) contentFlipView.getAdapter().getItem(position);
-				//hilight.setNewsReads(hilight.getNewsReads()+1);
+				
+				if(NetworkUtils.isNetworkAvailable(getApplicationContext())){ 
+					new PostHilightReads().execute(hilight.getHilightId());
+					hilight.setHilightViews(hilight.getHilightViews()+1);
+					hilight.setStatusView(1);
+					
+					if(oldPosition != position){
+						TextView viewtxt = (TextView) view.findViewById(R.id.hilight_reads_textview);
+						viewtxt.setText(String.valueOf(hilight.getHilightViews()));
+					}
+				}else{
+					Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(getApplicationContext()), Toast.LENGTH_SHORT).show();
+				}
+				
 				
 				headeTitleTextview.setText(hilight.getHilightTopic());
 				
-				//new PostNewsReads().execute(news.getNewsId());
 				
 				if(headerLayout.getVisibility() == View.VISIBLE){
 					doToggleBar();
 				}
 				
-				onRefesh(position+1);
+				oldPosition = position;
+				onRefesh(position);
 			}
 		});
          
@@ -166,7 +180,11 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 					CommentModel cm = (CommentModel)view.getAdapter().getItem(0);
 					if(!cm.equals(oldComment)){
 						//newsLoadingFooterProcessbar.setVisibility(View.VISIBLE);
-						new LoadCommentTask().execute(cm);
+						if(NetworkUtils.isNetworkAvailable(getApplicationContext())){ 
+							new LoadCommentTask().execute(cm);
+						}else{
+							Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(getApplicationContext()), Toast.LENGTH_SHORT).show();
+						}
 						//Toast.makeText(getActivity(), "Toast " + i++, Toast.LENGTH_SHORT).show();
 					} 
 					
@@ -197,6 +215,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 					@Override
 					public void run() {
 						contentFlipView.refreshPage(position); 
+						contentFlipView.refreshPage(position+1);
 					}
 				});
 			}
@@ -213,6 +232,9 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			footerLayout.startAnimation(animFadeinup);
 			commentListview.startAnimation(animFadein);
 		}else{
+			if(hilightItemAdaptor!=null)
+				hilightItemAdaptor.notifyDataSetChanged();
+			
 			headerLayout.setVisibility(View.GONE);
 			footerLayout.setVisibility(View.GONE);
 			commentListview.setVisibility(View.GONE);
@@ -284,7 +306,11 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 					comment.setNewsId(hilight.getHilightId());
 					comment.setCommentContent(content);
 					
-					new PostNewsComment().execute(comment);
+					if(NetworkUtils.isNetworkAvailable(getApplicationContext())){ 
+						new PostHilightComment(hilight).execute(comment);
+					}else{
+						Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(getApplicationContext()), Toast.LENGTH_SHORT).show();
+					}
 				}
 				
 				break;
@@ -317,22 +343,28 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		
 	}
 	
-	public class PostNewsReads extends AsyncTask<Integer, Void, Void>{
+	public class PostHilightReads extends AsyncTask<Integer, Void, Void>{
 		
 		@Override
 		protected Void doInBackground(Integer... params) {
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
-			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0])));
+			paramsPost.add(new BasicNameValuePair("hilight_id", String.valueOf(params[0])));
 			
 			HttpConnectUtils.getStrHttpPostConnect(HILIGHT_READS_URL, paramsPost);
 			
 			return null;
 		}
 
-	}
+	} 
 	
-	public class PostNewsComment extends AsyncTask<CommentModel, Void, CommentModel>{   
+	public class PostHilightComment extends AsyncTask<CommentModel, Void, CommentModel>{   
+		
+		HilightModel hilight;
+		
+		public PostHilightComment(HilightModel hilight) {
+			this.hilight = hilight;
+		}
 		
 		@Override
 		protected void onPreExecute() {
@@ -347,7 +379,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair(CommentModel.MEMBER_UID, String.valueOf(params[0].getMemberUid())));
-			paramsPost.add(new BasicNameValuePair(CommentModel.NEWS_ID, String.valueOf(params[0].getNewsId())));
+			paramsPost.add(new BasicNameValuePair(CommentModel.HILIGHT_ID, String.valueOf(params[0].getNewsId())));
 			paramsPost.add(new BasicNameValuePair(CommentModel.COMMENT_CONTENT, params[0].getCommentContent()));
 			
 			String result = HttpConnectUtils.getStrHttpPostConnect(HILIGHT_POST_COMMENTS_URL, paramsPost);
@@ -373,6 +405,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 				commentList.add(result);
 				commentAdapter.addFooter(commentList);
 				commentListview.setSelection(commentAdapter.getCount()-1);
+				hilight.setHilightComments(hilight.getHilightComments()+1);
 			}
 			
 			commentHilightEdittext.setText("");
@@ -393,7 +426,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		@Override
 		protected List<CommentModel> doInBackground(CommentModel... params) {
 			
-			String result = HttpConnectUtils.getStrHttpGetConnect(HILIGHT_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&news_id=" + params[0].getNewsId()); 
+			String result = HttpConnectUtils.getStrHttpGetConnect(HILIGHT_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&hilight_id=" + params[0].getNewsId()); 
 			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
 				return null;
 			}
