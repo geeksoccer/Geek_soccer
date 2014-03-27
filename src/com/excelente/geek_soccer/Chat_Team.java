@@ -109,7 +109,7 @@ public class Chat_Team extends Activity {
 		data.lstViewChatTeam.setDividerHeight(0);
 		Chat_list_LayOut = (LinearLayout) findViewById(R.id.Chat_list_Layout);
 		(Chat_list_LayOut).addView(data.lstViewChatTeam);
-
+		Log.d("TEST", "TEAMID::"+MemberSession.getMember().getTeamId());
 		if (MemberSession.getMember().getTeamId() == 1) {
 			data.SocketSelect = "5001";
 		} else if (MemberSession.getMember().getTeamId() == 2) {
@@ -120,6 +120,9 @@ public class Chat_Team extends Activity {
 			data.SocketSelect = "5004";
 		}
 		if (data.Chat_Item_list_Team.size() > 0) {
+			if(Chat_list_LayOut.getChildCount()>1){
+				Chat_list_LayOut.removeViewAt(0);
+			}
 			data.imageAdapterChatTeam.notifyDataSetChanged();
 			data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
 		}
@@ -314,7 +317,7 @@ public class Chat_Team extends Activity {
 					txt_layout.addView(name_layout);
 					if(position>0){
 						if(!txt_Item.getString("ch_date")
-								.equals(data.Chat_Item_list_Team.get(position-1).getString("ch_date")) ){
+								.contains(data.Chat_Item_list_Team.get(position-1).getString("ch_date")) ){
 							TextView txt_D = new TextView(mContext);
 							txt_D.setLayoutParams(new LinearLayout.LayoutParams(
 									LayoutParams.MATCH_PARENT,
@@ -471,6 +474,13 @@ public class Chat_Team extends Activity {
 								json_ob.put("ch_time", json_ob.getString("ft"));
 								json_ob.put("ch_date", json_ob.getString("fd"));
 								
+								json_ob.remove("us");
+								json_ob.remove("nn");
+								json_ob.remove("ms");
+								json_ob.remove("ty");
+								json_ob.remove("ui");
+								json_ob.remove("us");
+								json_ob.remove("fd");
 								data.Chat_Item_list_Team.add(json_ob);
 								chatHandle();
 							} catch (JSONException e) {
@@ -550,6 +560,9 @@ public class Chat_Team extends Activity {
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
+				if(Chat_list_LayOut.getChildCount()>1){
+					Chat_list_LayOut.removeViewAt(0);
+				}				
 				data.imageAdapterChatTeam.notifyDataSetChanged();
 				data.lstViewChatTeam.setSelection(data.imageAdapterChatTeam.getCount());
 			}

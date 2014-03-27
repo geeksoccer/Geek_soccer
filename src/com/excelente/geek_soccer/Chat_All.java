@@ -109,6 +109,9 @@ public class Chat_All extends Activity{
 		Chat_list_LayOut = (LinearLayout)findViewById(R.id.Chat_list_Layout);
 		(Chat_list_LayOut).addView(data.lstViewChatAll);
 		if(data.Chat_Item_list_All.size()>0){
+			if(Chat_list_LayOut.getChildCount()>1){
+				Chat_list_LayOut.removeViewAt(0);
+			}
 			data.imageAdapterChatAll.notifyDataSetChanged();
 			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 		}
@@ -458,7 +461,15 @@ public class Chat_All extends Activity{
 									json_ob.put("ch_type", json_ob.getString("ty"));
 									json_ob.put("m_photo", json_ob.getString("ui"));
 									json_ob.put("ch_time", json_ob.getString("ft"));
-									json_ob.put("ch_date", json_ob.getString("ft"));
+									json_ob.put("ch_date", json_ob.getString("fd"));
+									
+									json_ob.remove("us");
+									json_ob.remove("nn");
+									json_ob.remove("ms");
+									json_ob.remove("ty");
+									json_ob.remove("ui");
+									json_ob.remove("us");
+									json_ob.remove("fd");
 									
 									data.Chat_Item_list_All.add(json_ob);
 									chatHandle();
@@ -538,6 +549,9 @@ public class Chat_All extends Activity{
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
+				if(Chat_list_LayOut.getChildCount()>1){
+					Chat_list_LayOut.removeViewAt(0);
+				}
 				data.imageAdapterChatAll.notifyDataSetChanged();
 				data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 			}
