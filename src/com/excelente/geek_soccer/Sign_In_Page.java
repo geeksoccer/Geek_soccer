@@ -12,6 +12,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.NewsModel;
+import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.google.android.gms.auth.GoogleAuthException;
@@ -82,6 +83,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
 		mNotification.cancel(0);
 		mNotification.cancel(1); 
+		mNotification.cancel(3); 
 	}
 
 	private void initView() {
@@ -194,7 +196,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	
 	private void gotoMainPage(MemberModel memberSignedIn) {
         Intent intent = new Intent(Sign_In_Page.this, MainActivity.class);
-        intent.putExtra(NewsModel.NEWS_ID+"tag", getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0));  
+        intent.putExtra(NewsModel.NEWS_ID+"tag", getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0));
+        intent.putExtra(UpdateService.NOTIFY_INTENT, getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000));
         startActivity(intent);
         finish();
 	}
@@ -313,8 +316,9 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			}else if(memberSignedIn.getUid() < 1 && memberSignedIn.getTypeLogin().equals("google_plus")){
 				doSelectTeam();
 			}else{
-				gotoMainPage(memberSignedIn);
 				MemberSession.setMember(Sign_In_Page.this, memberSignedIn); 
+				if(MemberSession.hasMember())
+					gotoMainPage(memberSignedIn);
 			}
 		}
 		

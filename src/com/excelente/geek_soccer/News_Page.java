@@ -10,6 +10,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.excelente.geek_soccer.adapter.NewsAdapter;
 import com.excelente.geek_soccer.model.NewsModel;
+import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.PullToRefreshListView;
@@ -116,16 +117,18 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		
 		newsModelTeamList = null;
 		newsAdapterGlobal = null;
-		 
-		if (newsAdapterTeam == null) {
-			if (NetworkUtils.isNetworkAvailable(getActivity())){
-				if(getActivity().getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0)==0)
+		
+		if(getActivity().getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0)==1){
+			tabs.setCurrentTab(1);
+		}else{
+			if (newsAdapterTeam == null) {
+				if (NetworkUtils.isNetworkAvailable(getActivity())){
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(0, "tag0"));
-				else
-					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(0, "tag1"));
-			}else
-				Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+				}else
+					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+			}
 		}
+		
 	} 
 
 	private void initView() {
@@ -145,7 +148,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		spec.setIndicator("global news");
 		tabs.addTab(spec); 
 		
-		tabs.setCurrentTab(getActivity().getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0)); 
+		tabs.setCurrentTab(0); 
 		tabs.setOnTabChangedListener(this);
 		
 		TextView tvTeam = (TextView) tabs.getTabWidget().getChildAt(0).findViewById(android.R.id.title);
@@ -328,7 +331,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	
 	@SuppressLint("CommitPrefEdits")
 	private void storeMaxIdToPerference(NewsModel newsModel, String tag) {
-		SharedPreferences sharePre = getActivity().getSharedPreferences(com.excelente.geek_soccer.service.NewsUpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
+		SharedPreferences sharePre = getActivity().getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
 		Editor editSharePre = sharePre.edit();
 		editSharePre.putInt(tag, newsModel.getNewsId());
 		editSharePre.commit();
@@ -484,7 +487,6 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	@Override
 	public void onResume() {
 		super.onResume();
-		
 		if(tabs.getCurrentTabTag().equals("tag0") && newsAdapterTeam!=null){
 			newsAdapterTeam.notifyDataSetChanged();
 		}if(tabs.getCurrentTabTag().equals("tag1") && newsAdapterGlobal!=null){

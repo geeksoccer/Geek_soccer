@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.excelente.geek_soccer.model.MemberModel;
-import com.excelente.geek_soccer.service.NewsUpdateService;
+import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
@@ -53,7 +53,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		
 		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
 		
-		Intent serviceIntent = new Intent(this, NewsUpdateService.class);
+		Intent serviceIntent = new Intent(this, UpdateService.class);
 		serviceIntent.putExtra(MemberModel.MEMBER_KEY, (Serializable)MemberSession.getMember()); 
 		startService(serviceIntent);
 		
@@ -79,8 +79,17 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		//int dd = c.get(Calendar.DAY_OF_MONTH);
 		//String Date_Select = String.valueOf(yy)+"-"+set_DateMonth_format(mm+1) +"-"+set_DateMonth_format(dd);
 		//new Load_LiveScore_Data().data(mContext, Date_Select);
+	    setPageFromNotification();
 	}
 	
+	private void setPageFromNotification() {
+		if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 1000){
+			Page_Select(0, true);
+		}else if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 1000){
+			Page_Select(4, true);
+		}
+	}
+
 	//----------------------Ched: (For Admin Member)-----------------------------
 
 	private void menu_setting() {
@@ -224,6 +233,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		//Content_view.removeAllViews();
 		data.fragement_Section_set(index);
 		this.mViewPager.setPagingEnabled(true);
+		this.mViewPager.setOffscreenPageLimit(4);
 		
 		if(index==0){
 			title_bar.setText("News");

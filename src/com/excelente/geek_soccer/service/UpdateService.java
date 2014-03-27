@@ -12,6 +12,7 @@ import org.apache.http.message.BasicNameValuePair;
 import com.excelente.geek_soccer.MemberSession;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.Sign_In_Page;
+import com.excelente.geek_soccer.model.HilightModel;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
@@ -35,13 +36,15 @@ import android.provider.Settings.Secure;
 import android.support.v4.app.NotificationCompat;
 
 @SuppressLint("CommitPrefEdits")
-public class NewsUpdateService extends Service{
+public class UpdateService extends Service{
 	
 	private static final String MEMBER_TOKEN_URL = "http://183.90.171.209/gs_member/member_token.php";
 	public static final String GET_NEWS_UPDATE_URL = "http://183.90.171.209/gs_news/get_news_update.php";
+	public static final String GET_HILIGHT_UPDATE_URL = "http://183.90.171.209/gs_hilight/get_hilight_update.php";
 	
 	public static final String NOTIFY_INTENT = "NOTIFY_INTENT";
-	public static final int NOTIFY_INTENT_CODE = 1000;
+	public static final int NOTIFY_INTENT_CODE_NEWS = 1000;
+	public static final int NOTIFY_INTENT_CODE_HILIGHT = 2000;
 	public static final long NOTIFY_REPEAT = 1*60*60*1000; 
 	public static final String NOTIFY_CONNECT_FIRST = "NOTIFY_CONNECT_FIRST"; 
 	public static final String SHARE_PERFERENCE = "SHARE_PERFERENCE";
@@ -87,10 +90,12 @@ public class NewsUpdateService extends Service{
 				sharePre = getApplicationContext().getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
 				int newsIdTag0 = sharePre.getInt(NewsModel.NEWS_ID+"tag0", 0);
 				int newsIdTag1 = sharePre.getInt(NewsModel.NEWS_ID+"tag1", 0);
+				int hilightId = sharePre.getInt(HilightModel.HILIGHT_ID, 0);
 				if(NetworkUtils.isNetworkAvailable(getApplicationContext()) && MemberSession.hasMember()){
 					if(!isForeground(getApplicationContext().getPackageName())){ 
 						new LoadLastNewsTask("tag0").execute(getURLbyTag(member, newsIdTag0, "tag0"));
 						new LoadLastNewsTask("tag1").execute(getURLbyTag(member, newsIdTag1, "tag1")); 
+						new LoadLastHilightTask().execute(getURLHilight(hilightId));
 					}else{
 						//updateMainActivity();
 					}
@@ -105,6 +110,10 @@ public class NewsUpdateService extends Service{
 		
 		Timer timer = new Timer();
 		timer.schedule(newsTask, getTimeUpdate(), NOTIFY_REPEAT);
+	}
+	
+	private String getURLHilight(int id) {
+		return 	UpdateService.GET_HILIGHT_UPDATE_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=All&member_id=" + MemberSession.getMember().getUid();
 	}
 
 	private String getURLbyTag(MemberModel member, int id, String tag) {
@@ -183,7 +192,7 @@ public class NewsUpdateService extends Service{
 			editSharePre.commit();
 			
 			Intent nextToMain = new Intent(getApplicationContext(), Sign_In_Page.class);
-			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE);
+			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_HILIGHT);
 			PendingIntent pIntent;
 				
 			mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
@@ -213,6 +222,61 @@ public class NewsUpdateService extends Service{
 				mNotification.cancel(1);
 				mNotification.notify(1, notification);
 			}
+			
+			mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+			mVibrator.vibrate(pattern, -1);
+		}
+
+	}
+	
+public class LoadLastHilightTask extends AsyncTask<String, Void, List<HilightModel>>{ 
+		
+		private NotificationManager mNotification;
+		 
+		@Override
+		protected List<HilightModel> doInBackground(String... params){ 
+			
+			String result = HttpConnectUtils.getStrHttpGetConnect(params[0]); 
+			
+			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
+				return null;
+			}
+		
+			List<HilightModel> hilightList = HilightModel.convertHilightStrToList(result);
+			 
+			return hilightList;
+		}
+
+		@Override
+		protected void onPostExecute(List<HilightModel> result) {
+			super.onPostExecute(result);
+			if(result!=null && !result.isEmpty()){
+				setNotify(result);
+			}
+		}
+		
+		private void setNotify(List<HilightModel> result) { 
+			sharePre = getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
+			Editor editSharePre = sharePre.edit();
+			editSharePre.putInt(HilightModel.HILIGHT_ID, result.get(0).getHilightId());
+			editSharePre.commit();
+			
+			Intent nextToMain = new Intent(getApplicationContext(), Sign_In_Page.class);
+			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_HILIGHT);
+			PendingIntent pIntent; 
+				
+			mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
+			pIntent = PendingIntent.getActivity(getApplicationContext(), 0, nextToMain, 0);
+				
+			Notification notification = new NotificationCompat.Builder(getApplicationContext())
+				.setContentTitle(getResources().getString(R.string.title_bar_hilight)) 
+				.setContentText(result.get(0).getHilightTopic()) 
+				.setSmallIcon(R.drawable.game_icon_select)
+				.setContentIntent(pIntent)
+				.build();
+				
+			mNotification.cancel(3);
+			mNotification.notify(3, notification);
 			
 			mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 			mVibrator.vibrate(pattern, -1);

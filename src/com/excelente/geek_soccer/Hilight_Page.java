@@ -9,12 +9,17 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.excelente.geek_soccer.adapter.HilightAdapter;
 import com.excelente.geek_soccer.model.HilightModel;
+import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.PullToRefreshListView;
 import com.excelente.geek_soccer.view.PullToRefreshListView.OnRefreshListener;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -214,6 +219,17 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		hilightAdapterChamp = null;
 		hilightAdapterCapital = null;
 		
+		hilightListAll = null;
+		hilightListPl = null;
+		hilightListBl = null;
+		hilightListLl = null;
+		hilightListGl = null;
+		hilightListFl = null;
+		hilightListUcl = null;
+		hilightListUpl = null;
+		hilightListChamp = null;
+		hilightListCapital = null;
+		
 		if(hilightAdapterAll == null){
 			try{ 
 				if(NetworkUtils.isNetworkAvailable(getActivity()))
@@ -308,89 +324,114 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	}
 	
-	private void doLoadHilightToListView(List<HilightModel> hilightList, String tag) { 
-		
-		if(hilightList == null || hilightList.isEmpty()){ 
-			Toast.makeText(getActivity(), "No Hilight", Toast.LENGTH_SHORT).show();
-			return;
-		}
+	private void doLoadHilightToListView(List<HilightModel> hilightList, String tag) {
 		
 		if(tag.equals("tag0")){
-			Hilight_Page.hilightListAll = hilightList;
+			Hilight_Page.hilightListAll = getListView(hilightList, tag, Hilight_Page.hilightListAll);
 			
-			hilightAdapterAll = new HilightAdapter(getActivity(), hilightList);
+			if(Hilight_Page.hilightListAll==null)
+				return;
+			
+			hilightAdapterAll = new HilightAdapter(getActivity(), Hilight_Page.hilightListAll);
 			hilightListviewAll.setAdapter(hilightAdapterAll);
 			hilightListviewAll.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewAll, hilightAdapterAll, tag);
 		}else if(tag.equals("tag1")){
-			Hilight_Page.hilightListPl = hilightList;
+			Hilight_Page.hilightListPl = getListView(hilightList, tag, Hilight_Page.hilightListPl);
 			
-			hilightAdapterPl = new HilightAdapter(getActivity(), hilightList);
+			if(Hilight_Page.hilightListPl==null)
+				return;
+			
+			hilightAdapterPl = new HilightAdapter(getActivity(), Hilight_Page.hilightListPl);
 			hilightListviewPl.setAdapter(hilightAdapterPl);
 			hilightListviewPl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewPl, hilightAdapterPl, tag);
 		}else if(tag.equals("tag2")){
-			Hilight_Page.hilightListBl = hilightList;
+			Hilight_Page.hilightListBl = getListView(hilightList, tag, Hilight_Page.hilightListBl);
 			
-			hilightAdapterBl = new HilightAdapter(getActivity(), hilightList);
+			if(Hilight_Page.hilightListBl==null)
+				return;
+			
+			hilightAdapterBl = new HilightAdapter(getActivity(), Hilight_Page.hilightListBl);
 			hilightListviewBl.setAdapter(hilightAdapterBl);
 			hilightListviewBl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewBl, hilightAdapterBl, tag);
 		}else if(tag.equals("tag3")){
-			Hilight_Page.hilightListLl = hilightList;
+			Hilight_Page.hilightListLl = getListView(hilightList, tag, Hilight_Page.hilightListLl);
 			
-			hilightAdapterLl = new HilightAdapter(getActivity(), hilightList);
+			if(Hilight_Page.hilightListLl==null)
+				return;
+			
+			hilightAdapterLl = new HilightAdapter(getActivity(), Hilight_Page.hilightListLl);
 			hilightListviewLl.setAdapter(hilightAdapterLl);
 			hilightListviewLl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewLl, hilightAdapterLl, tag);
 		}else if(tag.equals("tag4")){
-			Hilight_Page.hilightListGl = hilightList;
+			Hilight_Page.hilightListGl = getListView(hilightList, tag, Hilight_Page.hilightListGl);
 			
-			hilightAdapterGl = new HilightAdapter(getActivity(), hilightList);
+			if(Hilight_Page.hilightListGl==null)
+				return;
+			
+			hilightAdapterGl = new HilightAdapter(getActivity(), Hilight_Page.hilightListGl);
 			hilightListviewGl.setAdapter(hilightAdapterGl);
 			hilightListviewGl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewGl, hilightAdapterGl, tag);
 		}else if(tag.equals("tag5")){
-			Hilight_Page.hilightListFl = hilightList;
+			Hilight_Page.hilightListFl = getListView(hilightList, tag, Hilight_Page.hilightListFl);
 			
-			hilightAdapterFl = new HilightAdapter(getActivity(), hilightList);
+			if(Hilight_Page.hilightListFl==null)
+				return;
+			
+			hilightAdapterFl = new HilightAdapter(getActivity(), Hilight_Page.hilightListFl);
 			hilightListviewFl.setAdapter(hilightAdapterFl);
 			hilightListviewFl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewFl, hilightAdapterFl, tag);
 		}else if(tag.equals("tag6")){
-			Hilight_Page.hilightListUcl = hilightList;
-			 
-			hilightAdapterUcl = new HilightAdapter(getActivity(), hilightList);
+			Hilight_Page.hilightListUcl = getListView(hilightList, tag, Hilight_Page.hilightListUcl);
+			
+			if(Hilight_Page.hilightListUcl==null)
+				return;
+			
+			hilightAdapterUcl = new HilightAdapter(getActivity(), Hilight_Page.hilightListUcl);
 			hilightListviewUcl.setAdapter(hilightAdapterUcl);
 			hilightListviewUcl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewUcl, hilightAdapterUcl, tag);
 		}else if(tag.equals("tag7")){
-			Hilight_Page.hilightListUpl = hilightList;
-			 
-			hilightAdapterUpl = new HilightAdapter(getActivity(), hilightList);
+			Hilight_Page.hilightListUpl = getListView(hilightList, tag, Hilight_Page.hilightListUpl);
+			
+			if(Hilight_Page.hilightListUpl==null)
+				return;
+			
+			hilightAdapterUpl = new HilightAdapter(getActivity(), Hilight_Page.hilightListUpl);
 			hilightListviewUpl.setAdapter(hilightAdapterUpl);
-			hilightListviewUpl .setVisibility(View.VISIBLE);
+			hilightListviewUpl.setVisibility(View.VISIBLE);
 			
-			setListViewEvents(hilightListviewUpl , hilightAdapterUpl, tag);
+			setListViewEvents(hilightListviewUpl, hilightAdapterUpl, tag);
 		}else if(tag.equals("tag8")){
-			Hilight_Page.hilightListChamp = hilightList; 
+			Hilight_Page.hilightListChamp = getListView(hilightList, tag, Hilight_Page.hilightListChamp);
 			
-			hilightAdapterChamp = new HilightAdapter(getActivity(), hilightList);
+			if(Hilight_Page.hilightListChamp==null)
+				return;
+			
+			hilightAdapterChamp = new HilightAdapter(getActivity(), Hilight_Page.hilightListChamp);
 			hilightListviewChamp.setAdapter(hilightAdapterChamp);
 			hilightListviewChamp.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewChamp, hilightAdapterChamp, tag);
 		}else if(tag.equals("tag9")){
-			Hilight_Page.hilightListCapital = hilightList;
-			 
-			hilightAdapterCapital = new HilightAdapter(getActivity(), hilightList);
+			Hilight_Page.hilightListCapital = getListView(hilightList, tag, Hilight_Page.hilightListCapital);
+			
+			if(Hilight_Page.hilightListCapital==null)
+				return;
+			
+			hilightAdapterCapital = new HilightAdapter(getActivity(), Hilight_Page.hilightListCapital);
 			hilightListviewCapital.setAdapter(hilightAdapterCapital);
 			hilightListviewCapital.setVisibility(View.VISIBLE);
 			
@@ -399,9 +440,41 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		
 	}
 	
+	private List<HilightModel> getListView(List<HilightModel> hilightlist, String tag, List<HilightModel> hilightModelList) {
+		if(hilightlist == null || hilightlist.isEmpty()){ 
+			//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show(); 
+			if(hilightModelList == null){  
+				Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
+				return new ArrayList<HilightModel>(); 
+			}
+		}else{
+			if(hilightModelList == null || hilightModelList.isEmpty()){
+				loaded = true;
+				storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID+tag);
+				//intentNewsUpdate(newsList.get(0));
+				return hilightlist;
+			}else if(hilightModelList.get(0).getHilightId() < hilightlist.get(0).getHilightId()){
+				loaded = true;
+				storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID+tag);
+				//intentNewsUpdate(newsList.get(0));
+				return hilightlist;
+			}
+		}
+		
+		return null;
+	}
+	
+	@SuppressLint("CommitPrefEdits")
+	private void storeMaxIdToPerference(HilightModel hilightModel, String tag) {
+		SharedPreferences sharePre = getActivity().getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
+		Editor editSharePre = sharePre.edit();
+		editSharePre.putInt(tag, hilightModel.getHilightId());
+		editSharePre.commit();
+	}
+
 	private void doLoadOldHilightToListView(List<HilightModel> result, String tag) { 
 		if(result == null || result.isEmpty()){
-			Toast.makeText(getActivity(), "No Old Hilight", Toast.LENGTH_SHORT).show();
+			oldHilight=null;
 			return;
 		}
 		
@@ -457,7 +530,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		protected void onPostExecute(List<HilightModel> result) {
 			super.onPostExecute(result);
 			if(!result.isEmpty()){
-				doLoadRefeshToListView(result, tag);
+				doLoadHilightToListView(result, tag); 
 			}else{
 				Toast.makeText(getActivity(), "No Hilight Update", Toast.LENGTH_SHORT).show();
 			}
@@ -467,7 +540,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	}
 	
-	private void doLoadRefeshToListView(List<HilightModel> result, String tag) {
+	/*private void doLoadRefeshToListView(List<HilightModel> result, String tag) {
 		
 		if(tag.equals("tag0")){
 			hilightAdapterAll.addHead(result);
@@ -491,7 +564,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterCapital.addHead(result);
 		}
 		
-	}
+	}*/
 	
 	private void setListViewEvents(final PullToRefreshListView hilightListview, final HilightAdapter hilightAdapter, final String tag) { 
 		hilightListview.setOnItemClickListener(this); 
@@ -508,7 +581,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 					HilightModel hm = (HilightModel)view.getAdapter().getItem(totalItemCount-1);  
 					if(!hm.equals(oldHilight)){
 						
-						if(NetworkUtils.isNetworkAvailable(getActivity())){
+						if(hm!=null && NetworkUtils.isNetworkAvailable(getActivity())){
 							hilightLoadingFooterProcessbar.setVisibility(View.VISIBLE);
 							new LoadOldHilightTask(hilightListview, hilightAdapter, tag).execute(getURLbyTag(hm.getHilightId(), tag));  
 						}else

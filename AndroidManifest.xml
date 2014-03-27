@@ -134,7 +134,7 @@
         </activity>
         
         <service 
-            android:name="com.excelente.geek_soccer.service.NewsUpdateService" 
+            android:name="com.excelente.geek_soccer.service.UpdateService" 
             android:process=":NewsUpdate_Service">
         </service>
         
