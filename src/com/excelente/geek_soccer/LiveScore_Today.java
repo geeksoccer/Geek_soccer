@@ -136,7 +136,7 @@ public class LiveScore_Today extends Activity {
 			((LinearLayout) layOutlist).addView(data.lstViewLiveScore);
 			chk_ani = false;
 			data.imageAdapterLiveScore.notifyDataSetChanged();
-			if(data.socket_LiveScore==null || !data.socket_LiveScore.isConnected()){
+			if(data.socket_LiveScore==null){
 				Live_score_Loader();
 			}
 		}else{
@@ -492,7 +492,7 @@ public class LiveScore_Today extends Activity {
 					chk_ani = false;
 					data.imageAdapterLiveScore.notifyDataSetChanged();
 					
-					if(data.socket_LiveScore==null || !data.socket_LiveScore.isConnected()){
+					if(data.socket_LiveScore==null){
 						Live_score_Loader();
 					}
 				}

@@ -123,7 +123,7 @@ public class Chat_Team extends Activity {
 			data.imageAdapterChatTeam.notifyDataSetChanged();
 			data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
 		}
-		if(data.socket_Team==null|| !data.socket_Team.isConnected()){
+		if(data.socket_Team==null){
 			Chat_Loader();
 		}
 
