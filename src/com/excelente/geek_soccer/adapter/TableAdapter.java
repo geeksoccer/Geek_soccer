@@ -27,7 +27,6 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -144,71 +143,70 @@ public class TableAdapter extends BaseAdapter{
 		return convertView;
 	}
 
-	@SuppressWarnings("deprecation")
 	private void setSeqColor(View convertView, TableModel tableModel) { 
 		if(tableModel.getTableSeq()%2 == 0){ 
-			convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_gray)); 
+			convertView.setBackgroundResource(R.drawable.bg_press_table_gray); 
 		}else{
-			convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_white)); 
+			convertView.setBackgroundResource(R.drawable.bg_press_table_white); 
 		}
 		
 		if(tableModel.getTableLeague().equals(Table_Page.PREMIER_LEAGUE)){
 			if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
 			}else if(tableModel.getTableSeq() < 5){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
 			}else if(tableModel.getTableSeq() < 6){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_blue_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
 			}else if(tableModel.getTableSeq() > 17){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_red)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
 			}
 		}else if(tableModel.getTableLeague().equals(Table_Page.BUNDESLIGA)){
 			if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
 			}else if(tableModel.getTableSeq() < 5){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
 			}else if(tableModel.getTableSeq() < 7){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_blue_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
 			}else if(tableModel.getTableSeq() > 16){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_red)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
 			}else if(tableModel.getTableSeq() > 15){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_yellow)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_yellow); 
 			}
 		}else if(tableModel.getTableLeague().equals(Table_Page.LALIGA)){
 			if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
 			}else if(tableModel.getTableSeq() < 5){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
 			}else if(tableModel.getTableSeq() < 7){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_blue_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
 			}else if(tableModel.getTableSeq() > 17){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_red)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
 			}
 		}else if(tableModel.getTableLeague().equals(Table_Page.CALCAIO_SERIE_A)){
 			if(tableModel.getTableSeq() < 3){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
 			}else if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
 			}else if(tableModel.getTableSeq() < 6){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_blue_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
 			}else if(tableModel.getTableSeq() > 17){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_red)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
 			}
 		}else if(tableModel.getTableLeague().equals(Table_Page.LEAGUE_DE_LEAGUE1)){
 			if(tableModel.getTableSeq() < 3){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
 			}else if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
 			}else if(tableModel.getTableSeq() < 6){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_blue_light)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
 			}else if(tableModel.getTableSeq() > 17){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_red)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
 			}
 		}else if(tableModel.getTableLeague().equals(Table_Page.THAI_PREMIER_LEAGUE)){
 			if(tableModel.getTableSeq() < 2){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_green)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
 			}else if(tableModel.getTableSeq() > 15){
-				convertView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_press_table_red)); 
+				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
 			}
 		}
 	}
@@ -326,4 +324,12 @@ public class TableAdapter extends BaseAdapter{
 	}
 
 
+	public void add(List<TableModel> tableList) { 
+		for (TableModel tableModel : tableList) { 
+			this.tableList.add(tableModel);
+		}
+		
+		notifyDataSetChanged();
+	}
+	
 }
