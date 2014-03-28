@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,6 +52,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class Chat_Team extends Activity {
 	int width;
@@ -79,6 +81,7 @@ public class Chat_Team extends Activity {
 	ImageView TeamRoom;
 
 	String Stick_Set = "1_";
+	LinearLayout StickerSelectorLayout;
 	ImageView Stick_1;
 	ImageView Stick_2;
 	ImageView Stick_3;
@@ -160,12 +163,29 @@ public class Chat_Team extends Activity {
 					for (String key : data.Sticker_UrlSet.keySet()) {
 						Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet.get(key));
 						if (bit != null) {
-							Sticker_ImgVSet.get(key).setImageBitmap(bit);
+							Sticker_ImgVSet.get(key.replaceAll(Stick_Set, "")).setImageBitmap(bit);
 						} else {
 							startDownload(data.Sticker_UrlSet.get(key),
-									Sticker_ImgVSet.get(key));
+									Sticker_ImgVSet.get(key.replaceAll(Stick_Set, "")));
 						}
 					}
+					StickerSelectorLayout.removeAllViews();
+					for(int i=0; i<10; i++){
+						Button StickSet_1 = new Button(mContext);
+						StickSet_1.setText("SET "+(i+1));
+						StickerSelectorLayout.addView(StickSet_1);
+					}
+				}
+			}
+		});
+		
+		data.lstViewChatTeam.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v,
+					int position, long id) {
+				if (Sticker_Layout_Stat) {
+					StikerV.setVisibility(RelativeLayout.GONE);
+					Sticker_Layout_Stat = false;
 				}
 			}
 		});
@@ -178,6 +198,8 @@ public class Chat_Team extends Activity {
 		StikerV.setVisibility(RelativeLayout.GONE);
 		input_layout.addView(StikerV, 0);
 
+		StickerSelectorLayout = (LinearLayout)StikerV.findViewById(R.id.StickerSelecterLayout);		
+		
 		Stick_1 = (ImageView) StikerV.findViewById(R.id.stic_1);
 		Stick_2 = (ImageView) StikerV.findViewById(R.id.stic_2);
 		Stick_3 = (ImageView) StikerV.findViewById(R.id.stic_3);
@@ -191,25 +213,25 @@ public class Chat_Team extends Activity {
 		Stick_11 = (ImageView) StikerV.findViewById(R.id.stic_11);
 		Stick_12 = (ImageView) StikerV.findViewById(R.id.stic_12);
 
-		Sticker_ImgVSet.put(Stick_Set + "1", Stick_1);
-		Sticker_ImgVSet.put(Stick_Set + "2", Stick_2);
-		Sticker_ImgVSet.put(Stick_Set + "3", Stick_3);
-		Sticker_ImgVSet.put(Stick_Set + "4", Stick_4);
-		Sticker_ImgVSet.put(Stick_Set + "5", Stick_5);
-		Sticker_ImgVSet.put(Stick_Set + "6", Stick_6);
-		Sticker_ImgVSet.put(Stick_Set + "7", Stick_7);
-		Sticker_ImgVSet.put(Stick_Set + "8", Stick_8);
-		Sticker_ImgVSet.put(Stick_Set + "9", Stick_9);
-		Sticker_ImgVSet.put(Stick_Set + "10", Stick_10);
-		Sticker_ImgVSet.put(Stick_Set + "11", Stick_11);
-		Sticker_ImgVSet.put(Stick_Set + "12", Stick_12);
+		Sticker_ImgVSet.put("1", Stick_1);
+		Sticker_ImgVSet.put("2", Stick_2);
+		Sticker_ImgVSet.put("3", Stick_3);
+		Sticker_ImgVSet.put("4", Stick_4);
+		Sticker_ImgVSet.put("5", Stick_5);
+		Sticker_ImgVSet.put("6", Stick_6);
+		Sticker_ImgVSet.put("7", Stick_7);
+		Sticker_ImgVSet.put("8", Stick_8);
+		Sticker_ImgVSet.put("9", Stick_9);
+		Sticker_ImgVSet.put("10", Stick_10);
+		Sticker_ImgVSet.put("11", Stick_11);
+		Sticker_ImgVSet.put("12", Stick_12);
 
 		for (final String key : Sticker_ImgVSet.keySet()) {
 			Sticker_ImgVSet.get(key).setOnClickListener(
 					new View.OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							Send_Stick(key);
+							Send_Stick(Stick_Set+key);
 						}
 					});
 		}

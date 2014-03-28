@@ -4,104 +4,121 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-   <LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="wrap_content"
+        android:background="@color/gray"
         android:baselineAligned="false"
-        android:orientation="vertical"
         android:gravity="center_vertical"
-        android:background="@color/gray" >
+        android:orientation="vertical" >
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="30dp"
-           android:background="@color/silver" >
-       </LinearLayout>
-       
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="50dp" >
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/silver" >
 
-           <ImageView
-               android:id="@+id/stic_1"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_2"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_3"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_4"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_5"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_6"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
+            <LinearLayout
+                android:id="@+id/StickerSelecterLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </HorizontalScrollView>
 
-       </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp" >
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="50dp" >
-           <ImageView
-               android:id="@+id/stic_7"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_8"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_9"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_10"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_11"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-           <ImageView
-               android:id="@+id/stic_12"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               android:layout_weight="1"
-               android:src="@drawable/livescore_h" />
-       </LinearLayout>
-        
+            <ImageView
+                android:id="@+id/stic_1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_4"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_6"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp" >
+
+            <ImageView
+                android:id="@+id/stic_7"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_8"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_9"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_10"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_11"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+
+            <ImageView
+                android:id="@+id/stic_12"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/livescore_h" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
