@@ -524,6 +524,8 @@ public class LiveScore_Yesterday extends Activity {
 			e1.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (OutOfMemoryError e) {
+			Log.e("err", "Out of memory error :(");
 		}
 		// double image_size = lenghtOfFile;
 		if (out != null) {

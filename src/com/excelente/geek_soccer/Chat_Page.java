@@ -55,6 +55,7 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
         TabSpec Featured = tabHost
 		  .newTabSpec("Team")
 		  .setContent(FeaturedIntent);
+        
         if(teamID == 1){
         	Featured.setIndicator("Arsenal Room");
 		}else if(teamID == 2){

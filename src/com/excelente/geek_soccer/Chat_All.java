@@ -92,11 +92,13 @@ public class Chat_All extends Activity{
 	ImageView Stick_11;
 	ImageView Stick_12;
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
+	SessionManager sesPrefer;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_layout);
         mContext=this;
+        sesPrefer = new SessionManager(mContext);
         data.lstViewChatAll = new ListView(mContext);
 		data.lstViewChatAll.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -644,6 +646,8 @@ public class Chat_All extends Activity{
 			e1.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (OutOfMemoryError e) {
+			Log.e("err", "Out of memory error :(");
 		}
 		// double image_size = lenghtOfFile;
 		if (out != null) {
@@ -689,11 +693,13 @@ public class Chat_All extends Activity{
 					_Url = "http://183.90.171.209/chat/stk/"+url;
 				}
 				Bitmap pic = null;
-				if(data.BitMapHash.get(url)==null){
+				if(sesPrefer.getImageSession(url)==null){
 					pic = loadImageFromUrl(_Url);
+					sesPrefer.createNewImageSession(url, pic);
 					data.BitMapHash.put(url, pic);
-				}else{
-					pic = data.BitMapHash.get(url);
+				} else {
+					pic = sesPrefer.getImageSession(url);
+					data.BitMapHash.put(url, pic);
 				}
 				final Bitmap _pic = pic;
 				

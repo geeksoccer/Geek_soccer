@@ -23,7 +23,6 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
@@ -93,11 +92,13 @@ public class Chat_Team extends Activity {
 	ImageView Stick_11;
 	ImageView Stick_12;
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
+	SessionManager sesPrefer;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat_layout);
 		mContext = this;
+		sesPrefer = new SessionManager(mContext);
 		data.lstViewChatTeam = new ListView(mContext);
 		data.lstViewChatTeam.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -124,7 +125,7 @@ public class Chat_Team extends Activity {
 				Chat_list_LayOut.removeViewAt(0);
 			}
 			data.imageAdapterChatTeam.notifyDataSetChanged();
-			data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
+			data.lstViewChatTeam.setSelection(data.imageAdapterChatTeam.getCount());
 		}
 		if(data.socket_Team==null){
 			Chat_Loader();
@@ -157,8 +158,7 @@ public class Chat_Team extends Activity {
 					StikerV.setVisibility(RelativeLayout.ABOVE);
 					Sticker_Layout_Stat = true;
 					for (String key : data.Sticker_UrlSet.keySet()) {
-						Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
-								.get(key));
+						Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet.get(key));
 						if (bit != null) {
 							Sticker_ImgVSet.get(key).setImageBitmap(bit);
 						} else {
@@ -654,6 +654,8 @@ public class Chat_Team extends Activity {
 			e1.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (OutOfMemoryError e) {
+			Log.e("err", "Out of memory error :(");
 		}
 		// double image_size = lenghtOfFile;
 		if (out != null) {
@@ -699,11 +701,13 @@ public class Chat_Team extends Activity {
 					_Url = "http://183.90.171.209/chat/stk/" + url;
 				}
 				Bitmap pic = null;
-				if (data.BitMapHash.get(url) == null) {
+				if(sesPrefer.getImageSession(url)==null){
 					pic = loadImageFromUrl(_Url);
+					sesPrefer.createNewImageSession(url, pic);
 					data.BitMapHash.put(url, pic);
 				} else {
-					pic = data.BitMapHash.get(url);
+					pic = sesPrefer.getImageSession(url);
+					data.BitMapHash.put(url, pic);
 				}
 				final Bitmap _pic = pic;
 
