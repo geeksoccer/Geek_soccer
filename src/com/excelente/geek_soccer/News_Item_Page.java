@@ -25,8 +25,10 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnDragListener;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -140,16 +142,19 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		});
 		
 		contentFlipView.setOnViewFlipListener(new ViewFlipListener() {
-			int oldPosition=-1;
+			int oldPosition=0;
 			
 			@Override
 			public void onViewFlipped(View view, int position) {
+				//contentFlipView.refreshPage(view);
 				NewsModel news = (NewsModel) contentFlipView.getAdapter().getItem(position);
-				new PostNewsReads().execute(news.getNewsId());
-				news.setStatusView(1);
-				news.setNewsReads(news.getNewsReads()+1);
 				
 				if(oldPosition != position){
+					
+					new PostNewsReads().execute(news.getNewsId());
+					news.setStatusView(1);
+					news.setNewsReads(news.getNewsReads()+1);
+					
 					TextView viewtxt = (TextView) view.findViewById(R.id.news_reads_textview);
 					viewtxt.setText(String.valueOf(news.getNewsReads()));
 				}
@@ -162,6 +167,15 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				
 				oldPosition = position;
 				onRefesh(position);
+			}
+		});
+		
+		contentFlipView.setOnDragListener(new OnDragListener() {
+			
+			@Override
+			public boolean onDrag(View v, DragEvent event) {
+				
+				return false;
 			}
 		});
          
@@ -472,7 +486,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 					
 					@Override
 					public void run() {
-						contentFlipView.refreshPage(position); 
+						contentFlipView.refreshPage(position);
 					}
 				});
 			}

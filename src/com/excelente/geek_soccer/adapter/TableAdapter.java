@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.Table_Page;
-import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.model.TableModel;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -25,6 +24,7 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -39,13 +39,15 @@ import android.widget.TextView;
 
 public class TableAdapter extends BaseAdapter{
 	
+	Activity activity;
 	Context context;
 	List<TableModel> tableList;
 	private int count_ani = -1;
 	
 	HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
 	
-	public TableAdapter(Context context, List<TableModel> tableList) {
+	public TableAdapter(Activity context, List<TableModel> tableList) {
+		activity = context;
 		this.context = context;
 		this.tableList = tableList;
 	}
@@ -66,8 +68,8 @@ public class TableAdapter extends BaseAdapter{
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		TableHolder tableHolder; 
-		TableModel tableModel = (TableModel) getItem(position); 
+		final TableHolder tableHolder; 
+		final TableModel tableModel = (TableModel) getItem(position); 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
        
@@ -93,7 +95,7 @@ public class TableAdapter extends BaseAdapter{
         }else{
         	tableHolder = (TableHolder) convertView.getTag();
         }
-     
+      
         if(urlBitmap.containsKey(tableModel.getTableTeamImage().replace(".gif", ".png"))){
         	tableHolder.tableTeamImage.setImageBitmap(urlBitmap.get(tableModel.getTableTeamImage().replace(".gif", ".png"))); 
         }else{

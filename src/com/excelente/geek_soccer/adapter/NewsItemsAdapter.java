@@ -42,6 +42,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+@SuppressLint("SetJavaScriptEnabled")
 public class NewsItemsAdapter extends BaseAdapter{
 	
 	public interface Callback {
@@ -53,6 +54,8 @@ public class NewsItemsAdapter extends BaseAdapter{
 	ProgressBar newsWaitProcessbar;
 	
 	News_Item_Page newsItemPage;
+	
+	NewsItemView newsItemView;
 	
 	Callback call;
 
@@ -83,8 +86,6 @@ public class NewsItemsAdapter extends BaseAdapter{
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
-        NewsItemView newsItemView;
-        
         if(convertView==null){
         	newsItemView = new NewsItemView();
         	convertView = mInflater.inflate(R.layout.news_item_item_page, parent, false);
@@ -101,22 +102,25 @@ public class NewsItemsAdapter extends BaseAdapter{
         }else{
         	newsItemView = (NewsItemView)convertView.getTag();
         }
-        
+          
         NewsModel newsModel = (NewsModel) getItem(position);
-        
-        setVisibleNewsContent(false, newsItemView);
         doLoadNewsToViews(position, newsModel, newsItemView);
         
 		return convertView;
 	}
-	
-	@SuppressLint({ "NewApi", "SetJavaScriptEnabled" })  
+	 
 	private void doLoadNewsToViews(final int position, final NewsModel newsModel, final NewsItemView newsItemView) { 
 		
 		newsItemView.newsTopicTextview.setText(newsModel.getNewsTopic());
 		newsItemView.newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(mContext, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime()))); 
 		newsItemView.newsCreditTextview.setText(mContext.getString(R.string.label_credit) + " " + newsModel.getNewsCredit());
-        
+	    
+		newsItemView.newsContentWebview.clearHistory();
+		newsItemView.newsContentWebview.clearCache(true);
+		newsItemView.newsContentWebview.loadUrl("about:blank");
+		newsItemView.newsContentWebview.freeMemory();  //new code   
+		newsItemView.newsContentWebview.pauseTimers(); //new code
+		
 		newsItemView.newsContentWebview.getSettings().setDisplayZoomControls(false);
 		newsItemView.newsContentWebview.getSettings().setJavaScriptEnabled(true);
 		newsItemView.newsContentWebview.getSettings().setBuiltInZoomControls(true); 
@@ -124,7 +128,7 @@ public class NewsItemsAdapter extends BaseAdapter{
         
 		SwipeDetector swipeDetector = new SwipeDetector(); 
 		newsItemView.newsContentWebview.setOnTouchListener(swipeDetector);
-        //newsContentWebview.getSettings().setDefaultTextEncodingName("utf-8");
+        //newsItemView.newsContentWebview.getSettings().setDefaultTextEncodingName("utf-8");
 		newsItemView.newsContentWebview.setWebChromeClient(new WebChromeClient(){
 
 			public void onProgressChanged(WebView view, int progress){
@@ -212,6 +216,8 @@ public class NewsItemsAdapter extends BaseAdapter{
         	
         	@Override
         	public void onPageStarted(final WebView view, String url, Bitmap favicon) {
+        		
+        		newsWaitProcessbar.setVisibility(View.VISIBLE);
         		timeout = true;
         		super.onPageStarted(view, url, favicon);
         		
@@ -232,10 +238,11 @@ public class NewsItemsAdapter extends BaseAdapter{
         	@Override
         	public void onPageFinished(WebView view, String url) {
         		super.onPageFinished(view, url);
-        		setVisibleNewsContent(true, newsItemView); 
-        		timeout = false;
         		
+        		timeout = false;
+        		newsWaitProcessbar.setVisibility(View.GONE);
         		call.onRefesh(position);
+        		
         	}
         });
         
@@ -291,18 +298,6 @@ public class NewsItemsAdapter extends BaseAdapter{
 			newsItemView.newsLikeImageview.setImageResource(R.drawable.news_likes);
 		}else{
 			newsItemView.newsLikeImageview.setImageResource(R.drawable.news_likes_selected);
-		}
-	}
-
-	private void setVisibleNewsContent(boolean visible, NewsItemView newsItemView) {
-		if(!visible){
-			newsItemView.newsContentWebview.setVisibility(View.GONE);
-			newsItemView.newsCreditTextview.setVisibility(View.GONE);
-			newsWaitProcessbar.setVisibility(View.VISIBLE);
-		}else{
-			newsItemView.newsContentWebview.setVisibility(View.VISIBLE);
-			newsItemView.newsCreditTextview.setVisibility(View.VISIBLE);
-			newsWaitProcessbar.setVisibility(View.GONE);
 		}
 	}
 	

@@ -2,8 +2,6 @@ package com.excelente.geek_soccer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -16,12 +14,10 @@ import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.PullToRefreshListView;
 import com.excelente.geek_soccer.view.PullToRefreshListView.OnRefreshListener;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +29,8 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabSpec;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TabWidget;
@@ -40,6 +38,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class News_Page extends Fragment implements OnItemClickListener, OnTabChangeListener{
+	
+	interface OnNewsLoadedListener{
+		public void onNewsLoaded();
+	}
 	
 	public static final String ITEM_INDEX = "NEWS_MODEL";
 	public static final String NEWS_LIST_MODEL = "NEWS_LIST_MODEL"; 
@@ -78,20 +80,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        Timer timeStart = new Timer();
-        timeStart.schedule(new TimerTask() {
-			
-			@Override
-			public void run() {
-				getActivity().runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-				        initSubview();
-					}
-				});
-			}
-		}, 0);
+        initSubview();
 	}
 
 	private void initSubview() {
@@ -116,7 +105,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		oldNews = null;
 		
 		newsModelTeamList = null;
-		newsAdapterGlobal = null;
+		newsModelGlobalList = null;
 		
 		if(getActivity().getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0)==1){
 			tabs.setCurrentTab(1);
@@ -136,30 +125,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		
 		tabs = (TabHost)newsPage.findViewById(R.id.tabhost); 
 		tabs.setup();
-        
-		TabHost.TabSpec spec = tabs.newTabSpec("tag0");  
-		spec.setContent(R.id.news_listview_team);
-		spec.setIndicator("team news");   
-		tabs.addTab(spec);
 		
-		
-		spec = tabs.newTabSpec("tag1"); 
-		spec.setContent(R.id.news_listview_global); 
-		spec.setIndicator("global news");
-		tabs.addTab(spec); 
+		setupTab(R.id.news_listview_team,  "tag0", getResources().getString(R.string.team_news), R.drawable.news_likes_selected, true);
+		setupTab(R.id.news_listview_global,  "tag1", getResources().getString(R.string.global_news), R.drawable.world, false);
 		
 		tabs.setCurrentTab(0); 
 		tabs.setOnTabChangedListener(this);
-		
-		TextView tvTeam = (TextView) tabs.getTabWidget().getChildAt(0).findViewById(android.R.id.title);
-		Drawable imgTeam = getResources().getDrawable(R.drawable.news_likes_selected); 
-		imgTeam.setBounds(0, 0, 40, 40);
-		tvTeam.setCompoundDrawables(null, imgTeam, null, null); 
-		
-		TextView tvGlobal = (TextView) tabs.getTabWidget().getChildAt(1).findViewById(android.R.id.title);
-		Drawable imgGlobal = getResources().getDrawable(R.drawable.world);
-		imgGlobal.setBounds(0, 0, 40, 40);
-		tvGlobal.setCompoundDrawables(null, imgGlobal, null, null);
 		
 		tabWidget = (TabWidget) newsPage.findViewById(android.R.id.tabs); 
 		
@@ -167,6 +138,25 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			tabWidget.setVisibility(View.GONE);
 			tabs.setCurrentTab(1);
 		}
+	}
+	
+	private void setupTab(Integer layoutId, String name, String label, Integer iconId, boolean selected) {
+
+	    View tab = LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
+	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
+	    TextView text = (TextView) tab.findViewById(R.id.text);
+	    View viewSelected = tab.findViewById(R.id.selected);
+	    if(selected)
+	    	viewSelected.setVisibility(View.VISIBLE);
+	    
+	    if(iconId != null){
+	        image.setImageResource(iconId);
+	    }
+	    text.setText(label);
+
+	    TabSpec spec = tabs.newTabSpec(name).setIndicator(tab).setContent(layoutId);
+	    tabs.addTab(spec);
+
 	}
 	
 	private String getURLbyTag(int id, String tag) {
@@ -227,6 +217,8 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			}
 			
 			loaded = true;
+			
+			
 		}
 
 	}
@@ -311,7 +303,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 					loaded = true;
 					storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+tag);
 					//intentNewsUpdate(newsList.get(0));
-				}else if(newsList.get(0).getNewsId() < newsList.get(0).getNewsId()){
+				}else if(newsModelGlobalList.get(0).getNewsId() < newsList.get(0).getNewsId()){
 					newsModelGlobalList = newsList; 
 					loaded = true;
 					storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+tag);
@@ -329,7 +321,6 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		
 	}
 	
-	@SuppressLint("CommitPrefEdits")
 	private void storeMaxIdToPerference(NewsModel newsModel, String tag) {
 		SharedPreferences sharePre = getActivity().getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
 		Editor editSharePre = sharePre.edit();
@@ -441,7 +432,14 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 
 	@Override
 	public void onTabChanged(String tag) {
+		
+		View view0 = tabs.getTabWidget().getChildAt(0).findViewById(R.id.selected);
+		View view1 = tabs.getTabWidget().getChildAt(1).findViewById(R.id.selected);
+		
 		if(tag.equals("tag0")){
+			view0.setVisibility(View.VISIBLE);
+			view1.setVisibility(View.INVISIBLE);
+			
 			if(newsAdapterTeam == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity()))
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(0, "tag0"));
@@ -449,6 +447,9 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 			}
 		}else if(tag.equals("tag1")){
+			view0.setVisibility(View.INVISIBLE);
+			view1.setVisibility(View.VISIBLE);
+			
 			if(newsAdapterGlobal == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity()))
 					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(0, "tag1"));

@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -48,7 +49,7 @@ public class NewsAdapter extends BaseAdapter{
 	
     HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
     
-	public NewsAdapter(Context context, List<NewsModel> newsList) {
+	public NewsAdapter(Activity context, List<NewsModel> newsList) {
 		this.context = context;
 		this.newsList = newsList;
 	}
@@ -57,11 +58,11 @@ public class NewsAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		//Log.e("POSITION+++++++++++++++++", String.valueOf(position));
-		NewsModel newsModel = (NewsModel) getItem(position);
+		final NewsModel newsModel = (NewsModel) getItem(position);
 		 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
-        if(position==0){
+        if(position==0){ 
         	doConfigImageLoader(200,200);
     		convertView = mInflater.inflate(R.layout.news_page_last, parent, false);
     	}else{

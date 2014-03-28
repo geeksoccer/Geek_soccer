@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -48,7 +49,7 @@ public class HilightAdapter extends BaseAdapter{
     
     HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
 	
-	public HilightAdapter(Context context, List<HilightModel> hilightList) {
+	public HilightAdapter(Activity context, List<HilightModel> hilightList) {
 		this.context = context;
 		this.hilightList = hilightList; 
 	}
@@ -75,11 +76,11 @@ public class HilightAdapter extends BaseAdapter{
 		//Log.e("POSITION+++++++++++++++++", String.valueOf(position));
 		final HilightHolder hilightHolder; 
 		
-		HilightModel hilightModel = (HilightModel) getItem(position); 
+		final HilightModel hilightModel = (HilightModel) getItem(position); 
 		 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
-        hilightHolder = new HilightHolder();
+        hilightHolder = new HilightHolder(); 
         
 	        if(position==0){
 	        	doConfigImageLoader(200,200);

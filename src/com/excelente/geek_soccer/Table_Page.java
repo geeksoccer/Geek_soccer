@@ -2,8 +2,6 @@ package com.excelente.geek_soccer;
 
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.excelente.geek_soccer.adapter.TableAdapter;
 import com.excelente.geek_soccer.model.TableModel;
@@ -73,20 +71,12 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        Timer timeStart = new Timer();
-        timeStart.schedule(new TimerTask() {
-			
-			@Override
-			public void run() {
-				getActivity().runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-						 initSubView();
-					}
-				});
-			}
-		}, 500);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		initSubView();
 	}
 
 	private void initView() {

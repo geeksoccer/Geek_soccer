@@ -203,7 +203,7 @@ public class UpdateService extends Service{
 				Notification notification = new NotificationCompat.Builder(getApplicationContext())
 				.setContentTitle(getResources().getString(R.string.team_news)) 
 				.setContentText(result.get(0).getNewsTopic())
-				.setSmallIcon(R.drawable.ic_launcher)
+				.setSmallIcon(R.drawable.news_h)
 				.setContentIntent(pIntent)
 				.build();
 				
@@ -216,7 +216,7 @@ public class UpdateService extends Service{
 				Notification notification = new NotificationCompat.Builder(getApplicationContext())
 				.setContentTitle(getResources().getString(R.string.global_news)) 
 				.setContentText(result.get(0).getNewsTopic())
-				.setSmallIcon(R.drawable.ic_launcher)
+				.setSmallIcon(R.drawable.news_h)
 				.setContentIntent(pIntent)
 				.build();
 				mNotification.cancel(1);

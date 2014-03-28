@@ -474,7 +474,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	private void doLoadOldHilightToListView(List<HilightModel> result, String tag) { 
 		if(result == null || result.isEmpty()){
-			oldHilight=null;
+			//oldHilight=null;
 			return;
 		}
 		
@@ -579,9 +579,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 				int lastVisibleItem = firstVisibleItem + visibleItemCount;
 				if((lastVisibleItem == totalItemCount) && loaded && totalItemCount>0){
 					HilightModel hm = (HilightModel)view.getAdapter().getItem(totalItemCount-1);  
-					if(!hm.equals(oldHilight)){
+					if(hm!=null && !hm.equals(oldHilight)){
 						
-						if(hm!=null && NetworkUtils.isNetworkAvailable(getActivity())){
+						if(NetworkUtils.isNetworkAvailable(getActivity())){
 							hilightLoadingFooterProcessbar.setVisibility(View.VISIBLE);
 							new LoadOldHilightTask(hilightListview, hilightAdapter, tag).execute(getURLbyTag(hm.getHilightId(), tag));  
 						}else
