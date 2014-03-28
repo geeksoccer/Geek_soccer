@@ -115,11 +115,8 @@ public class NewsItemsAdapter extends BaseAdapter{
 		newsItemView.newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(mContext, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime()))); 
 		newsItemView.newsCreditTextview.setText(mContext.getString(R.string.label_credit) + " " + newsModel.getNewsCredit());
 	    
-		newsItemView.newsContentWebview.clearHistory();
-		newsItemView.newsContentWebview.clearCache(true);
+		//newsItemView.newsContentWebview.clearCache(true);
 		newsItemView.newsContentWebview.loadUrl("about:blank");
-		newsItemView.newsContentWebview.freeMemory();  //new code   
-		newsItemView.newsContentWebview.pauseTimers(); //new code
 		
 		newsItemView.newsContentWebview.getSettings().setDisplayZoomControls(false);
 		newsItemView.newsContentWebview.getSettings().setJavaScriptEnabled(true);
