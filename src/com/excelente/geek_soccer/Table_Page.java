@@ -16,10 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
 public class Table_Page extends Fragment implements OnTabChangeListener, OnItemClickListener{
@@ -58,6 +61,8 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	private boolean flagplAdapter = true;
 
 	private ProgressBar tableWaitProcessbar;
+
+	private TabHost tabs;
 	
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if (container == null) {
@@ -82,41 +87,47 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	private void initView() {
 		tableView = getView();
 		
-		TabHost tabs = (TabHost)tableView.findViewById(R.id.tabhost); 
-		tabs.setup(); 
+		tabs = (TabHost)tableView.findViewById(R.id.tabhost); 
+		tabs.setup();  
 		
-		TabHost.TabSpec spec = tabs.newTabSpec("tag1"); 
-		spec.setContent(R.id.table_pl); 
-		spec.setIndicator("", getResources().getDrawable(R.drawable.logo_premier_league));  
-		tabs.addTab(spec); 
+		setupTab(R.id.table_pl, "tag1", "", R.drawable.logo_premier_league, true);
+		setupTab(R.id.table_bl, "tag2", "", R.drawable.logo_bundesliga, false);
+		setupTab(R.id.table_ll, "tag3", "", R.drawable.logo_laliga, false);
+		setupTab(R.id.table_gl, "tag4", "", R.drawable.logo_calcio, false);
+		setupTab(R.id.table_fl, "tag5", "", R.drawable.logo_ligue1, false);
+		setupTab(R.id.table_tpl, "tag6", "", R.drawable.logo_tpl, false);
 		
-		spec = tabs.newTabSpec("tag2"); 
-		spec.setContent(R.id.table_bl); 
-		spec.setIndicator("", getResources().getDrawable(R.drawable.logo_bundesliga)); 
-		tabs.addTab(spec); 
-		
-		spec = tabs.newTabSpec("tag3"); 
-		spec.setContent(R.id.table_ll); 
-		spec.setIndicator("", getResources().getDrawable(R.drawable.logo_laliga)); 
-		tabs.addTab(spec); 
-		
-		spec = tabs.newTabSpec("tag4"); 
-		spec.setContent(R.id.table_gl); 
-		spec.setIndicator("", getResources().getDrawable(R.drawable.logo_calcio)); 
-		tabs.addTab(spec); 
-		
-		spec = tabs.newTabSpec("tag5"); 
-		spec.setContent(R.id.table_fl); 
-		spec.setIndicator("", getResources().getDrawable(R.drawable.logo_ligue1)); 
-		tabs.addTab(spec); 
-		
-		spec = tabs.newTabSpec("tag6"); 
-		spec.setContent(R.id.table_tpl);
-		spec.setIndicator("", getResources().getDrawable(R.drawable.logo_tpl));  
-		tabs.addTab(spec); 
 		tabs.setCurrentTab(0);
 		
 		tabs.setOnTabChangedListener(this);
+	}
+	
+	private void setupTab(Integer layoutId, String name, String label, Integer iconId, boolean selected) {
+
+	    View tab = LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
+	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
+	    TextView text = (TextView) tab.findViewById(R.id.text);
+	    if(label.equals("")){
+	    	text.setVisibility(View.GONE);
+	    	
+	    	final float scale = getActivity().getResources().getDisplayMetrics().density;
+	    	int pixels = (int) (40 * scale + 0.5f);
+	    	image.getLayoutParams().width=pixels;
+	    	image.getLayoutParams().height=pixels;
+	    }
+	    
+	    View viewSelected = tab.findViewById(R.id.selected);
+	    if(selected)
+	    	viewSelected.setVisibility(View.VISIBLE);
+	    
+	    if(iconId != null){
+	        image.setImageResource(iconId);
+	    }
+	    text.setText(label);
+
+	    TabSpec spec = tabs.newTabSpec(name).setIndicator(tab).setContent(layoutId);
+	    tabs.addTab(spec);
+
 	}
 	
 	private void initSubView() {
@@ -161,6 +172,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					else
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 				}
+				setSelectedTab(0);
 			}else if(tabId.equals("tag2")){
 				if(flagblAdapter){
 					if(NetworkUtils.isNetworkAvailable(getActivity()))
@@ -168,6 +180,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					else
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 				}
+				setSelectedTab(1);
 			}else if(tabId.equals("tag3")){
 				if(flagllAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
@@ -175,6 +188,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					}else
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 				}
+				setSelectedTab(2);
 			}else if(tabId.equals("tag4")){
 				if(flagglAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity()))
@@ -182,6 +196,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					else
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 				}
+				setSelectedTab(3);
 			}else if(tabId.equals("tag5")){
 				if(flagflAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity()))
@@ -189,6 +204,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					else
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 				}
+				setSelectedTab(4);
 			}else if(tabId.equals("tag6")){
 				if(flagtplAdapter){
 					if(NetworkUtils.isNetworkAvailable(getActivity()))
@@ -196,12 +212,24 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					else
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 				}
+				setSelectedTab(5);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
-	} 
+	}
+	 
+	public void setSelectedTab(int index){
+		for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
+			View v = tabs.getTabWidget().getChildAt(i).findViewById(R.id.selected);
+			if(i == index){
+				v.setVisibility(View.VISIBLE);
+			}else{
+				v.setVisibility(View.INVISIBLE);
+			}
+		}
+	}
 	
 	public class LoadTableTask extends AsyncTask<String, Void, List<TableModel>>{
 		

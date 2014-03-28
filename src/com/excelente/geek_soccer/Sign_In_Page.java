@@ -64,6 +64,15 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		super.onCreate(savedInstanceState);
 		cancelNotify();
 		
+		/*MemberModel mem = new MemberModel();
+		mem.setUid(14);
+		mem.setTeamId(1);
+		mem.setRole(2);
+		mem.setNickname("ched");
+		mem.setToken("1234");
+		MemberSession.setMember(getApplicationContext(), mem);
+		gotoMainPage(MemberSession.getMember());*/
+		
 		if(MemberSession.hasMember()){
 			gotoMainPage(MemberSession.getMember());
 		}else{

@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.app.LocalActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
 
 public class Live_Score_Page extends Fragment implements
@@ -61,44 +64,59 @@ public class Live_Score_Page extends Fragment implements
 		tabHost = (TabHost) myView.findViewById(android.R.id.tabhost);
 		tabHost.setup(mLocalActivityManager);
 
-		Intent YesterdayIntent = new Intent().setClass(getActivity(),
-				LiveScore_Yesterday.class);
-		TabSpec Featured = tabHost
-				.newTabSpec("y")
-				.setIndicator("YESTERDAY")
-				.setContent(YesterdayIntent);
+		Intent YesterdayIntent = new Intent().setClass(getActivity(), LiveScore_Yesterday.class);
+		setupTab(YesterdayIntent, "y", "YESTERDAY", 0, false);
 
-		Intent TodayIntent = new Intent().setClass(getActivity(),
-				LiveScore_Today.class);
-		TabSpec browse = tabHost
-				.newTabSpec("c")
-				.setIndicator("TODAY")
-				.setContent(TodayIntent);
+		Intent TodayIntent = new Intent().setClass(getActivity(), LiveScore_Today.class);
+		setupTab(TodayIntent, "c", "TODAY", 0, true);
 
-		Intent TomorrowIntent = new Intent().setClass(getActivity(),
-				LiveScore_Tomorrow.class);
-		TabSpec chart = tabHost
-				.newTabSpec("t")
-				.setIndicator("TOMORROW")
-				.setContent(TomorrowIntent);
+		Intent TomorrowIntent = new Intent().setClass(getActivity(), LiveScore_Tomorrow.class);
+		setupTab(TomorrowIntent, "t", "TOMORROW", 0, false);
 
-		tabHost.addTab(Featured);
-		tabHost.addTab(browse);
-		tabHost.addTab(chart);
-
-		for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
-			tabHost.getTabWidget().getChildAt(i)
-					.setBackgroundResource(R.color.tran);
-		}
 		if(data.Match_list_t_JSON.size()==0){
 			tabHost.setCurrentTab(2);
 		}
 		
 		tabHost.setCurrentTab(data.liveScore_Cur);
-		tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab())
-				.setBackgroundResource(R.color.silver);
 
 		tabHost.setOnTabChangedListener(this);
+	}
+	 
+	private void setupTab(Intent intent, String name, String label, Integer iconId, boolean selected) {
+
+	    View tab = LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
+	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
+	    TextView text = (TextView) tab.findViewById(R.id.text);
+	    text.setTypeface(null,Typeface.BOLD);
+	    if(label.equals("")){
+	    	text.setVisibility(View.GONE);
+	    	
+	    	final float scale = getActivity().getResources().getDisplayMetrics().density;
+	    	int pixels = (int) (40 * scale + 0.5f);
+	    	image.getLayoutParams().width=pixels;
+	    	image.getLayoutParams().height=pixels;
+	    }
+	    
+	    if(iconId ==0){
+	    	image.setVisibility(View.GONE);
+	    	
+	    	final float scale = getActivity().getResources().getDisplayMetrics().density;
+	    	int pixels = (int) (40 * scale + 0.5f);
+	    	text.getLayoutParams().height=pixels;
+	    }
+	    
+	    View viewSelected = tab.findViewById(R.id.selected);
+	    if(selected)
+	    	viewSelected.setVisibility(View.VISIBLE);
+	    
+	    if(iconId != null){
+	        image.setImageResource(iconId);
+	    }
+	    text.setText(label); 
+
+	    TabSpec spec = tabHost.newTabSpec(name).setIndicator(tab).setContent(intent);
+	    tabHost.addTab(spec);
+
 	}
 
 	@Override
@@ -108,11 +126,9 @@ public class Live_Score_Page extends Fragment implements
 		data.liveScore_Cur = pos;
 		for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
 			if (i == pos) {
-				tabHost.getTabWidget().getChildAt(i)
-						.setBackgroundResource(R.color.silver);
+				tabHost.getTabWidget().getChildAt(i).findViewById(R.id.selected).setVisibility(View.VISIBLE);
 			} else {
-				tabHost.getTabWidget().getChildAt(i)
-						.setBackgroundResource(R.color.tran);
+				tabHost.getTabWidget().getChildAt(i).findViewById(R.id.selected).setVisibility(View.INVISIBLE);
 			}
 
 		}
