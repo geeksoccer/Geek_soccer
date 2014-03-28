@@ -26,14 +26,14 @@
         android:id="@+id/selected" 
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:background="@color/bluefortab"
+        style="?backgroundTheme"
         android:layout_gravity="bottom"
         android:visibility="invisible" />
     
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/bluefortab"
+        style="?backgroundTheme"
         android:layout_gravity="bottom" />
 
 </LinearLayout>
