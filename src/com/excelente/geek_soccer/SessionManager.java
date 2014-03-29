@@ -1,7 +1,8 @@
 package com.excelente.geek_soccer;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -61,5 +62,14 @@ public class SessionManager {
 			Log.e("err", "Out of memory error :(");
 			return null;
 		}
+    }
+    
+    public void createNewJsonSession(String key, String value){
+    	editor.putString(key, value);
+		editor.commit();
+    }
+    
+    public String getJsonSession(String key){
+    	return pref.getString(key, null);
     }
 }

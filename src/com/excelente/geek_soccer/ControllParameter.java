@@ -4,6 +4,7 @@ import io.socket.SocketIO;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import android.graphics.Bitmap;
 import android.widget.ListView;
@@ -35,6 +36,7 @@ public class ControllParameter {
 	HashMap<String, Bitmap> AwayMap = new HashMap<String, Bitmap>();
 	HashMap<String, Bitmap> BitMapHash = new HashMap<String, Bitmap>();
 	HashMap<String, String> player_Detail = new HashMap<String, String>();
+	HashMap<String, JSONArray> Sticker_Set = new HashMap<String, JSONArray>();
 	HashMap<String, String> Sticker_UrlSet = new HashMap<String, String>();
 	ArrayList<String> URL_list = new ArrayList<String>();
 	String Last_League_SET="";
