@@ -155,7 +155,7 @@ public class Chat_All extends Activity{
 						if(bit!=null){
 							Sticker_ImgVSet.get(key.replaceAll(Stick_Set, "")).setImageBitmap(bit);
 						}else{
-							startDownload(data.Sticker_UrlSet.get(Stick_Set+key), Sticker_ImgVSet.get(key.replaceAll(Stick_Set, "")));
+							startDownload(data.Sticker_UrlSet.get(key), Sticker_ImgVSet.get(key.replaceAll(Stick_Set, "")));
 						}
 					}
 					StickerSelectorLayout.removeAllViews();
