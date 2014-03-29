@@ -73,12 +73,16 @@ public class Live_Score_Page extends Fragment implements
 		Intent TomorrowIntent = new Intent().setClass(getActivity(), LiveScore_Tomorrow.class);
 		setupTab(TomorrowIntent, "t", "TOMORROW", 0, false);
 
+		for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
+			tabHost.getTabWidget().getChildAt(i).findViewById(R.id.selected).setVisibility(View.INVISIBLE);
+		}
+		
 		if(data.Match_list_t_JSON.size()==0){
 			tabHost.setCurrentTab(2);
 		}
-		
 		tabHost.setCurrentTab(data.liveScore_Cur);
-
+		
+		tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab()).findViewById(R.id.selected).setVisibility(View.VISIBLE);
 		tabHost.setOnTabChangedListener(this);
 	}
 	 
@@ -124,6 +128,7 @@ public class Live_Score_Page extends Fragment implements
 		// TODO Auto-generated method stub
 		int pos = this.tabHost.getCurrentTab();
 		data.liveScore_Cur = pos;
+		Log.d("TEST", "data.liveScore_Cur::"+data.liveScore_Cur);
 		for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
 			if (i == pos) {
 				tabHost.getTabWidget().getChildAt(i).findViewById(R.id.selected).setVisibility(View.VISIBLE);

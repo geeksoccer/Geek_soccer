@@ -300,8 +300,8 @@ public class LiveScore_Today extends Activity {
 						layOut_Detail.setAnimation(AnimationUtils.loadAnimation(
 								mContext, R.drawable.listview_anim));
 					}
-					retval.setBackgroundColor(Color.GRAY);
-					retval.getBackground().setAlpha(200);
+					//retval.setBackgroundColor(Color.GRAY);
+					//retval.getBackground().setAlpha(200);
 				} else {
 					txt.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 							LayoutParams.WRAP_CONTENT));
