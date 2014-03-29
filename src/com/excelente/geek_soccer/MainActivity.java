@@ -241,35 +241,35 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
-			game_tab.setBackgroundResource(R.drawable.game_icon);
+			//game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==1){
 			title_bar.setText("Livescore");
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore_h);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
-			game_tab.setBackgroundResource(R.drawable.game_icon);
+			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==2){
 			title_bar.setText("Chat Room");
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat_h);
 			score_board_tab.setBackgroundResource(R.drawable.board);
-			game_tab.setBackgroundResource(R.drawable.game_icon);
+			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==3){
 			title_bar.setText("Score Board");
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board_h);
-			game_tab.setBackgroundResource(R.drawable.game_icon);
+			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==4){
 			title_bar.setText("Hilight");
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
-			game_tab.setBackgroundResource(R.drawable.game_icon_select);
+			game_tab.setBackgroundResource(R.drawable.hilight_icon_select);
 		}
 
 		if(by_Selected){
