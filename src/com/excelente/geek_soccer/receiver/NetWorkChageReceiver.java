@@ -80,8 +80,6 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 			new LoadLastNewsTask("tag1").execute(url);
 			new LoadLastHilightTask().execute(getURLHilight(hilightId));
 		}
-		
-		sharePre.edit().putBoolean(UpdateService.NOTIFY_CONNECT_FIRST, true).commit();
 	}
 	
 	private String getURLHilight(int id) {
@@ -128,6 +126,7 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 			super.onPostExecute(result);
 			if(result!=null && !result.isEmpty()){
 				setNotify(result);
+				
 			}
 			
 		}
@@ -135,6 +134,7 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 		private void setNotify(List<NewsModel> result) {
 			sharePre = mContext.getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
 			Editor editSharePre = sharePre.edit();
+			sharePre.edit().putBoolean(UpdateService.NOTIFY_CONNECT_FIRST, true).commit();
 			
 			Intent nextToMain = new Intent(mContext, Sign_In_Page.class);
 			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_NEWS);
@@ -209,6 +209,7 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 		private void setNotify(List<HilightModel> result) { 
 			sharePre = mContext.getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
 			Editor editSharePre = sharePre.edit();
+			sharePre.edit().putBoolean(UpdateService.NOTIFY_CONNECT_FIRST, true).commit();
 			editSharePre.putInt(HilightModel.HILIGHT_ID, result.get(0).getHilightId());
 			editSharePre.commit();
 			
