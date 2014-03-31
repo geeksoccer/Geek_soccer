@@ -188,35 +188,39 @@ public class UpdateService extends Service{
 		private void setNotify(List<NewsModel> result) {
 			sharePre = getApplicationContext().getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
 			Editor editSharePre = sharePre.edit();
-			editSharePre.putInt(NewsModel.NEWS_ID, result.get(0).getNewsId());
-			editSharePre.commit();
-			
-			Intent nextToMain = new Intent(getApplicationContext(), Sign_In_Page.class);
-			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_HILIGHT);
-			PendingIntent pIntent;
 				
+			Intent nextToMain = new Intent(getApplicationContext(), Sign_In_Page.class);
+			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_NEWS);
+			PendingIntent pIntent;
+			
 			mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
 			if(tag.equals("tag0")){
+				editSharePre.putInt(NewsModel.NEWS_ID+"tag0", result.get(0).getNewsId());
+				editSharePre.commit();
+				
 				nextToMain.putExtra(NewsModel.NEWS_ID+"tag", 0);
 				pIntent = PendingIntent.getActivity(getApplicationContext(), 0, nextToMain, 0);
 				
 				Notification notification = new NotificationCompat.Builder(getApplicationContext())
 				.setContentTitle(getResources().getString(R.string.team_news)) 
 				.setContentText(result.get(0).getNewsTopic())
-				.setSmallIcon(R.drawable.news_h)
+				.setSmallIcon(R.drawable.notify_news)
 				.setContentIntent(pIntent)
 				.build();
 				
 				mNotification.cancel(0);
 				mNotification.notify(0, notification);
 			}else{
+				editSharePre.putInt(NewsModel.NEWS_ID+"tag1", result.get(0).getNewsId());
+				editSharePre.commit();
+				
 				nextToMain.putExtra(NewsModel.NEWS_ID+"tag", 1);
-				pIntent = PendingIntent.getActivity(getApplicationContext(), 0, nextToMain, 0);
+				pIntent = PendingIntent.getActivity(getApplicationContext(), 1, nextToMain, 0);
 				
 				Notification notification = new NotificationCompat.Builder(getApplicationContext())
 				.setContentTitle(getResources().getString(R.string.global_news)) 
 				.setContentText(result.get(0).getNewsTopic())
-				.setSmallIcon(R.drawable.news_h)
+				.setSmallIcon(R.drawable.notify_news)
 				.setContentIntent(pIntent)
 				.build();
 				mNotification.cancel(1);
@@ -229,7 +233,15 @@ public class UpdateService extends Service{
 
 	}
 	
-public class LoadLastHilightTask extends AsyncTask<String, Void, List<HilightModel>>{ 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		
+		if(newsTask != null)
+			newsTask.cancel();
+	}
+	
+	public class LoadLastHilightTask extends AsyncTask<String, Void, List<HilightModel>>{ 
 		
 		private NotificationManager mNotification;
 		 
@@ -266,12 +278,12 @@ public class LoadLastHilightTask extends AsyncTask<String, Void, List<HilightMod
 			PendingIntent pIntent; 
 				
 			mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
-			pIntent = PendingIntent.getActivity(getApplicationContext(), 0, nextToMain, 0);
+			pIntent = PendingIntent.getActivity(getApplicationContext(), 3, nextToMain, 0);
 				
 			Notification notification = new NotificationCompat.Builder(getApplicationContext())
 				.setContentTitle(getResources().getString(R.string.title_bar_hilight)) 
 				.setContentText(result.get(0).getHilightTopic()) 
-				.setSmallIcon(R.drawable.game_icon_select)
+				.setSmallIcon(R.drawable.notify_hilight)
 				.setContentIntent(pIntent)
 				.build();
 				

@@ -49,7 +49,6 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	private static final String MEMBER_SIGN_IN_URL = "http://183.90.171.209/gs_member/member_sign_in.php"; 
 	private static final String MEMBER_SIGN_UP_URL = "http://183.90.171.209/gs_member/member_sign_up.php";
 	private static final String MEMBER_TOKEN_URL = "http://183.90.171.209/gs_member/member_token.php";
-	private static final String MEMBER_SIGN_OUT_URL = "http://183.90.171.209/gs_member/member_sign_out.php";
 
     private ProgressDialog mConnectionProgressDialog;
     private PlusClient mPlusClient;
@@ -448,62 +447,6 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			
 			signProgressbar.setVisibility(View.GONE);
 			signInGoogleButton.setVisibility(View.VISIBLE);
-		}
-		
-	}
-	
-	class doSignOutTask extends AsyncTask<MemberModel, Void, Boolean>{
-		
-		Activity mActivity; 
-		ProgressDialog mConnectionProgressDialog;
-		
-		public doSignOutTask(Activity context) {
-			mActivity = context;
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			
-			mConnectionProgressDialog = new ProgressDialog(mActivity);
-	        mConnectionProgressDialog.setCancelable(false);
-			mConnectionProgressDialog.setMessage("Signing out...");
-			mConnectionProgressDialog.show();
-		}
-		
-		@Override
-		protected Boolean doInBackground(MemberModel... params) {
-			MemberModel member = params[0];
-			
-			List<NameValuePair> memberParam = new ArrayList<NameValuePair>();
-
-			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_UID, String.valueOf(member.getUid())));
-			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, member.getToken()));
-			
-			String dev_id = Secure.getString(mActivity.getContentResolver(),Secure.ANDROID_ID);
-			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
-				
-			String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_SIGN_OUT_URL, memberParam);
-				
-			if(memberStr.trim().equals("updated token")){ 
-				return true;
-			}
-				
-			return false;
-		}
-		
-		@Override
-		protected void onPostExecute(Boolean memberToken) {
-			super.onPostExecute(memberToken);
-			
-			mConnectionProgressDialog.dismiss();
-			
-			if(memberToken){
-				MemberSession.clearMember(mActivity);
-				mActivity.finish();
-			}else{
-				Toast.makeText(mActivity, "Sign Out Failed", Toast.LENGTH_SHORT).show();
-			}
 		}
 		
 	}

@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/news_create_time_textview"
         android:paddingBottom="10dp"
+        android:lines="3"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"

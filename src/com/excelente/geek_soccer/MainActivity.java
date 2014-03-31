@@ -1,17 +1,26 @@
 package com.excelente.geek_soccer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.service.UpdateService;
+import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
+	
+	private static final String MEMBER_SIGN_OUT_URL = "http://183.90.171.209/gs_member/member_sign_out.php";
 	
 	boolean customTitleSupported;
 	private CustomViewPager mViewPager;
@@ -46,6 +57,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	LinearLayout Content_view;
 	Context mContext;
 	private TextView title_bar;
+	private Intent serviceIntent; 
 	private static ControllParameter data = ControllParameter.getInstance();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +65,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		
 		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
 		
-		Intent serviceIntent = new Intent(this, UpdateService.class);
+		serviceIntent = new Intent(this, UpdateService.class);
 		serviceIntent.putExtra(MemberModel.MEMBER_KEY, (Serializable)MemberSession.getMember()); 
 		startService(serviceIntent);
 		
@@ -85,7 +97,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	private void setPageFromNotification() {
 		if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 1000){
 			Page_Select(0, true);
-		}else if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 1000){
+		}else if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 2000){
 			Page_Select(4, true);
 		}
 	}
@@ -144,7 +156,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			@Override
 			public void onClick(View v) { 
 				if(NetworkUtils.isNetworkAvailable(mContext)){
-					new Sign_In_Page().new doSignOutTask(MainActivity.this).execute(MemberSession.getMember());
+					new doSignOutTask(MainActivity.this).execute(MemberSession.getMember());
 				}else{
 					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
 				}
@@ -345,5 +357,63 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			}
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	class doSignOutTask extends AsyncTask<MemberModel, Void, Boolean>{
+		
+		Activity mActivity; 
+		ProgressDialog mConnectionProgressDialog;
+		
+		public doSignOutTask(Activity context) {
+			mActivity = context;
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			
+			mConnectionProgressDialog = new ProgressDialog(mActivity);
+	        mConnectionProgressDialog.setCancelable(false);
+			mConnectionProgressDialog.setMessage("Signing out...");
+			mConnectionProgressDialog.show();
+		}
+		
+		@Override
+		protected Boolean doInBackground(MemberModel... params) {
+			MemberModel member = params[0];
+			
+			List<NameValuePair> memberParam = new ArrayList<NameValuePair>();
+
+			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_UID, String.valueOf(member.getUid())));
+			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, member.getToken()));
+			
+			String dev_id = Secure.getString(mActivity.getContentResolver(),Secure.ANDROID_ID);
+			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
+				
+			String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_SIGN_OUT_URL, memberParam);
+				
+			if(memberStr.trim().equals("updated token")){ 
+				return true;
+			}
+				
+			return false;
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean memberToken) {
+			super.onPostExecute(memberToken);
+			
+			mConnectionProgressDialog.dismiss();
+			
+			if(memberToken){
+				MemberSession.clearMember(mActivity);
+				if(serviceIntent!=null)
+					stopService(serviceIntent);
+				mActivity.finish();
+			}else{
+				Toast.makeText(mActivity, "Sign Out Failed", Toast.LENGTH_SHORT).show();
+			}
+		}
+		
 	}
 }

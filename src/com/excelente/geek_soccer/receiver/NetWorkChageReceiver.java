@@ -133,8 +133,6 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 		private void setNotify(List<NewsModel> result) {
 			sharePre = mContext.getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
 			Editor editSharePre = sharePre.edit();
-			editSharePre.putInt(NewsModel.NEWS_ID, result.get(0).getNewsId());
-			editSharePre.commit();
 			
 			Intent nextToMain = new Intent(mContext, Sign_In_Page.class);
 			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_NEWS);
@@ -142,26 +140,32 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 				
 			mNotification = (NotificationManager) mContext.getSystemService(Service.NOTIFICATION_SERVICE);
 			if(tag.equals("tag0")){
+				editSharePre.putInt(NewsModel.NEWS_ID+"tag0", result.get(0).getNewsId());
+				editSharePre.commit();
+				
 				nextToMain.putExtra(NewsModel.NEWS_ID+"tag", 0);
 				pIntent = PendingIntent.getActivity(mContext, 0, nextToMain, 0);
 				
 				Notification notification = new NotificationCompat.Builder(mContext)
 				.setContentTitle(mContext.getResources().getString(R.string.team_news)) 
 				.setContentText(result.get(0).getNewsTopic())
-				.setSmallIcon(R.drawable.news_h)
+				.setSmallIcon(R.drawable.notify_news)
 				.setContentIntent(pIntent)
 				.build();
 				
 				mNotification.cancel(0);
 				mNotification.notify(0, notification);
 			}else{
+				editSharePre.putInt(NewsModel.NEWS_ID+"tag1", result.get(0).getNewsId());
+				editSharePre.commit();
+				
 				nextToMain.putExtra(NewsModel.NEWS_ID+"tag", 1);
-				pIntent = PendingIntent.getActivity(mContext, 0, nextToMain, 0);
+				pIntent = PendingIntent.getActivity(mContext, 1, nextToMain, 0);
 				
 				Notification notification = new NotificationCompat.Builder(mContext)
 				.setContentTitle(mContext.getResources().getString(R.string.global_news)) 
 				.setContentText(result.get(0).getNewsTopic())
-				.setSmallIcon(R.drawable.news_h)
+				.setSmallIcon(R.drawable.notify_news)
 				.setContentIntent(pIntent)
 				.build();
 				mNotification.cancel(1);
@@ -211,12 +215,12 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 			PendingIntent pIntent; 
 				
 			mNotification = (NotificationManager) mContext.getSystemService(Service.NOTIFICATION_SERVICE);
-			pIntent = PendingIntent.getActivity(mContext, 0, nextToMain, 0);
+			pIntent = PendingIntent.getActivity(mContext, 3, nextToMain, 0);
 				
 			Notification notification = new NotificationCompat.Builder(mContext)
 				.setContentTitle(mContext.getResources().getString(R.string.title_bar_hilight)) 
 				.setContentText(result.get(0).getHilightTopic()) 
-				.setSmallIcon(R.drawable.game_icon_select)
+				.setSmallIcon(R.drawable.notify_hilight)
 				.setContentIntent(pIntent)
 				.build();
 				
