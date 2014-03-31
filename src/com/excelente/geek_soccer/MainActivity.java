@@ -241,7 +241,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
-			//game_tab.setBackgroundResource(R.drawable.hilight_icon);
+			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==1){
 			title_bar.setText("Livescore");
 			news_tab.setBackgroundResource(R.drawable.news);

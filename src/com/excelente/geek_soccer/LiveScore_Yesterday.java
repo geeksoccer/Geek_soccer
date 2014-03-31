@@ -6,8 +6,6 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -472,20 +470,11 @@ public class LiveScore_Yesterday extends Activity {
 	}
 	
 	public static Bitmap loadImageFromUrl(String url) {
-		URL m;
 		InputStream i = null;
 		BufferedInputStream bis = null;
 		ByteArrayOutputStream out = null;
 		Bitmap bitmap = null;
 		try {
-
-			m = new URL(url);
-			URLConnection conexion = m.openConnection();
-			conexion.setConnectTimeout(20000);
-			conexion.connect();
-
-			conexion.getContentLength();
-
 			final HttpGet getRequest = new HttpGet(url);
 			HttpParams httpParameters = new BasicHttpParams();
 			int timeoutConnection = 3000;

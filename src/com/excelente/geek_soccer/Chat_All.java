@@ -6,8 +6,6 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -66,8 +64,7 @@ public class Chat_All extends Activity{
 	
 	String TimeStamp_Send = "0";
 	String old_timeStamp = "0";
-	
-	LinearLayout Chat_list_LayOut;
+
 	EditText Chat_input;
 	Button send_Btn;
 	Button sendSticker_Btn;
@@ -111,11 +108,11 @@ public class Chat_All extends Activity{
 		data.imageAdapterChatAll = new ImageAdapter(mContext.getApplicationContext());
 		data.lstViewChatAll.setAdapter(data.imageAdapterChatAll);
 		data.lstViewChatAll.setDividerHeight(0);
-		Chat_list_LayOut = (LinearLayout)findViewById(R.id.Chat_list_Layout);
-		(Chat_list_LayOut).addView(data.lstViewChatAll);
+		data.Chat_list_LayOut_All = (LinearLayout)findViewById(R.id.Chat_list_Layout);
+		(data.Chat_list_LayOut_All).addView(data.lstViewChatAll);
 		if(data.Chat_Item_list_All.size()>0){
-			if(Chat_list_LayOut.getChildCount()>1){
-				Chat_list_LayOut.removeViewAt(0);
+			if(data.Chat_list_LayOut_All.getChildCount()>1){
+				data.Chat_list_LayOut_All.removeViewAt(0);
 			}
 			data.imageAdapterChatAll.notifyDataSetChanged();
 			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
@@ -643,7 +640,7 @@ public class Chat_All extends Activity{
 										e.printStackTrace();
 									}
 								}
-								chatHandle();
+								//chatHandle();
 							}
 						}
 					});
@@ -657,9 +654,12 @@ public class Chat_All extends Activity{
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
-				if(Chat_list_LayOut.getChildCount()>1){
-					Chat_list_LayOut.removeViewAt(0);
+				if(Looper.getMainLooper().getThread() == Thread.currentThread()){
+					if(data.Chat_list_LayOut_All.getChildCount()>1){
+						data.Chat_list_LayOut_All.removeViewAt(0);
+					}
 				}
+				
 				data.imageAdapterChatAll.notifyDataSetChanged();
 				data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 			}
@@ -699,20 +699,12 @@ public class Chat_All extends Activity{
 	}
 	
 	public static Bitmap loadImageFromUrl(String url) {
-		URL m;
 		InputStream i = null;
 		BufferedInputStream bis = null;
 		ByteArrayOutputStream out = null;
 		Bitmap bitmap=null;
 		
 		try {
-
-			m = new URL(url);
-			URLConnection conexion = m.openConnection();
-			conexion.setConnectTimeout(20000);
-			conexion.connect();
-
-			conexion.getContentLength();
 
 			final HttpGet getRequest = new HttpGet(url);
 			HttpParams httpParameters = new BasicHttpParams();
@@ -801,8 +793,10 @@ public class Chat_All extends Activity{
 				Bitmap pic = null;
 				if(sesPrefer.getImageSession(url)==null){
 					pic = loadImageFromUrl(_Url);
-					sesPrefer.createNewImageSession(url, pic);
-					data.BitMapHash.put(url, pic);
+					if(pic!=null){
+						sesPrefer.createNewImageSession(url, pic);
+						data.BitMapHash.put(url, pic);
+					}
 				} else {
 					pic = sesPrefer.getImageSession(url);
 					data.BitMapHash.put(url, pic);
