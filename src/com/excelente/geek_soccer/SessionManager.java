@@ -1,9 +1,6 @@
 package com.excelente.geek_soccer;
 
 import java.io.ByteArrayOutputStream;
-
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

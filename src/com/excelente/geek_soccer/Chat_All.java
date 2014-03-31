@@ -297,8 +297,8 @@ public class Chat_All extends Activity{
 	
 	public void Send_Stick(String id) {
 		Msg_Send = id;
-		StikerV.setVisibility(RelativeLayout.GONE);
-		Sticker_Layout_Stat = false;
+		//StikerV.setVisibility(RelativeLayout.GONE);
+		//Sticker_Layout_Stat = false;
 		sticker_Sender();
 	}
 	
@@ -625,16 +625,6 @@ public class Chat_All extends Activity{
 													.getJSONArray(key_Item);
 											data.Sticker_Set
 													.put(key_Item, json_arr);
-											/*
-											 * for (int i = 0; i <
-											 * json_arr.length(); i++) { JSONObject
-											 * json_Value =
-											 * json_arr.getJSONObject(i);
-											 * data.Sticker_UrlSet
-											 * .put(key_Item+"_"+json_Value
-											 * .getString("sk_id"),
-											 * json_Value.getString("sk_img")); }
-											 */
 										}
 									} catch (JSONException e) {
 										e.printStackTrace();
@@ -654,14 +644,13 @@ public class Chat_All extends Activity{
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
+				data.imageAdapterChatAll.notifyDataSetChanged();
+				data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 				if(Looper.getMainLooper().getThread() == Thread.currentThread()){
 					if(data.Chat_list_LayOut_All.getChildCount()>1){
 						data.Chat_list_LayOut_All.removeViewAt(0);
 					}
-				}
-				
-				data.imageAdapterChatAll.notifyDataSetChanged();
-				data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
+				}				
 			}
 		});
 	}
