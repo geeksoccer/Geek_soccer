@@ -248,7 +248,6 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
         }
     }
 
-    @SuppressWarnings("deprecation")
 	private void measureView(View child) {
         ViewGroup.LayoutParams p = child.getLayoutParams();
         if (p == null) {

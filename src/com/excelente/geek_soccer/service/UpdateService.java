@@ -135,7 +135,6 @@ public class UpdateService extends Service{
 		sendBroadcast(nextToMain);
 	}*/
 	
-	@SuppressWarnings("deprecation")
 	private Date getTimeUpdate() {
 		Date now = new Date();
 		now.setMinutes(0);

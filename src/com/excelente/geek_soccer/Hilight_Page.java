@@ -442,12 +442,16 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else{
 			if(hilightModelList == null || hilightModelList.isEmpty()){
 				loaded = true;
-				storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID);
+				
+				if(tag.equals("tag0"))
+					storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID);
 				//intentNewsUpdate(newsList.get(0));
 				return hilightlist;
 			}else if(hilightModelList.get(0).getHilightId() < hilightlist.get(0).getHilightId()){
 				loaded = true;
-				storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID);
+				
+				if(tag.equals("tag0"))
+					storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID);
 				//intentNewsUpdate(newsList.get(0));
 				return hilightlist;
 			}
@@ -638,7 +642,6 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	} 
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onTabChanged(String tag) {
 		if(tag.equals("tag0")){
