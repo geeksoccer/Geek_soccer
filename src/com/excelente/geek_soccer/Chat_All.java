@@ -124,6 +124,27 @@ public class Chat_All extends Activity{
     	Chat_input = (EditText)findViewById(R.id.Chat_input);
     	send_Btn = (Button)findViewById(R.id.send_btn);
         
+    	Chat_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View arg0, boolean arg1) {
+				if (Sticker_Layout_Stat) {
+					StikerV.setVisibility(RelativeLayout.GONE);
+					Sticker_Layout_Stat = false;
+				}
+			}
+		});
+		
+		Chat_input.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				if (Sticker_Layout_Stat) {
+					StikerV.setVisibility(RelativeLayout.GONE);
+					Sticker_Layout_Stat = false;
+				}
+			}
+		});
+    	
     	send_Btn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -212,37 +233,40 @@ public class Chat_All extends Activity{
 	public void StickViewCall(final String position){
 		try {
 			JSONArray j_arr = data.Sticker_Set.get(position);
-			data.Sticker_UrlSet.clear();
-			for (int i = 0; i < j_arr.length(); i++) {
-				JSONObject json_Value = j_arr.getJSONObject(i);
-				data.Sticker_UrlSet.put(
-						position
-								+ "_"
-								+ json_Value
-										.getString("sk_id"),
-						json_Value
-								.getString("sk_img"));
+			if(j_arr!=null){
+				data.Sticker_UrlSet.clear();
+				for (int i = 0; i < j_arr.length(); i++) {
+					JSONObject json_Value = j_arr.getJSONObject(i);
+					data.Sticker_UrlSet.put(
+							position
+									+ "_"
+									+ json_Value
+											.getString("sk_id"),
+							json_Value
+									.getString("sk_img"));
 
-			}
-			int ImgV_p = 0;
-			for (final String key : data.Sticker_UrlSet.keySet()) {
-				ImgV_p++;
-				Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
-						.get(key));
-				if (bit != null) {
-					Sticker_ImgVSet.get(String.valueOf(ImgV_p))
-							.setImageBitmap(bit);
-				} else {
-					startDownload(data.Sticker_UrlSet.get(key),
-							Sticker_ImgVSet.get(String.valueOf(ImgV_p)));
 				}
-				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View arg0) {
-						Send_Stick(key);
+				int ImgV_p = 0;
+				for (final String key : data.Sticker_UrlSet.keySet()) {
+					ImgV_p++;
+					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
+							.get(key));
+					if (bit != null) {
+						Sticker_ImgVSet.get(String.valueOf(ImgV_p))
+								.setImageBitmap(bit);
+					} else {
+						startDownload(data.Sticker_UrlSet.get(key),
+								Sticker_ImgVSet.get(String.valueOf(ImgV_p)));
 					}
-				});
+					Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							Send_Stick(key);
+						}
+					});
+				}
 			}
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
