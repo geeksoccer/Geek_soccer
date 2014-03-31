@@ -320,7 +320,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			mConnectionProgressDialog.dismiss();
 			
 			if(memberSignedIn == null){
-				Toast.makeText(getApplicationContext(), "this member using on any device", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Internet problem or this member using on any device", Toast.LENGTH_SHORT).show();
 				mPlusClient.disconnect();
 			}else if(memberSignedIn.getUid() < 1 && memberSignedIn.getTypeLogin().equals("google_plus")){
 				doSelectTeam();
@@ -390,11 +390,11 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			
 			mConnectionProgressDialog.dismiss();
 			
-			if(memberSignedUp.getUid() > 0){
+			if(memberSignedUp!=null && memberSignedUp.getUid() > 0){
 				gotoMainPage(memberSignedUp);
 				MemberSession.setMember(Sign_In_Page.this, memberSignedUp); 
 			}else{
-				Toast.makeText(getApplicationContext(), "Signed Up Fail", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Signed Up Fail Or Internet Problem", Toast.LENGTH_SHORT).show();
 				mPlusClient.disconnect();
 			}
 		}

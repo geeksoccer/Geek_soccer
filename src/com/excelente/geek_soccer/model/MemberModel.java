@@ -136,7 +136,7 @@ public class MemberModel implements Serializable{
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return member;
+			return null;
 		}
 		
 		return member;

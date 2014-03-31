@@ -442,18 +442,18 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else{
 			if(hilightModelList == null || hilightModelList.isEmpty()){
 				loaded = true;
-				storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID+tag);
+				storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID);
 				//intentNewsUpdate(newsList.get(0));
 				return hilightlist;
 			}else if(hilightModelList.get(0).getHilightId() < hilightlist.get(0).getHilightId()){
 				loaded = true;
-				storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID+tag);
+				storeMaxIdToPerference(hilightlist.get(0), HilightModel.HILIGHT_ID);
 				//intentNewsUpdate(newsList.get(0));
 				return hilightlist;
 			}
 		}
 		
-		return null;
+		return hilightModelList;
 	}
 	
 	@SuppressLint("CommitPrefEdits")
@@ -521,7 +521,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		@Override
 		protected void onPostExecute(List<HilightModel> result) {
 			super.onPostExecute(result);
-			if(!result.isEmpty()){
+			if(result!=null && !result.isEmpty()){
 				doLoadHilightToListView(result, tag); 
 			}else{
 				Toast.makeText(getActivity(), "No Hilight Update", Toast.LENGTH_SHORT).show();

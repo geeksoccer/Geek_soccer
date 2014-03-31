@@ -250,7 +250,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		@Override
 		protected void onPostExecute(List<NewsModel> result) {
 			super.onPostExecute(result);
-			if(!result.isEmpty()){
+			if(result!=null && !result.isEmpty()){
 				doLoadNewsToListView(result, tag);
 			}else{
 				Toast.makeText(getActivity(), "No News Update", Toast.LENGTH_SHORT).show();

@@ -20,7 +20,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
@@ -123,7 +123,7 @@ public class TableAdapter extends BaseAdapter{
 					
 				}
 			});
-        }
+		}
 		    
     		tableHolder.tableSeq.setText(String.valueOf(tableModel.getTableSeq())); 
     		tableHolder.tableTeam.setText(tableModel.getTableTeam());
@@ -234,7 +234,7 @@ public class TableAdapter extends BaseAdapter{
 		File cacheDir = StorageUtils.getCacheDirectory(context);
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
 		        .memoryCacheExtraOptions(w, h) // default = device screen dimensions
-		        .discCacheExtraOptions(w, h, CompressFormat.JPEG, 75, null)
+		        .discCacheExtraOptions(w, h, CompressFormat.PNG, 75, null)
 		        .threadPoolSize(3) // default
 		        .threadPriority(Thread.NORM_PRIORITY - 1) // default
 		        .tasksProcessingOrder(QueueProcessingType.FIFO) // default
@@ -289,12 +289,12 @@ public class TableAdapter extends BaseAdapter{
 	        .resetViewBeforeLoading(true)  // default
 	        //.delayBeforeLoading(500)
 	        .cacheInMemory(false)
-	        .cacheOnDisc(true)
+	        .cacheOnDisc(false)
 	        .considerExifParams(false) // default
-	        .imageScaleType(ImageScaleType.EXACTLY_STRETCHED) // default
-	        .bitmapConfig(Bitmap.Config.RGB_565) // default
+	        .imageScaleType(ImageScaleType.IN_SAMPLE_INT) // default
+	        .bitmapConfig(Bitmap.Config.ARGB_8888) // default
 	        //.decodingOptions()
-	        .displayer(new RoundedBitmapDisplayer(10)) // default
+	        .displayer(new SimpleBitmapDisplayer()) // default
 	        .handler(new Handler()) // default
 	        .extraForDownloader(headers)
 	        .build();
