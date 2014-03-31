@@ -80,6 +80,8 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 			new LoadLastNewsTask("tag1").execute(url);
 			new LoadLastHilightTask().execute(getURLHilight(hilightId));
 		}
+		
+		sharePre.edit().putBoolean(UpdateService.NOTIFY_CONNECT_FIRST, true).commit();
 	}
 	
 	private String getURLHilight(int id) {
