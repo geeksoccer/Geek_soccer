@@ -80,9 +80,11 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	public ListView commentListview;
 	private CommentAdapter commentAdapter; 
 	
+	boolean newsloaded; 
 	boolean loaded = false;
 	public TextView headeTitleTextview;
-	private NewsItemsAdapter newsItemAdaptor; 
+	private NewsItemsAdapter newsItemAdaptor;
+	private String tag; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +122,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		newsWaitProcessbar = (ProgressBar) findViewById(R.id.news_wait_processbar);
 		
 		int position = intent.getIntExtra(News_Page.ITEM_INDEX, 0);
-		String tag = intent.getStringExtra(News_Page.NEWS_TAG);
+		tag = intent.getStringExtra(News_Page.NEWS_TAG); 
 		
 		contentFlipView = new FlipViewController(activity, FlipViewController.HORIZONTAL);
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -141,6 +143,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			}
 		});
 		
+		newsloaded = true;
 		contentFlipView.setOnViewFlipListener(new ViewFlipListener() {
 			int oldPosition=0;
 			
@@ -163,6 +166,15 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				
 				if(headerLayout.getVisibility() == View.VISIBLE){
 					doToggleBar();
+				}
+				
+				if(contentFlipView.getAdapter().getCount() - position == 3){
+					//Toast.makeText(getApplicationContext(), "Enter", Toast.LENGTH_SHORT).show();
+					if(newsloaded && contentFlipView.getAdapter().getCount() < 100 && NetworkUtils.isNetworkAvailable(getApplicationContext())){
+						NewsModel newsModel = (NewsModel) contentFlipView.getAdapter().getItem(contentFlipView.getAdapter().getCount()-1);
+						new LoadOldNewsTask(newsItemAdaptor, tag).execute(News_Page.getURLbyTag(newsModel.getNewsId(), tag));
+						newsloaded = false;
+					}
 				}
 				
 				oldPosition = position;
@@ -491,5 +503,41 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				});
 			}
 		}, 500);
+	}
+	
+	public class LoadOldNewsTask extends AsyncTask<String, Void, List<NewsModel>>{
+		
+		NewsItemsAdapter newsAdapter;
+		String tag;
+		
+		public LoadOldNewsTask(NewsItemsAdapter newsItemAdaptor, String tag) {
+			this.newsAdapter = newsItemAdaptor;
+			this.tag = tag;
+		}
+		
+		@Override
+		protected List<NewsModel> doInBackground(String... params) {
+			
+			
+			String result = HttpConnectUtils.getStrHttpGetConnect(params[0]); 
+			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
+				return null;
+			}
+			//Log.e("0000000000000000000000000", result);
+			List<NewsModel> newsList = NewsModel.convertNewsStrToList(result);
+			
+			return newsList;
+		}
+
+		@Override
+		protected void onPostExecute(List<NewsModel> result) {
+			super.onPostExecute(result);
+			if(result!=null && !result.isEmpty()){
+				newsAdapter.add(result);
+				//contentFlipView.refreshAllPages();
+			}
+			newsloaded = true;
+		}
+
 	}
 }

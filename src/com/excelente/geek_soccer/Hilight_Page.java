@@ -234,7 +234,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}
 	}
 
-	private String getURLbyTag(int id, String tag) {
+	public String getURLbyTag(int id, String tag) {
 		String url = ""; 
 		
 		try{
@@ -290,6 +290,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		@Override
 		protected List<HilightModel> doInBackground(String... params) {
 			
+			if(hilightAdapter!=null && hilightAdapter.getCount()>100)
+				return null;
+			
 			String result = HttpConnectUtils.getStrHttpGetConnect(params[0]);  
 			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
 				return null;
@@ -311,7 +314,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 				hilightWaitProcessbar.setVisibility(View.GONE);
 			}
 			
-			loaded = true;
+			if(hilightAdapter==null || hilightAdapter.getCount() < 100){
+				loaded = true;
+			}else{
+				loaded = false;
+			}
 		}
 
 	}

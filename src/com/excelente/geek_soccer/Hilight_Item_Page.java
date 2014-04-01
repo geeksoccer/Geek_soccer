@@ -59,6 +59,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 	private RelativeLayout footerLayout;
 	private Button commentSendButton;
 	
+	boolean hilightloaded; 
 	boolean loaded = false;
 	private ProgressBar hilightWaitProcessbar;
 	private Animation animFadeindown;
@@ -72,6 +73,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 
 	private EditText commentHilightEdittext;
 	private HilightItemsAdapter hilightItemAdaptor;
+	private String tag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +111,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		hilightWaitProcessbar = (ProgressBar) findViewById(R.id.hilight_wait_processbar);
 		
 		int position = intent.getIntExtra(Hilight_Page.HILIGHT_ITEM_INDEX, 0);
-		String tag = intent.getStringExtra(Hilight_Page.HILIGHT_TAG);
+		tag = intent.getStringExtra(Hilight_Page.HILIGHT_TAG); 
 		
 		contentFlipView = new FlipViewController(activity, FlipViewController.HORIZONTAL);
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -129,6 +131,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			}
 		});
 		
+		hilightloaded = true;
 		contentFlipView.setOnViewFlipListener(new ViewFlipListener() {
 			int oldPosition=-1;
 			
@@ -155,6 +158,15 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 				
 				if(headerLayout.getVisibility() == View.VISIBLE){
 					doToggleBar();
+				}
+				
+				if(contentFlipView.getAdapter().getCount() - position == 3){
+					//Toast.makeText(getApplicationContext(), "Enter", Toast.LENGTH_SHORT).show();
+					if(hilightloaded && contentFlipView.getAdapter().getCount() < 100 && NetworkUtils.isNetworkAvailable(getApplicationContext())){
+						HilightModel hilights = (HilightModel) contentFlipView.getAdapter().getItem(contentFlipView.getAdapter().getCount()-1);
+						new LoadOldHilightTask(hilightItemAdaptor, tag).execute(new Hilight_Page().getURLbyTag(hilights.getHilightId(), tag));
+						hilightloaded = false;
+					}
 				}
 				
 				oldPosition = position;
@@ -488,6 +500,43 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(getApplicationContext()), Toast.LENGTH_SHORT).show();
 		}
 		
+	}
+	
+	public class LoadOldHilightTask extends AsyncTask<String, Void, List<HilightModel>>{ 
+		
+		HilightItemsAdapter hilightAdapter;
+		String tag;
+		
+		public LoadOldHilightTask(HilightItemsAdapter hilightAdapter, String tag) {
+			this.hilightAdapter = hilightAdapter; 
+			this.tag = tag;
+		}
+		
+		@Override
+		protected List<HilightModel> doInBackground(String... params) {
+			
+			String result = HttpConnectUtils.getStrHttpGetConnect(params[0]);  
+			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
+				return null;
+			}
+			
+			List<HilightModel> hilightList = HilightModel.convertHilightStrToList(result);
+			
+			return hilightList;
+		}
+
+		@Override
+		protected void onPostExecute(List<HilightModel> result) {
+			super.onPostExecute(result);
+			if(result!=null && !result.isEmpty()){
+				hilightAdapter.add(result);
+				//contentFlipView.refreshAllPages();
+				
+			}
+			
+			hilightloaded = true; 
+		}
+
 	}
 
 }

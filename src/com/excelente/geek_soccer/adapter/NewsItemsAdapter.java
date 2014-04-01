@@ -394,5 +394,16 @@ public class NewsItemsAdapter extends BaseAdapter{
 		}
 
 	}
+	
+	public void add(List<NewsModel> newsList) {
+		if(this.mNewList.size()<=100){
+		
+			for (NewsModel newsModel : newsList) {
+				this.mNewList.add(newsModel);
+			}
+			
+			notifyDataSetChanged();
+		}
+	}
 
 }

@@ -256,11 +256,14 @@ public class NewsAdapter extends BaseAdapter{
 	}
 	
 	public void add(List<NewsModel> newsList) {
-		for (NewsModel newsModel : newsList) {
-			this.newsList.add(newsModel);
-		}
+		if(this.newsList.size()<=100){
 		
-		notifyDataSetChanged();
+			for (NewsModel newsModel : newsList) {
+				this.newsList.add(newsModel);
+			}
+			
+			notifyDataSetChanged();
+		}
 	}
 	
 	public void addHead(List<NewsModel> newsList) {

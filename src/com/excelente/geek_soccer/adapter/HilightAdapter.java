@@ -278,11 +278,13 @@ public class HilightAdapter extends BaseAdapter{
 	}
 	
 	public void add(List<HilightModel> hilightList) {
-		for (HilightModel hilightModel : hilightList) {
-			this.hilightList.add(hilightModel);
+		if(this.hilightList.size()<=100){
+			for (HilightModel hilightModel : hilightList) {
+				this.hilightList.add(hilightModel);
+			}
+			
+			notifyDataSetChanged(); 
 		}
-		
-		notifyDataSetChanged(); 
 	}
 	
 	public void addHead(List<HilightModel> hilightList) {

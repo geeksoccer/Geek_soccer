@@ -159,7 +159,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 
 	}
 	
-	private String getURLbyTag(int id, String tag) {
+	public static String getURLbyTag(int id, String tag) {
 		String url = ""; 
 		
 		if(tag.equals("tag0")){
@@ -195,6 +195,9 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		@Override
 		protected List<NewsModel> doInBackground(String... params) {
 			
+			if(newsAdapter!=null && newsAdapter.getCount()>100)
+				return null;
+			
 			String result = HttpConnectUtils.getStrHttpGetConnect(params[0]); 
 			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
 				return null;
@@ -216,9 +219,11 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 				newsWaitProgressBar.setVisibility(View.GONE);
 			}
 			
-			loaded = true;
-			
-			
+			if(newsAdapter==null || newsAdapter.getCount() < 100){
+				loaded = true;
+			}else{
+				loaded = false;
+			}
 		}
 
 	}

@@ -270,6 +270,17 @@ public class HilightItemsAdapter extends BaseAdapter{
 		}
 
 	}
+	
+	public void add(List<HilightModel> hilightList) {
+		if(this.mHilightList.size()<=100){
+		
+			for (HilightModel hilightModel : hilightList) {
+				this.mHilightList.add(hilightModel);
+			}
+			
+			notifyDataSetChanged();
+		}
+	}
 
 }
 
