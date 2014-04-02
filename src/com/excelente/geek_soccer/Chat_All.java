@@ -173,7 +173,7 @@ public class Chat_All extends Activity{
 					StikerV.setVisibility(RelativeLayout.ABOVE);
 					data.Sticker_Layout_Stat_All = true;
 					StickViewClear();
-					StickViewCall("1");
+					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
 					for(int i=0; i<data.Sticker_Set.size(); i++){
 						final Button StickSet_1 = new Button(mContext);
