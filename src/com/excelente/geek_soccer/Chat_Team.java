@@ -36,6 +36,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +71,7 @@ public class Chat_Team extends Activity {
 	Button sendSticker_Btn;
 
 	WindowManager wm;
-	Boolean Sticker_Layout_Stat = false;
+	
 	LinearLayout input_layout;
 	View StikerV;
 
@@ -109,9 +110,8 @@ public class Chat_Team extends Activity {
 				mContext.getApplicationContext());
 		data.lstViewChatTeam.setAdapter(data.imageAdapterChatTeam);
 		data.lstViewChatTeam.setDividerHeight(0);
-		data.Chat_list_LayOut_Team = (LinearLayout) findViewById(R.id.Chat_list_Layout);
+		data.Chat_list_LayOut_Team = (RelativeLayout) findViewById(R.id.Chat_list_Layout);
 		(data.Chat_list_LayOut_Team).addView(data.lstViewChatTeam);
-		Log.d("TEST", "TEAMID::" + MemberSession.getMember().getTeamId());
 		if (MemberSession.getMember().getTeamId() == 1) {
 			data.SocketSelect = "5001";
 		} else if (MemberSession.getMember().getTeamId() == 2) {
@@ -139,9 +139,9 @@ public class Chat_Team extends Activity {
 		Chat_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View arg0, boolean arg1) {
-				if (Sticker_Layout_Stat) {
+				if (data.Sticker_Layout_Stat_team) {
 					StikerV.setVisibility(RelativeLayout.GONE);
-					Sticker_Layout_Stat = false;
+					data.Sticker_Layout_Stat_team = false;
 				}
 			}
 		});
@@ -150,9 +150,9 @@ public class Chat_Team extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				if (Sticker_Layout_Stat) {
+				if (data.Sticker_Layout_Stat_team) {
 					StikerV.setVisibility(RelativeLayout.GONE);
-					Sticker_Layout_Stat = false;
+					data.Sticker_Layout_Stat_team = false;
 				}
 			}
 		});
@@ -173,13 +173,13 @@ public class Chat_Team extends Activity {
 		sendSticker_Btn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				if (Sticker_Layout_Stat) {
+			public void onClick(View v) {				
+				if (data.Sticker_Layout_Stat_team) {
 					StikerV.setVisibility(RelativeLayout.GONE);
-					Sticker_Layout_Stat = false;
+					data.Sticker_Layout_Stat_team = false;
 				} else {
 					StikerV.setVisibility(RelativeLayout.ABOVE);
-					Sticker_Layout_Stat = true;
+					data.Sticker_Layout_Stat_team = true;
 					StickViewClear();
 					StickViewCall("1");
 					StickerSelectorLayout.removeAllViews();
@@ -205,26 +205,12 @@ public class Chat_Team extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				if (Sticker_Layout_Stat) {
+				if (data.Sticker_Layout_Stat_team) {
 					StikerV.setVisibility(RelativeLayout.GONE);
-					Sticker_Layout_Stat = false;
+					data.Sticker_Layout_Stat_team = false;
 				}
 			}
 		});
-		String StickJset = sesPrefer.getJsonSession("StickerSet");
-		/*
-		 * if(StickJset!=null){ try { JSONObject json_ob = new
-		 * JSONObject(StickJset); data.Sticker_Set.clear();
-		 * data.Sticker_UrlSet.clear(); for (Iterator<?> league_Item_key =
-		 * json_ob .keys(); league_Item_key.hasNext();) { String key_Item =
-		 * (String) league_Item_key .next(); data.Sticker_Set.add(key_Item);
-		 * JSONArray json_arr = json_ob.getJSONArray(key_Item); for (int i = 0;
-		 * i < json_arr.length(); i++) { JSONObject json_Value =
-		 * json_arr.getJSONObject(i);
-		 * data.Sticker_UrlSet.put(key_Item+"_"+json_Value.getString("sk_id"),
-		 * json_Value.getString("sk_img")); } } } catch (JSONException e) {
-		 * e.printStackTrace(); } }
-		 */
 	}
 	
 	public void StickViewClear(){
@@ -236,6 +222,7 @@ public class Chat_Team extends Activity {
 	public void StickViewCall(final String position){
 		try {
 			JSONArray j_arr = data.Sticker_Set.get(position);
+			
 			if(j_arr!=null){
 				data.Sticker_UrlSet.clear();
 				for (int i = 0; i < j_arr.length(); i++) {
@@ -249,26 +236,58 @@ public class Chat_Team extends Activity {
 									.getString("sk_img"));
 
 				}
-				int ImgV_p = 0;
-				for (final String key : data.Sticker_UrlSet.keySet()) {
-					ImgV_p++;
-					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
-							.get(key));
-					if (bit != null) {
-						Sticker_ImgVSet.get(String.valueOf(ImgV_p))
-								.setImageBitmap(bit);
-					} else {
-						startDownload(data.Sticker_UrlSet.get(key),
-								Sticker_ImgVSet.get(String.valueOf(ImgV_p)));
+			}else{
+				String StickJset = sesPrefer.getJsonSession("StickerSet");
+				if(StickJset!=null){
+					JSONObject json_ob = new JSONObject(StickJset);
+					data.Sticker_Set.clear();
+					data.Sticker_UrlSet.clear();
+					for (Iterator<?> league_Item_key = json_ob
+							.keys(); league_Item_key.hasNext();) {
+						String key_Item = (String) league_Item_key
+								.next();
+						JSONArray json_arr = json_ob
+								.getJSONArray(key_Item);
+						data.Sticker_Set
+								.put(key_Item, json_arr);
 					}
-					Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
-							Send_Stick(key);
-						}
-					});
+					j_arr = data.Sticker_Set.get(position);
+					for (int i = 0; i < j_arr.length(); i++) {
+						JSONObject json_Value = j_arr.getJSONObject(i);
+						data.Sticker_UrlSet.put(
+								position
+										+ "_"
+										+ json_Value
+												.getString("sk_id"),
+								json_Value
+										.getString("sk_img"));
+
+					}
 				}
-			}			
+			}
+			int ImgV_p = 0;
+			for (final String key : data.Sticker_UrlSet.keySet()) {
+				ImgV_p++;
+				Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
+						.get(key));
+				if (bit != null) {
+					Sticker_ImgVSet.get(String.valueOf(ImgV_p))
+							.setImageBitmap(bit);
+				} else {
+					startDownload(data.Sticker_UrlSet.get(key),
+							Sticker_ImgVSet.get(String.valueOf(ImgV_p)));
+				}
+				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setEnabled(true);
+				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						Send_Stick(key);
+					}
+				});
+			}
+			for (int i = ImgV_p; i < Sticker_ImgVSet.size(); i++) {
+				Sticker_ImgVSet.get(String.valueOf(i+1)).setEnabled(false);
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -554,6 +573,7 @@ public class Chat_Team extends Activity {
 					public void onError(SocketIOException socketIOException) {
 						Log.d("TEST", "test::an Error occured");
 						socketIOException.printStackTrace();
+						data.socket_Team.reconnect();
 					}
 
 					@Override
@@ -670,13 +690,14 @@ public class Chat_Team extends Activity {
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
+				
 				data.imageAdapterChatTeam.notifyDataSetChanged();
 				data.lstViewChatTeam.setSelection(data.imageAdapterChatTeam
 						.getCount());
 				
             	if (data.Chat_list_LayOut_Team.getChildCount() > 1) {
 					data.Chat_list_LayOut_Team.removeViewAt(0);
-				}		
+				}
 			}
 		});
 	}
@@ -877,4 +898,13 @@ public class Chat_Team extends Activity {
 		return inSampleSize;
 	}
 
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (data.Sticker_Layout_Stat_team) {
+			if (keyCode == KeyEvent.KEYCODE_BACK) {
+				StikerV.setVisibility(RelativeLayout.GONE);
+				return false;
+			}
+		}
+		return false;
+	}
 }

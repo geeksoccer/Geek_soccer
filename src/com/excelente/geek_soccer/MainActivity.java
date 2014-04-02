@@ -321,23 +321,32 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			data.app_Status=false;
-			if(data.socket_All!=null){
-				if(data.socket_All.isConnected()){
-					data.socket_All.disconnect();
+			if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
+				if(data.Sticker_Layout_Stat_team){
+					data.Sticker_Layout_Stat_team = false;
+				}else if(data.Sticker_Layout_Stat_All){
+					data.Sticker_Layout_Stat_All = false;
+				}				
+				return false;
+			}else{
+				data.app_Status=false;
+				if(data.socket_All!=null){
+					if(data.socket_All.isConnected()){
+						data.socket_All.disconnect();
+					}
 				}
-			}
-			if(data.socket_Team!=null){
-				if(data.socket_Team.isConnected()){
-					data.socket_Team.disconnect();
+				if(data.socket_Team!=null){
+					if(data.socket_Team.isConnected()){
+						data.socket_Team.disconnect();
+					}
 				}
-			}
-			if(data.socket_LiveScore!=null){
-				if(data.socket_LiveScore.isConnected()){
-					data.socket_LiveScore.disconnect();
+				if(data.socket_LiveScore!=null){
+					if(data.socket_LiveScore.isConnected()){
+						data.socket_LiveScore.disconnect();
+					}
 				}
+				finish();
 			}
-			finish();
 			return true;
 		}else if(keyCode == KeyEvent.KEYCODE_HOME){
 			if(data.socket_All!=null){

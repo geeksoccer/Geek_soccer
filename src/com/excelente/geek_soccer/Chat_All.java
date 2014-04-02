@@ -36,6 +36,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +71,6 @@ public class Chat_All extends Activity{
 	Button sendSticker_Btn;
 
 	WindowManager wm;
-	Boolean Sticker_Layout_Stat=false;
 	LinearLayout input_layout;
 	View StikerV;
 	
@@ -108,7 +108,7 @@ public class Chat_All extends Activity{
 		data.imageAdapterChatAll = new ImageAdapter(mContext.getApplicationContext());
 		data.lstViewChatAll.setAdapter(data.imageAdapterChatAll);
 		data.lstViewChatAll.setDividerHeight(0);
-		data.Chat_list_LayOut_All = (LinearLayout)findViewById(R.id.Chat_list_Layout);
+		data.Chat_list_LayOut_All = (RelativeLayout)findViewById(R.id.Chat_list_Layout);
 		(data.Chat_list_LayOut_All).addView(data.lstViewChatAll);
 		if(data.Chat_Item_list_All.size()>0){
 			if(data.Chat_list_LayOut_All.getChildCount()>1){
@@ -127,9 +127,9 @@ public class Chat_All extends Activity{
     	Chat_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View arg0, boolean arg1) {
-				if (Sticker_Layout_Stat) {
+				if (data.Sticker_Layout_Stat_All) {
 					StikerV.setVisibility(RelativeLayout.GONE);
-					Sticker_Layout_Stat = false;
+					data.Sticker_Layout_Stat_All = false;
 				}
 			}
 		});
@@ -138,9 +138,9 @@ public class Chat_All extends Activity{
 			
 			@Override
 			public void onClick(View arg0) {
-				if (Sticker_Layout_Stat) {
+				if (data.Sticker_Layout_Stat_All) {
 					StikerV.setVisibility(RelativeLayout.GONE);
-					Sticker_Layout_Stat = false;
+					data.Sticker_Layout_Stat_All = false;
 				}
 			}
 		});
@@ -162,12 +162,12 @@ public class Chat_All extends Activity{
 			
 			@Override
 			public void onClick(View v) {
-				if(Sticker_Layout_Stat){
+				if(data.Sticker_Layout_Stat_All){
 					StikerV.setVisibility(RelativeLayout.GONE);
-					Sticker_Layout_Stat = false;
+					data.Sticker_Layout_Stat_All = false;
 				}else{
 					StikerV.setVisibility(RelativeLayout.ABOVE);
-					Sticker_Layout_Stat = true;
+					data.Sticker_Layout_Stat_All = true;
 					StickViewClear();
 					StickViewCall("1");
 					StickerSelectorLayout.removeAllViews();
@@ -193,9 +193,9 @@ public class Chat_All extends Activity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				if (Sticker_Layout_Stat) {
+				if (data.Sticker_Layout_Stat_All) {
 					StikerV.setVisibility(RelativeLayout.GONE);
-					Sticker_Layout_Stat = false;
+					data.Sticker_Layout_Stat_All = false;
 				}
 			}
 		});
@@ -246,25 +246,57 @@ public class Chat_All extends Activity{
 									.getString("sk_img"));
 
 				}
-				int ImgV_p = 0;
-				for (final String key : data.Sticker_UrlSet.keySet()) {
-					ImgV_p++;
-					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
-							.get(key));
-					if (bit != null) {
-						Sticker_ImgVSet.get(String.valueOf(ImgV_p))
-								.setImageBitmap(bit);
-					} else {
-						startDownload(data.Sticker_UrlSet.get(key),
-								Sticker_ImgVSet.get(String.valueOf(ImgV_p)));
+			}else{
+				String StickJset = sesPrefer.getJsonSession("StickerSet");
+				if(StickJset!=null){
+					JSONObject json_ob = new JSONObject(StickJset);
+					data.Sticker_Set.clear();
+					data.Sticker_UrlSet.clear();
+					for (Iterator<?> league_Item_key = json_ob
+							.keys(); league_Item_key.hasNext();) {
+						String key_Item = (String) league_Item_key
+								.next();
+						JSONArray json_arr = json_ob
+								.getJSONArray(key_Item);
+						data.Sticker_Set
+								.put(key_Item, json_arr);
 					}
-					Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
-							Send_Stick(key);
-						}
-					});
+					j_arr = data.Sticker_Set.get(position);
+					for (int i = 0; i < j_arr.length(); i++) {
+						JSONObject json_Value = j_arr.getJSONObject(i);
+						data.Sticker_UrlSet.put(
+								position
+										+ "_"
+										+ json_Value
+												.getString("sk_id"),
+								json_Value
+										.getString("sk_img"));
+
+					}
 				}
+			}
+			int ImgV_p = 0;
+			for (final String key : data.Sticker_UrlSet.keySet()) {
+				ImgV_p++;
+				Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
+						.get(key));
+				if (bit != null) {
+					Sticker_ImgVSet.get(String.valueOf(ImgV_p))
+							.setImageBitmap(bit);
+				} else {
+					startDownload(data.Sticker_UrlSet.get(key),
+							Sticker_ImgVSet.get(String.valueOf(ImgV_p)));
+				}
+				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setEnabled(true);
+				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						Send_Stick(key);
+					}
+				});
+			}
+			for (int i = ImgV_p; i < Sticker_ImgVSet.size(); i++) {
+				Sticker_ImgVSet.get(String.valueOf(i+1)).setEnabled(false);
 			}
 			
 		} catch (JSONException e) {
@@ -550,6 +582,7 @@ public class Chat_All extends Activity{
 			            public void onError(SocketIOException socketIOException) {
 			            	Log.d("TEST","test::an Error occured");
 			                socketIOException.printStackTrace();
+			                data.socket_Team.reconnect();
 			            }
 
 			            @Override
@@ -876,4 +909,13 @@ public class Chat_All extends Activity{
 		return inSampleSize;
 	}
 
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (data.Sticker_Layout_Stat_All) {
+			if (keyCode == KeyEvent.KEYCODE_BACK) {
+				StikerV.setVisibility(RelativeLayout.GONE);
+				return false;
+			}
+		}
+		return false;
+	}
 }

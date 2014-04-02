@@ -7,8 +7,8 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import android.graphics.Bitmap;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 public class ControllParameter {
 	private static ControllParameter instance = null;
@@ -63,11 +63,13 @@ public class ControllParameter {
 
 	ListView lstViewChatTeam;
 	com.excelente.geek_soccer.Chat_Team.ImageAdapter imageAdapterChatTeam;
-	LinearLayout Chat_list_LayOut_Team;
+	RelativeLayout Chat_list_LayOut_Team;
+	Boolean Sticker_Layout_Stat_team = false;
 	
 	ListView lstViewChatAll;
 	com.excelente.geek_soccer.Chat_All.ImageAdapter imageAdapterChatAll;
-	LinearLayout Chat_list_LayOut_All;
+	RelativeLayout Chat_list_LayOut_All;
+	Boolean Sticker_Layout_Stat_All = false;
 	
 	ListView lstViewLiveScore;
 	com.excelente.geek_soccer.LiveScore_Today.ImageAdapter imageAdapterLiveScore;
