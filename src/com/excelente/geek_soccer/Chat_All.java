@@ -236,6 +236,7 @@ public class Chat_All extends Activity{
 	public void StickViewCall(final String position){
 		try {
 			JSONArray j_arr = data.Sticker_Set.get(position);
+			
 			if(j_arr!=null){
 				data.Sticker_UrlSet.clear();
 				for (int i = 0; i < j_arr.length(); i++) {
@@ -295,20 +296,18 @@ public class Chat_All extends Activity{
 						startDownload(data.Sticker_UrlSet.get(key),
 								Sticker_ImgVSet.get(String.valueOf(ImgV_p)));
 					}
-					Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setEnabled(true);
-					Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
-							Send_Stick(key);
-						}
-					});
 				}
-				
+				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setEnabled(true);
+				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						Send_Stick(key);
+					}
+				});
 			}
 			for (int i = ImgV_p; i < Sticker_ImgVSet.size(); i++) {
 				Sticker_ImgVSet.get(String.valueOf(i+1)).setEnabled(false);
 			}
-			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -600,7 +599,7 @@ public class Chat_All extends Activity{
 			            public void onError(SocketIOException socketIOException) {
 			            	Log.d("TEST","test::an Error occured");
 			                socketIOException.printStackTrace();
-			                data.socket_Team.reconnect();
+			                data.socket_All.reconnect();
 			            }
 
 			            @Override
