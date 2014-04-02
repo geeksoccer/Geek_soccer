@@ -21,6 +21,9 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.koushikdutta.ion.Ion;
+
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
@@ -110,7 +113,7 @@ public class Chat_Team extends Activity {
 				mContext.getApplicationContext());
 		data.lstViewChatTeam.setAdapter(data.imageAdapterChatTeam);
 		data.lstViewChatTeam.setDividerHeight(0);
-		data.Chat_list_LayOut_Team = (RelativeLayout) findViewById(R.id.Chat_list_Layout);
+		data.Chat_list_LayOut_Team = (LinearLayout) findViewById(R.id.Chat_list_Layout);
 		(data.Chat_list_LayOut_Team).addView(data.lstViewChatTeam);
 		if (MemberSession.getMember().getTeamId() == 1) {
 			data.SocketSelect = "5001";
@@ -268,14 +271,20 @@ public class Chat_Team extends Activity {
 			int ImgV_p = 0;
 			for (final String key : data.Sticker_UrlSet.keySet()) {
 				ImgV_p++;
-				Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
-						.get(key));
-				if (bit != null) {
-					Sticker_ImgVSet.get(String.valueOf(ImgV_p))
-							.setImageBitmap(bit);
-				} else {
-					startDownload(data.Sticker_UrlSet.get(key),
-							Sticker_ImgVSet.get(String.valueOf(ImgV_p)));
+				if(data.Sticker_UrlSet
+						.get(key).contains(".gif")){
+					Ion.with(Sticker_ImgVSet.get(String.valueOf(ImgV_p))).load("http://183.90.171.209/chat/stk/"+data.Sticker_UrlSet
+							.get(key));
+				}else{
+					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
+							.get(key));
+					if (bit != null) {
+						Sticker_ImgVSet.get(String.valueOf(ImgV_p))
+								.setImageBitmap(bit);
+					} else {
+						startDownload(data.Sticker_UrlSet.get(key),
+								Sticker_ImgVSet.get(String.valueOf(ImgV_p)));
+					}
 				}
 				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setEnabled(true);
 				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
@@ -299,7 +308,7 @@ public class Chat_Team extends Activity {
 
 		StikerV.setVisibility(RelativeLayout.GONE);
 		input_layout.addView(StikerV, 0);
-
+		
 		StickerSelectorLayout = (LinearLayout) StikerV
 				.findViewById(R.id.StickerSelecterLayout);
 
@@ -478,15 +487,20 @@ public class Chat_Team extends Activity {
 					}
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
 						if (txt_Item.getString("ch_type").contains("S")) {
-							if (data.BitMapHash.get(txt_Item
-									.getString("ch_msg")) != null) {
-								Sticker.setImageBitmap(data.BitMapHash
-										.get(txt_Item.getString("ch_msg")));
-							} else {
-								Sticker.setImageResource(R.drawable.soccer_icon);
-								startDownload(txt_Item.getString("ch_msg"),
-										Sticker);
+							if(txt_Item.getString("ch_msg").contains(".gif")){
+								Ion.with(Sticker).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
+							}else{
+								if (data.BitMapHash.get(txt_Item
+										.getString("ch_msg")) != null) {
+									Sticker.setImageBitmap(data.BitMapHash
+											.get(txt_Item.getString("ch_msg")));
+								} else {
+									Sticker.setImageResource(R.drawable.soccer_icon);
+									startDownload(txt_Item.getString("ch_msg"),
+											Sticker);
+								}
 							}
+							
 							txt_layout.setGravity(Gravity.RIGHT
 									| Gravity.CENTER_VERTICAL);
 							txt_layout.addView(Sticker);
@@ -507,15 +521,20 @@ public class Chat_Team extends Activity {
 								| Gravity.CENTER_VERTICAL);
 						retval.addView(Profile_layout);
 						if (txt_Item.getString("ch_type").contains("S")) {
-							if (data.BitMapHash.get(txt_Item
-									.getString("ch_msg")) != null) {
-								Sticker.setImageBitmap(data.BitMapHash
-										.get(txt_Item.getString("ch_msg")));
-							} else {
-								Sticker.setImageResource(R.drawable.soccer_icon);
-								startDownload(txt_Item.getString("ch_msg"),
-										Sticker);
+							if(txt_Item.getString("ch_msg").contains(".gif")){
+								Ion.with(Sticker).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
+							}else{
+								if (data.BitMapHash.get(txt_Item
+										.getString("ch_msg")) != null) {
+									Sticker.setImageBitmap(data.BitMapHash
+											.get(txt_Item.getString("ch_msg")));
+								} else {
+									Sticker.setImageResource(R.drawable.soccer_icon);
+									startDownload(txt_Item.getString("ch_msg"),
+											Sticker);
+								}
 							}
+							
 							txt_layout.addView(Sticker);
 							retval.addView(txt_layout);
 						} else {
@@ -599,7 +618,7 @@ public class Chat_Team extends Activity {
 								json_ob.put("ch_uid", json_ob.getString("us"));
 								json_ob.put("m_nickname",
 										json_ob.getString("nn"));
-								json_ob.put("ch_msg", json_ob.getString("ms"));
+								json_ob.put("ch_msg", json_ob.getString("ms").replace(".png", ".gif"));
 								json_ob.put("ch_type", json_ob.getString("ty"));
 								json_ob.put("m_photo", json_ob.getString("ui"));
 								json_ob.put("ch_time", json_ob.getString("ft"));

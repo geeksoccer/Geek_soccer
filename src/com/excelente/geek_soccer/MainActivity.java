@@ -330,40 +330,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				return false;
 			}else{
 				data.app_Status=false;
-				if(data.socket_All!=null){
-					if(data.socket_All.isConnected()){
-						data.socket_All.disconnect();
-					}
-				}
-				if(data.socket_Team!=null){
-					if(data.socket_Team.isConnected()){
-						data.socket_Team.disconnect();
-					}
-				}
-				if(data.socket_LiveScore!=null){
-					if(data.socket_LiveScore.isConnected()){
-						data.socket_LiveScore.disconnect();
-					}
-				}
 				finish();
 			}
 			return true;
-		}else if(keyCode == KeyEvent.KEYCODE_HOME){
-			if(data.socket_All!=null){
-				if(data.socket_All.isConnected()){
-					data.socket_All.disconnect();
-				}
-			}
-			if(data.socket_Team!=null){
-				if(data.socket_Team.isConnected()){
-					data.socket_Team.disconnect();
-				}
-			}
-			if(data.socket_LiveScore!=null){
-				if(data.socket_LiveScore.isConnected()){
-					data.socket_LiveScore.disconnect();
-				}
-			}
 		}
 		return super.onKeyDown(keyCode, event);
 	}
