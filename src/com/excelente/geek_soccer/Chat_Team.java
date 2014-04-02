@@ -618,7 +618,7 @@ public class Chat_Team extends Activity {
 								json_ob.put("ch_uid", json_ob.getString("us"));
 								json_ob.put("m_nickname",
 										json_ob.getString("nn"));
-								json_ob.put("ch_msg", json_ob.getString("ms").replace(".png", ".gif"));
+								json_ob.put("ch_msg", json_ob.getString("ms"));
 								json_ob.put("ch_type", json_ob.getString("ty"));
 								json_ob.put("m_photo", json_ob.getString("ui"));
 								json_ob.put("ch_time", json_ob.getString("ft"));
