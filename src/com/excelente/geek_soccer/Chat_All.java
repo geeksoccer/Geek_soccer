@@ -80,7 +80,7 @@ public class Chat_All extends Activity{
 	ImageView allRoom;
 	ImageView TeamRoom;
 	
-	String Stick_Set="1_";
+	String Stick_Set="1";
 	LinearLayout StickerSelectorLayout;
 	ImageView Stick_1;
 	ImageView Stick_2;
@@ -95,6 +95,7 @@ public class Chat_All extends Activity{
 	ImageView Stick_11;
 	ImageView Stick_12;
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
+	static HashMap<String, Button> Sticker_ButVSet = new HashMap<String, Button>();
 	SessionManager sesPrefer;
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -178,14 +179,28 @@ public class Chat_All extends Activity{
 						final Button StickSet_1 = new Button(mContext);
 						StickSet_1.setText("SET " + (i + 1));
 						final int StickPosition = i+1;
+						if(String.valueOf(StickPosition).equals(Stick_Set)){
+							StickSet_1.setEnabled(false);
+						}else{
+							StickSet_1.setEnabled(true);
+						}
 						StickSet_1.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View arg0) {
 								StickViewClear();
+								Stick_Set = String.valueOf(StickPosition);
+								for(int j=0; j<data.Sticker_Set.size();j++){
+									if(String.valueOf(j+1).equals(Stick_Set)){
+										Sticker_ButVSet.get(String.valueOf(j)).setEnabled(false);
+									}else{
+										Sticker_ButVSet.get(String.valueOf(j)).setEnabled(true);
+									}
+								}
 								StickViewCall(String.valueOf(StickPosition));
 							}
 										
 						});
+						Sticker_ButVSet.put(String.valueOf(i), StickSet_1);
 						StickerSelectorLayout.addView(StickSet_1);
 					}
 				}
@@ -353,7 +368,7 @@ public class Chat_All extends Activity{
 					new View.OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							Send_Stick(Stick_Set+key);
+							Send_Stick(Stick_Set+"_"+key);
 						}
 					});
 		}
