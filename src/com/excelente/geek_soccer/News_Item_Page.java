@@ -8,8 +8,6 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.aphidmobile.flip.FlipViewController;
-import com.aphidmobile.flip.FlipViewController.ViewFlipListener;
 import com.excelente.geek_soccer.adapter.CommentAdapter;
 import com.excelente.geek_soccer.adapter.NewsItemsAdapter;
 import com.excelente.geek_soccer.model.CommentModel;
@@ -21,14 +19,11 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.DragEvent;
-import android.view.MotionEvent;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
-import android.view.View.OnDragListener;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -44,7 +39,7 @@ import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 
 @SuppressLint("SetJavaScriptEnabled")
-public class News_Item_Page extends Activity implements View.OnClickListener, AnimationListener, NewsItemsAdapter.Callback{
+public class News_Item_Page extends Activity implements View.OnClickListener, AnimationListener{
 	
 	public static final String NEWS_POST_COMMENTS_URL = "http://183.90.171.209/gs_news_comments/post_news_comments.php";
 	public static final String NEWS_READS_URL = "http://183.90.171.209/gs_news/post_news_reads.php";
@@ -54,7 +49,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 
 	private LinearLayout upButton; 
 
-	private FlipViewController contentFlipView;
+	private ViewPager contentFlipView;
 
 	private RelativeLayout contentLayout;
 
@@ -124,42 +119,31 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		int position = intent.getIntExtra(News_Page.ITEM_INDEX, 0);
 		tag = intent.getStringExtra(News_Page.NEWS_TAG); 
 		
-		contentFlipView = new FlipViewController(activity, FlipViewController.HORIZONTAL);
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-		//params.addRule(RelativeLayout.BELOW, R.id.news_wait_processbar);
-		contentFlipView.setLayoutParams(params);
-		contentFlipView.setAnimationBitmapFormat(Bitmap.Config.RGB_565);
+		contentFlipView = (ViewPager) findViewById(R.id.Content_Pager);
 		
-		newsItemAdaptor = new NewsItemsAdapter(News_Item_Page.this, newsWaitProcessbar, News_Page.getNewsListbyTag(tag)); 
-		newsItemAdaptor.setCallback(this); 
+		newsItemAdaptor = new NewsItemsAdapter(News_Item_Page.this, newsWaitProcessbar, News_Page.getNewsListbyTag(tag));
 		
 		contentFlipView.setAdapter(newsItemAdaptor);
-		contentFlipView.setSelection(position);
-		contentFlipView.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				v.getParent().requestDisallowInterceptTouchEvent(false);
-				return false;
-			}
-		});
+		contentFlipView.setCurrentItem(position);
+		contentFlipView.setOffscreenPageLimit(0);
 		
 		newsloaded = true;
-		contentFlipView.setOnViewFlipListener(new ViewFlipListener() {
-			int oldPosition=0;
+		contentFlipView.setOnPageChangeListener(new OnPageChangeListener() {
+			int oldPosition = 0;
 			
 			@Override
-			public void onViewFlipped(View view, int position) {
+			public void onPageSelected(int position) {
 				//contentFlipView.refreshPage(view);
-				NewsModel news = (NewsModel) contentFlipView.getAdapter().getItem(position);
+				NewsModel news = (NewsModel) newsItemAdaptor.getmNewList().get(position);
 				
 				if(oldPosition != position){
 					
 					new PostNewsReads().execute(news.getNewsId());
 					news.setStatusView(1);
-					news.setNewsReads(news.getNewsReads()+1);
-					
-					TextView viewtxt = (TextView) view.findViewById(R.id.news_reads_textview);
-					viewtxt.setText(String.valueOf(news.getNewsReads()));
+					news.setNewsReads(news.getNewsReads()+1); 
+					 
+					//TextView viewtxt = (TextView) ((View)contentFlipView.getAdapter().instantiateItem(contentFlipView, position)).findViewById(R.id.news_reads_textview);
+					//viewtxt.setText(String.valueOf(news.getNewsReads()));
 				}
 				
 				headeTitleTextview.setText(news.getNewsTopic());
@@ -168,30 +152,28 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 					doToggleBar();
 				}
 				
-				if(contentFlipView.getAdapter().getCount() - position == 3){
+				if(contentFlipView.getAdapter().getCount() - position == 2){
 					//Toast.makeText(getApplicationContext(), "Enter", Toast.LENGTH_SHORT).show();
 					if(newsloaded && contentFlipView.getAdapter().getCount() < 100 && NetworkUtils.isNetworkAvailable(getApplicationContext())){
-						NewsModel newsModel = (NewsModel) contentFlipView.getAdapter().getItem(contentFlipView.getAdapter().getCount()-1);
+						NewsModel newsModel = (NewsModel) newsItemAdaptor.getmNewList().get(contentFlipView.getAdapter().getCount()-1);
 						new LoadOldNewsTask(newsItemAdaptor, tag).execute(News_Page.getURLbyTag(newsModel.getNewsId(), tag));
 						newsloaded = false;
 					}
 				}
 				
 				oldPosition = position;
-				onRefesh(position);
 			}
-		});
-		
-		contentFlipView.setOnDragListener(new OnDragListener() {
 			
 			@Override
-			public boolean onDrag(View v, DragEvent event) {
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
 				
-				return false;
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				
 			}
 		});
-         
-		contentLayout.addView(contentFlipView);
 		
 		//comment listview 
 		commentListview = (ListView) findViewById(R.id.news_comment_listview);
@@ -307,7 +289,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				
 				if(content.length() > 0){
 					
-					NewsModel news = (NewsModel) contentFlipView.getSelectedItem();
+					NewsModel news = (NewsModel) contentFlipView.getAdapter().instantiateItem(contentFlipView, contentFlipView.getCurrentItem());
 					
 					CommentModel comment = new CommentModel();
 					comment.setMemberUid(MemberSession.getMember().getUid());
@@ -320,18 +302,6 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				break;
 			}
 		}
-	}
-	
-	@Override
-	protected void onResume() {
-	    super.onResume();
-	    contentFlipView.onResume();
-	}
-
-	@Override
-	protected void onPause() {
-	    super.onPause();
-	    contentFlipView.onPause();
 	}
 	
 	@Override
@@ -484,25 +454,6 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 
 	@Override
 	public void onAnimationStart(Animation animation) {
-	}
-
-	@Override
-	public void onRefesh(final int position) {
-		
-		final Handler hd = new Handler();
-		hd.postDelayed(new Runnable() {
-			
-			@Override
-			public void run() {
-				activity.runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-						contentFlipView.refreshPage(position);
-					}
-				});
-			}
-		}, 500);
 	}
 	
 	public class LoadOldNewsTask extends AsyncTask<String, Void, List<NewsModel>>{

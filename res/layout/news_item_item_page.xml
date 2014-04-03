@@ -44,7 +44,7 @@
 	            android:layout_toRightOf="@+id/news_likes_textview"
 	            android:scaleType="fitXY"
 	            android:src="@drawable/comment" />
-	
+
 	        <TextView
 	            android:id="@+id/news_comments_textview"
 	            android:layout_width="wrap_content"
@@ -106,14 +106,14 @@
 		    android:layout_height="match_parent"
 		    android:layout_below="@+id/news_topic_textview"
 		    android:background="@drawable/card_background_white" >
-	        
+
 	        <RelativeLayout
 		        android:id="@+id/news_foot"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_alignParentBottom="true"
 		        android:background="#EEE" >
-		        
+
 	            <ImageView 
 			        android:id="@+id/news_like"
 			        android:src="@drawable/news_likes"
@@ -124,7 +124,7 @@
 			        android:paddingBottom="5dp"
 			        android:layout_centerVertical="true"
 			        android:scaleType="fitXY"/>
-		    
+
 			    <TextView
 			        android:id="@+id/news_credit_textview"
 			        android:layout_width="wrap_content"
@@ -148,8 +148,8 @@
 			        android:background="@drawable/bg_press" />
 
 		    </RelativeLayout>
-		    
-		    <WebView
+
+		    <com.excelente.geek_soccer.view.CustomWebView
 		        android:id="@+id/news_content_webview"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"
@@ -158,6 +158,6 @@
 		        android:layout_marginLeft="15dp"
 		        android:layout_marginRight="15dp"
 		        android:layout_marginTop="5dp" />
-		
+
 		</RelativeLayout>
 </RelativeLayout>

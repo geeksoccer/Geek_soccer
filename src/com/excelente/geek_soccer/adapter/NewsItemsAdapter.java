@@ -3,7 +3,9 @@ package com.excelente.geek_soccer.adapter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -20,15 +22,18 @@ import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.view.CustomWebView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Parcelable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -36,18 +41,13 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-@SuppressLint("SetJavaScriptEnabled")
-public class NewsItemsAdapter extends BaseAdapter{
-	
-	public interface Callback {
-		public void onRefesh(int position);
-	}
+@SuppressLint({ "SetJavaScriptEnabled", "UseSparseArrays" })
+public class NewsItemsAdapter extends PagerAdapter{
 	
 	Context mContext;
 	List<NewsModel> mNewList;
@@ -55,95 +55,115 @@ public class NewsItemsAdapter extends BaseAdapter{
 	
 	News_Item_Page newsItemPage;
 	
-	NewsItemView newsItemView;
-	
-	Callback call;
+	Map<Integer, NewsItemView> newsItemViews = new HashMap<Integer, NewsItemsAdapter.NewsItemView>();
 
 	public NewsItemsAdapter(News_Item_Page context, ProgressBar newsWaitProcessbar, List<NewsModel> newsList) {
 		this.newsItemPage = context;
 		this.mContext = context;
 		this.mNewList = newsList;
 		this.newsWaitProcessbar = newsWaitProcessbar;
-	}
-	
-	public void setCallback(Callback call) {
-		this.call = call;
+		newsWaitProcessbar.setVisibility(View.GONE);
 	}
 	
 	public class NewsItemView {
 		TextView newsTopicTextview; 
 		TextView newsCreateTimeTextview;
-		WebView newsContentWebview;
+		CustomWebView newsContentWebview;
 		TextView newsCreditTextview;
-		ImageView newsLikeImageview;
+		ImageView newsLikeImageview; 
 		TextView newsLikesTextview;
 		TextView newsReadsTextview;
 		ImageView newsCommentImageview;
 		TextView newsCommentsTextview;
 	}
-	
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public Object instantiateItem(ViewGroup container, int position) {
+
+		Log.e("ooooooooooooooooo", "instantiateItem " + position);
 		LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        
-        if(convertView==null){
-        	newsItemView = new NewsItemView();
-        	convertView = mInflater.inflate(R.layout.news_item_item_page, parent, false);
-	        newsItemView.newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
-	        newsItemView.newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
-	        newsItemView.newsContentWebview = (WebView) convertView.findViewById(R.id.news_content_webview);
-	        newsItemView.newsCreditTextview = (TextView) convertView.findViewById(R.id.news_credit_textview);
-	        newsItemView.newsLikeImageview = (ImageView) convertView.findViewById(R.id.news_like); 
-	        newsItemView.newsLikesTextview = (TextView) convertView.findViewById(R.id.news_likes_textview);
-	        newsItemView.newsReadsTextview = (TextView) convertView.findViewById(R.id.news_reads_textview);
-	        newsItemView.newsCommentImageview = (ImageView) convertView.findViewById(R.id.news_comment_imageView);
-	        newsItemView.newsCommentsTextview = (TextView) convertView.findViewById(R.id.news_comments_textview);
-	        convertView.setTag(newsItemView);
-        }else{
-        	newsItemView = (NewsItemView)convertView.getTag();
-        }
-          
-        NewsModel newsModel = (NewsModel) getItem(position);
+		View convertView = (View)mInflater.inflate(R.layout.news_item_item_page, null);
+		
+		NewsItemView newsItemView = new NewsItemView(); 
+		newsItemView.newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
+		newsItemView.newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
+		newsItemView.newsContentWebview = (CustomWebView) convertView.findViewById(R.id.news_content_webview);
+		newsItemView.newsCreditTextview = (TextView) convertView.findViewById(R.id.news_credit_textview);
+		newsItemView.newsLikeImageview = (ImageView) convertView.findViewById(R.id.news_like); 
+		newsItemView.newsLikesTextview = (TextView) convertView.findViewById(R.id.news_likes_textview);
+		newsItemView.newsReadsTextview = (TextView) convertView.findViewById(R.id.news_reads_textview);
+		newsItemView.newsCommentImageview = (ImageView) convertView.findViewById(R.id.news_comment_imageView);
+		newsItemView.newsCommentsTextview = (TextView) convertView.findViewById(R.id.news_comments_textview);
+		
+        NewsModel newsModel = (NewsModel) mNewList.get(position);
         doLoadNewsToViews(position, newsModel, newsItemView);
         
-		return convertView;
+        newsItemViews.put(position, newsItemView);
+        
+        ((ViewPager) container).addView(convertView,0);
+        
+        return convertView;
 	}
-	 
-	private void doLoadNewsToViews(final int position, final NewsModel newsModel, final NewsItemView newsItemView) { 
+	
+	@Override
+    public void destroyItem(ViewGroup collection, int position, Object view) {
+		TextView newsTopicTextview = (TextView) ((View) view).findViewById(R.id.news_topic_textview);
+		TextView newsCreateTimeTextview = (TextView) ((View) view).findViewById(R.id.news_create_time_textview);
+		CustomWebView newsContentWebview = (CustomWebView) ((View) view).findViewById(R.id.news_content_webview);
+		TextView newsCreditTextview = (TextView) ((View) view).findViewById(R.id.news_credit_textview);
+		ImageView newsLikeImageview = (ImageView) ((View) view).findViewById(R.id.news_like); 
+		TextView newsLikesTextview = (TextView) ((View) view).findViewById(R.id.news_likes_textview);
+		TextView newsReadsTextview = (TextView) ((View) view).findViewById(R.id.news_reads_textview);
+		ImageView newsCommentImageview = (ImageView) ((View) view).findViewById(R.id.news_comment_imageView);
+		TextView newsCommentsTextview = (TextView) ((View) view).findViewById(R.id.news_comments_textview);
 		
+		((ViewPager) collection).removeView(newsTopicTextview);
+		((ViewPager) collection).removeView(newsCreateTimeTextview);
+		((ViewPager) collection).removeView(newsContentWebview);
+		((ViewPager) collection).removeView(newsCreditTextview);
+		((ViewPager) collection).removeView(newsLikeImageview);
+		((ViewPager) collection).removeView(newsLikesTextview);
+		((ViewPager) collection).removeView(newsReadsTextview);
+		((ViewPager) collection).removeView(newsCommentImageview);
+		((ViewPager) collection).removeView(newsCommentsTextview);
+        ((ViewPager) collection).removeView((View) view);
+        newsItemViews.remove(position);
+        Log.e("ooooooooooooooooo", "destroyItem " + position);
+    }
+
+	private void doLoadNewsToViews(final int position, final NewsModel newsModel, final NewsItemView newsItemView) { 
+
 		newsItemView.newsTopicTextview.setText(newsModel.getNewsTopic());
 		newsItemView.newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(mContext, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime()))); 
 		newsItemView.newsCreditTextview.setText(mContext.getString(R.string.label_credit) + " " + newsModel.getNewsCredit());
-	    
+
 		//newsItemView.newsContentWebview.clearCache(true);
-		newsItemView.newsContentWebview.loadUrl("about:blank");
-		
+		//newsItemView.newsContentWebview.loadUrl("about:blank");
+
 		newsItemView.newsContentWebview.getSettings().setDisplayZoomControls(false);
 		newsItemView.newsContentWebview.getSettings().setJavaScriptEnabled(true);
 		newsItemView.newsContentWebview.getSettings().setBuiltInZoomControls(true); 
 		newsItemView.newsContentWebview.getSettings().setPluginState(PluginState.ON);
         
-		SwipeDetector swipeDetector = new SwipeDetector(); 
-		newsItemView.newsContentWebview.setOnTouchListener(swipeDetector);
         //newsItemView.newsContentWebview.getSettings().setDefaultTextEncodingName("utf-8");
 		newsItemView.newsContentWebview.setWebChromeClient(new WebChromeClient(){
 
 			public void onProgressChanged(WebView view, int progress){
         		newsWaitProcessbar.setProgress(progress);
             }
-			
+
 			@Override
 			public void onShowCustomView(View view, CustomViewCallback callback) {
 				super.onShowCustomView(view, callback);
 				Log.e("onShowCustomView", "OK");
 			}
-			
+
 			@Override
 			public void onReceivedTouchIconUrl(WebView view, String url, boolean precomposed) {
 				super.onReceivedTouchIconUrl(view, url, precomposed);
 				Log.e("onReceivedTouchIconUrl", "OK");
 			}
-			
+
 			@Override
 			public void onHideCustomView() {
 				super.onHideCustomView();
@@ -170,7 +190,7 @@ public class NewsItemsAdapter extends BaseAdapter{
 	        		getRequest.addHeader("Host", "upic.me");
 	        		getRequest.addHeader("Referer", "http://localhost");
 	        		getRequest.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36");
-	        		
+
 	        		DefaultHttpClient client = new DefaultHttpClient();
 	        		try {
 						HttpResponse httpReponse = client.execute(getRequest);
@@ -181,7 +201,7 @@ public class NewsItemsAdapter extends BaseAdapter{
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-	        		
+
         		}else if(url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com)){ 
         			HttpGet getRequest = new HttpGet(url);
         			
@@ -193,7 +213,7 @@ public class NewsItemsAdapter extends BaseAdapter{
 	        		getRequest.addHeader("Host", "image.ohozaa.com");
 	        		getRequest.addHeader("Referer", "http://localhost");
 	        		getRequest.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36");
-	        		
+
 	        		DefaultHttpClient client = new DefaultHttpClient();
 	        		try {
 						HttpResponse httpReponse = client.execute(getRequest);
@@ -204,7 +224,7 @@ public class NewsItemsAdapter extends BaseAdapter{
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-	        		
+
         		}
         		
         		
@@ -238,7 +258,6 @@ public class NewsItemsAdapter extends BaseAdapter{
         		
         		timeout = false;
         		newsWaitProcessbar.setVisibility(View.GONE);
-        		call.onRefesh(position);
         		
         	}
         });
@@ -252,10 +271,10 @@ public class NewsItemsAdapter extends BaseAdapter{
 		newsItemView.newsContentWebview.loadData( htmlData, "text/html; charset=UTF-8", null);
         
         newsItemView.newsLikeImageview.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				
+
 				if (NetworkUtils.isNetworkAvailable(mContext)){
 					if(newsModel.getStatusLike()==0){
 						newsItemView.newsLikeImageview.setImageResource(R.drawable.news_likes_selected);
@@ -266,23 +285,23 @@ public class NewsItemsAdapter extends BaseAdapter{
 						newsModel.setNewsLikes(newsModel.getNewsLikes() - 1);
 						newsModel.setStatusLike(0);
 					}
-					
+
 					new PostNewsLikes().execute(newsModel);
 				}else
 					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
-				
+
 				newsItemView.newsLikesTextview.setText(String.valueOf(newsModel.getNewsLikes()));
 			}
 		});
         
         newsItemView.newsCommentImageview.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				CommentModel comment = new CommentModel();
 				comment.setNewsId(newsModel.getNewsId());
 				comment.setMemberUid(MemberSession.getMember().getUid());
-				
+
 				newsItemPage.doClickNewsComment(comment, newsModel);
 			}
 		});
@@ -301,16 +320,6 @@ public class NewsItemsAdapter extends BaseAdapter{
 	@Override
 	public int getCount() {
 		return mNewList.size();
-	}
-
-	@Override
-	public Object getItem(int pos) {
-		return mNewList.get(pos);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return mNewList.indexOf(mNewList.get(position)); 
 	}
 	
 	public class PostNewsLikes extends AsyncTask<NewsModel, Void, String>{
@@ -337,64 +346,6 @@ public class NewsItemsAdapter extends BaseAdapter{
 
 	}
 	
-	public class SwipeDetector implements View.OnTouchListener {
-
-		static final String logTag = "SwipeDetector";
-		static final int MIN_DISTANCE = 100;
-		private float downX, downY, upX, upY;
-
-		public void onRightToLeftSwipe(View v){
-			v.getParent().requestDisallowInterceptTouchEvent(false);
-		}
-
-		public void onLeftToRightSwipe(View v){
-			v.getParent().requestDisallowInterceptTouchEvent(false);
-		}
-
-		public void onTopToBottomSwipe(View v){
-			v.getParent().requestDisallowInterceptTouchEvent(true);
-		}
-
-		public void onBottomToTopSwipe(View v){
-			v.getParent().requestDisallowInterceptTouchEvent(true);
-		}
-
-		public boolean onTouch(View v, MotionEvent event) {
-		    switch(event.getAction()){
-		        case MotionEvent.ACTION_DOWN: {
-		            downX = event.getX();
-		            downY = event.getY();
-		            v.getParent().requestDisallowInterceptTouchEvent(true);
-		            break;
-		        }
-		        case MotionEvent.ACTION_MOVE: {
-		            upX = event.getX();
-		            upY = event.getY();
-
-		            float deltaX = downX - upX;
-		            float deltaY = downY - upY;
-
-		            if(Math.abs(deltaY) > MIN_DISTANCE){
-		                // top or down
-		                if(deltaY < 0) { this.onTopToBottomSwipe(v);}
-		                if(deltaY > 0) { this.onBottomToTopSwipe(v);}
-		            } else if(Math.abs(deltaX) > MIN_DISTANCE){
-		                // left or right
-		                if(deltaX < 0) { this.onLeftToRightSwipe(v);}
-		                if(deltaX > 0) { this.onRightToLeftSwipe(v);}
-		            }
-		            break;
-		        }
-		        case MotionEvent.ACTION_UP: {
-		        	v.getParent().requestDisallowInterceptTouchEvent(true);
-		        	break;
-		        }
-		    }
-		    return false;
-		}
-
-	}
-	
 	public void add(List<NewsModel> newsList) {
 		if(this.mNewList.size()<=100){
 		
@@ -404,6 +355,25 @@ public class NewsItemsAdapter extends BaseAdapter{
 			
 			notifyDataSetChanged();
 		}
+	}
+	
+	
+	@Override
+	public Parcelable saveState() {
+		return null;
+	}
+	
+	@Override
+	public boolean isViewFromObject(View view, Object object) {
+		return view.equals( object );
+	}
+
+	public List<NewsModel> getmNewList() {
+		return mNewList;
+	}
+
+	public void setmNewList(List<NewsModel> mNewList) {
+		this.mNewList = mNewList;
 	}
 
 }
