@@ -26,6 +26,7 @@
             android:layout_toRightOf="@+id/Team_Logo"
             android:gravity="center"
             android:textSize="20dp"
+            android:textStyle="bold"
             android:textColor="@color/white"
             android:text="@string/title_bar_news" />
         

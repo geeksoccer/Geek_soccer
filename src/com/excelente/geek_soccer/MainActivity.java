@@ -248,35 +248,35 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		this.mViewPager.setOffscreenPageLimit(4);
 		
 		if(index==0){
-			title_bar.setText("News");
+			title_bar.setText("NEWS");
 			news_tab.setBackgroundResource(R.drawable.news_h);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==1){
-			title_bar.setText("Livescore");
+			title_bar.setText("LIVESCORE");
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore_h);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==2){
-			title_bar.setText("Chat Room");
+			title_bar.setText("CHAT ROOM");
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat_h);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==3){
-			title_bar.setText("Score Board");
+			title_bar.setText("SCORE BOARD");
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board_h);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==4){
-			title_bar.setText("Hilight");
+			title_bar.setText("HILIGHT");
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
