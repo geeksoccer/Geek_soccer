@@ -42,6 +42,7 @@ import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,12 +76,13 @@ public class NewsItemsAdapter extends PagerAdapter{
 		TextView newsReadsTextview;
 		ImageView newsCommentImageview;
 		TextView newsCommentsTextview;
+		LinearLayout newsHead;
 	}
 
 	@Override
 	public Object instantiateItem(ViewGroup container, int position) {
 
-		Log.e("ooooooooooooooooo", "instantiateItem " + position);
+		//Log.e("ooooooooooooooooo", "instantiateItem " + position);
 		LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View convertView = (View)mInflater.inflate(R.layout.news_item_item_page, null);
 		
@@ -94,6 +96,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsReadsTextview = (TextView) convertView.findViewById(R.id.news_reads_textview);
 		newsItemView.newsCommentImageview = (ImageView) convertView.findViewById(R.id.news_comment_imageView);
 		newsItemView.newsCommentsTextview = (TextView) convertView.findViewById(R.id.news_comments_textview);
+		newsItemView.newsHead = (LinearLayout) convertView.findViewById(R.id.news_header);
 		
         NewsModel newsModel = (NewsModel) mNewList.get(position);
         doLoadNewsToViews(position, newsModel, newsItemView);
@@ -116,8 +119,9 @@ public class NewsItemsAdapter extends PagerAdapter{
 		TextView newsReadsTextview = (TextView) ((View) view).findViewById(R.id.news_reads_textview);
 		ImageView newsCommentImageview = (ImageView) ((View) view).findViewById(R.id.news_comment_imageView);
 		TextView newsCommentsTextview = (TextView) ((View) view).findViewById(R.id.news_comments_textview);
+		LinearLayout newsHead = (LinearLayout) ((View) view).findViewById(R.id.news_header);
 		
-		((ViewPager) collection).removeView(newsTopicTextview);
+		((ViewPager) collection).removeView(newsTopicTextview); 
 		((ViewPager) collection).removeView(newsCreateTimeTextview);
 		((ViewPager) collection).removeView(newsContentWebview);
 		((ViewPager) collection).removeView(newsCreditTextview);
@@ -126,25 +130,24 @@ public class NewsItemsAdapter extends PagerAdapter{
 		((ViewPager) collection).removeView(newsReadsTextview);
 		((ViewPager) collection).removeView(newsCommentImageview);
 		((ViewPager) collection).removeView(newsCommentsTextview);
+		((ViewPager) collection).removeView(newsHead);
         ((ViewPager) collection).removeView((View) view);
         newsItemViews.remove(position);
-        Log.e("ooooooooooooooooo", "destroyItem " + position);
     }
 
 	private void doLoadNewsToViews(final int position, final NewsModel newsModel, final NewsItemView newsItemView) { 
 
 		newsItemView.newsTopicTextview.setText(newsModel.getNewsTopic());
+		newsItemView.newsTopicTextview.setSelected(true);
 		newsItemView.newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(mContext, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime()))); 
 		newsItemView.newsCreditTextview.setText(mContext.getString(R.string.label_credit) + " " + newsModel.getNewsCredit());
 
 		//newsItemView.newsContentWebview.clearCache(true);
-		//newsItemView.newsContentWebview.loadUrl("about:blank");
-
+		newsItemView.newsContentWebview.loadUrl("about:blank");
 		newsItemView.newsContentWebview.getSettings().setDisplayZoomControls(false);
 		newsItemView.newsContentWebview.getSettings().setJavaScriptEnabled(true);
 		newsItemView.newsContentWebview.getSettings().setBuiltInZoomControls(true); 
 		newsItemView.newsContentWebview.getSettings().setPluginState(PluginState.ON);
-        
         //newsItemView.newsContentWebview.getSettings().setDefaultTextEncodingName("utf-8");
 		newsItemView.newsContentWebview.setWebChromeClient(new WebChromeClient(){
 
@@ -170,50 +173,20 @@ public class NewsItemsAdapter extends PagerAdapter{
 				Log.e("onHideCustomView", "OK");
 			}
         });
+		
 		newsItemView.newsContentWebview.setWebViewClient(new WebViewClient(){
         	boolean timeout;
         	
-        	@Override
+        	@SuppressLint("NewApi")
+			@Override
         	public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         		
         		String upic_me = "http://upic.me/";
         		String image_ohozaa_com = "http://image.ohozaa.com/";
         		
-        		if(url.substring(0, upic_me.length()).equals(upic_me)){
-        			HttpGet getRequest = new HttpGet(url);
-        			
-	        		getRequest.addHeader("Accept", "image/webp,*/*;q=0.8");
-	        		getRequest.addHeader("Accept-Encoding", "gzip,deflate,sdch");
-	        		getRequest.addHeader("Accept-Language", "en-US,en;q=0.8");
-	        		getRequest.addHeader("Connection", "keep-alive");
-	        		getRequest.addHeader("Cookie", "PHPSESSID=cgmh87ivlp1pstuf56c4b65qr1; iz_uid=450499963b4f3f32857f0ed793dd2175; testcookie=enabled; __utma=113133888.1190374733.1390030425.1390030425.1390030425.1; __utmc=113133888; __utmz=113133888.1390030425.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
-	        		getRequest.addHeader("Host", "upic.me");
-	        		getRequest.addHeader("Referer", "http://localhost");
-	        		getRequest.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36");
-
-	        		DefaultHttpClient client = new DefaultHttpClient();
-	        		try {
-						HttpResponse httpReponse = client.execute(getRequest);
-						InputStream reponseInputStream = httpReponse.getEntity().getContent();
-						return new WebResourceResponse(httpReponse.getEntity().getContentType().getValue(), "utf-8", reponseInputStream);
-					} catch (ClientProtocolException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-        		}else if(url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com)){ 
-        			HttpGet getRequest = new HttpGet(url);
-        			
-        			getRequest.addHeader("Accept", "image/webp,*/*;q=0.8");
-	        		getRequest.addHeader("Accept-Encoding", "gzip,deflate,sdch");
-	        		getRequest.addHeader("Accept-Language", "en-US,en;q=0.8");
-	        		getRequest.addHeader("Connection", "keep-alive");
-	        		getRequest.addHeader("Cookie", "ozuid=848712369; _cbclose=1; _cbclose19784=1; _uid19784=D96E3980.2; visit_time=3");
-	        		getRequest.addHeader("Host", "image.ohozaa.com");
-	        		getRequest.addHeader("Referer", "http://localhost");
-	        		getRequest.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36");
-
+        		if(url.substring(0, upic_me.length()).equals(upic_me) || url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com)){
+        			HttpGet getRequest = new HttpGet(url); 
+        			getRequest.addHeader("Referer", "http://localhost");
 	        		DefaultHttpClient client = new DefaultHttpClient();
 	        		try {
 						HttpResponse httpReponse = client.execute(getRequest);
@@ -258,7 +231,6 @@ public class NewsItemsAdapter extends PagerAdapter{
         		
         		timeout = false;
         		newsWaitProcessbar.setVisibility(View.GONE);
-        		
         	}
         });
         
@@ -340,8 +312,6 @@ public class NewsItemsAdapter extends PagerAdapter{
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			
-			//Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
 		}
 
 	}

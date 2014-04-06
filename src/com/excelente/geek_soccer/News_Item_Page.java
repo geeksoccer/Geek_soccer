@@ -19,6 +19,7 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -133,6 +134,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			
 			@Override
 			public void onPageSelected(int position) {
+				//Log.e("oooooooooooooooo", ""+position);
 				//contentFlipView.refreshPage(view);
 				NewsModel news = (NewsModel) newsItemAdaptor.getmNewList().get(position);
 				
@@ -141,8 +143,8 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 					new PostNewsReads().execute(news.getNewsId());
 					news.setStatusView(1);
 					news.setNewsReads(news.getNewsReads()+1); 
-					 
-					//TextView viewtxt = (TextView) ((View)contentFlipView.getAdapter().instantiateItem(contentFlipView, position)).findViewById(R.id.news_reads_textview);
+					  
+					//TextView viewtxt = (TextView) contentFlipView.getChildAt(position).findViewById(R.id.news_reads_textview);
 					//viewtxt.setText(String.valueOf(news.getNewsReads()));
 				}
 				
@@ -162,6 +164,8 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				}
 				
 				oldPosition = position;
+				
+				newsItemAdaptor.notifyDataSetChanged();
 			}
 			
 			@Override
@@ -289,7 +293,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				
 				if(content.length() > 0){
 					
-					NewsModel news = (NewsModel) contentFlipView.getAdapter().instantiateItem(contentFlipView, contentFlipView.getCurrentItem());
+					NewsModel news = (NewsModel) newsItemAdaptor.getmNewList().get(contentFlipView.getCurrentItem());
 					
 					CommentModel comment = new CommentModel();
 					comment.setMemberUid(MemberSession.getMember().getUid());
@@ -491,4 +495,5 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		}
 
 	}
+
 }

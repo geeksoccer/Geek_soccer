@@ -22,10 +22,12 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -537,6 +539,13 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			hilightloaded = true; 
 		}
 
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		Log.e("oooooooooooooooo", "test");
+		contentFlipView.refreshAllPages();
 	}
 
 }

@@ -98,31 +98,39 @@ public class NewsAdapter extends BaseAdapter{
         if(urlBitmap.containsKey(newsModel.getNewsImage().replace(".gif", ".png"))){
         	newsImageImageview.setImageBitmap(urlBitmap.get(newsModel.getNewsImage().replace(".gif", ".png"))); 
         }else{
-		    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
-				
-		    	public void onLoadingStarted(String imageUri, View view) {
-           		 	newsImageImageview.setVisibility(View.GONE);
-           		 	newsImageProgressBar.setVisibility(View.VISIBLE);
-	           	};
-	           	
-	           	@Override
-	           	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
-	           		newsImageImageview.setVisibility(View.VISIBLE);
-	          		newsImageProgressBar.setVisibility(View.GONE);
-	           	}
-	           	
-	           	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-	           		newsImageImageview.setVisibility(View.VISIBLE);
-	           		newsImageProgressBar.setVisibility(View.GONE);
-	           		urlBitmap.put(imageUri, loadedImage);
-	           	}
-
-				@Override
-				public void onLoadingCancelled(String imageUri, View view) {
-					newsImageImageview.setVisibility(View.VISIBLE);
-					newsImageProgressBar.setVisibility(View.GONE);
-				};
-			});
+        	try{
+			    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
+					
+			    	public void onLoadingStarted(String imageUri, View view) {
+	           		 	//newsImageImageview.setVisibility(View.GONE);
+	           		 	//newsImageProgressBar.setVisibility(View.VISIBLE);
+		           	};
+		           	
+		           	@Override
+		           	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
+		           		//newsImageImageview.setVisibility(View.VISIBLE);
+		          		//newsImageProgressBar.setVisibility(View.GONE);
+		           	}
+		           	
+		           	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+		           		//newsImageImageview.setVisibility(View.VISIBLE);
+		           		//newsImageProgressBar.setVisibility(View.GONE);
+		           		urlBitmap.put(imageUri, loadedImage);
+		           	}
+	
+					@Override
+					public void onLoadingCancelled(String imageUri, View view) {
+						//newsImageImageview.setVisibility(View.VISIBLE);
+						//newsImageProgressBar.setVisibility(View.GONE);
+					};
+				});
+        	}catch(Exception e){
+        		newsImageImageview.setVisibility(View.VISIBLE);
+        		newsImageProgressBar.setVisibility(View.GONE);
+        	}finally{
+        		newsImageImageview.setVisibility(View.VISIBLE);
+        		newsImageProgressBar.setVisibility(View.GONE);
+        	}
         }
         
         newsTopicTextview.setText(newsModel.getNewsTopic());
@@ -168,33 +176,8 @@ public class NewsAdapter extends BaseAdapter{
 	}
 	
 	private DisplayImageOptions getOptionImageLoader(String url) {
-		String upic_me = "http://upic.me/";
-		String image_ohozaa_com = "http://image.ohozaa.com/";
-		//String cdn_images_express_co_uk = "http://cdn.images.express.co.uk/";
 		Map<String, String> headers = new HashMap<String, String>();
-		if(url.length() > upic_me.length()){
-			if(url.substring(0, upic_me.length()).equals(upic_me)){
-				headers.put("Accept", "image/webp,*/*;q=0.8");
-				headers.put("Accept-Encoding", "gzip,deflate,sdch");
-				headers.put("Accept-Language", "en-US,en;q=0.8");
-				headers.put("Connection", "keep-alive");
-				headers.put("Cookie", "PHPSESSID=cgmh87ivlp1pstuf56c4b65qr1; iz_uid=450499963b4f3f32857f0ed793dd2175; testcookie=enabled; __utma=113133888.1190374733.1390030425.1390030425.1390030425.1; __utmc=113133888; __utmz=113133888.1390030425.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
-				headers.put("Host", "upic.me");
-				headers.put("Referer", "http://localhost");
-				headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36");
-			}else if(url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com)){ 
-				//Log.e("URL___________________OK", url);
-				headers.put("Accept", "image/webp,*/*;q=0.8");
-				headers.put("Accept-Encoding", "gzip,deflate,sdch");
-				headers.put("Accept-Language", "th-TH,th;q=0.8,en;q=0.6");
-				headers.put("Connection", "keep-alive");
-				headers.put("Cookie", "ozuid=146653405; _cbclose19784=1; _uid19784=D50B2ECF.1; _cbclose=1; _ctout19784=1");
-				headers.put("Host", "image.ohozaa.com");
-				headers.put("Referer", "http://localhost");
-				headers.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.76 Safari/537.36");
-			}
-			
-		}
+		headers.put("Referer", "http://localhost");
 		
 		DisplayImageOptions options = new DisplayImageOptions.Builder()
 	        //.showImageOnLoading(R.drawable.soccer_icon) // resource or drawable

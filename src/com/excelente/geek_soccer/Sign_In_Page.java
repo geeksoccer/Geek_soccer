@@ -275,6 +275,9 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			
 			mConnectionProgressDialog.setMessage("Signing in...");
 			mConnectionProgressDialog.show();
+			
+			signProgressbar.setVisibility(View.VISIBLE);
+			signInGoogleButton.setVisibility(View.GONE);
 		}
 		
 		@Override
@@ -319,14 +322,22 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			mConnectionProgressDialog.dismiss();
 			
 			if(memberSignedIn == null){
+				signProgressbar.setVisibility(View.GONE);
+				signInGoogleButton.setVisibility(View.VISIBLE);
 				Toast.makeText(getApplicationContext(), "Internet problem or this member using on any device", Toast.LENGTH_SHORT).show();
 				mPlusClient.disconnect();
 			}else if(memberSignedIn.getUid() < 1 && memberSignedIn.getTypeLogin().equals("google_plus")){
+				signProgressbar.setVisibility(View.GONE);
+				signInGoogleButton.setVisibility(View.VISIBLE);
 				doSelectTeam();
 			}else{
 				MemberSession.setMember(Sign_In_Page.this, memberSignedIn); 
 				if(MemberSession.hasMember())
 					gotoMainPage(memberSignedIn);
+				else{
+					signProgressbar.setVisibility(View.GONE);
+					signInGoogleButton.setVisibility(View.VISIBLE);
+				}
 			}
 		}
 		
@@ -340,6 +351,9 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			
 			mConnectionProgressDialog.setMessage("Signing up...");
 			mConnectionProgressDialog.show();
+			
+			signProgressbar.setVisibility(View.VISIBLE);
+			signInGoogleButton.setVisibility(View.GONE);
 		}
 		
 		@Override
@@ -395,6 +409,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			}else{
 				Toast.makeText(getApplicationContext(), "Signed Up Fail Or Internet Problem", Toast.LENGTH_SHORT).show();
 				mPlusClient.disconnect();
+				signProgressbar.setVisibility(View.GONE);
+				signInGoogleButton.setVisibility(View.VISIBLE);
 			}
 		}
 		
@@ -443,10 +459,10 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			
 			if(MemberSession.hasMember()){
 				gotoMainPage(memberToken);
+			}else{
+				signProgressbar.setVisibility(View.GONE);
+				signInGoogleButton.setVisibility(View.VISIBLE);
 			}
-			
-			signProgressbar.setVisibility(View.GONE);
-			signInGoogleButton.setVisibility(View.VISIBLE);
 		}
 		
 	}
