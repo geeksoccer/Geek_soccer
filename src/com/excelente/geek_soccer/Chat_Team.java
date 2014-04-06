@@ -288,7 +288,7 @@ public class Chat_Team extends Activity {
 				ImgV_p++;
 				if(data.Sticker_UrlSet
 						.get(key).contains(".gif")){
-					Ion.with(Sticker_ImgVSet.get(String.valueOf(ImgV_p))).load("http://183.90.171.209/chat/stk/"+data.Sticker_UrlSet
+					Ion.with(Sticker_ImgVSet.get(String.valueOf(ImgV_p))).placeholder(R.drawable.livescore_h).load("http://183.90.171.209/chat/stk/"+data.Sticker_UrlSet
 							.get(key));
 				}else{
 					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
@@ -366,8 +366,8 @@ public class Chat_Team extends Activity {
 
 	public void Send_Stick(String id) {
 		Msg_Send = id;
-		//StikerV.setVisibility(RelativeLayout.GONE);
-		//Sticker_Layout_Stat = false;
+		StikerV.setVisibility(RelativeLayout.GONE);
+		data.Sticker_Layout_Stat_team = false;
 		sticker_Sender();
 	}
 
@@ -503,7 +503,7 @@ public class Chat_Team extends Activity {
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if(txt_Item.getString("ch_msg").contains(".gif")){
-								Ion.with(Sticker).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
+								Ion.with(Sticker).placeholder(R.drawable.soccer_icon).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
 							}else{
 								if (data.BitMapHash.get(txt_Item
 										.getString("ch_msg")) != null) {
@@ -537,7 +537,7 @@ public class Chat_Team extends Activity {
 						retval.addView(Profile_layout);
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if(txt_Item.getString("ch_msg").contains(".gif")){
-								Ion.with(Sticker).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
+								Ion.with(Sticker).placeholder(R.drawable.soccer_icon).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
 							}else{
 								if (data.BitMapHash.get(txt_Item
 										.getString("ch_msg")) != null) {
@@ -720,19 +720,17 @@ public class Chat_Team extends Activity {
 	}
 
 	public void chatHandle() {
-		
 		handler.post(new Runnable() {
-			@Override
-			public void run() {
-				
-				data.imageAdapterChatTeam.notifyDataSetChanged();
+		    @Override
+		    public void run() {
+		    	data.imageAdapterChatTeam.notifyDataSetChanged();
 				data.lstViewChatTeam.setSelection(data.imageAdapterChatTeam
 						.getCount());
 				
             	if (data.Chat_list_LayOut_Team.getChildCount() > 1) {
 					data.Chat_list_LayOut_Team.removeViewAt(0);
 				}
-			}
+		    }
 		});
 	}
 

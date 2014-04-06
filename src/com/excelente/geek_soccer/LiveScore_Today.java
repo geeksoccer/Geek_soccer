@@ -676,8 +676,6 @@ public class LiveScore_Today extends Activity {
 		    					public void run() {
 		    						if (Looper.myLooper() == Looper.getMainLooper()) {
 		    							chk_D_Stat=false;
-			    						Toast.makeText(mContext, "Load_End", Toast.LENGTH_LONG)
-			    								.show();
 			    						chk_ani = false;
 			    						data.imageAdapterLiveScore.notifyDataSetChanged();
 		    						}		    						

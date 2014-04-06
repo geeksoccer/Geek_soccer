@@ -34,6 +34,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -299,8 +300,9 @@ public class Chat_All extends Activity{
 				ImgV_p++;
 				if(data.Sticker_UrlSet
 						.get(key).contains(".gif")){
-					Ion.with(Sticker_ImgVSet.get(String.valueOf(ImgV_p))).load("http://183.90.171.209/chat/stk/"+data.Sticker_UrlSet
-							.get(key));
+					Ion.with(Sticker_ImgVSet.get(String.valueOf(ImgV_p)))
+					.placeholder(R.drawable.livescore_h)
+					.load("http://183.90.171.209/chat/stk/"+data.Sticker_UrlSet.get(key));
 				}else{
 					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
 							.get(key));
@@ -377,8 +379,8 @@ public class Chat_All extends Activity{
 	
 	public void Send_Stick(String id) {
 		Msg_Send = id;
-		//StikerV.setVisibility(RelativeLayout.GONE);
-		//Sticker_Layout_Stat = false;
+		StikerV.setVisibility(RelativeLayout.GONE);
+		data.Sticker_Layout_Stat_All = false;
 		sticker_Sender();
 	}
 	
@@ -437,7 +439,7 @@ public class Chat_All extends Activity{
 							LayoutParams.WRAP_CONTENT));
 					txt_N.setTypeface(Typeface.DEFAULT_BOLD);
 					// txt_layout.addView(txt_N);
-
+					
 					TextView txt_T = new TextView(mContext);
 					txt_T.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
@@ -463,16 +465,26 @@ public class Chat_All extends Activity{
 									LayoutParams.MATCH_PARENT));
 					Profile_layout.setOrientation(LinearLayout.VERTICAL);
 					Profile_layout.setGravity(Gravity.CENTER_HORIZONTAL);
+					
 					ImageView Profile_Pic = new ImageView(mContext);
 					Profile_Pic.setLayoutParams(new LinearLayout.LayoutParams(
 							50, 50));
 					Profile_Pic.setImageResource(R.drawable.test_profile_pic);
 					Profile_layout.addView(Profile_Pic);
 
+					LinearLayout Logo_layout = new LinearLayout(mContext);
+					Logo_layout
+							.setLayoutParams(new LinearLayout.LayoutParams(
+									LayoutParams.WRAP_CONTENT,
+									LayoutParams.MATCH_PARENT));
+					Logo_layout.setOrientation(LinearLayout.HORIZONTAL);
+					Logo_layout.setGravity(Gravity.CENTER_HORIZONTAL);
+					Profile_layout.addView(Logo_layout);
+					
 					txt_N.setText(txt_Item.getString("m_nickname"));
 					txt_T.setPadding(5, 0, 5, 0);
 					txt_T.setText("(" + txt_Item.getString("ch_time") + ")");
-					Profile_layout.addView(txt_T);
+					Logo_layout.addView(txt_T);
 					
 					txt_layout.addView(name_layout);
 					
@@ -511,7 +523,7 @@ public class Chat_All extends Activity{
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if(txt_Item.getString("ch_msg").contains(".gif")){
-								Ion.with(Sticker).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
+								Ion.with(Sticker).placeholder(R.drawable.soccer_icon).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
 							}else{
 								if (data.BitMapHash.get(txt_Item
 										.getString("ch_msg")) != null) {
@@ -539,12 +551,20 @@ public class Chat_All extends Activity{
 								| Gravity.CENTER_VERTICAL);
 						retval.addView(Profile_layout);
 					} else {
+						TextView txt_TeamMate = new TextView(mContext);
+						txt_TeamMate.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+						txt_TeamMate.setTypeface(Typeface.DEFAULT_BOLD);
+						txt_TeamMate.setText("(ARS)");
+						name_layout.addView(txt_TeamMate);
+						
 						retval.setGravity(Gravity.LEFT
 								| Gravity.CENTER_VERTICAL);
 						retval.addView(Profile_layout);
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if(txt_Item.getString("ch_msg").contains(".gif")){
-								Ion.with(Sticker).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
+								Ion.with(Sticker).placeholder(R.drawable.soccer_icon).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
 							}else{
 								if (data.BitMapHash.get(txt_Item
 										.getString("ch_msg")) != null) {
