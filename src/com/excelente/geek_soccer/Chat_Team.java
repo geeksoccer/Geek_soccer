@@ -720,9 +720,11 @@ public class Chat_Team extends Activity {
 	}
 
 	public void chatHandle() {
-		handler.post(new Runnable() {
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
 		    @Override
 		    public void run() {
+		    	/*
 		    	data.imageAdapterChatTeam.notifyDataSetChanged();
 				data.lstViewChatTeam.setSelection(data.imageAdapterChatTeam
 						.getCount());
@@ -730,39 +732,42 @@ public class Chat_Team extends Activity {
             	if (data.Chat_list_LayOut_Team.getChildCount() > 1) {
 					data.Chat_list_LayOut_Team.removeViewAt(0);
 				}
+				*/
+		    	data.Chat_list_LayOut_Team.removeAllViews();
+				data.lstViewChatTeam.setAdapter(data.imageAdapterChatTeam);
+				data.lstViewChatTeam.setDividerHeight(0);
+				(data.Chat_list_LayOut_Team).addView(data.lstViewChatTeam);
+				data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
 		    }
-		});
+		}, data.chatDelay);
 	}
 
 	public void chat_Sender() {
-		Runnable runnable = new Runnable() {
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
+			@Override
 			public void run() {
 				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
 				if (!Msg_Send.equals("")) {
 					data.socket_Team.emit("sendchat", Msg_Send);
 					Msg_Send = "";
 				}
-
 			}
-		};
-
-		new Thread(runnable).start();
+		}, data.chatDelay);
 	}
 
 	public void sticker_Sender() {
-
-		Runnable runnable = new Runnable() {
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
+			@Override
 			public void run() {
 				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
 				if (!Msg_Send.equals("")) {
 					data.socket_Team.emit("sendsticker", Msg_Send);
 					Msg_Send = "";
 				}
-
 			}
-		};
-
-		new Thread(runnable).start();
+		}, data.chatDelay);
 	}
 
 	public static Bitmap loadImageFromUrl(String url) {

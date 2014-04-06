@@ -71,9 +71,11 @@ public class ControllParameter {
 	com.excelente.geek_soccer.Chat_All.ImageAdapter imageAdapterChatAll;
 	LinearLayout Chat_list_LayOut_All;
 	Boolean Sticker_Layout_Stat_All = false;
+	int chatDelay=0;
 	
 	ListView lstViewLiveScore;
 	com.excelente.geek_soccer.LiveScore_Today.ImageAdapter imageAdapterLiveScore;
+	
     
     public void fragement_Section_set(int section) {
         this.fragement_Section = section;
