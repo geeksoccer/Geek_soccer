@@ -4,18 +4,25 @@ import com.excelente.geek_soccer.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.VideoView;
 
-public class VideoPlayer extends Activity{
+public class VideoPlayer extends Activity implements OnPreparedListener, OnCompletionListener{
 	
 	public static final String VDO_URL = "VDO_URL";
 	
 	private VideoView videoPlayerView;
 	private MediaController mediaController;
+
+	private ProgressBar videoProgressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,33 +41,14 @@ public class VideoPlayer extends Activity{
 	
 	public void getInit(String videoURL) {
         videoPlayerView = (VideoView) findViewById(R.id.video_player_view);
+        videoPlayerView.setOnPreparedListener(this);
+        videoPlayerView.setOnCompletionListener(this);
         mediaController = new MediaController(this);
         videoPlayerView.setMediaController(mediaController);
         videoPlayerView.setVideoPath(videoURL);
         videoPlayerView.start();
         
-        /*videoPlayerView.setOnErrorListener(new OnErrorListener() {
-			
-			@Override
-			public boolean onError(MediaPlayer mp, int what, int extra) {
-				AlertDialog.Builder buildDialog = new AlertDialog.Builder(getApplicationContext());
-				buildDialog.setTitle(getResources().getString(R.string.video_title_error));
-				buildDialog.setMessage(getResources().getString(R.string.video_message_error));
-				buildDialog.setCancelable(false);
-				buildDialog.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						finish();
-					}
-				});
-				buildDialog.create();
-				finish();
-				return true;
-			}
-			
-			
-		});*/
+        videoProgressBar = (ProgressBar) findViewById(R.id.video_progressBar);
     }
 	
 	@Override
@@ -68,4 +56,14 @@ public class VideoPlayer extends Activity{
 		finish();
 	}
 
+	@Override
+	public void onPrepared(MediaPlayer mp) {
+		videoProgressBar.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer mp) {
+		mediaController.show();
+		videoProgressBar.setVisibility(View.GONE);
+	}
 }
