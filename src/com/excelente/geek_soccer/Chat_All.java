@@ -762,10 +762,10 @@ public class Chat_All extends Activity{
 					}			
 				}
 				*/
-				data.Chat_list_LayOut_All.removeAllViews();
+				if(data.Chat_list_LayOut_All.getChildCount()>1){
+					data.Chat_list_LayOut_All.removeViewAt(0);
+				}
 				data.lstViewChatAll.setAdapter(data.imageAdapterChatAll);
-				data.lstViewChatAll.setDividerHeight(0);
-				(data.Chat_list_LayOut_All).addView(data.lstViewChatAll);
 				data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 			}
 		}, data.chatDelay);

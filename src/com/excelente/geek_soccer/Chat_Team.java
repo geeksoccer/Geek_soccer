@@ -733,10 +733,10 @@ public class Chat_Team extends Activity {
 					data.Chat_list_LayOut_Team.removeViewAt(0);
 				}
 				*/
-		    	data.Chat_list_LayOut_Team.removeAllViews();
+		    	if(data.Chat_list_LayOut_All.getChildCount()>1){
+					data.Chat_list_LayOut_All.removeViewAt(0);
+				}
 				data.lstViewChatTeam.setAdapter(data.imageAdapterChatTeam);
-				data.lstViewChatTeam.setDividerHeight(0);
-				(data.Chat_list_LayOut_Team).addView(data.lstViewChatTeam);
 				data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
 		    }
 		}, data.chatDelay);
