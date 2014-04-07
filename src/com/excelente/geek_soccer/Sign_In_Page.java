@@ -22,6 +22,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.plus.PlusClient;
 
 import android.app.Activity;
@@ -39,7 +40,6 @@ import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -54,7 +54,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
     private PlusClient mPlusClient;
     private ConnectionResult mConnectionResult;
     
-    private Button signInGoogleButton;
+    private SignInButton signInGoogleButton;
 	private ProgressBar signProgressbar;
 	private NotificationManager mNotification;  
 
@@ -99,7 +99,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
         	.setActions("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity")
         	.build();
 		
-		signInGoogleButton = (Button)findViewById(R.id.sign_in_google_button); 
+		signInGoogleButton = (SignInButton)findViewById(R.id.sign_in_google_button); 
 		signInGoogleButton.setOnClickListener(this);
 		
 		signProgressbar = (ProgressBar)findViewById(R.id.sign_progressbar); 
