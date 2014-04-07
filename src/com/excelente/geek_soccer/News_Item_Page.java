@@ -289,7 +289,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				
 				if(content.length() > 0){
 					
-					NewsModel news = (NewsModel) contentFlipView.getAdapter().instantiateItem(contentFlipView, contentFlipView.getCurrentItem());
+					NewsModel news = (NewsModel) newsItemAdaptor.getmNewList().get(contentFlipView.getCurrentItem());
 					
 					CommentModel comment = new CommentModel();
 					comment.setMemberUid(MemberSession.getMember().getUid());
