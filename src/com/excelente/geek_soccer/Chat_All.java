@@ -34,7 +34,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -333,7 +332,6 @@ public class Chat_All extends Activity{
 	public void Create_Stick_view() {
 		LayoutInflater factory = LayoutInflater.from(mContext);
     	StikerV = factory.inflate(R.layout.sticker_layout, null);
-    	
     	StikerV.setVisibility(RelativeLayout.GONE);
     	input_layout.addView(StikerV, 0);
     	
@@ -750,50 +748,57 @@ public class Chat_All extends Activity{
 	}
 	
 	public void chatHandle() {
-		handler.post(new Runnable() {
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
+				/*
 				data.imageAdapterChatAll.notifyDataSetChanged();
+				data.lstViewChatAll.requestLayout();
 				data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 				if(Looper.getMainLooper().getThread() == Thread.currentThread()){
 					if(data.Chat_list_LayOut_All.getChildCount()>1){
 						data.Chat_list_LayOut_All.removeViewAt(0);
-					}
-				}				
+					}			
+				}
+				*/
+				data.Chat_list_LayOut_All.removeAllViews();
+				data.lstViewChatAll.setAdapter(data.imageAdapterChatAll);
+				data.lstViewChatAll.setDividerHeight(0);
+				(data.Chat_list_LayOut_All).addView(data.lstViewChatAll);
+				data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 			}
-		});
+		}, data.chatDelay);
 	}
 
 	public void chat_Sender() {
-
-		Runnable runnable = new Runnable() {
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
+			@Override
 			public void run() {
 				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
 				if(!Msg_Send.equals("")){
 					data.socket_All.emit("sendchat", Msg_Send);
 					Msg_Send="";
 				}
-				
 			}
-		};
-
-		new Thread(runnable).start();
+		}, data.chatDelay);
+		
 	}
 	
 	public void sticker_Sender() {
-
-		Runnable runnable = new Runnable() {
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
+			@Override
 			public void run() {
 				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
 				if(!Msg_Send.equals("")){
 					data.socket_All.emit("sendsticker", Msg_Send);
 					Msg_Send="";
 				}
-				
 			}
-		};
-
-		new Thread(runnable).start();
+		}, data.chatDelay);
+		
 	}
 	
 	public static Bitmap loadImageFromUrl(String url) {
