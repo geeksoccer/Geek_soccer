@@ -1,6 +1,8 @@
 package com.excelente.geek_soccer;
 
 import java.io.ByteArrayOutputStream;
+
+import android.R.bool;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -68,5 +70,9 @@ public class SessionManager {
     
     public String getJsonSession(String key){
     	return pref.getString(key, null);
+    }
+    
+    public boolean hasKey(String key){
+    	return pref.contains(key);
     }
 }

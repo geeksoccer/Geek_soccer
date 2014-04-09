@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.Table_Page;
 import com.excelente.geek_soccer.model.TableModel;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -44,11 +45,13 @@ public class TableAdapter extends BaseAdapter{
 	private int count_ani = -1;
 	
 	HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
+	private SessionManager cacheFile; 
 	
 	public TableAdapter(Activity context, List<TableModel> tableList) {
 		activity = context;
 		this.context = context;
 		this.tableList = tableList;
+		cacheFile = new SessionManager(context);
 	}
 	
 	public class TableHolder{
@@ -95,8 +98,11 @@ public class TableAdapter extends BaseAdapter{
         	tableHolder = (TableHolder) convertView.getTag();
         }
       
+        
         if(urlBitmap.containsKey(tableModel.getTableTeamImage().replace(".gif", ".png"))){
         	tableHolder.tableTeamImage.setImageBitmap(urlBitmap.get(tableModel.getTableTeamImage().replace(".gif", ".png"))); 
+        }else if(cacheFile.hasKey(tableModel.getTableTeamImage().replace(".gif", ".png"))){
+        	tableHolder.tableTeamImage.setImageBitmap(cacheFile.getImageSession(tableModel.getTableTeamImage().replace(".gif", ".png")));
         }else{
 		    doConfigImageLoader(10, 10);
 		    ImageLoader.getInstance().displayImage(tableModel.getTableTeamImage().replace(".gif", ".png"), tableHolder.tableTeamImage, getOptionImageLoader(tableModel.getTableTeamImage().replace(".gif", ".png")), new ImageLoadingListener() {
@@ -112,9 +118,15 @@ public class TableAdapter extends BaseAdapter{
 				}
 				
 				@Override
-				public void onLoadingComplete(String url, View arg1, Bitmap bitmap) {
+				public void onLoadingComplete(final String url, View arg1, final Bitmap bitmap) {
 					//Log.e("IMAGELOADER", url);
 					urlBitmap.put(url, bitmap);
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							cacheFile.createNewImageSession(url, bitmap);
+						}
+					}).start();
 				}
 				
 				@Override
