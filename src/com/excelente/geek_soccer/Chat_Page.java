@@ -66,9 +66,11 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 		}        
         setupTab(FeaturedIntent, "Team", teamName, 0, true);
         
-        Intent browseIntent = new Intent().setClass(myView.getContext(), Chat_All.class);
-        setupTab(browseIntent, "All", "Global Room", 0, false);
-        
+        if(teamID!=0){
+        	Intent browseIntent = new Intent().setClass(myView.getContext(), Chat_All.class);
+            setupTab(browseIntent, "All", "Global Room", 0, false);
+        }
+
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
 			tabHost.getTabWidget().getChildAt(i).findViewById(R.id.selected).setVisibility(View.INVISIBLE);
 		}

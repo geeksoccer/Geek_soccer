@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -22,8 +21,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
@@ -35,6 +34,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -52,6 +52,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -98,6 +99,8 @@ public class Chat_Team extends Activity {
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
 	static HashMap<String, Button> Sticker_ButVSet = new HashMap<String, Button>();
 	SessionManager sesPrefer;
+	String root = Environment.getExternalStorageDirectory().toString();
+	ProgressBar progressBar;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -286,10 +289,10 @@ public class Chat_Team extends Activity {
 			int ImgV_p = 0;
 			for (final String key : data.Sticker_UrlSet.keySet()) {
 				ImgV_p++;
+				
 				if(data.Sticker_UrlSet
 						.get(key).contains(".gif")){
-					Ion.with(Sticker_ImgVSet.get(String.valueOf(ImgV_p))).placeholder(R.drawable.livescore_h).load("http://183.90.171.209/chat/stk/"+data.Sticker_UrlSet
-							.get(key));
+					putBitmap(Sticker_ImgVSet.get(String.valueOf(ImgV_p)), data.Sticker_UrlSet.get(key));
 				}else{
 					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
 							.get(key));
@@ -316,6 +319,18 @@ public class Chat_Team extends Activity {
 			e.printStackTrace();
 		}
 	}
+	
+	public void putBitmap(final ImageView imgV, final String key) {
+		Ion.with(imgV)
+		.placeholder(R.drawable.livescore_h)
+		.animateGif(true)
+		.load("http://183.90.171.209/chat/stk/"+key)
+		.setCallback(new FutureCallback<ImageView>() {
+			@Override
+			public void onCompleted(Exception arg0, ImageView arg1) {
+			}
+		});
+	}	
 
 	public void Create_Stick_view() {
 		LayoutInflater factory = LayoutInflater.from(mContext);
@@ -718,7 +733,7 @@ public class Chat_Team extends Activity {
 			}
 		}).start();
 	}
-
+	
 	public void chatHandle() {
 		data.chatDelay = 0;
 		handler.postDelayed(new Runnable() {
@@ -733,11 +748,10 @@ public class Chat_Team extends Activity {
 					data.Chat_list_LayOut_Team.removeViewAt(0);
 				}
 				*/
-		    	if(data.Chat_list_LayOut_All.getChildCount()>1){
-					data.Chat_list_LayOut_All.removeViewAt(0);
+		    	if(data.Chat_list_LayOut_Team.getChildCount()>1){
+					data.Chat_list_LayOut_Team.removeViewAt(0);
 				}
-				data.lstViewChatTeam.setAdapter(data.imageAdapterChatTeam);
-				data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
+		    	data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
 		    }
 		}, data.chatDelay);
 	}
@@ -939,6 +953,11 @@ public class Chat_Team extends Activity {
 		if (data.Sticker_Layout_Stat_team) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
 				StikerV.setVisibility(RelativeLayout.GONE);
+				return false;
+			}
+		}else{
+			if (keyCode == KeyEvent.KEYCODE_BACK) {
+				finish();
 				return false;
 			}
 		}
