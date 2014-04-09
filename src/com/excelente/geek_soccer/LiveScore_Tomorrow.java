@@ -251,11 +251,12 @@ public class LiveScore_Tomorrow extends Activity {
 							LayoutParams.WRAP_CONTENT));
 					layOut_time.addView(txt);
 
-					if(txt_Item.isNull("score_ag")){
+					if(txt_Item.getString("score_ag").length()>4){
 						TextView txt_Aggregate = new TextView(mContext);
 						txt_Aggregate.setLayoutParams(new LinearLayout.LayoutParams(0,
 								LayoutParams.WRAP_CONTENT, 1f));
 						txt_Aggregate.setTextSize(14);
+						txt_Aggregate.setTextColor(colors);
 						txt_Aggregate.setGravity(Gravity.RIGHT);
 						txt_Aggregate.setText("AGGREGATE: "+txt_Item.getString("score_ag")+" ");
 						layOut_time.addView(txt_Aggregate);

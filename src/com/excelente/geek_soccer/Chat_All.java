@@ -299,9 +299,7 @@ public class Chat_All extends Activity{
 				ImgV_p++;
 				if(data.Sticker_UrlSet
 						.get(key).contains(".gif")){
-					Ion.with(Sticker_ImgVSet.get(String.valueOf(ImgV_p)))
-					.placeholder(R.drawable.livescore_h)
-					.load("http://183.90.171.209/chat/stk/"+data.Sticker_UrlSet.get(key));
+					putBitmap(Sticker_ImgVSet.get(String.valueOf(ImgV_p)), data.Sticker_UrlSet.get(key));
 				}else{
 					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
 							.get(key));
@@ -327,6 +325,13 @@ public class Chat_All extends Activity{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void putBitmap(final ImageView imgV, final String key) {
+		Ion.with(imgV)
+		.placeholder(R.drawable.livescore_h)
+		.animateGif(true)
+		.load("http://183.90.171.209/chat/stk/"+key);
 	}
 	
 	public void Create_Stick_view() {
@@ -752,20 +757,9 @@ public class Chat_All extends Activity{
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				/*
-				data.imageAdapterChatAll.notifyDataSetChanged();
-				data.lstViewChatAll.requestLayout();
-				data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
-				if(Looper.getMainLooper().getThread() == Thread.currentThread()){
-					if(data.Chat_list_LayOut_All.getChildCount()>1){
-						data.Chat_list_LayOut_All.removeViewAt(0);
-					}			
-				}
-				*/
 				if(data.Chat_list_LayOut_All.getChildCount()>1){
 					data.Chat_list_LayOut_All.removeViewAt(0);
 				}
-				data.lstViewChatAll.setAdapter(data.imageAdapterChatAll);
 				data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 			}
 		}, data.chatDelay);
@@ -970,6 +964,11 @@ public class Chat_All extends Activity{
 		if (data.Sticker_Layout_Stat_All) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
 				StikerV.setVisibility(RelativeLayout.GONE);
+				return false;
+			}
+		}else{
+			if (keyCode == KeyEvent.KEYCODE_BACK) {
+				finish();
 				return false;
 			}
 		}
