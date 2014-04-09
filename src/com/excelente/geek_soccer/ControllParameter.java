@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import android.graphics.Bitmap;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 public class ControllParameter {
 	private static ControllParameter instance = null;

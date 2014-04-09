@@ -273,17 +273,20 @@ public class Chat_Team extends Activity {
 								.put(key_Item, json_arr);
 					}
 					j_arr = data.Sticker_Set.get(position);
-					for (int i = 0; i < j_arr.length(); i++) {
-						JSONObject json_Value = j_arr.getJSONObject(i);
-						data.Sticker_UrlSet.put(
-								position
-										+ "_"
-										+ json_Value
-												.getString("sk_id"),
-								json_Value
-										.getString("sk_img"));
+					if(j_arr!=null){
+						for (int i = 0; i < j_arr.length(); i++) {
+							JSONObject json_Value = j_arr.getJSONObject(i);
+							data.Sticker_UrlSet.put(
+									position
+											+ "_"
+											+ json_Value
+													.getString("sk_id"),
+									json_Value
+											.getString("sk_img"));
 
+						}
 					}
+					
 				}
 			}
 			int ImgV_p = 0;
