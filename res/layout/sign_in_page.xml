@@ -57,12 +57,21 @@
     	    android:layout_height="wrap_content"
     	    android:layout_gravity="center_vertical"
     	    android:layout_marginTop="5dp"/>  -->
-    	    
+    	
+    	<Button
+	    	android:id="@+id/sign_in_google_account_button"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:background="@drawable/bg_googlebutton"
+	    	android:textColor="@color/white"
+	    	android:text="Sign In With Google Account"/>
+    	
     	<com.google.android.gms.common.SignInButton
 	    	android:id="@+id/sign_in_google_button"
 	    	android:layout_margin="10dp"
 	    	android:layout_width="match_parent"
-	    	android:layout_height="wrap_content"/>
+	    	android:layout_height="wrap_content"
+	    	android:visibility="gone"/>
     	
     	<ProgressBar
 	    	android:id="@+id/sign_progressbar"

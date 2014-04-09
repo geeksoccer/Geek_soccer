@@ -1,15 +1,14 @@
 package com.excelente.geek_soccer;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.excelente.geek_soccer.authen.AuthenGoogleAccount;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.service.UpdateService;
@@ -21,10 +20,11 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.plus.PlusClient;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -40,23 +40,32 @@ import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class Sign_In_Page extends Activity implements View.OnClickListener, ConnectionCallbacks, OnConnectionFailedListener{
+public class Sign_In_Page extends Activity implements View.OnClickListener, ConnectionCallbacks, OnConnectionFailedListener, AuthenGoogleAccount.OnConnectGoogleAccount{
+	
+	private static final String SCOPE = "https://www.googleapis.com/auth/userinfo.profile";
 	
 	private static final int REQUEST_CODE_RESOLVE_ERR = 9000;
 	private static final String MEMBER_SIGN_IN_URL = "http://183.90.171.209/gs_member/member_sign_in.php"; 
 	private static final String MEMBER_SIGN_UP_URL = "http://183.90.171.209/gs_member/member_sign_up.php";
 	private static final String MEMBER_TOKEN_URL = "http://183.90.171.209/gs_member/member_token.php";
-
+	
     private ProgressDialog mConnectionProgressDialog;
     private PlusClient mPlusClient;
     private ConnectionResult mConnectionResult;
     
     private SignInButton signInGoogleButton;
 	private ProgressBar signProgressbar;
-	private NotificationManager mNotification;  
+	private NotificationManager mNotification;
+
+	private Button signInGoogleAccountButton;
+
+	private AccountManager mAccountManager;
+
+	private AuthenGoogleAccount authenGoogleAccount;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +107,12 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		mPlusClient = new PlusClient.Builder(this, this, this)
         	.setActions("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity")
         	.build();
-		
+		 
 		signInGoogleButton = (SignInButton)findViewById(R.id.sign_in_google_button); 
 		signInGoogleButton.setOnClickListener(this);
+		
+		signInGoogleAccountButton = (Button)findViewById(R.id.sign_in_google_account_button); 
+		signInGoogleAccountButton.setOnClickListener(this);
 		
 		signProgressbar = (ProgressBar)findViewById(R.id.sign_progressbar); 
 		
@@ -109,18 +121,10 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	}
 	
 	private void doCheckToken() {
-		try {
-			if(NetworkUtils.isNetworkAvailable(this)){ 
-				new doSignTokenTask().execute().get(5000, TimeUnit.MILLISECONDS);
-			}else{
-				Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace(); 
-		} catch (TimeoutException e) {
-			e.printStackTrace();
+		if(NetworkUtils.isNetworkAvailable(this)){ 
+			new doSignTokenTask().execute();
+		}else{
+			Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -179,6 +183,17 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
     public void onDisconnected() {
         Log.e("SignIn", "disconnected");
     }
+    
+    private String[] getAccountNames() {
+		mAccountManager = AccountManager.get(this);
+		Account[] accounts = mAccountManager.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
+		String[] names = new String[accounts.length];
+		for (int i = 0; i < names.length; i++) {
+			names[i] = accounts[i].name;
+		}
+		return names;
+	}
+
 
 	@Override
 	public void onClick(View v) { 
@@ -196,9 +211,23 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		                mPlusClient.connect();
 		            }
 		        }
+		    }else if(v.getId() == R.id.sign_in_google_account_button){
+		    	signProgressbar.setVisibility(View.VISIBLE);
+				signInGoogleAccountButton.setVisibility(View.GONE);
+		    	syncInGoogleAccount();
 		    }
 		}else{
 			Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(Sign_In_Page.this), Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	 private void syncInGoogleAccount() {
+		 String[] accountarrs = getAccountNames();
+	    if(accountarrs.length>0){
+	    	authenGoogleAccount = (AuthenGoogleAccount) new AuthenGoogleAccount(this, accountarrs[0], SCOPE).execute();
+	    	authenGoogleAccount.setOnConnectGoogleAccount(this);
+	   	} else {
+			Toast.makeText(this, "No Google Account Sync!", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -249,16 +278,16 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	private void doRegister(int teamId) {
 		MemberModel member = new MemberModel();
     	
-    	member.setUser(mPlusClient.getAccountName());
+    	member.setUser(authenGoogleAccount.getProfileData().getUser());
     	member.setPass("");
     	member.setTypeLogin("google_plus");
-    	member.setBirthday(mPlusClient.getCurrentPerson().getBirthday());
-    	member.setGender(mPlusClient.getCurrentPerson().getGender());
-    	member.setNickname(mPlusClient.getCurrentPerson().getDisplayName());
-    	member.setPhoto(mPlusClient.getCurrentPerson().getImage().getUrl());
-    	member.setEmail(mPlusClient.getAccountName());
-    	member.setTeamId(teamId+1);
+    	member.setBirthday(authenGoogleAccount.getProfileData().getBirthday());
+    	member.setGender(authenGoogleAccount.getProfileData().getGender());
+    	member.setNickname(authenGoogleAccount.getProfileData().getNickname());
+    	member.setPhoto(authenGoogleAccount.getProfileData().getPhoto());
+    	member.setEmail(authenGoogleAccount.getProfileData().getEmail());
     	member.setRole(2);
+    	member.setTeamId(teamId+1);
     	
     	if(NetworkUtils.isNetworkAvailable(this)){ 
     		new doSignUpTask().execute(member);
@@ -266,8 +295,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
 		}
 	}
-	
-	class doSignInTask extends AsyncTask<MemberModel, Void, MemberModel>{ 
+
+	public class doSignInTask extends AsyncTask<MemberModel, Void, MemberModel>{ 
 		
 		@Override
 		protected void onPreExecute() {
@@ -277,7 +306,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			mConnectionProgressDialog.show();
 			
 			signProgressbar.setVisibility(View.VISIBLE);
-			signInGoogleButton.setVisibility(View.GONE);
+			signInGoogleAccountButton.setVisibility(View.GONE);
 		}
 		
 		@Override
@@ -290,7 +319,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TYPE_LOGIN, member.getTypeLogin()));
 			
 			try {
-				String scope = "oauth2:" + Scopes.PLUS_LOGIN;
+				String scope = "oauth2:" + SCOPE;
 				String token = GoogleAuthUtil.getToken(getApplicationContext(), member.getUser(), scope);
 				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, token));
 			} catch (UserRecoverableAuthException e) {
@@ -323,12 +352,12 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			
 			if(memberSignedIn == null){
 				signProgressbar.setVisibility(View.GONE);
-				signInGoogleButton.setVisibility(View.VISIBLE);
+				signInGoogleAccountButton.setVisibility(View.VISIBLE);
 				Toast.makeText(getApplicationContext(), "Internet problem or this member using on any device", Toast.LENGTH_SHORT).show();
 				mPlusClient.disconnect();
 			}else if(memberSignedIn.getUid() < 1 && memberSignedIn.getTypeLogin().equals("google_plus")){
 				signProgressbar.setVisibility(View.GONE);
-				signInGoogleButton.setVisibility(View.VISIBLE);
+				signInGoogleAccountButton.setVisibility(View.VISIBLE);
 				doSelectTeam();
 			}else{
 				MemberSession.setMember(Sign_In_Page.this, memberSignedIn); 
@@ -336,14 +365,14 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 					gotoMainPage(memberSignedIn);
 				else{
 					signProgressbar.setVisibility(View.GONE);
-					signInGoogleButton.setVisibility(View.VISIBLE);
+					signInGoogleAccountButton.setVisibility(View.VISIBLE);
 				}
 			}
 		}
 		
 	}
 	
-	class doSignUpTask extends AsyncTask<MemberModel, Void, MemberModel>{ 
+	public class doSignUpTask extends AsyncTask<MemberModel, Void, MemberModel>{ 
 		
 		@Override
 		protected void onPreExecute() {
@@ -353,7 +382,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			mConnectionProgressDialog.show();
 			
 			signProgressbar.setVisibility(View.VISIBLE);
-			signInGoogleButton.setVisibility(View.GONE);
+			signInGoogleAccountButton.setVisibility(View.GONE);
 		}
 		
 		@Override
@@ -373,7 +402,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_ROLE, String.valueOf(member.getRole())));
 			
 			try {
-				String scope = "oauth2:" + Scopes.PLUS_LOGIN;
+				String scope = "oauth2:" + SCOPE;
 				String token = GoogleAuthUtil.getToken(getApplicationContext(), member.getUser(), scope);
 				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, token));
 			} catch (UserRecoverableAuthException e) {
@@ -410,19 +439,19 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 				Toast.makeText(getApplicationContext(), "Signed Up Fail Or Internet Problem", Toast.LENGTH_SHORT).show();
 				mPlusClient.disconnect();
 				signProgressbar.setVisibility(View.GONE);
-				signInGoogleButton.setVisibility(View.VISIBLE);
+				signInGoogleAccountButton.setVisibility(View.VISIBLE);
 			}
 		}
 		
 	}
 	
-	class doSignTokenTask extends AsyncTask<Void, Void, MemberModel>{
+	public class doSignTokenTask extends AsyncTask<Void, Void, MemberModel>{
 		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 			signProgressbar.setVisibility(View.VISIBLE);
-			signInGoogleButton.setVisibility(View.GONE);
+			signInGoogleAccountButton.setVisibility(View.GONE);
 		}
 		
 		@Override
@@ -461,10 +490,32 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 				gotoMainPage(memberToken);
 			}else{
 				signProgressbar.setVisibility(View.GONE);
-				signInGoogleButton.setVisibility(View.VISIBLE);
+				signInGoogleAccountButton.setVisibility(View.VISIBLE);
 			}
 		}
 		
+	}
+
+	@Override
+	public void onConnect() {
+		MemberModel member = new MemberModel();
+    	member.setUid(0);
+		member.setUser(authenGoogleAccount.getProfileData().getUser());
+		member.setPass("");
+		member.setTypeLogin("google_plus");
+		new doSignInTask().execute(member);
+	}
+
+	@Override
+	public void onConnectFail() {
+		signProgressbar.setVisibility(View.GONE);
+		signInGoogleAccountButton.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void onTryAgain() {
+		signProgressbar.setVisibility(View.GONE);
+		signInGoogleAccountButton.setVisibility(View.VISIBLE);
 	}
 	
 }
