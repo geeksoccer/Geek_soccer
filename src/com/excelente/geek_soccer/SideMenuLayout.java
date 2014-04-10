@@ -2,6 +2,7 @@ package com.excelente.geek_soccer;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +73,13 @@ public class SideMenuLayout{
 			@Override
 			public void onAnimationEnd(Animation animation) {
 				data.Menu_Layout.setVisibility(RelativeLayout.GONE);
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						data.wm.removeView(data._Menu_Layout);
+					}
+				}, 10);
+				
 			}
 		});
 		data.Menu_View.startAnimation(out);

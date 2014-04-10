@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import android.graphics.Bitmap;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -78,9 +79,11 @@ public class ControllParameter {
 	ListView lstViewLiveScore;
 	com.excelente.geek_soccer.LiveScore_Today.ImageAdapter imageAdapterLiveScore;
 	
+	LinearLayout _Menu_Layout;
 	LinearLayout Menu_Layout;
 	View Menu_View;
 	TextView Menu_title;
+	WindowManager wm;
     
     public void fragement_Section_set(int section) {
         this.fragement_Section = section;

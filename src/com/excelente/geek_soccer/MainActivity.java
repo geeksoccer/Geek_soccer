@@ -17,7 +17,6 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings.Secure;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,21 +29,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,8 +115,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			
 			@Override
 			public void onClick(View v) {
+				/*
 				if(data.Menu_Layout==null){
 					final LinearLayout MainLayout = (LinearLayout)findViewById(R.id.Main_Layout);
+					data._Menu_Layout = new SideMenuLayout().CreateMenu(MainLayout, mContext);
 					WindowManager.LayoutParams params = new WindowManager.LayoutParams(
 							LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
 							WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
@@ -134,15 +128,31 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 							PixelFormat.TRANSLUCENT);
 
 					params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
-					WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-					wm.addView(new SideMenuLayout().CreateMenu(MainLayout, mContext), params);
+					data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+					data.wm.addView(data._Menu_Layout, params);
 				}else{
-					if(data.Menu_Layout.getVisibility()==RelativeLayout.ABOVE){
+					
+					if(data.Menu_Layout.getVisibility()==0){
 						new SideMenuLayout().hideMenu(mContext);
-					}else if(data.Menu_Layout.getVisibility()==RelativeLayout.GONE){
+						//data.wm.removeView(data._Menu_Layout);
+					}else if(data.Menu_Layout.getVisibility()==8){
 						new SideMenuLayout().showMenu(mContext);
 					}
 				}
+				*/
+				final LinearLayout MainLayout = (LinearLayout)findViewById(R.id.Main_Layout);
+				data._Menu_Layout = new SideMenuLayout().CreateMenu(MainLayout, mContext);
+				WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
+						WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+						WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+								| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+								| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+						PixelFormat.TRANSLUCENT);
+
+				params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
+				data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+				data.wm.addView(data._Menu_Layout, params);
 			}
 		});
 	}
