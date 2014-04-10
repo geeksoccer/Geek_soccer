@@ -9,12 +9,14 @@
     <string name="video_title_error">Sorry, this video can not be played.</string>
     <string name="video_message_error">There are a problem while playing.</string>
     <string name="ok">OK</string>
+    <string name="confirm_save">Save</string>
     
     <string name="title_bar_news">News</string>
     <string name="title_bar_live_score">Live Score</string>
     <string name="title_bar_chat">Chat</string>
     <string name="title_bar_score_broads">Score Broads</string>
     <string name="title_bar_hilight">Hilights</string>
+    <string name="title_bar_profile">PROFILE</string>
     
     <string name="table_head_seq">#</string>
     <string name="table_head_team">Team</string>

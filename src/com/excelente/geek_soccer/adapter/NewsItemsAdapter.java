@@ -1,7 +1,10 @@
 package com.excelente.geek_soccer.adapter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,17 +30,19 @@ import com.excelente.geek_soccer.view.CustomWebView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -144,7 +149,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 
 		//newsItemView.newsContentWebview.clearCache(true);
 		newsItemView.newsContentWebview.loadUrl("about:blank");
-		newsItemView.newsContentWebview.getSettings().setDisplayZoomControls(false);
+		//newsItemView.newsContentWebview.getSettings().setDisplayZoomControls(false);
 		newsItemView.newsContentWebview.getSettings().setJavaScriptEnabled(true);
 		newsItemView.newsContentWebview.getSettings().setBuiltInZoomControls(true); 
 		newsItemView.newsContentWebview.getSettings().setPluginState(PluginState.ON);
@@ -176,37 +181,11 @@ public class NewsItemsAdapter extends PagerAdapter{
 		
 		newsItemView.newsContentWebview.setWebViewClient(new WebViewClient(){
         	boolean timeout;
-        	
-        	@SuppressLint("NewApi")
-			@Override
-        	public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-        		
-        		String upic_me = "http://upic.me/";
-        		String image_ohozaa_com = "http://image.ohozaa.com/";
-        		
-        		if(url.substring(0, upic_me.length()).equals(upic_me) || url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com)){
-        			HttpGet getRequest = new HttpGet(url); 
-        			getRequest.addHeader("Referer", "http://localhost");
-	        		DefaultHttpClient client = new DefaultHttpClient();
-	        		try {
-						HttpResponse httpReponse = client.execute(getRequest);
-						InputStream reponseInputStream = httpReponse.getEntity().getContent();
-						return new WebResourceResponse(httpReponse.getEntity().getContentType().getValue(), "utf-8", reponseInputStream);
-					} catch (ClientProtocolException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-        		}
-        		
-        		
-        		return super.shouldInterceptRequest(view, url);
-        	}
+        	List<String> urls;
         	
         	@Override
         	public void onPageStarted(final WebView view, String url, Bitmap favicon) {
-        		
+        		urls = new ArrayList<String>();
         		newsWaitProcessbar.setVisibility(View.VISIBLE);
         		timeout = true;
         		super.onPageStarted(view, url, favicon);
@@ -224,16 +203,51 @@ public class NewsItemsAdapter extends PagerAdapter{
         		new Handler().postDelayed(timeoutRun, 20000);
         	}
         	
+        	@Override
+        	public void onLoadResource(WebView view, String url) {
+        		super.onLoadResource(view, url);
+        		Log.e("onLoadResource-", url);
+        		String upic_me = "http://upic.me/";
+        		String image_ohozaa_com = "http://image.ohozaa.com/";
+        		
+        		if(url.substring(0, upic_me.length()).equals(upic_me) || url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com)){
+        			urls.add(url);
+        		}
+        	}
         	
         	@Override
         	public void onPageFinished(WebView view, String url) {
         		super.onPageFinished(view, url);
-        		
         		timeout = false;
         		newsWaitProcessbar.setVisibility(View.GONE);
+        		
+        		if(!urls.isEmpty()){
+        			new PushImageTask(view, urls, newsModel.getNewsContent()).execute();
+        		}
         	}
         });
-        
+		
+		if (Build.VERSION.SDK_INT >= 16) {  
+		    Class<?> clazz = newsItemView.newsContentWebview.getSettings().getClass();
+		    Method method;
+			try {
+				method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
+				if (method != null) {
+			        try {
+						method.invoke(newsItemView.newsContentWebview.getSettings(), true);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+			    }
+			} catch (NoSuchMethodException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
 		String htmlData = "";
 		if(MemberSession.getMember().getTeamId() == 2)
 			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"</body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
@@ -267,7 +281,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		});
         
         newsItemView.newsCommentImageview.setOnClickListener(new View.OnClickListener() {
-
+        	
 			@Override
 			public void onClick(View v) {
 				CommentModel comment = new CommentModel();
@@ -292,6 +306,68 @@ public class NewsItemsAdapter extends PagerAdapter{
 	@Override
 	public int getCount() {
 		return mNewList.size();
+	}
+	
+	public class PushImageTask extends AsyncTask<String, Void, Void>{
+		
+		WebView webview;
+		List<String> urls;
+		List<String> base64s;
+		String html;
+		
+		public PushImageTask(WebView wv, List<String> urls, String html) {
+			this.webview = wv;
+			this.urls = urls;
+			this.html = html;
+			this.base64s = new ArrayList<String>();
+		}
+
+		@Override
+		protected Void doInBackground(String... params) {
+			
+			for (String url : urls) {
+				String encodedString = "";
+				
+				HttpGet getRequest = new HttpGet(url); 
+				getRequest.addHeader("Referer", "http://localhost");
+	    		DefaultHttpClient client = new DefaultHttpClient();
+	    		try {
+					HttpResponse httpReponse = client.execute(getRequest);
+					InputStream reponseInputStream = httpReponse.getEntity().getContent();
+					
+					Bitmap bm = BitmapFactory.decodeStream(reponseInputStream);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+					bm.compress(Bitmap.CompressFormat.PNG, 75, baos); //bm is the bitmap object   
+					byte[] b = baos.toByteArray();
+		    		encodedString = "data:image/png;base64," + Base64.encodeToString(b, Base64.DEFAULT);
+				} catch (ClientProtocolException e) {
+				} catch (IOException e) {
+				}
+	    		
+	    		base64s.add(encodedString);
+			}
+			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			
+			String htmlData = "";
+			if(MemberSession.getMember().getTeamId() == 2)
+				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ html +"</body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
+			else
+				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ html +"</body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
+	
+			for (int i=0; i < urls.size(); i++) {
+				htmlData = htmlData.replace(urls.get(i), base64s.get(i));  
+			}
+			
+			webview.loadData(htmlData, "text/html; charset=UTF-8", null);
+			
+		} 
+		
 	}
 	
 	public class PostNewsLikes extends AsyncTask<NewsModel, Void, String>{

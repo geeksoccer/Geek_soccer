@@ -2,12 +2,11 @@ package com.excelente.geek_soccer;
 
 import java.io.ByteArrayOutputStream;
 
-import android.R.bool;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory; 
 import android.util.Base64;
 import android.util.Log;
  
