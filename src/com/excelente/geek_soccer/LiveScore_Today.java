@@ -383,7 +383,7 @@ public class LiveScore_Today extends Activity {
 						data.Match_list_c_JSON.add(new JSONObject().put("League", League));
 						JSONArray json_dtArr = json_it.getJSONArray("dt");
 
-						int chk_ExistTeam_in = data.Match_list_y_JSON.size();
+						int chk_ExistTeam_in = data.Match_list_c_JSON.size();
 						for(int j=0; j<json_dtArr.length(); j++){
 							JSONObject json_dt = json_dtArr.getJSONObject(j);
 							String Home  = json_dt.getString("ht");

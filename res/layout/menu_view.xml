@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/silver"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/Profile"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Profile" />
+
+        <Button
+            android:id="@+id/Rate"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Rate App" />
+        
+        <Button
+            android:id="@+id/Share"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Share App" />
+
+        <Button
+            android:id="@+id/help"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Help" />
+
+        <Button
+            android:id="@+id/Setting"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Setting" />
+        
+        <Button
+            android:id="@+id/logINOUT"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Logout" />
+    </LinearLayout>
+
+</LinearLayout>

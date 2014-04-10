@@ -7,8 +7,10 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import android.graphics.Bitmap;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class ControllParameter {
 	private static ControllParameter instance = null;
@@ -40,6 +42,7 @@ public class ControllParameter {
 	HashMap<String, JSONArray> Sticker_Set = new HashMap<String, JSONArray>();
 	HashMap<String, String> Sticker_UrlSet = new HashMap<String, String>();
 	ArrayList<String> URL_list = new ArrayList<String>();
+	String PageNameSelected = "";
 	String Last_League_SET="";
 	String Date_Select="c";
 	String SocketSelect;
@@ -75,6 +78,9 @@ public class ControllParameter {
 	ListView lstViewLiveScore;
 	com.excelente.geek_soccer.LiveScore_Today.ImageAdapter imageAdapterLiveScore;
 	
+	LinearLayout Menu_Layout;
+	View Menu_View;
+	TextView Menu_title;
     
     public void fragement_Section_set(int section) {
         this.fragement_Section = section;

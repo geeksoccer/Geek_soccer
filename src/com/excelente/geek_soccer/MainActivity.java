@@ -17,6 +17,7 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings.Secure;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,15 +25,26 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.ViewGroup.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +65,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	Button menu_btn;
 	ImageView logout_btn;
 	ImageView news_btn;
+	ImageView TeamLogo;
 	
 	LinearLayout Content_view;
 	Context mContext;
@@ -76,7 +89,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		//------------Ched: ทำไว้เพื่อ ทดลองกด ดูข่าวทีมอื่นจากเมนู  (For View News Anyone)-----------------------------
 				menu_setting();
 		//------------Ched: ทำไว้เพื่อ ทดลองกด ดูข่าวทีมอื่นจากเมนู  (For View News Anyone)-----------------------------
-				
+				Team_LogoSetting();
 		tab_setting();
 		
 		Calendar c = Calendar.getInstance();
@@ -104,6 +117,35 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 	//----------------------Ched: (For Admin Member)-----------------------------
 
+	private void Team_LogoSetting(){
+		TeamLogo = (ImageView)findViewById(R.id.Team_Logo);
+		TeamLogo.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(data.Menu_Layout==null){
+					final LinearLayout MainLayout = (LinearLayout)findViewById(R.id.Main_Layout);
+					WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+							LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
+							WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+							WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+									| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+									| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+							PixelFormat.TRANSLUCENT);
+
+					params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
+					WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+					wm.addView(new SideMenuLayout().CreateMenu(MainLayout, mContext), params);
+				}else{
+					if(data.Menu_Layout.getVisibility()==RelativeLayout.ABOVE){
+						new SideMenuLayout().hideMenu(mContext);
+					}else if(data.Menu_Layout.getVisibility()==RelativeLayout.GONE){
+						new SideMenuLayout().showMenu(mContext);
+					}
+				}
+			}
+		});
+	}
 	private void menu_setting() {
 		menu_btn = (Button)findViewById(R.id.Menu_btn);
 		menu_btn.setOnClickListener(new View.OnClickListener() {
@@ -248,42 +290,42 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		this.mViewPager.setOffscreenPageLimit(4);
 		
 		if(index==0){
-			title_bar.setText("NEWS");
+			data.PageNameSelected = "NEWS";
 			news_tab.setBackgroundResource(R.drawable.news_h);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==1){
-			title_bar.setText("LIVESCORE");
+			data.PageNameSelected = "LIVESCORE";
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore_h);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==2){
-			title_bar.setText("CHAT ROOM");
+			data.PageNameSelected = "CHAT ROOM";
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat_h);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==3){
-			title_bar.setText("SCORE BOARD");
+			data.PageNameSelected = "SCORE BOARD";
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board_h);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==4){
-			title_bar.setText("HILIGHT");
+			data.PageNameSelected = "HILIGHT";
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon_select);
 		}
-
+		title_bar.setText(data.PageNameSelected);
 		if(by_Selected){
 			MainActivity.this.mViewPager.setCurrentItem(index);
 		}
@@ -321,18 +363,40 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
-				if(data.Sticker_Layout_Stat_team){
-					data.Sticker_Layout_Stat_team = false;
-				}else if(data.Sticker_Layout_Stat_All){
-					data.Sticker_Layout_Stat_All = false;
-				}				
-				return false;
+			if(data.Menu_Layout!=null){
+				if(data.Menu_Layout.getVisibility()==0){
+					new SideMenuLayout().hideMenu(mContext);
+					return false;
+				}else{
+					if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
+						if(data.Sticker_Layout_Stat_team){
+							data.Sticker_Layout_Stat_team = false;
+						}else if(data.Sticker_Layout_Stat_All){
+							data.Sticker_Layout_Stat_All = false;
+						}				
+						return false;
+					}else{
+						data.app_Status=false;
+						finish();
+					}
+					return true;
+				}
 			}else{
-				data.app_Status=false;
-				finish();
+				if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
+					if(data.Sticker_Layout_Stat_team){
+						data.Sticker_Layout_Stat_team = false;
+					}else if(data.Sticker_Layout_Stat_All){
+						data.Sticker_Layout_Stat_All = false;
+					}				
+					return false;
+				}else{
+					data.app_Status=false;
+					finish();
+				}
+				return true;
 			}
-			return true;
+			
+			
 		}
 		return super.onKeyDown(keyCode, event);
 	}
