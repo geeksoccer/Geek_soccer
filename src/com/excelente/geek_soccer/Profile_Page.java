@@ -142,6 +142,9 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	}
 	
 	private void initView() {
+		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
+		imageChooserManager.setImageChooserListener(this);
+		
 		cacheImage = new SessionManager(Profile_Page.this);
 		bitmapPhoto = null;
 		
@@ -271,8 +274,6 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	}
 
 	private void onSelectPhoto() {
-		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
-		imageChooserManager.setImageChooserListener(this);
 		try {
 			imageChooserManager.choose();
 		} catch (Exception e) {
