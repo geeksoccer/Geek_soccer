@@ -2,9 +2,7 @@ package com.excelente.geek_soccer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,13 +31,17 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -57,7 +59,9 @@ public class Profile_Page extends Activity implements OnClickListener{
 	private EditText memberName;
 	private RelativeLayout saveBtn;
 
-	private Bitmap bitmapPhoto; 
+	private Bitmap bitmapPhoto;
+
+	private SessionManager cacheImage;  
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,15 +73,20 @@ public class Profile_Page extends Activity implements OnClickListener{
 	}
 	
 	private void initView() {
+		cacheImage = new SessionManager(Profile_Page.this);
 		bitmapPhoto = null;
 		
 		upBtn = (LinearLayout) findViewById(R.id.Up_btn);
 		upBtn.setOnClickListener(this);
 		
 		memberPhoto = (ImageView) findViewById(R.id.member_photo);
-		doConfigImageLoader(200, 200); 
-		ImageLoader.getInstance().displayImage(MemberSession.getMember().getPhoto(), memberPhoto, getOptionImageLoader(MemberSession.getMember().getPhoto()));
 		memberPhoto.setOnClickListener(this);
+		if(cacheImage.hasKey(MemberSession.getMember().getPhoto())){ 
+			memberPhoto.setImageBitmap(cacheImage.getImageSession(MemberSession.getMember().getPhoto())); 
+		}else{
+			doConfigImageLoader(200, 200); 
+			ImageLoader.getInstance().displayImage(MemberSession.getMember().getPhoto(), memberPhoto, getOptionImageLoader(MemberSession.getMember().getPhoto()));
+		}
 		
 		memberName = (EditText) findViewById(R.id.member_name);
 		memberName.setText(MemberSession.getMember().getNickname());
@@ -163,6 +172,7 @@ public class Profile_Page extends Activity implements OnClickListener{
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.in_trans_right_left, R.anim.out_trans_left_right);
+		finish();
 	}
 
 	@Override
@@ -192,31 +202,28 @@ public class Profile_Page extends Activity implements OnClickListener{
 	}
 
 	private void onSelectPhoto() {
-		Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_CODE);
 	}
 	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            try {
-                if (bitmapPhoto != null) {
-                    bitmapPhoto.recycle();
-                }
-                InputStream stream = getContentResolver().openInputStream(data.getData());
-                bitmapPhoto = BitmapFactory.decodeStream(stream);
-                stream.close();
-                memberPhoto.setImageBitmap(bitmapPhoto);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-		}
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            Log.e(">>>>>>>Intent Image<<<<<<", selectedImage.getPath());
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+ 
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+ 
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            
+            bitmapPhoto = BitmapFactory.decodeFile(picturePath);
+            memberPhoto.setImageBitmap(bitmapPhoto);
+        }
     }
 
 	private void onSaveProfile() {
@@ -249,7 +256,7 @@ public class Profile_Page extends Activity implements OnClickListener{
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("m_uid", String.valueOf(MemberSession.getMember().getUid())));
-			paramsPost.add(new BasicNameValuePair("m_nickname", memberName.getText().toString()));
+			paramsPost.add(new BasicNameValuePair("m_nickname", memberName.getText().toString().trim()));
 			paramsPost.add(new BasicNameValuePair("m_photo", MemberSession.getMember().getPhoto()));
 			
 			if(bitmapPhoto!=null){
@@ -266,10 +273,20 @@ public class Profile_Page extends Activity implements OnClickListener{
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			Toast.makeText(Profile_Page.this, result, Toast.LENGTH_SHORT).show();
-			if(result.equals("OK Success")){
-				MemberSession.getMember().setPhoto(MEMBER_IMAGES_URL + MemberSession.getMember().getUid() + ".png");
-				MemberSession.getMember().setNickname(memberName.getText().toString());
+			Toast.makeText(Profile_Page.this, result.trim(), Toast.LENGTH_SHORT).show();
+			if(result.trim().equals("OK Success")){
+				MemberSession.getMember().setNickname(memberName.getText().toString().trim());
+				
+				if(bitmapPhoto!=null){
+					MemberSession.getMember().setPhoto(MEMBER_IMAGES_URL + MemberSession.getMember().getUid() + ".png");
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							cacheImage.createNewImageSession(MemberSession.getMember().getPhoto(), bitmapPhoto);
+						}
+					}).start();
+				}
+				
 			}
 			dialog.dismiss();
 		}
