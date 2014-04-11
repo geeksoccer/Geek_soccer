@@ -119,7 +119,7 @@ public class SideMenuLayout implements OnClickListener{
 				
 				Intent gotoProfile = new Intent(mContext, Profile_Page.class);
 				mContext.startActivity(gotoProfile);
-				
+				hideMenu(mContext);
 				break;
 	
 			}default:

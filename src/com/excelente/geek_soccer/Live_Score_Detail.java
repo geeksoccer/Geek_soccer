@@ -18,7 +18,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +59,7 @@ public class Live_Score_Detail extends Activity{
 		LayoutInflater factory = LayoutInflater.from(this);
 		View myView = factory.inflate(R.layout.live_score_detail, null);
 		setContentView(myView);
-		
+		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
 		Home_Pic = (ImageView)myView.findViewById(R.id.Home_Pic);
 		Away_Pic = (ImageView)myView.findViewById(R.id.Away_Pic);
 		Score = (TextView)myView.findViewById(R.id.Score);
@@ -329,13 +328,22 @@ public class Live_Score_Detail extends Activity{
 		}
 	}
 	
-	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		data.fragement_Section_set(1);
+		overridePendingTransition(R.anim.in_trans_right_left, R.anim.out_trans_left_right);
+		finish();
+	}
+	/*
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			data.fragement_Section_set(1);
+			overridePendingTransition(R.anim.in_trans_right_left, R.anim.out_trans_left_right);
 			finish();
-			return true;
+			return false;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+	*/
 }

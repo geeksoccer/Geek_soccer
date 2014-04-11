@@ -519,14 +519,15 @@ public class Chat_All extends Activity{
 						retval_Main.addView(txt_D);
 					}
 					name_layout.addView(txt_N);
-					if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
-						Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
-								.getString("m_photo")));
-					} else {
-						startDownload(txt_Item.getString("m_photo"),
-								Profile_Pic);
-					}
+					
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
+						if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
+							Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
+									.getString("m_photo")));
+						} else {
+							startDownload(txt_Item.getString("m_photo"),
+									Profile_Pic);
+						}
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if(txt_Item.getString("ch_msg").contains(".gif")){
 								Ion.with(Sticker).placeholder(R.drawable.soccer_icon).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
@@ -557,6 +558,13 @@ public class Chat_All extends Activity{
 								| Gravity.CENTER_VERTICAL);
 						retval.addView(Profile_layout);
 					} else {
+						if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
+							Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
+									.getString("m_photo")));
+						} else {
+							startDownloadNonCache(txt_Item.getString("m_photo"),
+									Profile_Pic);
+						}
 						TextView txt_TeamMate = new TextView(mContext);
 						txt_TeamMate.setLayoutParams(new LinearLayout.LayoutParams(
 								LayoutParams.WRAP_CONTENT,
@@ -885,7 +893,7 @@ public class Chat_All extends Activity{
 		Runnable runnable = new Runnable() {
 			public void run() {
 				String _Url = "";
-				if(url.contains("googleusercontent.com")){
+				if(url.contains("googleusercontent.com") || url.contains("/gs_member/member_images/")){
 					_Url = url;
 				}else{
 					_Url = "http://183.90.171.209/chat/stk/"+url;
@@ -916,6 +924,41 @@ public class Chat_All extends Activity{
 					});
 				}
 					
+			}
+		};
+
+		new Thread(runnable).start();
+	}
+	
+	public void startDownloadNonCache(final String url, final ImageView img_H) {
+		Runnable runnable = new Runnable() {
+			public void run() {
+				String _Url = "";
+				if (url.contains("googleusercontent.com") || url.contains("/gs_member/member_images/")) {
+					_Url = url;
+				} else {
+					_Url = "http://183.90.171.209/chat/stk/" + url;
+				}
+				Bitmap pic = null;
+				pic = loadImageFromUrl(_Url);
+				if(pic!=null){
+					data.BitMapHash.put(url, pic);
+				}
+				final Bitmap _pic = pic;
+
+				if (img_H != null) {
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							if (_pic == null) {
+								img_H.setImageResource(R.drawable.soccer_icon);
+							} else {
+								img_H.setImageBitmap(_pic);
+							}
+						}
+					});
+				}
+
 			}
 		};
 
@@ -964,15 +1007,29 @@ public class Chat_All extends Activity{
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (data.Sticker_Layout_Stat_All) {
-			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				StikerV.setVisibility(RelativeLayout.GONE);
-				return false;
-			}
-		}else{
-			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				finish();
-				return false;
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (data.Menu_Layout != null) {
+				if (data.Menu_Layout.getVisibility() == 0) {
+					new SideMenuLayout().hideMenu(mContext);
+					return false;
+				} else {
+					if (data.Sticker_Layout_Stat_All) {
+						StikerV.setVisibility(RelativeLayout.GONE);
+						return false;
+					} else {
+						finish();
+						return false;
+					}
+				}
+			} else {
+				if (data.Sticker_Layout_Stat_All) {
+					StikerV.setVisibility(RelativeLayout.GONE);
+					return false;
+				} else {
+
+					finish();
+					return false;
+				}
 			}
 		}
 		return false;
