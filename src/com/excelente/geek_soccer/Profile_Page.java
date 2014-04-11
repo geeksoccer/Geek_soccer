@@ -45,6 +45,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings.Secure;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -69,6 +70,13 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.e("onCreate", "onCreate");
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.e("onResume", "onResume");
 		if(MemberSession.hasMember()){
 			createLayout();
 		}else{
@@ -78,6 +86,12 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 				Toast.makeText(this, NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
 			}
 		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.e("onDestroy", "onDestroy");
 	}
 	
 	private void createLayout() {
