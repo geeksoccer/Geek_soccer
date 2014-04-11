@@ -1005,7 +1005,13 @@ public class Chat_All extends Activity{
 
 		return inSampleSize;
 	}
-
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(data.Chat_Item_list_All!=null){
+			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
+		}
+	}
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (data.Menu_Layout != null) {

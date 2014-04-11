@@ -994,6 +994,14 @@ public class Chat_Team extends Activity {
 
 		return inSampleSize;
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(data.Chat_Item_list_Team!=null){
+			data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
+		}
+	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
