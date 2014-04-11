@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.excelente.geek_soccer.MemberSession; 
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.CommentModel;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -27,7 +28,6 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,10 +42,12 @@ public class CommentAdapter extends BaseAdapter{
 
 	private Context context; 
 	List<CommentModel> commentList;
+	private SessionManager cacheImage;
 	
 	public CommentAdapter(Context context, List<CommentModel> commentList) {
 		this.context = context;
 		this.commentList = commentList;
+		cacheImage = new SessionManager(context);
 	}
  
 	@Override
@@ -67,14 +69,14 @@ public class CommentAdapter extends BaseAdapter{
         TextView commentNicknameTextview = (TextView) convertView.findViewById(R.id.comment_nickname);
         commentNicknameTextview.setText(comment.getMemberNickname());
 		
-        File cachImage = ImageLoader.getInstance().getDiscCache().get(comment.getMemberPhoto());
-        if(!cachImage.isFile()){
+        
+        if(!cacheImage.hasKey(comment.getMemberPhoto())){ 
 	        doConfigImageLoader(100, 100);
 	        ImageLoader.getInstance().displayImage(comment.getMemberPhoto(), commentImageImageview, getOptionImageLoader(comment.getMemberPhoto()), new SimpleImageLoadingListener(){
 	        	
 	        	public void onLoadingStarted(String imageUri, View view) {
 	        		commentImageImageview.setVisibility(View.GONE);
-	        		 commentImageProgressBar.setVisibility(View.VISIBLE);
+	        		commentImageProgressBar.setVisibility(View.VISIBLE);
 	        	};
 	        	
 	        	@Override
@@ -90,7 +92,7 @@ public class CommentAdapter extends BaseAdapter{
 	        	};
 	        });
         }else{
-        	commentImageImageview.setImageBitmap(BitmapFactory.decodeFile(cachImage.getAbsolutePath()));
+        	commentImageImageview.setImageBitmap(cacheImage.getImageSession(comment.getMemberPhoto()));
         }
         
         commentContentTextview.setText(comment.getCommentContent());
