@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
@@ -31,6 +32,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -40,6 +42,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings.Secure;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -66,10 +69,76 @@ public class Profile_Page extends Activity implements OnClickListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if(MemberSession.hasMember()){
+			createLayout();
+		}else{
+			if(NetworkUtils.isNetworkAvailable(this)){
+				new doSignTokenTask().execute();
+			}else{
+				Toast.makeText(this, NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	
+	private void createLayout() {
 		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
 		setContentView(R.layout.profile_page);
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
 		initView();
+	}
+
+	public class doSignTokenTask extends AsyncTask<Void, Void, MemberModel>{
+		
+		private static final String MEMBER_TOKEN_URL = "http://183.90.171.209/gs_member/member_token.php";
+		private ProgressDialog dialog;
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			
+			dialog = ProgressDialog.show(Profile_Page.this, "", "Updating Profile...", true);
+			dialog.setCancelable(false); 
+		}
+		
+		@Override
+		protected MemberModel doInBackground(Void... params) {
+			
+			SharedPreferences memberFile = getSharedPreferences(MemberSession.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+			
+			if(!memberFile.getString(MemberModel.MEMBER_TOKEN, "").equals("")){
+	
+				List<NameValuePair> memberParam = new ArrayList<NameValuePair>();
+				
+				String token = memberFile.getString(MemberModel.MEMBER_TOKEN, "");
+	
+				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, token));
+				
+				String dev_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
+				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
+				
+				String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_TOKEN_URL, memberParam);
+				if(memberStr.trim().equals("member not yet")){ 
+					return null;
+				}
+				MemberModel memberSignedIn = MemberModel.convertMemberJSONToList(memberStr);
+				return memberSignedIn;
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(MemberModel memberToken) {
+			super.onPostExecute(memberToken);
+			dialog.dismiss();
+			MemberSession.setMember(Profile_Page.this, memberToken);
+			if(MemberSession.hasMember())
+				createLayout();
+			else{
+				Toast.makeText(Profile_Page.this, NetworkUtils.getConnectivityStatusString(Profile_Page.this), Toast.LENGTH_SHORT).show();
+				onBackPressed();
+			}
+		}
+		
 	}
 	
 	private void initView() {

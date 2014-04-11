@@ -67,6 +67,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if(!MemberSession.hasMember()){
+			finish();
+		}
 		
 		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
 		
