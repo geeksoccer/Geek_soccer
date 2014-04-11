@@ -340,6 +340,8 @@ public class NewsItemsAdapter extends PagerAdapter{
 					bm.compress(Bitmap.CompressFormat.PNG, 75, baos); //bm is the bitmap object   
 					byte[] b = baos.toByteArray();
 		    		encodedString = "data:image/png;base64," + Base64.encodeToString(b, Base64.DEFAULT);
+		    		
+		    		reponseInputStream.close();
 				} catch (ClientProtocolException e) {
 				} catch (IOException e) {
 				}

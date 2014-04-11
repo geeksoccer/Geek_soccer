@@ -11,6 +11,9 @@
     <string name="ok">OK</string>
     <string name="confirm_save">Save</string>
     
+    <string name="warn_member_name1">Please Update Name</string>
+    <string name="warn_member_name2">Please Use Character Name More Than 2 OR Change Image</string>
+    
     <string name="title_bar_news">News</string>
     <string name="title_bar_live_score">Live Score</string>
     <string name="title_bar_chat">Chat</string>

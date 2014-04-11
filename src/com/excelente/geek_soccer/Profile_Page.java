@@ -1,11 +1,21 @@
 package com.excelente.geek_soccer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.excelente.geek_soccer.utils.HttpConnectUtils;
+import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -20,22 +30,34 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class Profile_Page extends Activity implements OnClickListener{
+	
+	private static final int REQUEST_CODE = 9002;
 	
 	private LinearLayout upBtn;
 	private ImageView memberPhoto;
 	private EditText memberName;
+	private RelativeLayout saveBtn;
+
+	private Bitmap bitmapPhoto; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +69,8 @@ public class Profile_Page extends Activity implements OnClickListener{
 	}
 	
 	private void initView() {
+		bitmapPhoto = null;
+		
 		upBtn = (LinearLayout) findViewById(R.id.Up_btn);
 		upBtn.setOnClickListener(this);
 		
@@ -58,6 +82,9 @@ public class Profile_Page extends Activity implements OnClickListener{
 		memberName = (EditText) findViewById(R.id.member_name);
 		memberName.setText(MemberSession.getMember().getNickname());
 		memberPhoto.setOnClickListener(this);
+		
+		saveBtn = (RelativeLayout) findViewById(R.id.Footer_Layout); 
+		saveBtn.setOnClickListener(this);
 	}
 	
 	private void doConfigImageLoader(int w, int h) {
@@ -65,7 +92,7 @@ public class Profile_Page extends Activity implements OnClickListener{
 		File cacheDir = StorageUtils.getCacheDirectory(this);
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
 		        .memoryCacheExtraOptions(w, h) // default = device screen dimensions
-		        .discCacheExtraOptions(w, h, CompressFormat.JPEG, 75, null)
+		        .discCacheExtraOptions(w, h, CompressFormat.PNG, 100, null)
 		        .threadPoolSize(3) // default
 		        .threadPriority(Thread.NORM_PRIORITY - 1) // default
 		        .tasksProcessingOrder(QueueProcessingType.FIFO) // default
@@ -95,9 +122,9 @@ public class Profile_Page extends Activity implements OnClickListener{
 	        .resetViewBeforeLoading(false)  // default
 	        //.delayBeforeLoading(500)
 	        .cacheInMemory(false)
-	        .cacheOnDisc(true)
+	        .cacheOnDisc(false)
 	        .considerExifParams(false) // default
-	        .imageScaleType(ImageScaleType.NONE) // default
+	        .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
 	        .bitmapConfig(Bitmap.Config.RGB_565) // default
 	        //.decodingOptions()
 	        .displayer(new SimpleBitmapDisplayer()) // default
@@ -141,11 +168,112 @@ public class Profile_Page extends Activity implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		
 			case R.id.Up_btn:{
 				onBackPressed();
 				break;
 			}
+			
+			case R.id.member_photo:{
+				onSelectPhoto();
+				break;
+			}
+			
+			case R.id.Footer_Layout:{
+				if(NetworkUtils.isNetworkAvailable(this)){
+					onSaveProfile();
+				}else{
+					Toast.makeText(this, NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
+				}
+				break;
+			}
+			
 		}
+	}
+
+	private void onSelectPhoto() {
+		Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_CODE);
+	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            try {
+                if (bitmapPhoto != null) {
+                    bitmapPhoto.recycle();
+                }
+                InputStream stream = getContentResolver().openInputStream(data.getData());
+                bitmapPhoto = BitmapFactory.decodeStream(stream);
+                stream.close();
+                memberPhoto.setImageBitmap(bitmapPhoto);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+		}
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+	private void onSaveProfile() {
+		if(memberName.getText().toString().trim().length() > 2 || bitmapPhoto!=null){ 
+			if(!memberName.getText().toString().trim().equals(MemberSession.getMember().getNickname()) || bitmapPhoto!=null)
+				new PostMember().execute();
+			else
+				Toast.makeText(Profile_Page.this, getResources().getString(R.string.warn_member_name1), Toast.LENGTH_SHORT).show();
+			 
+		}else{
+			Toast.makeText(Profile_Page.this, getResources().getString(R.string.warn_member_name2), Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	public class PostMember extends AsyncTask<Void, Void, String>{
+		
+		public static final String MEMBER_UPDATE_URL = "http://183.90.171.209/gs_member/member_update.php";
+		public static final String MEMBER_IMAGES_URL = "http://183.90.171.209/gs_member/member_images/";
+		private ProgressDialog dialog;
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			dialog = ProgressDialog.show(Profile_Page.this, "", "Updating Profile...", true);
+			dialog.setCancelable(false);
+		}
+		 
+		@Override
+		protected String doInBackground(Void... params) {
+			
+			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
+			paramsPost.add(new BasicNameValuePair("m_uid", String.valueOf(MemberSession.getMember().getUid())));
+			paramsPost.add(new BasicNameValuePair("m_nickname", memberName.getText().toString()));
+			paramsPost.add(new BasicNameValuePair("m_photo", MemberSession.getMember().getPhoto()));
+			
+			if(bitmapPhoto!=null){
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+				bitmapPhoto.compress(Bitmap.CompressFormat.PNG, 100, baos); 
+				byte[] b = baos.toByteArray();
+				paramsPost.add(new BasicNameValuePair("m_photo_base64", Base64.encodeToString(b, Base64.DEFAULT)));
+				paramsPost.add(new BasicNameValuePair("m_photo", MEMBER_IMAGES_URL + MemberSession.getMember().getUid() + ".png"));
+			}
+			
+			return HttpConnectUtils.getStrHttpPostConnect(MEMBER_UPDATE_URL, paramsPost);
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			Toast.makeText(Profile_Page.this, result, Toast.LENGTH_SHORT).show();
+			if(result.equals("OK Success")){
+				MemberSession.getMember().setPhoto(MEMBER_IMAGES_URL + MemberSession.getMember().getUid() + ".png");
+				MemberSession.getMember().setNickname(memberName.getText().toString());
+			}
+			dialog.dismiss();
+		}
+
 	}
 
 }

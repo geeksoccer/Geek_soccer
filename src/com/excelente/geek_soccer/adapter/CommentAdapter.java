@@ -104,7 +104,7 @@ public class CommentAdapter extends BaseAdapter{
 		File cacheDir = StorageUtils.getCacheDirectory(context);
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
 		        .memoryCacheExtraOptions(w, h) // default = device screen dimensions
-		        .discCacheExtraOptions(w, h, CompressFormat.JPEG, 75, null)
+		        .discCacheExtraOptions(w, h, CompressFormat.PNG, 75, null)
 		        .threadPoolSize(3) // default
 		        .threadPriority(Thread.NORM_PRIORITY - 1) // default
 		        .tasksProcessingOrder(QueueProcessingType.FIFO) // default
@@ -158,8 +158,8 @@ public class CommentAdapter extends BaseAdapter{
 	        .showImageOnFail(R.drawable.soccer_icon) // resource or drawable
 	        .resetViewBeforeLoading(false)  // default
 	        .delayBeforeLoading(500)
-	        //.cacheInMemory(true)
-	        .cacheOnDisc(true)
+	        .cacheInMemory(false)
+	        .cacheOnDisc(false)
 	        .considerExifParams(false) // default
 	        .imageScaleType(ImageScaleType.NONE) // default
 	        .bitmapConfig(Bitmap.Config.RGB_565) // default
