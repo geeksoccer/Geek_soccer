@@ -486,8 +486,7 @@ public class Chat_All extends Activity{
 					Logo_layout.setOrientation(LinearLayout.HORIZONTAL);
 					Logo_layout.setGravity(Gravity.CENTER_HORIZONTAL);
 					Profile_layout.addView(Logo_layout);
-					
-					txt_N.setText(txt_Item.getString("m_nickname"));
+
 					txt_T.setPadding(5, 0, 5, 0);
 					txt_T.setText("(" + txt_Item.getString("ch_time") + ")");
 					Logo_layout.addView(txt_T);
@@ -521,6 +520,7 @@ public class Chat_All extends Activity{
 					name_layout.addView(txt_N);
 					
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
+						txt_N.setText(MemberSession.getMember().getNickname());
 						if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
 							Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
 									.getString("m_photo")));
@@ -558,6 +558,7 @@ public class Chat_All extends Activity{
 								| Gravity.CENTER_VERTICAL);
 						retval.addView(Profile_layout);
 					} else {
+						txt_N.setText(txt_Item.getString("m_nickname"));
 						if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
 							Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
 									.getString("m_photo")));
@@ -757,7 +758,7 @@ public class Chat_All extends Activity{
 							}
 						}
 					});
-					data.socket_All.emit("adduser", data.ID_Send, data.ProFile_pic, data.Name_Send);
+					data.socket_All.emit("adduser", data.ID_Send, data.ProFile_pic, MemberSession.getMember().getNickname());
 				}
 		}).start();
 
