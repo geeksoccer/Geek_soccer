@@ -16,6 +16,10 @@ import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.kbeanie.imagechooser.api.ChooserType;
+import com.kbeanie.imagechooser.api.ChosenImage;
+import com.kbeanie.imagechooser.api.ImageChooserListener;
+import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -33,18 +37,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.provider.Settings.Secure;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -53,9 +53,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-public class Profile_Page extends Activity implements OnClickListener{
-	
-	private static final int REQUEST_CODE = 9002;
+public class Profile_Page extends Activity implements OnClickListener, ImageChooserListener{
 	
 	private LinearLayout upBtn;
 	private ImageView memberPhoto;
@@ -64,7 +62,9 @@ public class Profile_Page extends Activity implements OnClickListener{
 
 	private Bitmap bitmapPhoto;
 
-	private SessionManager cacheImage;  
+	private SessionManager cacheImage;
+
+	private ImageChooserManager imageChooserManager;  
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -271,27 +271,20 @@ public class Profile_Page extends Activity implements OnClickListener{
 	}
 
 	private void onSelectPhoto() {
-		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_CODE);
+		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
+		imageChooserManager.setImageChooserListener(this);
+		try {
+			imageChooserManager.choose();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            Log.e(">>>>>>>Intent Image<<<<<<", selectedImage.getPath());
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
- 
-            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
- 
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            
-            bitmapPhoto = BitmapFactory.decodeFile(picturePath);
-            memberPhoto.setImageBitmap(bitmapPhoto);
+        if (resultCode == RESULT_OK && (requestCode == ChooserType.REQUEST_PICK_PICTURE || requestCode == ChooserType.REQUEST_CAPTURE_PICTURE)) {
+               imageChooserManager.submit(requestCode, data);
         }
     }
 
@@ -360,6 +353,33 @@ public class Profile_Page extends Activity implements OnClickListener{
 			dialog.dismiss();
 		}
 
+	}
+
+	@Override
+	public void onError(final String error) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+ 
+				Toast.makeText(Profile_Page.this, error, Toast.LENGTH_SHORT).show();
+			}
+
+		});
+	}
+
+	@Override
+	public void onImageChosen(final ChosenImage image) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+
+				if (image != null) {
+					bitmapPhoto = BitmapFactory.decodeFile(image.getFilePathOriginal());
+					memberPhoto.setImageBitmap(bitmapPhoto);
+				}
+			}
+
+		});
 	}
 
 }
