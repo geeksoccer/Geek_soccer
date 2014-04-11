@@ -68,6 +68,7 @@
             android:singleLine="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
+            android:maxLength="20"
             android:ems="10"
             android:background="@android:drawable/edit_text"/>
 

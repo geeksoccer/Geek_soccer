@@ -68,7 +68,6 @@ public class CommentAdapter extends BaseAdapter{
         TextView commentUpdateTimeTextview = (TextView) convertView.findViewById(R.id.comment_update_time_textview);
         TextView commentNicknameTextview = (TextView) convertView.findViewById(R.id.comment_nickname);
         commentNicknameTextview.setText(comment.getMemberNickname());
-		
         
         if(!cacheImage.hasKey(comment.getMemberPhoto())){ 
 	        doConfigImageLoader(100, 100);
@@ -93,6 +92,8 @@ public class CommentAdapter extends BaseAdapter{
 	        });
         }else{
         	commentImageImageview.setImageBitmap(cacheImage.getImageSession(comment.getMemberPhoto()));
+        	commentImageImageview.setVisibility(View.VISIBLE);
+        	commentImageProgressBar.setVisibility(View.GONE);
         }
         
         commentContentTextview.setText(comment.getCommentContent());
