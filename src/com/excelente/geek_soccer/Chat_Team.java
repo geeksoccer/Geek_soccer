@@ -893,7 +893,7 @@ public class Chat_Team extends Activity {
 					if(pic!=null){
 						sesPrefer.createNewImageSession(url, pic);
 						data.BitMapHash.put(url, pic);
-					}					
+					}
 				} else {
 					pic = sesPrefer.getImageSession(url);
 					data.BitMapHash.put(url, pic);
@@ -993,14 +993,6 @@ public class Chat_Team extends Activity {
 		}
 
 		return inSampleSize;
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if(data.Chat_Item_list_Team!=null){
-			data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
-		}
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
