@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
-import android.os.Vibrator;
 import android.provider.Settings.Secure;
 import android.support.v4.app.NotificationCompat;
 
@@ -38,16 +37,6 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 	public static final int NOTIFY_INTENT_CODE_HILIGHT = 2000;
 	public static final String NOTIFY_CONNECT_FIRST = "NOTIFY_CONNECT_FIRST"; 
 	public static final String SHARE_PERFERENCE = "SHARE_PERFERENCE";
-	
-	private Vibrator mVibrator;
-	
-	int dot = 200; // Length of a Morse Code "dot" in milliseconds
-    int dash = 500; // Length of a Morse Code "dash" in milliseconds
-    int short_gap = 200; // Length of Gap Between dots/dashes
-    int medium_gap = 500; // Length of Gap Between Letters
-    int long_gap = 1000; // Length of Gap Between Words
- 
-    long[] pattern = { 0, dot, short_gap, dot, short_gap, dot};
     
 	Context mContext;
 	private SharedPreferences sharePre;
@@ -126,7 +115,6 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 			super.onPostExecute(result);
 			if(result!=null && !result.isEmpty()){
 				setNotify(result);
-				
 			}
 			
 		}
@@ -154,6 +142,7 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 				.setSmallIcon(R.drawable.notify_news)
 				.setContentIntent(pIntent)
 				.build();
+				notification.defaults = Notification.DEFAULT_ALL;
 				
 				mNotification.cancel(0);
 				mNotification.notify(0, notification);
@@ -170,12 +159,11 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 				.setSmallIcon(R.drawable.notify_news)
 				.setContentIntent(pIntent)
 				.build();
+				notification.defaults = Notification.DEFAULT_ALL;
+				
 				mNotification.cancel(1);
 				mNotification.notify(1, notification);
 			}
-			  
-			mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-			mVibrator.vibrate(pattern, -1);
 		}
 
 	}
@@ -226,12 +214,10 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 				.setSmallIcon(R.drawable.notify_hilight)
 				.setContentIntent(pIntent)
 				.build();
+			notification.defaults = Notification.DEFAULT_ALL;
 				
 			mNotification.cancel(3);
 			mNotification.notify(3, notification);
-			
-			mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-			mVibrator.vibrate(pattern, -1);
 		}
 
 	}

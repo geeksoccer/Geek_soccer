@@ -39,12 +39,13 @@
         android:textColor="@color/gray"
         android:singleLine="true"
         android:textSize="16sp" />
-    
+     
     <TextView
         android:id="@+id/hilight_topic_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/hilight_type_textview"
+        android:lines="2"
         android:paddingBottom="10dp"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
@@ -52,7 +53,7 @@
         android:layout_toRightOf="@+id/hilight_image_layout"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
- 
+  
     <TextView
         android:id="@+id/hilight_create_time_textview"
         android:textColor="@color/gray"

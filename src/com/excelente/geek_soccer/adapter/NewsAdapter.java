@@ -29,6 +29,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,13 +42,13 @@ import android.widget.TextView;
 
 public class NewsAdapter extends BaseAdapter{
 	
-	Context context;
+	Activity context;
     List<NewsModel> newsList;
     int count_ani=-1;
     
     boolean showHead; 
 	
-    HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
+    //HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
     
 	public NewsAdapter(Activity context, List<NewsModel> newsList) {
 		this.context = context;
@@ -95,8 +96,24 @@ public class NewsAdapter extends BaseAdapter{
         final ProgressBar newsImageProgressBar = (ProgressBar) convertView.findViewById(R.id.news_image_processbar);
         ImageView newsNewImageview = (ImageView) convertView.findViewById(R.id.news_new);
         
-        if(urlBitmap.containsKey(newsModel.getNewsImage().replace(".gif", ".png"))){
-        	newsImageImageview.setImageBitmap(urlBitmap.get(newsModel.getNewsImage().replace(".gif", ".png"))); 
+        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(newsModel.getNewsImage().replace(".gif", ".png"));
+        if(cacheFile.isFile()){
+        	new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getPath());
+					
+					context.runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							newsImageImageview.setImageBitmap(bm);  
+						}
+					});
+				}
+			}).start();
+        	
         }else{
         	try{
 			    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
@@ -115,7 +132,7 @@ public class NewsAdapter extends BaseAdapter{
 		           	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 		           		//newsImageImageview.setVisibility(View.VISIBLE);
 		           		//newsImageProgressBar.setVisibility(View.GONE);
-		           		urlBitmap.put(imageUri, loadedImage);
+		           		//urlBitmap.put(imageUri, loadedImage);
 		           	}
 	
 					@Override

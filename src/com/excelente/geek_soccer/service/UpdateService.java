@@ -31,7 +31,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.provider.Settings.Secure;
 import android.support.v4.app.NotificationCompat;
 
@@ -51,16 +50,6 @@ public class UpdateService extends Service{
 	
 	public final static String NOTIFY_NEWS_UPDATE = "com.pilarit.chettha.manfindjob.service.NOTIFY_NEWS_UPDATE";
 	public final static int NOTIFY_NEWS_UPDATE_VALUE = 1001;
-	
-	private Vibrator mVibrator;
-	
-	int dot = 200; // Length of a Morse Code "dot" in milliseconds
-    int dash = 500; // Length of a Morse Code "dash" in milliseconds
-    int short_gap = 200; // Length of Gap Between dots/dashes
-    int medium_gap = 500; // Length of Gap Between Letters
-    int long_gap = 1000; // Length of Gap Between Words
- 
-    long[] pattern = { 0, dot, short_gap, dot, short_gap, dot};
 	
 	private SharedPreferences sharePre; 
 	TimerTask newsTask = null;
@@ -93,9 +82,9 @@ public class UpdateService extends Service{
 				int hilightId = sharePre.getInt(HilightModel.HILIGHT_ID, 0);
 				if(NetworkUtils.isNetworkAvailable(getApplicationContext()) && MemberSession.hasMember()){
 					if(!isForeground(getApplicationContext().getPackageName())){ 
-						new LoadLastNewsTask("tag0").execute(getURLbyTag(member, newsIdTag0, "tag0"));
-						new LoadLastNewsTask("tag1").execute(getURLbyTag(member, newsIdTag1, "tag1")); 
-						new LoadLastHilightTask().execute(getURLHilight(hilightId));
+						loadLastNewsTask("tag0", getURLbyTag(member, newsIdTag0, "tag0"));
+						loadLastNewsTask("tag1", getURLbyTag(member, newsIdTag1, "tag1"));
+						loadLastHilightTask(getURLHilight(hilightId));
 					}else{
 						//updateMainActivity();
 					}
@@ -135,6 +124,7 @@ public class UpdateService extends Service{
 		sendBroadcast(nextToMain);
 	}*/
 	
+	@SuppressWarnings("deprecation")
 	private Date getTimeUpdate() {
 		Date now = new Date();
 		now.setMinutes(0);
@@ -152,84 +142,70 @@ public class UpdateService extends Service{
 		return now;
 	}
 
-	public class LoadLastNewsTask extends AsyncTask<String, Void, List<NewsModel>>{
+	public void loadLastNewsTask(String tag, String url){
 		
-		private NotificationManager mNotification;
-		String tag;
+		List<NewsModel> newsList = new ArrayList<NewsModel>();
+
+		String result = HttpConnectUtils.getStrHttpGetConnect(url); 
 		
-		public LoadLastNewsTask(String string) {
-			tag = string;
+		if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
+			newsList = null;
+		}else{
+			newsList = NewsModel.convertNewsStrToList(result);
 		}
 
-		@Override
-		protected List<NewsModel> doInBackground(String... params) {
-			
-			String result = HttpConnectUtils.getStrHttpGetConnect(params[0]); 
-			
-			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
-				return null;
-			}
+		if(newsList!=null && !newsList.isEmpty()){
+			setNotifyNews(tag, newsList);
+		}
+
+	}
+	
+	private void setNotifyNews(String tag, List<NewsModel> result) {
+		NotificationManager mNotification;
 		
-			List<NewsModel> newsList = NewsModel.convertNewsStrToList(result);
+		sharePre = getApplicationContext().getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
+		Editor editSharePre = sharePre.edit();
 			
-			return newsList;
+		Intent nextToMain = new Intent(getApplicationContext(), Sign_In_Page.class);
+		nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_NEWS);
+		PendingIntent pIntent;
+		
+		mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
+		if(tag.equals("tag0")){
+			editSharePre.putInt(NewsModel.NEWS_ID+"tag0", result.get(0).getNewsId());
+			editSharePre.commit();
+			
+			nextToMain.putExtra(NewsModel.NEWS_ID+"tag", 0);
+			pIntent = PendingIntent.getActivity(getApplicationContext(), 0, nextToMain, 0);
+			
+			Notification notification = new NotificationCompat.Builder(getApplicationContext())
+			.setContentTitle(getResources().getString(R.string.team_news)) 
+			.setContentText(result.get(0).getNewsTopic())
+			.setSmallIcon(R.drawable.notify_news)
+			.setContentIntent(pIntent)
+			.build();
+			notification.defaults = Notification.DEFAULT_ALL;
+			
+			mNotification.cancel(0);
+			mNotification.notify(0, notification);
+		}else{
+			editSharePre.putInt(NewsModel.NEWS_ID+"tag1", result.get(0).getNewsId());
+			editSharePre.commit();
+			
+			nextToMain.putExtra(NewsModel.NEWS_ID+"tag", 1);
+			pIntent = PendingIntent.getActivity(getApplicationContext(), 1, nextToMain, 0);
+			
+			Notification notification = new NotificationCompat.Builder(getApplicationContext())
+			.setContentTitle(getResources().getString(R.string.global_news)) 
+			.setContentText(result.get(0).getNewsTopic())
+			.setSmallIcon(R.drawable.notify_news)
+			.setContentIntent(pIntent)
+			.build();
+			notification.defaults = Notification.DEFAULT_ALL;
+			
+			mNotification.cancel(1);
+			mNotification.notify(1, notification);
 		}
-
-		@Override
-		protected void onPostExecute(List<NewsModel> result) {
-			super.onPostExecute(result);
-			if(result!=null && !result.isEmpty()){
-				setNotify(result);
-			}
-			
-		}
-
-		private void setNotify(List<NewsModel> result) {
-			sharePre = getApplicationContext().getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
-			Editor editSharePre = sharePre.edit();
-				
-			Intent nextToMain = new Intent(getApplicationContext(), Sign_In_Page.class);
-			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_NEWS);
-			PendingIntent pIntent;
-			
-			mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
-			if(tag.equals("tag0")){
-				editSharePre.putInt(NewsModel.NEWS_ID+"tag0", result.get(0).getNewsId());
-				editSharePre.commit();
-				
-				nextToMain.putExtra(NewsModel.NEWS_ID+"tag", 0);
-				pIntent = PendingIntent.getActivity(getApplicationContext(), 0, nextToMain, 0);
-				
-				Notification notification = new NotificationCompat.Builder(getApplicationContext())
-				.setContentTitle(getResources().getString(R.string.team_news)) 
-				.setContentText(result.get(0).getNewsTopic())
-				.setSmallIcon(R.drawable.notify_news)
-				.setContentIntent(pIntent)
-				.build();
-				
-				mNotification.cancel(0);
-				mNotification.notify(0, notification);
-			}else{
-				editSharePre.putInt(NewsModel.NEWS_ID+"tag1", result.get(0).getNewsId());
-				editSharePre.commit();
-				
-				nextToMain.putExtra(NewsModel.NEWS_ID+"tag", 1);
-				pIntent = PendingIntent.getActivity(getApplicationContext(), 1, nextToMain, 0);
-				
-				Notification notification = new NotificationCompat.Builder(getApplicationContext())
-				.setContentTitle(getResources().getString(R.string.global_news)) 
-				.setContentText(result.get(0).getNewsTopic())
-				.setSmallIcon(R.drawable.notify_news)
-				.setContentIntent(pIntent)
-				.build();
-				mNotification.cancel(1);
-				mNotification.notify(1, notification);
-			}
-			
-			mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-			mVibrator.vibrate(pattern, -1);
-		}
-
 	}
 	
 	@Override
@@ -240,60 +216,47 @@ public class UpdateService extends Service{
 			newsTask.cancel();
 	}
 	
-	public class LoadLastHilightTask extends AsyncTask<String, Void, List<HilightModel>>{ 
-		
-		private NotificationManager mNotification;
-		 
-		@Override
-		protected List<HilightModel> doInBackground(String... params){ 
+	public void loadLastHilightTask(String url){ 
+		List<HilightModel> hilightList = new ArrayList<HilightModel>();
 			
-			String result = HttpConnectUtils.getStrHttpGetConnect(params[0]); 
+		String result = HttpConnectUtils.getStrHttpGetConnect(url); 
 			
-			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
-				return null;
-			}
-		
-			List<HilightModel> hilightList = HilightModel.convertHilightStrToList(result);
-			 
-			return hilightList;
-		}
-
-		@Override
-		protected void onPostExecute(List<HilightModel> result) {
-			super.onPostExecute(result);
-			if(result!=null && !result.isEmpty()){
-				setNotify(result);
-			}
+		if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
+			hilightList = null;
+		}else{
+			hilightList = HilightModel.convertHilightStrToList(result);
 		}
 		
-		private void setNotify(List<HilightModel> result) { 
-			sharePre = getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
-			Editor editSharePre = sharePre.edit();
-			editSharePre.putInt(HilightModel.HILIGHT_ID, result.get(0).getHilightId());
-			editSharePre.commit();
-			
-			Intent nextToMain = new Intent(getApplicationContext(), Sign_In_Page.class);
-			nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_HILIGHT);
-			PendingIntent pIntent; 
-				
-			mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
-			pIntent = PendingIntent.getActivity(getApplicationContext(), 3, nextToMain, 0);
-				
-			Notification notification = new NotificationCompat.Builder(getApplicationContext())
-				.setContentTitle(getResources().getString(R.string.title_bar_hilight)) 
-				.setContentText(result.get(0).getHilightTopic()) 
-				.setSmallIcon(R.drawable.notify_hilight)
-				.setContentIntent(pIntent)
-				.build();
-				
-			mNotification.cancel(3);
-			mNotification.notify(3, notification);
-			
-			mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-			mVibrator.vibrate(pattern, -1);
+		if(hilightList!=null && !hilightList.isEmpty()){
+			setNotifyHilight(hilightList);
 		}
 
 	}
+			
+	private void setNotifyHilight(List<HilightModel> result) { 
+		NotificationManager mNotification;
+		sharePre = getSharedPreferences(SHARE_PERFERENCE, Context.MODE_PRIVATE);
+		Editor editSharePre = sharePre.edit();
+		editSharePre.putInt(HilightModel.HILIGHT_ID, result.get(0).getHilightId());
+		editSharePre.commit();
+				
+		Intent nextToMain = new Intent(getApplicationContext(), Sign_In_Page.class);
+		nextToMain.putExtra(NOTIFY_INTENT, NOTIFY_INTENT_CODE_HILIGHT);
+		PendingIntent pIntent; 
+					
+		mNotification = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
+		pIntent = PendingIntent.getActivity(getApplicationContext(), 3, nextToMain, 0);
+					
+		Notification notification = new NotificationCompat.Builder(getApplicationContext())
+			.setContentTitle(getResources().getString(R.string.title_bar_hilight)) 
+			.setContentText(result.get(0).getHilightTopic()) 
+			.setSmallIcon(R.drawable.notify_hilight)
+			.setContentIntent(pIntent)
+			.build();
+					
+		mNotification.cancel(3);
+		mNotification.notify(3, notification);
+	}		
 	
 	public boolean isForeground(String myPackage){
 		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);

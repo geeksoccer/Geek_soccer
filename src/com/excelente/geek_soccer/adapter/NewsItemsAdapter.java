@@ -210,7 +210,7 @@ public class NewsItemsAdapter extends PagerAdapter{
         		String upic_me = "http://upic.me/";
         		String image_ohozaa_com = "http://image.ohozaa.com/";
         		
-        		if(url.substring(0, upic_me.length()).equals(upic_me) || url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com)){
+        		if((url.length() > upic_me.length() && url.substring(0, upic_me.length()).equals(upic_me)) || (url.length() > image_ohozaa_com.length() && url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com))){
         			urls.add(url);
         		}
         	}

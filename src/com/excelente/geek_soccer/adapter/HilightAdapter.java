@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,13 +42,13 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 
 public class HilightAdapter extends BaseAdapter{
 	
-	Context context;
+	Activity context;
     List<HilightModel> hilightList; 
     int count_ani=-1;
     
     boolean showHead; 
     
-    HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
+    //HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
 	
 	public HilightAdapter(Activity context, List<HilightModel> hilightList) {
 		this.context = context;
@@ -117,8 +118,24 @@ public class HilightAdapter extends BaseAdapter{
 	        
 	        hilightHolder.hilightNew = (ImageView) convertView.findViewById(R.id.hilight_new);
         
-	        if(urlBitmap.containsKey(hilightModel.getHilightImage().replace(".gif", ".png"))){
-	        	hilightHolder.hilightImageImageview.setImageBitmap(urlBitmap.get(hilightModel.getHilightImage().replace(".gif", ".png"))); 
+	        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(hilightModel.getHilightImage().replace(".gif", ".png"));
+	        if(cacheFile.isFile()){
+	        	new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getPath());
+						context.runOnUiThread(new Runnable() {
+							
+							@Override 
+							public void run() {
+								hilightHolder.hilightImageImageview.setImageBitmap(bm);
+							}
+						});
+						
+					}
+				}).start();
+	        	 
 	        }else{
 	        	ImageLoader.getInstance().displayImage(hilightModel.getHilightImage().replace(".gif", ".png"), hilightHolder.hilightImageImageview, getOptionImageLoader(hilightModel.getHilightImage()), new ImageLoadingListener(){
 	            	
