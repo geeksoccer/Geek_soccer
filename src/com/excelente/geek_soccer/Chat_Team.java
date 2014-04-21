@@ -20,7 +20,6 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import io.socket.IOAcknowledge;
@@ -37,6 +36,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -45,6 +46,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -100,6 +102,8 @@ public class Chat_Team extends Activity {
 	static HashMap<String, Button> Sticker_ButVSet = new HashMap<String, Button>();
 	String root = Environment.getExternalStorageDirectory().toString();
 	ProgressBar progressBar;
+
+	int pixels;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -164,6 +168,28 @@ public class Chat_Team extends Activity {
 				}
 			}
 		});
+		final float scale = getResources().getDisplayMetrics().density;
+		pixels = (int) (40 * scale + 0.5f);
+		Chat_input.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				if(Chat_input.getLineCount()>1){
+					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.WRAP_CONTENT, (pixels*3)/2));
+				}else{
+					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.WRAP_CONTENT, pixels));
+				}
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {}
+		});
 		
 		send_Btn.setOnClickListener(new View.OnClickListener() {
 
@@ -191,9 +217,14 @@ public class Chat_Team extends Activity {
 					StickViewClear();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					for (int i = 0; i < data.Sticker_Set.size(); i++) {
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(70, 70);
+					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
+					for(int i=0; i<data.Sticker_Set.size(); i++){
 						final Button StickSet_1 = new Button(mContext);
-						StickSet_1.setText("SET " + (i + 1));
+						StickSet_1.setBackgroundResource(R.drawable.stk_btn_set);
+						StickSet_1.setLayoutParams(paramsBtn);
+						StickSet_1.setTypeface(Typeface.DEFAULT_BOLD);
+						StickSet_1.setText(""+(i + 1));
 						final int StickPosition = i+1;
 						if(String.valueOf(StickPosition).equals(Stick_Set)){
 							StickSet_1.setEnabled(false);
@@ -318,6 +349,7 @@ public class Chat_Team extends Activity {
 			}
 			for (int i = ImgV_p; i < Sticker_ImgVSet.size(); i++) {
 				Sticker_ImgVSet.get(String.valueOf(i+1)).setEnabled(false);
+				Sticker_ImgVSet.get(String.valueOf(i+1)).setImageBitmap(null);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -635,7 +667,11 @@ public class Chat_Team extends Activity {
 					public void onError(SocketIOException socketIOException) {
 						Log.d("TEST", "test::an Error occured");
 						socketIOException.printStackTrace();
-						data.socket_Team.reconnect();
+						if(data.Chat_Item_list_Team.size()>0){
+		                	data.socket_Team.reconnect();
+		                }else{
+		                	RefreshView();
+		                }
 					}
 
 					@Override
@@ -745,6 +781,29 @@ public class Chat_Team extends Activity {
 						data.ProFile_pic, SessionManager.getMember(Chat_Team.this).getNickname());
 			}
 		}).start();
+	}
+	
+	public void RefreshView(){
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
+		    @Override
+		    public void run() {
+		    	data.Chat_list_LayOut_Team.removeAllViews();
+				TextView RefreshTag = new TextView(mContext);
+				RefreshTag.setText("Tap to refresh");
+				RefreshTag.setGravity(Gravity.CENTER);
+				data.Chat_list_LayOut_Team.addView(RefreshTag);
+				data.Chat_list_LayOut_Team.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						data.Chat_list_LayOut_Team.removeAllViews();
+						ProgressBar progress = new ProgressBar(mContext);
+						data.Chat_list_LayOut_Team.addView(progress);
+						Chat_Loader();
+					}
+				});
+		    }
+		}, data.chatDelay);
 	}
 	
 	public void chatHandle() {

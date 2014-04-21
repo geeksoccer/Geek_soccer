@@ -37,12 +37,15 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -52,6 +55,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -97,6 +101,8 @@ public class Chat_All extends Activity{
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
 	static HashMap<String, Button> Sticker_ButVSet = new HashMap<String, Button>();
 	SessionManager sesPrefer;
+	
+	int pixels;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,6 +157,29 @@ public class Chat_All extends Activity{
 			}
 		});
     	
+		final float scale = getResources().getDisplayMetrics().density;
+		pixels = (int) (40 * scale + 0.5f);
+		Chat_input.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				if(Chat_input.getLineCount()>1){
+					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.WRAP_CONTENT, (pixels*3)/2));
+				}else{
+					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.WRAP_CONTENT, pixels));
+				}
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {}
+		});
+		
     	send_Btn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -177,9 +206,14 @@ public class Chat_All extends Activity{
 					StickViewClear();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(70, 70);
+					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
 					for(int i=0; i<data.Sticker_Set.size(); i++){
 						final Button StickSet_1 = new Button(mContext);
-						StickSet_1.setText("SET " + (i + 1));
+						StickSet_1.setBackgroundResource(R.drawable.stk_btn_set);
+						StickSet_1.setLayoutParams(paramsBtn);
+						StickSet_1.setTypeface(Typeface.DEFAULT_BOLD);
+						StickSet_1.setText(""+(i + 1));
 						final int StickPosition = i+1;
 						if(String.valueOf(StickPosition).equals(Stick_Set)){
 							StickSet_1.setEnabled(false);
@@ -326,6 +360,7 @@ public class Chat_All extends Activity{
 			}
 			for (int i = ImgV_p; i < Sticker_ImgVSet.size(); i++) {
 				Sticker_ImgVSet.get(String.valueOf(i+1)).setEnabled(false);
+				Sticker_ImgVSet.get(String.valueOf(i+1)).setImageBitmap(null);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -651,19 +686,21 @@ public class Chat_All extends Activity{
 			            public void onError(SocketIOException socketIOException) {
 			            	Log.d("TEST","test::an Error occured");
 			                socketIOException.printStackTrace();
-			                data.socket_All.reconnect();
+			                if(data.Chat_Item_list_All.size()>0){
+			                	data.socket_All.reconnect();
+			                }else{
+			                	RefreshView();
+			                }
 			            }
 
 			            @Override
 			            public void onDisconnect() {
-			            	
 			            	data.chat_on_All = false;
 			            	Log.d("TEST", "chat_on::"+data.chat_on_All);
 			            }
 
 			            @Override
 			            public void onConnect() {
-			            	
 			            	data.chat_on_All = true;
 			            	Log.d("TEST", "chat_on::"+data.chat_on_All);
 			            }
@@ -764,6 +801,29 @@ public class Chat_All extends Activity{
 				}
 		}).start();
 
+	}
+	
+	public void RefreshView(){
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
+		    @Override
+		    public void run() {
+		    	data.Chat_list_LayOut_All.removeAllViews();
+				TextView RefreshTag = new TextView(mContext);
+				RefreshTag.setText("Tap to refresh");
+				RefreshTag.setGravity(Gravity.CENTER);
+				data.Chat_list_LayOut_All.addView(RefreshTag);
+				data.Chat_list_LayOut_All.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						data.Chat_list_LayOut_All.removeAllViews();
+						ProgressBar progress = new ProgressBar(mContext);
+						data.Chat_list_LayOut_All.addView(progress);
+						Chat_Loader();
+					}
+				});
+		    }
+		}, data.chatDelay);
 	}
 	
 	public void chatHandle() {
