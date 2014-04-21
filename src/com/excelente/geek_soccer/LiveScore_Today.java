@@ -55,6 +55,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -492,16 +493,35 @@ public class LiveScore_Today extends Activity {
 		protected void onPostExecute(String file_url) {
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
-					chk_D_Stat=false;
-					layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
-					layOutlist.removeAllViews();
-					((LinearLayout) layOutlist).addView(data.lstViewLiveScore);
-					chk_ani = false;
-					data.imageAdapterLiveScore.notifyDataSetChanged();
-					
-					if(data.socket_LiveScore==null){
-						Live_score_Loader();
+					if(data.Match_list_c_JSON.size()>0){
+						chk_D_Stat=false;
+						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
+						layOutlist.removeAllViews();
+						((LinearLayout) layOutlist).addView(data.lstViewLiveScore);
+						chk_ani = false;
+						data.imageAdapterLiveScore.notifyDataSetChanged();
+						
+						if(data.socket_LiveScore==null){
+							Live_score_Loader();
+						}
+					}else{
+						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
+						layOutlist.removeAllViews();
+						TextView RefreshTag = new TextView(mContext);
+						RefreshTag.setText("Tab to refresh");
+						RefreshTag.setGravity(Gravity.CENTER);
+						((LinearLayout) layOutlist).addView(RefreshTag);
+						layOutlist.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View arg0) {
+								layOutlist.removeAllViews();
+								ProgressBar progress = new ProgressBar(mContext);
+								((LinearLayout) layOutlist).addView(progress);
+								new Live_score_1stLoader().execute();
+							}
+						});
 					}
+					
 				}
 			});
 		}

@@ -55,6 +55,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -357,6 +358,7 @@ public class Chat_All extends Activity{
 			}
 			for (int i = ImgV_p; i < Sticker_ImgVSet.size(); i++) {
 				Sticker_ImgVSet.get(String.valueOf(i+1)).setEnabled(false);
+				Sticker_ImgVSet.get(String.valueOf(i+1)).setImageBitmap(null);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -682,19 +684,21 @@ public class Chat_All extends Activity{
 			            public void onError(SocketIOException socketIOException) {
 			            	Log.d("TEST","test::an Error occured");
 			                socketIOException.printStackTrace();
-			                data.socket_All.reconnect();
+			                if(data.Chat_Item_list_All.size()>0){
+			                	data.socket_All.reconnect();
+			                }else{
+			                	RefreshView();
+			                }
 			            }
 
 			            @Override
 			            public void onDisconnect() {
-			            	
 			            	data.chat_on_All = false;
 			            	Log.d("TEST", "chat_on::"+data.chat_on_All);
 			            }
 
 			            @Override
 			            public void onConnect() {
-			            	
 			            	data.chat_on_All = true;
 			            	Log.d("TEST", "chat_on::"+data.chat_on_All);
 			            }
@@ -795,6 +799,29 @@ public class Chat_All extends Activity{
 				}
 		}).start();
 
+	}
+	
+	public void RefreshView(){
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
+		    @Override
+		    public void run() {
+		    	data.Chat_list_LayOut_All.removeAllViews();
+				TextView RefreshTag = new TextView(mContext);
+				RefreshTag.setText("Tab to refresh");
+				RefreshTag.setGravity(Gravity.CENTER);
+				data.Chat_list_LayOut_All.addView(RefreshTag);
+				data.Chat_list_LayOut_All.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						data.Chat_list_LayOut_All.removeAllViews();
+						ProgressBar progress = new ProgressBar(mContext);
+						data.Chat_list_LayOut_All.addView(progress);
+						Chat_Loader();
+					}
+				});
+		    }
+		}, data.chatDelay);
 	}
 	
 	public void chatHandle() {

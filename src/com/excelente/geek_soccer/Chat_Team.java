@@ -20,7 +20,6 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import io.socket.IOAcknowledge;
@@ -218,7 +217,7 @@ public class Chat_Team extends Activity {
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
 					LayoutParams paramsBtn = new LinearLayout.LayoutParams(70, 70);
-					((MarginLayoutParams) paramsBtn).setMargins(5, 5, 5, 5);
+					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
 					for(int i=0; i<data.Sticker_Set.size(); i++){
 						final Button StickSet_1 = new Button(mContext);
 						StickSet_1.setBackgroundResource(R.drawable.stk_btn_set);
@@ -349,6 +348,7 @@ public class Chat_Team extends Activity {
 			}
 			for (int i = ImgV_p; i < Sticker_ImgVSet.size(); i++) {
 				Sticker_ImgVSet.get(String.valueOf(i+1)).setEnabled(false);
+				Sticker_ImgVSet.get(String.valueOf(i+1)).setImageBitmap(null);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -666,7 +666,11 @@ public class Chat_Team extends Activity {
 					public void onError(SocketIOException socketIOException) {
 						Log.d("TEST", "test::an Error occured");
 						socketIOException.printStackTrace();
-						data.socket_Team.reconnect();
+						if(data.Chat_Item_list_Team.size()>0){
+		                	data.socket_Team.reconnect();
+		                }else{
+		                	RefreshView();
+		                }
 					}
 
 					@Override
@@ -776,6 +780,29 @@ public class Chat_Team extends Activity {
 						data.ProFile_pic, MemberSession.getMember().getNickname());
 			}
 		}).start();
+	}
+	
+	public void RefreshView(){
+		data.chatDelay = 0;
+		handler.postDelayed(new Runnable() {
+		    @Override
+		    public void run() {
+		    	data.Chat_list_LayOut_Team.removeAllViews();
+				TextView RefreshTag = new TextView(mContext);
+				RefreshTag.setText("Tab to refresh");
+				RefreshTag.setGravity(Gravity.CENTER);
+				data.Chat_list_LayOut_Team.addView(RefreshTag);
+				data.Chat_list_LayOut_Team.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						data.Chat_list_LayOut_Team.removeAllViews();
+						ProgressBar progress = new ProgressBar(mContext);
+						data.Chat_list_LayOut_Team.addView(progress);
+						Chat_Loader();
+					}
+				});
+		    }
+		}, data.chatDelay);
 	}
 	
 	public void chatHandle() {
