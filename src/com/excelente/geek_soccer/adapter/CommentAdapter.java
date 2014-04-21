@@ -7,9 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.excelente.geek_soccer.MemberSession; 
+import com.excelente.geek_soccer.SessionManager; 
 import com.excelente.geek_soccer.R;
-import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.CommentModel;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -42,12 +41,10 @@ public class CommentAdapter extends BaseAdapter{
 
 	private Context context; 
 	List<CommentModel> commentList;
-	private SessionManager cacheImage;
 	
 	public CommentAdapter(Context context, List<CommentModel> commentList) {
 		this.context = context;
 		this.commentList = commentList;
-		cacheImage = new SessionManager(context);
 	}
  
 	@Override
@@ -55,7 +52,7 @@ public class CommentAdapter extends BaseAdapter{
 		CommentModel comment = (CommentModel) getItem(pos);
 		LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		if(comment.getMemberUid() == MemberSession.getMember().getUid()){
+		if(comment.getMemberUid() == SessionManager.getMember(context).getUid()){
 			convertView = mInflater.inflate(R.layout.comment_item_invert, parent, false);
 		}else{
 			convertView = mInflater.inflate(R.layout.comment_item, parent, false);
@@ -69,7 +66,7 @@ public class CommentAdapter extends BaseAdapter{
         TextView commentNicknameTextview = (TextView) convertView.findViewById(R.id.comment_nickname);
         commentNicknameTextview.setText(comment.getMemberNickname());
         
-        if(!cacheImage.hasKey(comment.getMemberPhoto())){ 
+        if(!SessionManager.hasKey(context, comment.getMemberPhoto())){ 
 	        doConfigImageLoader(100, 100);
 	        ImageLoader.getInstance().displayImage(comment.getMemberPhoto(), commentImageImageview, getOptionImageLoader(comment.getMemberPhoto()), new SimpleImageLoadingListener(){
 	        	
@@ -91,7 +88,7 @@ public class CommentAdapter extends BaseAdapter{
 	        	};
 	        });
         }else{
-        	commentImageImageview.setImageBitmap(cacheImage.getImageSession(comment.getMemberPhoto()));
+        	commentImageImageview.setImageBitmap(SessionManager.getImageSession(context, comment.getMemberPhoto()));
         	commentImageImageview.setVisibility(View.VISIBLE);
         	commentImageProgressBar.setVisibility(View.GONE);
         }

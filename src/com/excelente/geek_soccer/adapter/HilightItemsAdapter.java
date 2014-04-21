@@ -23,8 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.excelente.geek_soccer.Hilight_Item_Page;
-import com.excelente.geek_soccer.MemberSession;
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.CommentModel;
 import com.excelente.geek_soccer.model.HilightItemModel;
 import com.excelente.geek_soccer.model.HilightModel;
@@ -130,7 +130,7 @@ public class HilightItemsAdapter extends BaseAdapter{
 			public void onClick(View v) {
 				CommentModel comment = new CommentModel();
 				comment.setNewsId(hilightModel.getHilightId());
-				comment.setMemberUid(MemberSession.getMember().getUid());
+				comment.setMemberUid(SessionManager.getMember(mContext).getUid());
 				
 				hilightItemPage.doClickHilightComment(comment, hilightModel);
 			}
@@ -203,7 +203,7 @@ public class HilightItemsAdapter extends BaseAdapter{
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("hilight_id", String.valueOf(params[0].getHilightId())));
-			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(MemberSession.getMember().getUid())));
+			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(mContext).getUid())));
 			paramsPost.add(new BasicNameValuePair("status_like", String.valueOf(params[0].getStatusLike())));
 				
 			HttpConnectUtils.getStrHttpPostConnect(HILIGHT_LIKES_URL, paramsPost);

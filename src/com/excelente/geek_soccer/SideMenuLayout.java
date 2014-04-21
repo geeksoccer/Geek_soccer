@@ -22,8 +22,11 @@ public class SideMenuLayout implements OnClickListener{
 
 	private Button profileBtn;
 	
-	private static ControllParameter data = ControllParameter.getInstance();
+	private static ControllParameter data;
 	public LinearLayout CreateMenu(LinearLayout MainLayout, final Context mContext) {
+		
+		data = ControllParameter.getInstance(mContext);
+		
 		this.mContext = mContext;
 		
 		LayoutInflater factory = LayoutInflater.from(mContext);

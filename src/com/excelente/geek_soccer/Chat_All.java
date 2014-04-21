@@ -60,7 +60,7 @@ public class Chat_All extends Activity{
 	
 	int width;
 	int height;
-	private static ControllParameter data = ControllParameter.getInstance();
+	private static ControllParameter data;
 	Context mContext;
 	JSONParser jParser = new JSONParser();
 	private Handler handler = new Handler(Looper.getMainLooper());
@@ -100,9 +100,11 @@ public class Chat_All extends Activity{
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        data = ControllParameter.getInstance(this);
+        
         setContentView(R.layout.chat_layout);
         mContext=this;
-        sesPrefer = new SessionManager(mContext);
         data.lstViewChatAll = new ListView(mContext);
 		data.lstViewChatAll.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -218,7 +220,7 @@ public class Chat_All extends Activity{
 			}
 		});
     	
-    	String StickJset = sesPrefer.getJsonSession("StickerSet");
+    	String StickJset = SessionManager.getJsonSession(Chat_All.this, "StickerSet");
 		if(StickJset!=null){
 			try {
 				JSONObject json_ob = new JSONObject(StickJset);
@@ -266,7 +268,7 @@ public class Chat_All extends Activity{
 
 				}
 			}else{
-				String StickJset = sesPrefer.getJsonSession("StickerSet");
+				String StickJset = SessionManager.getJsonSession(Chat_All.this, "StickerSet");
 				if(StickJset!=null){
 					JSONObject json_ob = new JSONObject(StickJset);
 					data.Sticker_Set.clear();
@@ -520,7 +522,7 @@ public class Chat_All extends Activity{
 					name_layout.addView(txt_N);
 					
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
-						txt_N.setText(MemberSession.getMember().getNickname());
+						txt_N.setText(SessionManager.getMember(Chat_All.this).getNickname());
 						if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
 							Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
 									.getString("m_photo")));
@@ -735,7 +737,7 @@ public class Chat_All extends Activity{
 							} else if (event.equals("getsticker")) {
 								for (Object object : args) {
 									try {
-										sesPrefer.createNewJsonSession(
+										SessionManager.createNewJsonSession(Chat_All.this,
 												"StickerSet", object.toString());
 										JSONObject json_ob = new JSONObject(object
 												.toString());
@@ -758,7 +760,7 @@ public class Chat_All extends Activity{
 							}
 						}
 					});
-					data.socket_All.emit("adduser", data.ID_Send, data.ProFile_pic, MemberSession.getMember().getNickname());
+					data.socket_All.emit("adduser", data.ID_Send, data.ProFile_pic, SessionManager.getMember(Chat_All.this).getNickname());
 				}
 		}).start();
 
@@ -900,14 +902,14 @@ public class Chat_All extends Activity{
 					_Url = "http://183.90.171.209/chat/stk/"+url;
 				}
 				Bitmap pic = null;
-				if(sesPrefer.getImageSession(url)==null){
+				if(SessionManager.getImageSession(Chat_All.this, url)==null){
 					pic = loadImageFromUrl(_Url);
 					if(pic!=null){
-						sesPrefer.createNewImageSession(url, pic);
+						SessionManager.createNewImageSession(Chat_All.this, url, pic);
 						data.BitMapHash.put(url, pic);
 					}
 				} else {
-					pic = sesPrefer.getImageSession(url);
+					pic = SessionManager.getImageSession(Chat_All.this, url);
 					data.BitMapHash.put(url, pic);
 				}
 				final Bitmap _pic = pic;

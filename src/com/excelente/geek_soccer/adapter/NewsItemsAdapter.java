@@ -17,9 +17,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.excelente.geek_soccer.MemberSession;
 import com.excelente.geek_soccer.News_Item_Page;
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.CommentModel;
 import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
@@ -249,7 +249,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		}
 		
 		String htmlData = "";
-		if(MemberSession.getMember().getTeamId() == 2)
+		if(SessionManager.getMember(mContext).getTeamId() == 2)
 			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"</body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
 		else
 			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"</body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
@@ -286,7 +286,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 			public void onClick(View v) {
 				CommentModel comment = new CommentModel();
 				comment.setNewsId(newsModel.getNewsId());
-				comment.setMemberUid(MemberSession.getMember().getUid());
+				comment.setMemberUid(SessionManager.getMember(mContext).getUid());
 
 				newsItemPage.doClickNewsComment(comment, newsModel);
 			}
@@ -357,7 +357,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 			super.onPostExecute(result);
 			
 			String htmlData = "";
-			if(MemberSession.getMember().getTeamId() == 2)
+			if(SessionManager.getMember(mContext).getTeamId() == 2)
 				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ html +"</body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
 			else
 				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ html +"</body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
@@ -381,7 +381,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0].getNewsId())));
-			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(MemberSession.getMember().getUid())));
+			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(mContext).getUid())));
 			paramsPost.add(new BasicNameValuePair("status_like", String.valueOf(params[0].getStatusLike())));
 			
 			return HttpConnectUtils.getStrHttpPostConnect(NEWS_LIKES_URL, paramsPost);

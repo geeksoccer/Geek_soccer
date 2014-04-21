@@ -63,18 +63,20 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	Context mContext;
 	private TextView title_bar;
 	private Intent serviceIntent; 
-	private static ControllParameter data = ControllParameter.getInstance();
+	private static ControllParameter data;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(!MemberSession.hasMember()){
+		if(!SessionManager.hasMember(MainActivity.this)){
 			finish();
 		}
 		
-		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
+		data = ControllParameter.getInstance(this);
+		
+		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(MainActivity.this).getTeamId());
 		
 		serviceIntent = new Intent(this, UpdateService.class);
-		serviceIntent.putExtra(MemberModel.MEMBER_KEY, (Serializable)MemberSession.getMember()); 
+		serviceIntent.putExtra(MemberModel.MEMBER_KEY, (Serializable)SessionManager.getMember(MainActivity.this)); 
 		startService(serviceIntent);
 		
 		setContentView(R.layout.main);
@@ -165,34 +167,34 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			
 			@Override
 			public void onClick(View v) {
-				if(MemberSession.getMember().getRole() == 1){
+				if(SessionManager.getMember(MainActivity.this).getRole() == 1){
 					AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
 					dialog.setTitle("Select News Team");
 					
 					CharSequence[] teams = new CharSequence[]{"Arsenal", "Chelsea","Liverpool", "ManU", "Others"};
-					dialog.setSingleChoiceItems(teams, MemberSession.getMember().getTeamId()-1, new DialogInterface.OnClickListener() {
+					dialog.setSingleChoiceItems(teams, SessionManager.getMember(MainActivity.this).getTeamId()-1, new DialogInterface.OnClickListener() {
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							switch (which) {
 								case 0:
-									MemberSession.getMember().setTeamId(1);
+									SessionManager.getMember(MainActivity.this).setTeamId(1);
 									break;
 								case 1:
-									MemberSession.getMember().setTeamId(2);
+									SessionManager.getMember(MainActivity.this).setTeamId(2);
 									break;
 								case 2:
-									MemberSession.getMember().setTeamId(3);
+									SessionManager.getMember(MainActivity.this).setTeamId(3);
 									break;
 								case 3:
-									MemberSession.getMember().setTeamId(4);
+									SessionManager.getMember(MainActivity.this).setTeamId(4);
 									break;
 								case 4:
-									MemberSession.getMember().setTeamId(5);
+									SessionManager.getMember(MainActivity.this).setTeamId(5);
 									break;
 							}
 							 
-							ThemeUtils.setThemeByTeamId(MainActivity.this, MemberSession.getMember().getTeamId());
+							ThemeUtils.setThemeByTeamId(MainActivity.this, SessionManager.getMember(MainActivity.this).getTeamId());
 							doRefeshPage(0);
 							dialog.dismiss();
 						}
@@ -211,7 +213,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			@Override
 			public void onClick(View v) { 
 				if(NetworkUtils.isNetworkAvailable(mContext)){
-					new doSignOutTask(MainActivity.this).execute(MemberSession.getMember());
+					new doSignOutTask(MainActivity.this).execute(SessionManager.getMember(MainActivity.this));
 				}else{
 					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
 				}
@@ -461,7 +463,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			mConnectionProgressDialog.dismiss();
 			
 			if(memberToken){
-				MemberSession.clearMember(mActivity);
+				SessionManager.clearMember(mActivity);
 				if(serviceIntent!=null)
 					stopService(serviceIntent);
 				mActivity.finish();

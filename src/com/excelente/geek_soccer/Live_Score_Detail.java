@@ -47,7 +47,7 @@ public class Live_Score_Detail extends Activity{
 	String get_Score = "";
 	String get_Home_name = "";
 	String get_Away_name = "";
-	private static ControllParameter data = ControllParameter.getInstance();
+	private static ControllParameter data;
 	//String player_Detail[];
 	ArrayList<String> player_Detail = new ArrayList<String>();
 	private ListView lstView;
@@ -63,8 +63,10 @@ public class Live_Score_Detail extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		data = ControllParameter.getInstance(this);
+		
 		data.fragement_Section_set(0);
-		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
+		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
 		LayoutInflater factory = LayoutInflater.from(this);
 		View myView = factory.inflate(R.layout.live_score_detail, null);
 		setContentView(myView);

@@ -62,10 +62,13 @@ public class LiveScore_Tomorrow extends Activity {
 	LinearLayout layOutlist;
 	Boolean chk_D_Stat=false;
 	int chk_loaded = 0;
-	private static ControllParameter data = ControllParameter.getInstance();
+	private static ControllParameter data;
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        data = ControllParameter.getInstance(this);
+        
         setContentView(R.layout.livescore_tomorrow);
         mContext = this;
 		lstView = new ListView(mContext);
@@ -326,7 +329,7 @@ public class LiveScore_Tomorrow extends Activity {
 				params.add(new BasicNameValuePair("_t",
 						"get-livescore"));
 				params.add(new BasicNameValuePair("_u",
-						String.valueOf(MemberSession.getMember().getUid())));
+						String.valueOf(SessionManager.getMember(LiveScore_Tomorrow.this).getUid())));
 				params.add(new BasicNameValuePair("_d", "t" ));
 				
 				JSONObject json = jParser

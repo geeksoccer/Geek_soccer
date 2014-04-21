@@ -85,7 +85,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
+		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(News_Item_Page.this).getTeamId());
 		
 		initAnimation();
 		initView(getIntent());
@@ -156,7 +156,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 					//Toast.makeText(getApplicationContext(), "Enter", Toast.LENGTH_SHORT).show();
 					if(newsloaded && contentFlipView.getAdapter().getCount() < 100 && NetworkUtils.isNetworkAvailable(getApplicationContext())){
 						NewsModel newsModel = (NewsModel) newsItemAdaptor.getmNewList().get(contentFlipView.getAdapter().getCount()-1);
-						new LoadOldNewsTask(newsItemAdaptor, tag).execute(News_Page.getURLbyTag(newsModel.getNewsId(), tag));
+						new LoadOldNewsTask(newsItemAdaptor, tag).execute(News_Page.getURLbyTag(News_Item_Page.this, newsModel.getNewsId(), tag));
 						newsloaded = false;
 					}
 				}
@@ -192,7 +192,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 					if(!cm.equals(oldComment)){
 						//newsLoadingFooterProcessbar.setVisibility(View.VISIBLE);
 						new LoadCommentTask().execute(cm);
-						//Toast.makeText(getActivity(), "Toast " + i++, Toast.LENGTH_SHORT).show();
+						//Toast.makeText(News_Item_Page.this, "Toast " + i++, Toast.LENGTH_SHORT).show();
 					} 
 					
 					oldComment = cm;
@@ -292,7 +292,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 					NewsModel news = (NewsModel) newsItemAdaptor.getmNewList().get(contentFlipView.getCurrentItem());
 					
 					CommentModel comment = new CommentModel();
-					comment.setMemberUid(MemberSession.getMember().getUid());
+					comment.setMemberUid(SessionManager.getMember(News_Item_Page.this).getUid());
 					comment.setNewsId(news.getNewsId());
 					comment.setCommentContent(content);
 					
@@ -326,7 +326,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0])));
-			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(MemberSession.getMember().getUid())));
+			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(News_Item_Page.this).getUid())));
 			
 			return HttpConnectUtils.getStrHttpPostConnect(NEWS_READS_URL, paramsPost);
 		}
@@ -368,10 +368,10 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			if(result.trim().equals("success")){
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				params[0].setComment_update_time(sdf.format(new Date()));
-				params[0].setMemberPhoto(MemberSession.getMember().getPhoto());
-				params[0].setMemberNickname(MemberSession.getMember().getNickname());
-				params[0].setMemberUser(MemberSession.getMember().getUser());
-				params[0].setMemberTeamId(MemberSession.getMember().getTeamId());
+				params[0].setMemberPhoto(SessionManager.getMember(News_Item_Page.this).getPhoto());
+				params[0].setMemberNickname(SessionManager.getMember(News_Item_Page.this).getNickname());
+				params[0].setMemberUser(SessionManager.getMember(News_Item_Page.this).getUser());
+				params[0].setMemberTeamId(SessionManager.getMember(News_Item_Page.this).getTeamId());
 			}
 			return params[0];
 		}

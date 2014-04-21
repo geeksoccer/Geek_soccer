@@ -72,7 +72,6 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
         if (container == null) {
             return null;
         }
-        
         return inflater.inflate(R.layout.news_page, container, false);
     }
    
@@ -112,7 +111,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		}else{
 			if (newsAdapterTeam == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity())){
-					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(0, "tag0"));
+					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
 				}else
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 			}
@@ -134,7 +133,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		
 		tabWidget = (TabWidget) newsPage.findViewById(android.R.id.tabs); 
 		
-		if(MemberSession.getMember().getTeamId()>4){
+		if(SessionManager.getMember(getActivity()).getTeamId()>4){
 			tabWidget.setVisibility(View.GONE);
 			tabs.setCurrentTab(1);
 		}
@@ -159,13 +158,13 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 
 	}
 	
-	public static String getURLbyTag(int id, String tag) {
+	public static String getURLbyTag(Context context, int id, String tag) {
 		String url = ""; 
 		
 		if(tag.equals("tag0")){
-			url = GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + MemberSession.getMember().getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ MemberSession.getMember().getUid();
+			url = GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + SessionManager.getMember(context).getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ SessionManager.getMember(context).getUid();
 		}else if(tag.equals("tag1")){
-			url = GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ MemberSession.getMember().getUid();
+			url = GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ SessionManager.getMember(context).getUid();
 		}
 		
 		return url;
@@ -372,7 +371,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 						
 						if (NetworkUtils.isNetworkAvailable(getActivity())){
 							newsLoadingFooterProcessbar.setVisibility(View.VISIBLE);
-							new LoadOldNewsTask(newsListView, newsAdapter, tag).execute(getURLbyTag(nm.getNewsId(), tag));
+							new LoadOldNewsTask(newsListView, newsAdapter, tag).execute(getURLbyTag(getActivity(), nm.getNewsId(), tag));
 						}else
 							Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						//Toast.makeText(getActivity(), "Toast " + i++, Toast.LENGTH_SHORT).show();
@@ -389,7 +388,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			@Override
 			public void onRefresh() {
 				if (NetworkUtils.isNetworkAvailable(getActivity())){
-					new LoadLastNewsTask(newsListView, tag).execute(getURLbyTag(0, tag));
+					new LoadLastNewsTask(newsListView, tag).execute(getURLbyTag(getActivity(), 0, tag));
 				}else
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 			}
@@ -421,7 +420,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0])));
-			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(MemberSession.getMember().getUid())));
+			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(getActivity()).getUid())));
 			
 			return HttpConnectUtils.getStrHttpPostConnect(NEWS_READS_URL, paramsPost);
 		}
@@ -447,7 +446,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			if(newsAdapterTeam == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity()))
-					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(0, "tag0"));
+					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
 				else
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 			}
@@ -457,7 +456,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			if(newsAdapterGlobal == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity()))
-					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(0, "tag1"));
+					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(getActivity(), 0, "tag1"));
 				else
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 			}

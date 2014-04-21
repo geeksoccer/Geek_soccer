@@ -60,7 +60,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class Chat_Team extends Activity {
 	int width;
 	int height;
-	private static ControllParameter data = ControllParameter.getInstance();
+	private static ControllParameter data;
 	Context mContext;
 	JSONParser jParser = new JSONParser();
 	private Handler handler = new Handler(Looper.getMainLooper());
@@ -98,15 +98,16 @@ public class Chat_Team extends Activity {
 	ImageView Stick_12;
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
 	static HashMap<String, Button> Sticker_ButVSet = new HashMap<String, Button>();
-	SessionManager sesPrefer;
 	String root = Environment.getExternalStorageDirectory().toString();
 	ProgressBar progressBar;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		data = ControllParameter.getInstance(this);
+		
 		setContentView(R.layout.chat_layout);
 		mContext = this;
-		sesPrefer = new SessionManager(mContext);
 		data.lstViewChatTeam = new ListView(mContext);
 		data.lstViewChatTeam.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -119,13 +120,13 @@ public class Chat_Team extends Activity {
 		data.lstViewChatTeam.setDividerHeight(0);
 		data.Chat_list_LayOut_Team = (LinearLayout) findViewById(R.id.Chat_list_Layout);
 		(data.Chat_list_LayOut_Team).addView(data.lstViewChatTeam);
-		if (MemberSession.getMember().getTeamId() == 1) {
+		if (SessionManager.getMember(Chat_Team.this).getTeamId() == 1) {
 			data.SocketSelect = "5001";
-		} else if (MemberSession.getMember().getTeamId() == 2) {
+		} else if (SessionManager.getMember(Chat_Team.this).getTeamId() == 2) {
 			data.SocketSelect = "5002";
-		} else if (MemberSession.getMember().getTeamId() == 3) {
+		} else if (SessionManager.getMember(Chat_Team.this).getTeamId() == 3) {
 			data.SocketSelect = "5003";
-		} else if (MemberSession.getMember().getTeamId() == 4) {
+		} else if (SessionManager.getMember(Chat_Team.this).getTeamId() == 4) {
 			data.SocketSelect = "5004";
 		}
 		if (data.Chat_Item_list_Team.size() > 0) {
@@ -258,7 +259,7 @@ public class Chat_Team extends Activity {
 
 				}
 			}else{
-				String StickJset = sesPrefer.getJsonSession("StickerSet");
+				String StickJset = SessionManager.getJsonSession(Chat_Team.this, "StickerSet");
 				if(StickJset!=null){
 					JSONObject json_ob = new JSONObject(StickJset);
 					data.Sticker_Set.clear();
@@ -512,7 +513,7 @@ public class Chat_Team extends Activity {
 					name_layout.addView(txt_N);
 					
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
-						txt_N.setText(MemberSession.getMember().getNickname());
+						txt_N.setText(SessionManager.getMember(Chat_Team.this).getNickname());
 						if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
 							Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
 									.getString("m_photo")));
@@ -718,7 +719,7 @@ public class Chat_Team extends Activity {
 						} else if (event.equals("getsticker")) {
 							for (Object object : args) {
 								try {
-									sesPrefer.createNewJsonSession(
+									SessionManager.createNewJsonSession(Chat_Team.this,
 											"StickerSet", object.toString());
 									JSONObject json_ob = new JSONObject(object
 											.toString());
@@ -741,7 +742,7 @@ public class Chat_Team extends Activity {
 					}
 				});
 				data.socket_Team.emit("adduser", data.ID_Send,
-						data.ProFile_pic, MemberSession.getMember().getNickname());
+						data.ProFile_pic, SessionManager.getMember(Chat_Team.this).getNickname());
 			}
 		}).start();
 	}
@@ -889,14 +890,14 @@ public class Chat_Team extends Activity {
 					_Url = "http://183.90.171.209/chat/stk/" + url;
 				}
 				Bitmap pic = null;
-				if (sesPrefer.getImageSession(url) == null) {
+				if (SessionManager.getImageSession(Chat_Team.this, url) == null) {
 					pic = loadImageFromUrl(_Url);
 					if(pic!=null){
-						sesPrefer.createNewImageSession(url, pic);
+						SessionManager.createNewImageSession(Chat_Team.this, url, pic);
 						data.BitMapHash.put(url, pic);
 					}
 				} else {
-					pic = sesPrefer.getImageSession(url);
+					pic = SessionManager.getImageSession(Chat_Team.this, url);
 					data.BitMapHash.put(url, pic);
 				}
 				final Bitmap _pic = pic;

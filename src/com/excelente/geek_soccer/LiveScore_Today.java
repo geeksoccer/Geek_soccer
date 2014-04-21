@@ -71,7 +71,7 @@ public class LiveScore_Today extends Activity {
 	// String Date_Select;
 	String old_date;
 	String Cur_Date;
-	private static ControllParameter data = ControllParameter.getInstance();
+	private static ControllParameter data;
 	TextView Date_txt;
 	String Last_League_SET = "";
 	Integer count_Item = 0;
@@ -89,6 +89,9 @@ public class LiveScore_Today extends Activity {
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        data = ControllParameter.getInstance(this);
+        
         setContentView(R.layout.livescore_today);
         mContext = this;
 		data.lstViewLiveScore = new ListView(mContext);
@@ -355,7 +358,7 @@ public class LiveScore_Today extends Activity {
 				params.add(new BasicNameValuePair("_t",
 						"get-livescore"));
 				params.add(new BasicNameValuePair("_u",
-						String.valueOf(MemberSession.getMember().getUid())));
+						String.valueOf(SessionManager.getMember(LiveScore_Today.this).getUid())));
 				params.add(new BasicNameValuePair("_d", "c" ));
 				
 				JSONObject json = jParser

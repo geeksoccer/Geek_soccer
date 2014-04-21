@@ -2,6 +2,8 @@ package com.excelente.geek_soccer;
 
 import java.io.ByteArrayOutputStream;
 
+import com.excelente.geek_soccer.model.MemberModel;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -11,46 +13,90 @@ import android.util.Base64;
 import android.util.Log;
  
 public class SessionManager {
-    // Shared Preferences
-    SharedPreferences pref;
-     
-    // Editor for Shared preferences
-    Editor editor;
-     
-    // Context
-    Context _context;
-     
-    // Shared pref mode
-    int PRIVATE_MODE = 0;
-     
-    // Sharedpref file name
-    private static final String PREF_NAME = "Excelente";
-    // Constructor
-    public SessionManager(Context context){
-        this._context = context;
-        pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
-        editor = pref.edit();
-        editor.commit();
-    }
-    public void createNewImageSession(String key, Bitmap value){
+    
+    final public static String MEMBER_SHAREPREFERENCE = "MEMBER_SHAREPREFERENCE";
+	
+	static MemberModel member;
+	static boolean globalNews = false;
+	
+	public static MemberModel getMember(Context context) {
+		MemberModel member = new MemberModel();
+		SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+		member.setUid(memberFile.getInt(MemberModel.MEMBER_UID, 0));
+		member.setTeamId(memberFile.getInt(MemberModel.MEMBER_TEAM_ID, 0));
+		member.setToken(memberFile.getString(MemberModel.MEMBER_TOKEN, ""));
+		member.setBirthday(memberFile.getString(MemberModel.MEMBER_BIRTHDAY, ""));
+		member.setGender(memberFile.getInt(MemberModel.MEMBER_GENDER, 0));
+		member.setNickname(memberFile.getString(MemberModel.MEMBER_NICKNAME, ""));
+		member.setPhoto(memberFile.getString(MemberModel.MEMBER_PHOTO, ""));
+		member.setEmail(memberFile.getString(MemberModel.MEMBER_EMAIL, ""));
+		member.setTypeLogin(memberFile.getString(MemberModel.MEMBER_TYPE_LOGIN, ""));
+		member.setRole(memberFile.getInt(MemberModel.MEMBER_ROLE, 0));
+		SessionManager.member = member;
+		return member;
+	}
+	
+	public static void setMember(Context context, MemberModel member) {
+		if(member != null){
+			SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+		
+			Editor editMember = memberFile.edit();
+			editMember.putInt(MemberModel.MEMBER_UID, member.getUid());
+			editMember.putString(MemberModel.MEMBER_USER, member.getUser());
+			editMember.putInt(MemberModel.MEMBER_TEAM_ID, member.getTeamId());
+			editMember.putString(MemberModel.MEMBER_TOKEN, member.getToken());
+			editMember.putString(MemberModel.MEMBER_BIRTHDAY, member.getBirthday());
+			editMember.putInt(MemberModel.MEMBER_GENDER, member.getGender());
+			editMember.putString(MemberModel.MEMBER_NICKNAME, member.getNickname());
+			editMember.putString(MemberModel.MEMBER_PHOTO, member.getPhoto());
+			editMember.putString(MemberModel.MEMBER_EMAIL, member.getEmail());
+			editMember.putString(MemberModel.MEMBER_TYPE_LOGIN, member.getTypeLogin());
+			editMember.putInt(MemberModel.MEMBER_ROLE, member.getRole());
+			editMember.commit();
+		}
+		
+		SessionManager.member = member;
+	}
+	
+	public static void clearMember(Context context) {
+		SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+		
+		Editor editMember = memberFile.edit();
+		editMember.clear();
+		editMember.commit();
+		
+		SessionManager.member = null;
+	}
+	
+	public static boolean hasMember(Context context) {
+		if(SessionManager.getMember(context) != null && SessionManager.getMember(context).getUid()>0){
+			return true;
+		}
+		return false;
+	}
+    
+    public static void createNewImageSession(Context context, String key, Bitmap value){
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+    	Editor editMember = memberFile.edit();
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			value.compress(Bitmap.CompressFormat.PNG, 100, baos);
 			byte[] b = baos.toByteArray();
 			String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 
-			editor.putString(key, encodedImage);
-			editor.commit();
+			editMember.putString(key, encodedImage);
+			editMember.commit();
 		} catch (OutOfMemoryError e) {
 			Log.e("err", "Out of memory error :(");
 		}
     }
     
-    public Bitmap getImageSession(String key){
+    public static Bitmap getImageSession(Context context, String key){
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
 		try {
-			if (pref.getString(key, null) != null) {
-				byte[] imageAsBytes = Base64.decode(pref.getString(key, null)
-						.getBytes(), PRIVATE_MODE);
+			if (memberFile.getString(key, null) != null) {
+				byte[] imageAsBytes = Base64.decode(memberFile.getString(key, null)
+						.getBytes(), Context.MODE_PRIVATE);
 				return BitmapFactory.decodeByteArray(imageAsBytes, 0,
 						imageAsBytes.length);// pref.getString(key, null);
 			} else {
@@ -62,16 +108,20 @@ public class SessionManager {
 		}
     }
     
-    public void createNewJsonSession(String key, String value){
-    	editor.putString(key, value);
-		editor.commit();
+    public static void createNewJsonSession(Context context, String key, String value){
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+    	Editor editMember = memberFile.edit();
+    	editMember.putString(key, value);
+    	editMember.commit();
+    } 
+    
+    public static String getJsonSession(Context context, String key){
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+    	return memberFile.getString(key, null);
     }
     
-    public String getJsonSession(String key){
-    	return pref.getString(key, null);
-    }
-    
-    public boolean hasKey(String key){
-    	return pref.contains(key);
+    public static boolean hasKey(Context context, String key){
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+    	return memberFile.contains(key);
     }
 }

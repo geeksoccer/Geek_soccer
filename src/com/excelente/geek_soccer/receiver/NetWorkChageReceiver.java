@@ -1,12 +1,8 @@
 package com.excelente.geek_soccer.receiver;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import com.excelente.geek_soccer.MemberSession;
+import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.Sign_In_Page;
 import com.excelente.geek_soccer.model.HilightModel;
@@ -26,17 +22,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
-import android.provider.Settings.Secure;
 import android.support.v4.app.NotificationCompat;
 
 public class NetWorkChageReceiver extends BroadcastReceiver{
 	
-	private static final String MEMBER_TOKEN_URL = "http://183.90.171.209/gs_member/member_token.php";
 	public static final String NOTIFY_INTENT = "NOTIFY_INTENT";
 	public static final int NOTIFY_INTENT_CODE_NEWS = 1000;
 	public static final int NOTIFY_INTENT_CODE_HILIGHT = 2000;
 	public static final String NOTIFY_CONNECT_FIRST = "NOTIFY_CONNECT_FIRST"; 
-	public static final String SHARE_PERFERENCE = "SHARE_PERFERENCE";
+	public static final String SHARE_PERFERENCE = "MEMBER_SHAREPREFERENCE";
     
 	Context mContext;
 	private SharedPreferences sharePre;
@@ -51,28 +45,26 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 	}
 
 	private void checkNetwork(Context context) {
-        if(MemberSession.hasMember())
+        if(SessionManager.hasMember(context))
         	checkUpdateNews(context);
-        else
-        	new doSignTokenTask().execute();
 	}
 
 	private void checkUpdateNews(Context context) {
 		sharePre = mContext.getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
-		if(!sharePre.getBoolean(UpdateService.NOTIFY_CONNECT_FIRST, true) && MemberSession.hasMember()){
+		if(!sharePre.getBoolean(UpdateService.NOTIFY_CONNECT_FIRST, true) && SessionManager.hasMember(context)){
 			int newsIdTag0 = sharePre.getInt(NewsModel.NEWS_ID+"tag0", 0);
 			int newsIdTag1 = sharePre.getInt(NewsModel.NEWS_ID+"tag1", 0);
 			int hilightId = sharePre.getInt(HilightModel.HILIGHT_ID, 0);
-			String url = getURLbyTag(MemberSession.getMember(), newsIdTag0, "tag0");
+			String url = getURLbyTag(SessionManager.getMember(context), newsIdTag0, "tag0");
 			new LoadLastNewsTask("tag0").execute(url);
-			url = getURLbyTag(MemberSession.getMember(), newsIdTag1, "tag1");
+			url = getURLbyTag(SessionManager.getMember(context), newsIdTag1, "tag1");
 			new LoadLastNewsTask("tag1").execute(url);
-			new LoadLastHilightTask().execute(getURLHilight(hilightId));
+			new LoadLastHilightTask().execute(getURLHilight(context, hilightId));
 		}
 	}
 	
-	private String getURLHilight(int id) {
-		return 	UpdateService.GET_HILIGHT_UPDATE_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=All&member_id=" + MemberSession.getMember().getUid();
+	private String getURLHilight(Context context, int id) { 
+		return 	UpdateService.GET_HILIGHT_UPDATE_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=All&member_id=" + SessionManager.getMember(context).getUid();
 	}
 	
 	private String getURLbyTag(MemberModel member, int id, String tag) {
@@ -220,43 +212,6 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 			mNotification.notify(3, notification);
 		}
 
-	}
-	
-	class doSignTokenTask extends AsyncTask<Void, Void, MemberModel>{
-		
-		@Override
-		protected MemberModel doInBackground(Void... params) {
-			
-			SharedPreferences memberFile = mContext.getSharedPreferences(MemberSession.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
-			
-			if(!memberFile.getString(MemberModel.MEMBER_TOKEN, "").equals("")){
-	
-				List<NameValuePair> memberParam = new ArrayList<NameValuePair>();
-				
-				String token = memberFile.getString(MemberModel.MEMBER_TOKEN, "");
-	
-				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, token));
-				
-				String dev_id = Secure.getString(mContext.getContentResolver(),Secure.ANDROID_ID);
-				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
-				
-				String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_TOKEN_URL, memberParam);
-				if(memberStr.trim().equals("member not yet")){ 
-					return null;
-				}
-				MemberModel memberSignedIn = MemberModel.convertMemberJSONToList(memberStr);
-				return memberSignedIn;
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(MemberModel memberToken) {
-			super.onPostExecute(memberToken);
-			MemberSession.setMember(mContext, memberToken);
-			checkUpdateNews(mContext);
-		}
-		
 	}
 
 }

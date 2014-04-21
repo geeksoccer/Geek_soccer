@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,9 +18,17 @@ import android.widget.TextView;
 public class ControllParameter {
 	private static ControllParameter instance = null;
 
+	Context mContext;
 
-    private ControllParameter() {
+    private ControllParameter(Context context) {
         //randomizeServers();
+    	mContext = context;
+    	
+    	if(SessionManager.hasMember(mContext)){
+    		ID_Send = String.valueOf(SessionManager.getMember(mContext).getUid());
+    		ProFile_pic = SessionManager.getMember(mContext).getPhoto();
+    		Name_Send = SessionManager.getMember(mContext).getNickname();
+    	}
     }
 
     private int fragement_Section = 0;
@@ -47,9 +57,9 @@ public class ControllParameter {
 	String Last_League_SET="";
 	String Date_Select="c";
 	String SocketSelect;
-	String ID_Send = String.valueOf(MemberSession.getMember().getUid());
-	String ProFile_pic = MemberSession.getMember().getPhoto();
-	String Name_Send = MemberSession.getMember().getNickname();
+	String ID_Send;
+	String ProFile_pic;
+	String Name_Send;
 	String OldScore = "";
 	String OldTime = "";
 	
@@ -116,9 +126,9 @@ public class ControllParameter {
     	return this.player_Detail.get(key);
 	}
     
-    public static ControllParameter getInstance() {
+    public static ControllParameter getInstance(Context context) {
         if (null == instance) {
-            instance = new ControllParameter();
+            instance = new ControllParameter(context);
         }
 
         return instance;

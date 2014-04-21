@@ -63,47 +63,32 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 
 	private Bitmap bitmapPhoto;
 
-	private SessionManager cacheImage;
-
 	private ImageChooserManager imageChooserManager;  
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e("onCreate", "onCreate");
-		if(MemberSession.getMember()!=null){
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		Log.e("onResume", "onResume");
+		if(SessionManager.hasMember(Profile_Page.this)){
 			createLayout();
-		}else{
-			MemberModel member = new MemberModel();
-			SharedPreferences memberFile = getSharedPreferences(MemberSession.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
-			member.setUid(memberFile.getInt(MemberModel.MEMBER_UID, 0));
-			member.setTeamId(memberFile.getInt(MemberModel.MEMBER_TEAM_ID, 0));
-			member.setToken(memberFile.getString(MemberModel.MEMBER_TOKEN, ""));
-			member.setBirthday(memberFile.getString(MemberModel.MEMBER_BIRTHDAY, ""));
-			member.setGender(memberFile.getInt(MemberModel.MEMBER_GENDER, 0));
-			member.setNickname(memberFile.getString(MemberModel.MEMBER_NICKNAME, ""));
-			member.setPhoto(memberFile.getString(MemberModel.MEMBER_PHOTO, ""));
-			member.setEmail(memberFile.getString(MemberModel.MEMBER_EMAIL, ""));
-			member.setTypeLogin(memberFile.getString(MemberModel.MEMBER_TYPE_LOGIN, ""));
-			member.setRole(memberFile.getInt(MemberModel.MEMBER_ROLE, 0));
-			MemberSession.setMember(this, member);
-			createLayout();
-			/*if(NetworkUtils.isNetworkAvailable(this)){
-				new doSignTokenTask().execute();
-			}else{
-				Toast.makeText(this, NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
-			}*/
 		}
 	}
 	
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy() { 
 		super.onDestroy();
 		Log.e("onDestroy", "onDestroy");
 	}
 	
 	private void createLayout() {
-		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
+		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(Profile_Page.this).getTeamId());
 		setContentView(R.layout.profile_page);
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
 		initView();
@@ -125,7 +110,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		@Override
 		protected MemberModel doInBackground(Void... params) {
 			
-			SharedPreferences memberFile = getSharedPreferences(MemberSession.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+			SharedPreferences memberFile = getSharedPreferences(SessionManager.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
 			
 			if(!memberFile.getString(MemberModel.MEMBER_TOKEN, "").equals("")){
 	
@@ -152,8 +137,8 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		protected void onPostExecute(MemberModel memberToken) {
 			super.onPostExecute(memberToken);
 			dialog.dismiss();
-			MemberSession.setMember(Profile_Page.this, memberToken);
-			if(MemberSession.hasMember())
+			SessionManager.setMember(Profile_Page.this, memberToken);
+			if(SessionManager.hasMember(Profile_Page.this))
 				createLayout();
 			else{
 				Toast.makeText(Profile_Page.this, NetworkUtils.getConnectivityStatusString(Profile_Page.this), Toast.LENGTH_SHORT).show();
@@ -167,23 +152,22 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
 		imageChooserManager.setImageChooserListener(this);
 		
-		cacheImage = new SessionManager(Profile_Page.this);
 		bitmapPhoto = null;
 		
 		upBtn = (LinearLayout) findViewById(R.id.Up_btn);
 		upBtn.setOnClickListener(this);
 		
 		memberPhoto = (ImageView) findViewById(R.id.member_photo);
-		memberPhoto.setOnClickListener(this);
-		if(cacheImage.hasKey(MemberSession.getMember().getPhoto())){ 
-			memberPhoto.setImageBitmap(cacheImage.getImageSession(MemberSession.getMember().getPhoto())); 
+		memberPhoto.setOnClickListener(this);  
+		if(SessionManager.hasKey(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())){ 
+			memberPhoto.setImageBitmap(SessionManager.getImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())); 
 		}else{
 			doConfigImageLoader(200, 200); 
-			ImageLoader.getInstance().displayImage(MemberSession.getMember().getPhoto(), memberPhoto, getOptionImageLoader(MemberSession.getMember().getPhoto()));
+			ImageLoader.getInstance().displayImage(SessionManager.getMember(Profile_Page.this).getPhoto(), memberPhoto, getOptionImageLoader(SessionManager.getMember(Profile_Page.this).getPhoto()));
 		}
 		
 		memberName = (EditText) findViewById(R.id.member_name);
-		memberName.setText(MemberSession.getMember().getNickname());
+		memberName.setText(SessionManager.getMember(Profile_Page.this).getNickname());
 		memberPhoto.setOnClickListener(this);
 		
 		saveBtn = (RelativeLayout) findViewById(R.id.Footer_Layout); 
@@ -313,7 +297,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 
 	private void onSaveProfile() {
 		if(memberName.getText().toString().trim().length() > 2 || bitmapPhoto!=null){ 
-			if(!memberName.getText().toString().trim().equals(MemberSession.getMember().getNickname()) || bitmapPhoto!=null)
+			if(!memberName.getText().toString().trim().equals(SessionManager.getMember(Profile_Page.this).getNickname()) || bitmapPhoto!=null)
 				new PostMember().execute();
 			else
 				Toast.makeText(Profile_Page.this, getResources().getString(R.string.warn_member_name1), Toast.LENGTH_SHORT).show();
@@ -340,16 +324,16 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		protected String doInBackground(Void... params) {
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
-			paramsPost.add(new BasicNameValuePair("m_uid", String.valueOf(MemberSession.getMember().getUid())));
+			paramsPost.add(new BasicNameValuePair("m_uid", String.valueOf(SessionManager.getMember(Profile_Page.this).getUid())));
 			paramsPost.add(new BasicNameValuePair("m_nickname", memberName.getText().toString().trim()));
-			paramsPost.add(new BasicNameValuePair("m_photo", MemberSession.getMember().getPhoto()));
+			paramsPost.add(new BasicNameValuePair("m_photo", SessionManager.getMember(Profile_Page.this).getPhoto()));
 			
 			if(bitmapPhoto!=null){
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();  
 				bitmapPhoto.compress(Bitmap.CompressFormat.PNG, 100, baos); 
 				byte[] b = baos.toByteArray();
 				paramsPost.add(new BasicNameValuePair("m_photo_base64", Base64.encodeToString(b, Base64.DEFAULT)));
-				paramsPost.add(new BasicNameValuePair("m_photo", MEMBER_IMAGES_URL + MemberSession.getMember().getUid() + ".png"));
+				paramsPost.add(new BasicNameValuePair("m_photo", MEMBER_IMAGES_URL + SessionManager.getMember(Profile_Page.this).getUid() + ".png"));
 			}
 			
 			return HttpConnectUtils.getStrHttpPostConnect(MEMBER_UPDATE_URL, paramsPost);
@@ -360,14 +344,14 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 			super.onPostExecute(result);
 			Toast.makeText(Profile_Page.this, result.trim(), Toast.LENGTH_SHORT).show();
 			if(result.trim().equals("OK Success")){
-				MemberSession.getMember().setNickname(memberName.getText().toString().trim());
+				SessionManager.getMember(Profile_Page.this).setNickname(memberName.getText().toString().trim());
 				
 				if(bitmapPhoto!=null){
-					MemberSession.getMember().setPhoto(MEMBER_IMAGES_URL + MemberSession.getMember().getUid() + ".png");
+					SessionManager.getMember(Profile_Page.this).setPhoto(MEMBER_IMAGES_URL + SessionManager.getMember(Profile_Page.this).getUid() + ".png");
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
-							cacheImage.createNewImageSession(MemberSession.getMember().getPhoto(), bitmapPhoto);
+							SessionManager.createNewImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto(), bitmapPhoto);
 						}
 					}).start();
 				}

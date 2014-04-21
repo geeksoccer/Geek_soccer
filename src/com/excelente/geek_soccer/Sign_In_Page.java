@@ -78,11 +78,11 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		mem.setRole(2);
 		mem.setNickname("ched");
 		mem.setToken("1234");
-		MemberSession.setMember(getApplicationContext(), mem);
-		gotoMainPage(MemberSession.getMember());*/
+		SessionManager.setMember(getApplicationContext(), mem);
+		gotoMainPage(SessionManager.getMember());*/
 		
-		if(MemberSession.hasMember()){
-			gotoMainPage(MemberSession.getMember());
+		if(SessionManager.hasMember(this)){
+			gotoMainPage(SessionManager.getMember(this));
 		}else{
 			setContentView(R.layout.sign_in_page);
 			initView();
@@ -360,8 +360,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 				signInGoogleAccountButton.setVisibility(View.VISIBLE);
 				doSelectTeam();
 			}else{
-				MemberSession.setMember(Sign_In_Page.this, memberSignedIn); 
-				if(MemberSession.hasMember())
+				SessionManager.setMember(Sign_In_Page.this, memberSignedIn); 
+				if(SessionManager.hasMember(Sign_In_Page.this))
 					gotoMainPage(memberSignedIn);
 				else{
 					signProgressbar.setVisibility(View.GONE);
@@ -434,7 +434,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			
 			if(memberSignedUp!=null && memberSignedUp.getUid() > 0){
 				gotoMainPage(memberSignedUp);
-				MemberSession.setMember(Sign_In_Page.this, memberSignedUp); 
+				SessionManager.setMember(Sign_In_Page.this, memberSignedUp); 
 			}else{
 				Toast.makeText(getApplicationContext(), "Signed Up Fail Or Internet Problem", Toast.LENGTH_SHORT).show();
 				mPlusClient.disconnect();
@@ -457,7 +457,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		@Override
 		protected MemberModel doInBackground(Void... params) {
 			
-			SharedPreferences memberFile = getSharedPreferences(MemberSession.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+			SharedPreferences memberFile = getSharedPreferences(SessionManager.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
 			
 			if(!memberFile.getString(MemberModel.MEMBER_TOKEN, "").equals("")){
 	
@@ -484,9 +484,9 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		protected void onPostExecute(MemberModel memberToken) {
 			super.onPostExecute(memberToken);
 			
-			MemberSession.setMember(Sign_In_Page.this, memberToken);
+			SessionManager.setMember(Sign_In_Page.this, memberToken);
 			
-			if(MemberSession.hasMember()){
+			if(SessionManager.hasMember(Sign_In_Page.this)){
 				gotoMainPage(memberToken);
 			}else{
 				signProgressbar.setVisibility(View.GONE);

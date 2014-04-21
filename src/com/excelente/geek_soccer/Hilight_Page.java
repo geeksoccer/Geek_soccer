@@ -239,25 +239,25 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		
 		try{
 			if(tag.equals("tag0")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + HILIGHT_TYPE_ALL + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + HILIGHT_TYPE_ALL + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}else if(tag.equals("tag1")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_PREMIER_LEAGUE), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_PREMIER_LEAGUE), "utf-8") + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}else if(tag.equals("tag2")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_BUNDESLIGA), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_BUNDESLIGA), "utf-8") + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}else if(tag.equals("tag3")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_LALIGA), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_LALIGA), "utf-8") + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}else if(tag.equals("tag4")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_CALCAIO_SERIE_A), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_CALCAIO_SERIE_A), "utf-8") + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}else if(tag.equals("tag5")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_LEAGUE_DE_LEAGUE1), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_LEAGUE_DE_LEAGUE1), "utf-8") + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}else if(tag.equals("tag6")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_UCL), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_UCL), "utf-8") + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}else if(tag.equals("tag7")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_UPL), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_UPL), "utf-8") + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}else if(tag.equals("tag8")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_CHAMPIAN_CHIP), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_CHAMPIAN_CHIP), "utf-8") + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}else if(tag.equals("tag9")){
-				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_CAPITAL_ONE_CUP), "utf-8") + "&member_id=" + MemberSession.getMember().getUid();
+				url = GET_HILIGHT_URL + "?" + HilightModel.HILIGHT_ID + "=" + id+ "&" + HilightModel.HILIGHT_TYPE + "=" + URLEncoder.encode("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_CAPITAL_ONE_CUP), "utf-8") + "&member_id=" + SessionManager.getMember(getActivity()).getUid();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -636,7 +636,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("hilight_id", String.valueOf(params[0])));
-			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(MemberSession.getMember().getUid())));
+			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(getActivity()).getUid())));
 			
 			return HttpConnectUtils.getStrHttpPostConnect(Hilight_Item_Page.HILIGHT_READS_URL, paramsPost);
 		}
@@ -649,6 +649,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	} 
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onTabChanged(String tag) {
 		if(tag.equals("tag0")){

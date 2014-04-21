@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,9 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 	
 	Context mContext;
 	View myView;
-	int teamID = MemberSession.getMember().getTeamId();
+	int teamID;
 	TabHost tabHost;
-	private static ControllParameter data = ControllParameter.getInstance();
+	private static ControllParameter data;
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -47,6 +46,10 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		
+		data = ControllParameter.getInstance(getActivity());
+		teamID = SessionManager.getMember(getActivity()).getTeamId();
+		
 		myView = getView();
 		mContext = myView.getContext();
 		LocalActivityManager mLocalActivityManager = new LocalActivityManager(getActivity(), false);

@@ -81,7 +81,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		ThemeUtils.setThemeByTeamId(this, MemberSession.getMember().getTeamId());
+		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
 		
 		initAnimation();
 		initView(getIntent());
@@ -316,7 +316,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 					 
 					HilightModel hilight = (HilightModel) contentFlipView.getSelectedItem();
 					CommentModel comment = new CommentModel();
-					comment.setMemberUid(MemberSession.getMember().getUid());
+					comment.setMemberUid(SessionManager.getMember(this).getUid());
 					comment.setNewsId(hilight.getHilightId());
 					comment.setCommentContent(content);
 					
@@ -400,10 +400,10 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			if(result.trim().equals("success")){
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				params[0].setComment_update_time(sdf.format(new Date()));
-				params[0].setMemberPhoto(MemberSession.getMember().getPhoto());
-				params[0].setMemberNickname(MemberSession.getMember().getNickname());
-				params[0].setMemberUser(MemberSession.getMember().getUser());
-				params[0].setMemberTeamId(MemberSession.getMember().getTeamId());
+				params[0].setMemberPhoto(SessionManager.getMember(Hilight_Item_Page.this).getPhoto());
+				params[0].setMemberNickname(SessionManager.getMember(Hilight_Item_Page.this).getNickname());
+				params[0].setMemberUser(SessionManager.getMember(Hilight_Item_Page.this).getUser());
+				params[0].setMemberTeamId(SessionManager.getMember(Hilight_Item_Page.this).getTeamId());
 			}
 			return params[0];
 		}

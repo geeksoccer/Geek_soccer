@@ -21,7 +21,7 @@ public class Live_Score_Page extends Fragment implements
 
 	Context mContext;
 	View myView;
-	private static ControllParameter data = ControllParameter.getInstance();
+	private static ControllParameter data;
 	TabHost tabHost;
 
 	@Override
@@ -45,6 +45,9 @@ public class Live_Score_Page extends Fragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		
+		data = ControllParameter.getInstance(getActivity());
+		
 		myView = getView();
 		mContext = myView.getContext();
 		/*
