@@ -37,6 +37,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -99,6 +101,8 @@ public class Chat_All extends Activity{
 	static HashMap<String, Button> Sticker_ButVSet = new HashMap<String, Button>();
 	SessionManager sesPrefer;
 	
+	int pixels;
+	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_layout);
@@ -150,6 +154,29 @@ public class Chat_All extends Activity{
 			}
 		});
     	
+		final float scale = getResources().getDisplayMetrics().density;
+		pixels = (int) (40 * scale + 0.5f);
+		Chat_input.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				if(Chat_input.getLineCount()>1){
+					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.WRAP_CONTENT, (pixels*3)/2));
+				}else{
+					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.WRAP_CONTENT, pixels));
+				}
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {}
+		});
+		
     	send_Btn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
