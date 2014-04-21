@@ -31,6 +31,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -41,6 +43,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -371,7 +374,7 @@ public class LiveScore_Today extends Activity {
 							League = "[1]"+League;
 						}else if(League.contains("Premier League")){
 							League = "[2]"+League;
-						}else if(League.contains("Primera Divisi�n")){
+						}else if(League.contains("Primera División")||League.contains("Primera DivisiÃ³n")){
 							League = "[3]"+League;
 						}else if(League.contains("Bundesliga")){
 							League = "[4]"+League;
@@ -438,6 +441,9 @@ public class LiveScore_Today extends Activity {
 								j_data.put("stat", stat);
 								j_data.put("Home", Home);
 								j_data.put("score", score);
+								NotifyLiveScore(Home, score, away, Time);
+								data.OldScore = score;
+								data.OldTime = Time;
 								j_data.put("Away", away);
 								j_data.put("Home_img", Home_img);
 								j_data.put("Away_img", away_img);
@@ -564,7 +570,7 @@ public class LiveScore_Today extends Activity {
 											League = "[1]"+League;
 										}else if(League.contains("Premier League")){
 											League = "[2]"+League;
-										}else if(League.contains("Primera Divisi�n")){
+										}else if(League.contains("Primera División")||League.contains("Primera DivisiÃ³n")){
 											League = "[3]"+League;
 										}else if(League.contains("Bundesliga")){
 											League = "[4]"+League;
@@ -630,6 +636,9 @@ public class LiveScore_Today extends Activity {
 												j_data.put("stat", stat);
 												j_data.put("Home", Home);
 												j_data.put("score", score);
+												NotifyLiveScore(Home, score, away, Time);
+												data.OldScore = score;
+												data.OldTime = Time;
 												j_data.put("Away", away);
 												j_data.put("Home_img", Home_img);
 												j_data.put("Away_img", away_img);
@@ -690,6 +699,23 @@ public class LiveScore_Today extends Activity {
 		};
 
 		new Thread(runnable).start();
+	}
+	
+	public void NotifyLiveScore(final String Home, final String newScore, final String Away, final String Time) {
+		if(!data.OldTime.equals("FT")){
+			if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
+					|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
+					|| data.OldTime.equals("") ){
+				NotificationManager mNotifyManager = (NotificationManager) mContext
+						.getSystemService(Context.NOTIFICATION_SERVICE);
+				android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
+				mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
+						.setContentText("Time: "+Time)
+						.setSmallIcon(R.drawable.livescore_h)
+						.setDefaults(Notification.DEFAULT_ALL);
+				mNotifyManager.notify(0, mBuilder.build());
+			}
+		}
 	}
 	
 	public static Bitmap loadImageFromUrl(String url) {

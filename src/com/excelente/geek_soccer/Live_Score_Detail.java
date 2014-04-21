@@ -22,11 +22,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 public class Live_Score_Detail extends Activity{
 	
@@ -50,7 +53,13 @@ public class Live_Score_Detail extends Activity{
 	private ListView lstView;
 	private ImageAdapter imageAdapter;
 	int position;
-	
+	String type;
+	TextView txt_Aggregate;
+	String link_t = "";
+	String Time_t = "";
+	String score_t = "";
+	Boolean loading = false;
+	Boolean FirstLoad = true;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,11 +75,11 @@ public class Live_Score_Detail extends Activity{
 		Home_name = (TextView)myView.findViewById(R.id.Home_name);
 		Away_name = (TextView)myView.findViewById(R.id.Away_name);
 		Time = (TextView)myView.findViewById(R.id.Time);
-		TextView txt_Aggregate = (TextView)myView.findViewById(R.id.Score_Aggregate);
-		
+		txt_Aggregate = (TextView)myView.findViewById(R.id.Score_Aggregate);
+		data.detailPageOpenning = true;
 		mContext = this;
 		position = getIntent().getExtras().getInt("URL");
-		String type = getIntent().getExtras().getString("TYPE");
+		type = getIntent().getExtras().getString("TYPE");
 		if(type.equals("y")){
 			getValue = data.Match_list_y_JSON.get(position);
 		}else if(type.equals("c")){
@@ -78,12 +87,10 @@ public class Live_Score_Detail extends Activity{
 		}else if(type.equals("t")){
 			getValue = data.Match_list_t_JSON.get(position);
 		}
-		String Time_t = "";
-		String link_t = "";
+		
 		String Home_img_t = "";
 		String Away_img_t = "";
 		String Home_name_t = "";
-		String score_t = "";
 		String Away_name_t = "";
 		String score_ag_t = "";
 		try {
@@ -116,8 +123,50 @@ public class Live_Score_Detail extends Activity{
 		if(score_ag_t.length()>=5){
 			txt_Aggregate.setText("AGGREGATE: "+score_ag_t);
 		}
+		if(type.equals("c")){
+			checkRefreshDetail();
+		}
 		
+		lstView = new ListView(mContext);
+		lstView.setLayoutParams(new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT));
+
+		lstView.setClipToPadding(false);
+		imageAdapter = new ImageAdapter(mContext.getApplicationContext());
+		lstView.setAdapter(imageAdapter);
+		lstView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v,
+					int position, long id) {
+				String txt_Item = player_Detail.get(position);
+				String Split_item[] = txt_Item.replaceAll("&quot;", "\"").split(":");
+				String eventStr = "";
+				if(Split_item[1].contains("ใบเหลือง")){
+					eventStr = "ได้รับใบเหลือง";
+				}else if(Split_item[1].contains("ใบแดง")){
+					eventStr = "ได้รับใบแดง";
+				}else if(Split_item[1].contains("Yellow/Red")){
+					eventStr = "ได้รับใบเหลืองใบที่ 2 / ได้รับใบแดง";
+				}else if(Split_item[1].contains("ยิงจุดโทษได้")
+						|| Split_item[1].contains("Pen SO Goal")
+						|| Split_item[1].contains("Pen SO Miss")){
+					eventStr = "ทำประตูได้จากจุดโทษ";
+				}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
+					eventStr = "ทำเข้าประตูตัวเอง";
+				}else if(Split_item[1].contains("ประตู")){
+					eventStr = "ทำประตูได้";
+				}else if(Split_item[1].contains("แอสซิสต์") ){
+					eventStr = "จ่ายให้เพื่อนทำประตูได้";
+				}else if(Split_item[1].equals("เปลี่ยนตัว")){
+					eventStr = "เปลี่ยนตัว";
+				}
+				Toast.makeText(mContext, eventStr, Toast.LENGTH_LONG).show();
+			}
+		});
 		new Live_score_Loader().execute();
+		
 		
 	}
 	
@@ -188,7 +237,9 @@ public class Live_Score_Detail extends Activity{
 				img_EY.setImageResource(R.drawable.yellow);
 				retval.addView(img_EY);
 				img_E.setImageResource(R.drawable.red);
-			}else if(Split_item[1].contains("ยิงจุดโทษได้")){
+			}else if(Split_item[1].contains("ยิงจุดโทษได้")
+					|| Split_item[1].contains("Pen SO Goal")
+					|| Split_item[1].contains("Pen SO Miss")){
 				Event = "(PG)";
 				img_E.setImageResource(R.drawable.goal);
 			}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
@@ -244,6 +295,8 @@ public class Live_Score_Detail extends Activity{
 
 		protected String doInBackground(String... args) {
 			try {
+				loading = true;
+				player_Detail.clear();
 				HtmlHelper_LiveScore live = new HtmlHelper_LiveScore(new URL(
 						URL));
 				live.getLinksByID("play-by-play");
@@ -260,22 +313,76 @@ public class Live_Score_Detail extends Activity{
 			//pDialog.dismiss();
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
-					lstView = new ListView(mContext);
-					lstView.setLayoutParams(new LinearLayout.LayoutParams(
-							LinearLayout.LayoutParams.MATCH_PARENT,
-							LinearLayout.LayoutParams.WRAP_CONTENT));
-
-					lstView.setClipToPadding(false);
-					imageAdapter = new ImageAdapter(mContext.getApplicationContext());
-					lstView.setAdapter(imageAdapter);
-					LinearLayout list_layout = (LinearLayout)findViewById(R.id.list_player_Detail);
-					list_layout.removeAllViews();
-					list_layout.addView(lstView);
+					if(FirstLoad){
+						LinearLayout list_layout = (LinearLayout)findViewById(R.id.list_player_Detail);					
+						list_layout.removeAllViews();
+						list_layout.addView(lstView);
+						FirstLoad = false;
+					}else{
+						imageAdapter.notifyDataSetChanged();
+					}
+					loading = false;
 				}
 			});
 		}
 	}
 	
+	public void checkRefreshDetail() {
+		Runnable runnable = new Runnable() {
+			public void run() {
+				while (data.detailPageOpenning) {
+
+					getValue = data.Match_list_c_JSON.get(position);
+					runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							String score_ag_t = "";
+							try {
+								if (link_t.equals(getValue.getString("link").replace("/en/", "/th/") + "/play-by-play") ) {
+									if ((!Time_t.equals(getValue.getString("Time").substring(3))
+											|| !score_t.equals(getValue.getString("score").replaceAll("&nbsp;", " "))) ) {
+										Time_t = getValue.getString("Time")
+												.substring(3);
+										score_t = getValue.getString("score")
+												.replaceAll("&nbsp;", " ");
+										score_ag_t = getValue
+												.getString("score_ag");
+
+										Time.setText(Time_t);
+										Score.setText(score_t);
+
+										if (score_ag_t.length() >= 5) {
+											txt_Aggregate.setText("AGGREGATE: "
+													+ score_ag_t);
+										}
+									}
+									if(!loading
+											&&(!getValue.getString("Time").substring(3).contains("HT")
+													&&!getValue.getString("Time").substring(3).contains("FT"))){
+										new Live_score_Loader().execute();
+									}								
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+
+						}
+					});
+
+					try {
+						Thread.sleep(30000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+
+			}
+		};
+		new Thread(runnable).start();
+	}
 	
 	public class HtmlHelper_LiveScore {
 		TagNode rootNode;
@@ -331,6 +438,7 @@ public class Live_Score_Detail extends Activity{
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
+		data.detailPageOpenning = false;
 		data.fragement_Section_set(1);
 		overridePendingTransition(R.anim.in_trans_right_left, R.anim.out_trans_left_right);
 		finish();
