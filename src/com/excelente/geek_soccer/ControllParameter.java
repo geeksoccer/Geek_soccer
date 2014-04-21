@@ -50,11 +50,14 @@ public class ControllParameter {
 	String ID_Send = String.valueOf(MemberSession.getMember().getUid());
 	String ProFile_pic = MemberSession.getMember().getPhoto();
 	String Name_Send = MemberSession.getMember().getNickname();
+	String OldScore = "";
+	String OldTime = "";
 	
 	Boolean app_Status=true;
 	Boolean chat_on_All = false;
 	Boolean chat_on_Team = false;
 	Boolean liveScore_on = null;
+	Boolean detailPageOpenning = false;
 	int liveScore_Cur = 1;
 	int chat_Cur = 0;
 	SocketIO socket_All = null;

@@ -332,7 +332,7 @@ public class LiveScore_Tomorrow extends Activity {
 				JSONObject json = jParser
 						.makeHttpRequest("http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
 								"POST", params);
-				
+				Log.d("TEST", "json_dtArr::"+json);
 				if (json != null) {
 					data.Match_list_t_JSON.clear();
 					JSONObject json_ob = json;
@@ -345,7 +345,7 @@ public class LiveScore_Tomorrow extends Activity {
 							League = "[1]"+League;
 						}else if(League.contains("Premier League")){
 							League = "[2]"+League;
-						}else if(League.contains("Primera Divisi�n")){
+						}else if(League.contains("Primera División")||League.contains("Primera DivisiÃ³n")){
 							League = "[3]"+League;
 						}else if(League.contains("Bundesliga")){
 							League = "[4]"+League;
@@ -356,7 +356,7 @@ public class LiveScore_Tomorrow extends Activity {
 						}
 						data.Match_list_t_JSON.add(new JSONObject().put("League", League));
 						JSONArray json_dtArr = json_it.getJSONArray("dt");
-
+						
 						int chk_ExistTeam_in = data.Match_list_t_JSON.size();
 						for(int j=0; j<json_dtArr.length(); j++){
 							JSONObject json_dt = json_dtArr.getJSONObject(j);
@@ -366,56 +366,48 @@ public class LiveScore_Tomorrow extends Activity {
 							String away_img  = json_dt.getString("al");
 							String link = json_dt.getString("lk");
 							String Time = "";//json_dt.getString("tp");
-							if(!json_dt.getString("ty").equals("playing")){
-								if(json_dt.getString("ty").equals("played")){
-									Time = "FT";
-								}else if(json_dt.getString("ty").equals("postponed")){
-									Time = json_dt.getString("ty");
-								}else if(json_dt.getString("ty").equals("fixture")){
-									Time = json_dt.getString("tp");
+							if(json_dt.getString("ty").equals("playing")){
+								if(json_dt.getString("pr").equals("ht")){
+									Time = "HT";
 								}else{
-									Time = json_dt.getString("tp");
+									Time = json_dt.getString("tc")+"'";
 								}
-								
-								String stat = "[no]";
-								String score = json_dt.getString("sc");
-								String score_ag = json_dt.getString("ag");
-								if(score.equals("")){
-									score = "vs";
+							}else if(json_dt.getString("ty").equals("played")){
+								Time = "FT";
+							}else if(json_dt.getString("ty").equals("postponed")){
+								Time = json_dt.getString("ty");
+							}else if(json_dt.getString("ty").equals("fixture")){
+								Time = json_dt.getString("tp");
+							}else{
+								Time = json_dt.getString("tp");
+							}
+							
+							String stat = "[no]";
+							String score = json_dt.getString("sc");
+							String score_ag = json_dt.getString("ag");
+							if(score.equals("")){
+								score = "vs";
+							}
+							if(score_ag==null || score_ag.length()<5){
+								score_ag="";
+							}else{
+								if(!score.equals("vs")){
+									String AG[] = score_ag.replaceAll(" ", "").split("-");
+									int Ag_home = Integer.parseInt(AG[0]);
+									int Ag_away = Integer.parseInt(AG[1]);
+									String SC[] = score.replaceAll(" ", "").split("-");
+									int Sc_home = Integer.parseInt(SC[0]);
+									int SC_away = Integer.parseInt(SC[1]);
+									score_ag = String.valueOf(Ag_home+Sc_home)+ " - " + String.valueOf(Ag_away+SC_away);
 								}
-								if(score_ag==null || score_ag.length()<5){
-									score_ag="";
-								}else{
-									if(!score.equals("vs")){
-										String AG[] = score_ag.replaceAll(" ", "").split("-");
-										int Ag_home = Integer.parseInt(AG[0]);
-										int Ag_away = Integer.parseInt(AG[1]);
-										String SC[] = score.replaceAll(" ", "").split("-");
-										int Sc_home = Integer.parseInt(SC[0]);
-										int SC_away = Integer.parseInt(SC[1]);
-										score_ag = String.valueOf(Ag_home+Sc_home)+ " - " + String.valueOf(Ag_away+SC_away);
-									}
-								}
-								if (away.contains("Arsenal")
-										|| Home.contains("Arsenal")) {
-									data.Match_list_t_JSON.add(new JSONObject().put("League"
-											, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
-									JSONObject j_data = new JSONObject();
-									j_data.put("League", "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
-									j_data.put("Time", "[0]" + Time);
-									j_data.put("stat", stat);
-									j_data.put("Home", Home);
-									j_data.put("score", score);
-									j_data.put("Away", away);
-									j_data.put("Home_img", Home_img);
-									j_data.put("Away_img", away_img);
-									j_data.put("link", link);
-									j_data.put("score_ag", score_ag);
-									data.Match_list_t_JSON.add(j_data);
-								}
+							}
+							if (away.contains("Arsenal")
+									|| Home.contains("Arsenal")) {
+								data.Match_list_t_JSON.add(new JSONObject().put("League"
+										, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
 								JSONObject j_data = new JSONObject();
-								j_data.put("League", League);
-								j_data.put("Time", "[1]" + Time);
+								j_data.put("League", "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
+								j_data.put("Time", "[0]" + Time);
 								j_data.put("stat", stat);
 								j_data.put("Home", Home);
 								j_data.put("score", score);
@@ -426,6 +418,18 @@ public class LiveScore_Tomorrow extends Activity {
 								j_data.put("score_ag", score_ag);
 								data.Match_list_t_JSON.add(j_data);
 							}
+							JSONObject j_data = new JSONObject();
+							j_data.put("League", League);
+							j_data.put("Time", "[1]" + Time);
+							j_data.put("stat", stat);
+							j_data.put("Home", Home);
+							j_data.put("score", score);
+							j_data.put("Away", away);
+							j_data.put("Home_img", Home_img);
+							j_data.put("Away_img", away_img);
+							j_data.put("link", link);
+							j_data.put("score_ag", score_ag);
+							data.Match_list_t_JSON.add(j_data);
 						}
 						if(chk_ExistTeam_in==data.Match_list_t_JSON.size()){
 							data.Match_list_t_JSON.remove(data.Match_list_t_JSON.size()-1);
