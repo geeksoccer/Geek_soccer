@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -190,9 +191,14 @@ public class Chat_Team extends Activity {
 					StickViewClear();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					for (int i = 0; i < data.Sticker_Set.size(); i++) {
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(70, 70);
+					((MarginLayoutParams) paramsBtn).setMargins(5, 5, 5, 5);
+					for(int i=0; i<data.Sticker_Set.size(); i++){
 						final Button StickSet_1 = new Button(mContext);
-						StickSet_1.setText("SET " + (i + 1));
+						StickSet_1.setBackgroundResource(R.drawable.stk_btn_set);
+						StickSet_1.setLayoutParams(paramsBtn);
+						StickSet_1.setTypeface(Typeface.DEFAULT_BOLD);
+						StickSet_1.setText(""+(i + 1));
 						final int StickPosition = i+1;
 						if(String.valueOf(StickPosition).equals(Stick_Set)){
 							StickSet_1.setEnabled(false);
