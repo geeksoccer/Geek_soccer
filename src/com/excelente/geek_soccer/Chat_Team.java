@@ -789,7 +789,7 @@ public class Chat_Team extends Activity {
 		    public void run() {
 		    	data.Chat_list_LayOut_Team.removeAllViews();
 				TextView RefreshTag = new TextView(mContext);
-				RefreshTag.setText("Tab to refresh");
+				RefreshTag.setText("Tap to refresh");
 				RefreshTag.setGravity(Gravity.CENTER);
 				data.Chat_list_LayOut_Team.addView(RefreshTag);
 				data.Chat_list_LayOut_Team.setOnClickListener(new View.OnClickListener() {

@@ -508,7 +508,7 @@ public class LiveScore_Today extends Activity {
 						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
 						layOutlist.removeAllViews();
 						TextView RefreshTag = new TextView(mContext);
-						RefreshTag.setText("Tab to refresh");
+						RefreshTag.setText("Tap to refresh");
 						RefreshTag.setGravity(Gravity.CENTER);
 						((LinearLayout) layOutlist).addView(RefreshTag);
 						layOutlist.setOnClickListener(new View.OnClickListener() {

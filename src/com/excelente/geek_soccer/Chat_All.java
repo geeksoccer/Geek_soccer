@@ -808,7 +808,7 @@ public class Chat_All extends Activity{
 		    public void run() {
 		    	data.Chat_list_LayOut_All.removeAllViews();
 				TextView RefreshTag = new TextView(mContext);
-				RefreshTag.setText("Tab to refresh");
+				RefreshTag.setText("Tap to refresh");
 				RefreshTag.setGravity(Gravity.CENTER);
 				data.Chat_list_LayOut_All.addView(RefreshTag);
 				data.Chat_list_LayOut_All.setOnClickListener(new View.OnClickListener() {
