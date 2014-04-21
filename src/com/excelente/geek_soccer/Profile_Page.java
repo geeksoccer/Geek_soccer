@@ -71,20 +71,28 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e("onCreate", "onCreate");
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		Log.e("onResume", "onResume");
-		if(MemberSession.hasMember()){
+		if(MemberSession.getMember()!=null){
 			createLayout();
 		}else{
-			if(NetworkUtils.isNetworkAvailable(this)){
+			MemberModel member = new MemberModel();
+			SharedPreferences memberFile = getSharedPreferences(MemberSession.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+			member.setUid(memberFile.getInt(MemberModel.MEMBER_UID, 0));
+			member.setTeamId(memberFile.getInt(MemberModel.MEMBER_TEAM_ID, 0));
+			member.setToken(memberFile.getString(MemberModel.MEMBER_TOKEN, ""));
+			member.setBirthday(memberFile.getString(MemberModel.MEMBER_BIRTHDAY, ""));
+			member.setGender(memberFile.getInt(MemberModel.MEMBER_GENDER, 0));
+			member.setNickname(memberFile.getString(MemberModel.MEMBER_NICKNAME, ""));
+			member.setPhoto(memberFile.getString(MemberModel.MEMBER_PHOTO, ""));
+			member.setEmail(memberFile.getString(MemberModel.MEMBER_EMAIL, ""));
+			member.setTypeLogin(memberFile.getString(MemberModel.MEMBER_TYPE_LOGIN, ""));
+			member.setRole(memberFile.getInt(MemberModel.MEMBER_ROLE, 0));
+			MemberSession.setMember(this, member);
+			createLayout();
+			/*if(NetworkUtils.isNetworkAvailable(this)){
 				new doSignTokenTask().execute();
 			}else{
 				Toast.makeText(this, NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
-			}
+			}*/
 		}
 	}
 	
