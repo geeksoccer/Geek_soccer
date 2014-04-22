@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
@@ -36,14 +35,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings.Secure;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -94,60 +91,6 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		setContentView(R.layout.profile_page);
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
 		initView();
-	}
-
-	public class doSignTokenTask extends AsyncTask<Void, Void, MemberModel>{
-		
-		private static final String MEMBER_TOKEN_URL = "http://183.90.171.209/gs_member/member_token.php";
-		private ProgressDialog dialog;
-		
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			
-			dialog = ProgressDialog.show(Profile_Page.this, "", "Updating Profile...", true);
-			dialog.setCancelable(false); 
-		}
-		
-		@Override
-		protected MemberModel doInBackground(Void... params) {
-			
-			SharedPreferences memberFile = getSharedPreferences(SessionManager.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
-			
-			if(!memberFile.getString(MemberModel.MEMBER_TOKEN, "").equals("")){
-	
-				List<NameValuePair> memberParam = new ArrayList<NameValuePair>();
-				
-				String token = memberFile.getString(MemberModel.MEMBER_TOKEN, "");
-	
-				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, token));
-				
-				String dev_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
-				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
-				
-				String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_TOKEN_URL, memberParam);
-				if(memberStr.trim().equals("member not yet")){ 
-					return null;
-				}
-				MemberModel memberSignedIn = MemberModel.convertMemberJSONToList(memberStr);
-				return memberSignedIn;
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(MemberModel memberToken) {
-			super.onPostExecute(memberToken);
-			dialog.dismiss();
-			SessionManager.setMember(Profile_Page.this, memberToken);
-			if(SessionManager.hasMember(Profile_Page.this))
-				createLayout();
-			else{
-				Toast.makeText(Profile_Page.this, NetworkUtils.getConnectivityStatusString(Profile_Page.this), Toast.LENGTH_SHORT).show();
-				onBackPressed();
-			}
-		}
-		
 	}
 	
 	private void initView() {
@@ -342,7 +285,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			Toast.makeText(Profile_Page.this, result.trim(), Toast.LENGTH_SHORT).show();
+			dialog.dismiss();
 			if(result.trim().equals("OK Success")){
 				SessionManager.getMember(Profile_Page.this).setNickname(memberName.getText().toString().trim());
 				
@@ -352,12 +295,20 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 						@Override
 						public void run() {
 							SessionManager.createNewImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto(), bitmapPhoto);
+							runOnUiThread(new Runnable() {
+								
+								@Override
+								public void run() {
+									onBackPressed();
+								}
+							});
 						}
 					}).start();
 				}
 				
+			}else{
+				Toast.makeText(Profile_Page.this, "Internet Peoblem Try Again.", Toast.LENGTH_SHORT).show();
 			}
-			dialog.dismiss();
 		}
 
 	}
@@ -374,20 +325,51 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 
 	@Override
 	public void onImageChosen(final ChosenImage image) {
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				if (image != null) {
-					if(image.getExtension().equalsIgnoreCase("png") || image.getExtension().equalsIgnoreCase("jpg") || image.getExtension().equalsIgnoreCase("jpeg")){
-						bitmapPhoto = BitmapFactory.decodeFile(image.getFilePathOriginal());
-						memberPhoto.setImageBitmap(bitmapPhoto);
-					}else{
+		if (image != null) {
+			if(image.getExtension().equalsIgnoreCase("png") || image.getExtension().equalsIgnoreCase("jpg") || image.getExtension().equalsIgnoreCase("jpeg")){
+				bitmapPhoto = BitmapFactory.decodeFile(image.getFilePathOriginal());
+				int width = 200;
+				int height = 200;
+				if(bitmapPhoto.getWidth() < 200){
+					width = bitmapPhoto.getWidth();
+				}
+				
+				if(bitmapPhoto.getHeight() < 200){
+					height = bitmapPhoto.getHeight();
+				}
+				
+				try{
+					
+					bitmapPhoto = Bitmap.createScaledBitmap(bitmapPhoto, width, height, false);
+				
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							memberPhoto.setImageBitmap(bitmapPhoto);
+						}
+
+					});
+					
+				}catch(OutOfMemoryError out){
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(Profile_Page.this, "Please Pick Image Less Size.", Toast.LENGTH_SHORT).show();
+						}
+
+					});
+				}
+				
+			}else{
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
 						Toast.makeText(Profile_Page.this, "Please Pick Image Type png, jpg and jpeg only.", Toast.LENGTH_SHORT).show();
 					}
-				}
-			}
 
-		});
+				});
+			}
+		}
 	}
 
 }
