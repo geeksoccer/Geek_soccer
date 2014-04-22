@@ -69,12 +69,14 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e("onCreate", "onCreate");
+
+		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
+		imageChooserManager.setImageChooserListener(this);
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
 		Log.e("onResume", "onResume");
 		if(SessionManager.hasMember(Profile_Page.this)){
 			createLayout();
@@ -149,8 +151,6 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	}
 	
 	private void initView() {
-		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
-		imageChooserManager.setImageChooserListener(this);
 		
 		bitmapPhoto = null;
 		
@@ -367,10 +367,8 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
- 
-				Toast.makeText(Profile_Page.this, error, Toast.LENGTH_SHORT).show();
+				Toast.makeText(Profile_Page.this, "Please pick image type png, jpg and jpeg only.", Toast.LENGTH_SHORT).show();
 			}
-
 		});
 	}
 
@@ -379,10 +377,13 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-
 				if (image != null) {
-					bitmapPhoto = BitmapFactory.decodeFile(image.getFilePathOriginal());
-					memberPhoto.setImageBitmap(bitmapPhoto);
+					if(image.getExtension().equalsIgnoreCase("png") || image.getExtension().equalsIgnoreCase("jpg") || image.getExtension().equalsIgnoreCase("jpeg")){
+						bitmapPhoto = BitmapFactory.decodeFile(image.getFilePathOriginal());
+						memberPhoto.setImageBitmap(bitmapPhoto);
+					}else{
+						Toast.makeText(Profile_Page.this, "Please Pick Image Type png, jpg and jpeg only.", Toast.LENGTH_SHORT).show();
+					}
 				}
 			}
 

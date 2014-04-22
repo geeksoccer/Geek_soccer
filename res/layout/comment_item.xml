@@ -39,7 +39,7 @@
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@+id/comment_image_layout"
         android:textColor="@android:color/black"
-        android:background="@drawable/bubble_green"
+        android:background="@drawable/bubble_green_2"
         android:textSize="16sp" />
 
     <TextView

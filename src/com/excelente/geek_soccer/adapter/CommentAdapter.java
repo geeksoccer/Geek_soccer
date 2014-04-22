@@ -85,6 +85,7 @@ public class CommentAdapter extends BaseAdapter{
 	        	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 	        		commentImageImageview.setVisibility(View.VISIBLE);
 	        		commentImageProgressBar.setVisibility(View.GONE);
+	        		SessionManager.createNewImageSession(context, imageUri, loadedImage);
 	        	};
 	        });
         }else{
