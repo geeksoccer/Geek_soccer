@@ -669,6 +669,9 @@ public class LiveScore_Today extends Activity {
 												j_data.put("score_ag", score_ag);
 												data.Match_list_c_JSON.add(j_data);
 											}
+											if(!Time.contains("FT")){
+												data.liveScore_ChkHavePlaying = true;
+											}
 											JSONObject j_data = new JSONObject();
 											j_data.put("League", League);
 											j_data.put("Time", "[1]" + Time);
@@ -681,9 +684,7 @@ public class LiveScore_Today extends Activity {
 											j_data.put("link", link);
 											j_data.put("score_ag", score_ag);
 											data.Match_list_c_JSON.add(j_data);
-											
 										}
-									
 									}
 								} catch (JSONException e) {
 									// TODO Auto-generated catch block
@@ -703,17 +704,20 @@ public class LiveScore_Today extends Activity {
 									return 0;
 								}
 							});
-		            		handler.post(new Runnable() {
+		            		if(data.liveScore_ChkHavePlaying){
+		            			chk_D_Stat=false;
+	    						chk_ani = false;
+		            			data.liveScore_ChkHavePlaying = false;
+		            			handler.post(new Runnable() {
 
-		    					@Override
-		    					public void run() {
-		    						if (Looper.myLooper() == Looper.getMainLooper()) {
-		    							chk_D_Stat=false;
-			    						chk_ani = false;
-			    						data.imageAdapterLiveScore.notifyDataSetChanged();
-		    						}		    						
-		    					}
-		    				});		    				
+			    					@Override
+			    					public void run() {
+			    						if (Looper.myLooper() == Looper.getMainLooper()) {
+				    						data.imageAdapterLiveScore.notifyDataSetChanged();
+			    						}		    						
+			    					}
+			    				});	
+		            		}
 		                }
 		            }
 		        });

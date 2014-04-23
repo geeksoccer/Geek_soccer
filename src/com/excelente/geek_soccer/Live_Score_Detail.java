@@ -207,73 +207,84 @@ public class Live_Score_Detail extends Activity{
 			retval.setPadding(5, 0, 5, 0);
 			retval.setMinimumHeight(50);
 			String txt_Item = player_Detail.get(position);
-			
 			int colors = Integer.parseInt("000000", 16) + (0xFF000000);
-			TextView txt_T = new TextView(mContext);
-			txt_T.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-			//txt.setGravity(Gravity.CENTER);
-			txt_T.setTextColor(colors);
-			txt_T.setPadding(0, 0, 10, 0);
-			
-			TextView txt_N = new TextView(mContext);
-			txt_N.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
-			txt_N.setTextColor(colors);
-			
-			ImageView img_E = new ImageView(mContext);
-			img_E.setLayoutParams(new LayoutParams(30, 30));
-
-			String Split_item[] = txt_Item.replaceAll("&quot;", "\"").split(":");
-			String NameSub[] = Split_item[2].split("//");
-			
-			txt_T.setText(Split_item[0]+"'");
-			
-			retval.addView(txt_T);
-			String Event = "";
-			if(Split_item[1].contains("ใบเหลือง")){
-				img_E.setImageResource(R.drawable.yellow);
-			}else if(Split_item[1].contains("ใบแดง")){
-				img_E.setImageResource(R.drawable.red);
-			}else if(Split_item[1].contains("Yellow/Red")){
-				ImageView img_EY = new ImageView(mContext);
-				img_EY.setLayoutParams(new LayoutParams(30, 30));
-				img_EY.setImageResource(R.drawable.yellow);
-				retval.addView(img_EY);
-				img_E.setImageResource(R.drawable.red);
-			}else if(Split_item[1].contains("ยิงจุดโทษได้")
-					|| Split_item[1].contains("Pen SO Goal")
-					|| Split_item[1].contains("Pen SO Miss")){
-				Event = "(PG)";
-				img_E.setImageResource(R.drawable.goal);
-			}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
-				Event = "(OG)";
-				img_E.setImageResource(R.drawable.goal);
-			}else if(Split_item[1].contains("ประตู")){
-				Event = "(G)";
-				img_E.setImageResource(R.drawable.goal);
-			}else if(Split_item[1].contains("แอสซิสต์") ){
-				Event = "(A)";
-				img_E.setImageResource(R.drawable.assist);
-			}
-			
-			TextView txt_Sub = new TextView(mContext);
-			txt_Sub.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
-			txt_Sub.setTextColor(colors);
-			
-			retval.addView(img_E);
-			retval.addView(txt_N);
-			if(Split_item[1].equals("เปลี่ยนตัว")){
-				txt_N.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				img_E.setImageResource(R.drawable.substitution);
-				txt_N.setText(NameSub[1]);
-				ImageView img_SubIn = new ImageView(mContext);
-				img_SubIn.setLayoutParams(new LayoutParams(30, 30));
-				img_SubIn.setImageResource(R.drawable.substitution_in);
-				retval.addView(img_SubIn);
-				txt_Sub.setText(NameSub[2]);
-				retval.addView(txt_Sub);
+			if(txt_Item.equals("NotFoundData")){
+				TextView txt_T = new TextView(mContext);
+				txt_T.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+				txt_T.setGravity(Gravity.CENTER);
+				txt_T.setTextColor(colors);
+				txt_T.setPadding(0, 0, 10, 0);
+				txt_T.setText("ยังไม่มีข้อมูลอัพเดทในขณะนี้");
+				retval.addView(txt_T);
 			}else{
-				txt_N.setText(Event+Split_item[2]);
+				
+				TextView txt_T = new TextView(mContext);
+				txt_T.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+				//txt.setGravity(Gravity.CENTER);
+				txt_T.setTextColor(colors);
+				txt_T.setPadding(0, 0, 10, 0);
+				
+				TextView txt_N = new TextView(mContext);
+				txt_N.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
+				txt_N.setTextColor(colors);
+				
+				ImageView img_E = new ImageView(mContext);
+				img_E.setLayoutParams(new LayoutParams(30, 30));
+
+				String Split_item[] = txt_Item.replaceAll("&quot;", "\"").split(":");
+				String NameSub[] = Split_item[2].split("//");
+				
+				txt_T.setText(Split_item[0]+"'");
+				
+				retval.addView(txt_T);
+				String Event = "";
+				if(Split_item[1].contains("ใบเหลือง")){
+					img_E.setImageResource(R.drawable.yellow);
+				}else if(Split_item[1].contains("ใบแดง")){
+					img_E.setImageResource(R.drawable.red);
+				}else if(Split_item[1].contains("Yellow/Red")){
+					ImageView img_EY = new ImageView(mContext);
+					img_EY.setLayoutParams(new LayoutParams(30, 30));
+					img_EY.setImageResource(R.drawable.yellow);
+					retval.addView(img_EY);
+					img_E.setImageResource(R.drawable.red);
+				}else if(Split_item[1].contains("ยิงจุดโทษได้")
+						|| Split_item[1].contains("Pen SO Goal")
+						|| Split_item[1].contains("Pen SO Miss")){
+					Event = "(PG)";
+					img_E.setImageResource(R.drawable.goal);
+				}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
+					Event = "(OG)";
+					img_E.setImageResource(R.drawable.goal);
+				}else if(Split_item[1].contains("ประตู")){
+					Event = "(G)";
+					img_E.setImageResource(R.drawable.goal);
+				}else if(Split_item[1].contains("แอสซิสต์") ){
+					Event = "(A)";
+					img_E.setImageResource(R.drawable.assist);
+				}
+				
+				TextView txt_Sub = new TextView(mContext);
+				txt_Sub.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
+				txt_Sub.setTextColor(colors);
+				
+				retval.addView(img_E);
+				retval.addView(txt_N);
+				if(Split_item[1].equals("เปลี่ยนตัว")){
+					txt_N.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+					img_E.setImageResource(R.drawable.substitution);
+					txt_N.setText(NameSub[1]);
+					ImageView img_SubIn = new ImageView(mContext);
+					img_SubIn.setLayoutParams(new LayoutParams(30, 30));
+					img_SubIn.setImageResource(R.drawable.substitution_in);
+					retval.addView(img_SubIn);
+					txt_Sub.setText(NameSub[2]);
+					retval.addView(txt_Sub);
+				}else{
+					txt_N.setText(Event+Split_item[2]);
+				}
 			}
+			
 			if(position%2==0){
 				retval.setBackgroundColor(Color.GRAY);
 				retval.getBackground().setAlpha(200);
@@ -315,6 +326,9 @@ public class Live_Score_Detail extends Activity{
 			//pDialog.dismiss();
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
+					if(player_Detail.size()<=0){
+						player_Detail.add("NotFoundData");
+					}
 					if(FirstLoad){
 						LinearLayout list_layout = (LinearLayout)findViewById(R.id.list_player_Detail);					
 						list_layout.removeAllViews();

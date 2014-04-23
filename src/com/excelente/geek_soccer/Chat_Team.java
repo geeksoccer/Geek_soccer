@@ -28,6 +28,7 @@ import io.socket.SocketIO;
 import io.socket.SocketIOException;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -413,6 +414,20 @@ public class Chat_Team extends Activity {
 						}
 					});
 		}
+		
+		Button STK_SHOP_Btn = (Button) StikerV.findViewById(R.id.shop_btn);
+		STK_SHOP_Btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CallSTKShop();
+			}
+		});
+	}
+	
+	public void CallSTKShop(){
+		Intent Shop_intent = new Intent(mContext,
+				STKShop_Page.class);
+		startActivity(Shop_intent);
 	}
 
 	public void Send_Stick(String id) {
@@ -761,9 +776,9 @@ public class Chat_Team extends Activity {
 											.toString());
 									data.Sticker_Set.clear();
 									data.Sticker_UrlSet.clear();
-									for (Iterator<?> league_Item_key = json_ob
-											.keys(); league_Item_key.hasNext();) {
-										String key_Item = (String) league_Item_key
+									for (Iterator<?> stk_Item_key = json_ob
+											.keys(); stk_Item_key.hasNext();) {
+										String key_Item = (String) stk_Item_key
 												.next();
 										JSONArray json_arr = json_ob
 												.getJSONArray(key_Item);
@@ -799,6 +814,7 @@ public class Chat_Team extends Activity {
 						data.Chat_list_LayOut_Team.removeAllViews();
 						ProgressBar progress = new ProgressBar(mContext);
 						data.Chat_list_LayOut_Team.addView(progress);
+						(data.Chat_list_LayOut_Team).addView(data.lstViewChatTeam);
 						Chat_Loader();
 					}
 				});

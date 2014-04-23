@@ -67,6 +67,7 @@ public class ControllParameter {
 	Boolean chat_on_All = false;
 	Boolean chat_on_Team = false;
 	Boolean liveScore_on = null;
+	Boolean liveScore_ChkHavePlaying = false;
 	Boolean detailPageOpenning = false;
 	int liveScore_Cur = 1;
 	int chat_Cur = 0;
