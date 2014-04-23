@@ -6,8 +6,11 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -16,6 +19,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
@@ -61,9 +65,13 @@ public class STKShop_Page extends Activity{
 	Boolean FirstLoad = true;
 	ArrayList<JSONObject> STK_list = new ArrayList<JSONObject>();
 	JSONParser jParser = new JSONParser();
+	JSONParser jParser_permission = new JSONParser();
 	private static ControllParameter data;
 	private Handler handler = new Handler(Looper.getMainLooper());
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
+	ArrayList<String> STK_exist_list = new ArrayList<String>();
+	String StickJset;
+	Button but_price;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -76,6 +84,24 @@ public class STKShop_Page extends Activity{
 		
 		data = ControllParameter.getInstance(this);
 		mContext = this;
+		StickJset = SessionManager.getJsonSession(mContext, "StickerSet");
+		if(StickJset!=null){
+			JSONObject json_ob;
+			try {
+				json_ob = new JSONObject(StickJset);
+				for (Iterator<?> league_Item_key = json_ob
+						.keys(); league_Item_key.hasNext();) {
+					String key_Item = (String) league_Item_key
+							.next();
+					STK_exist_list.add(key_Item);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 		lstView = new ListView(mContext);
 		lstView.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -97,7 +123,7 @@ public class STKShop_Page extends Activity{
 		new stk_list_Loader().execute();
 	}
 	
-	public void Detail_STK_Dialog(int position){
+	public void Detail_STK_Dialog(final int position){
 		final Dialog dialog = new Dialog(mContext);
 		
 		LayoutInflater factory = LayoutInflater.from(this);
@@ -106,10 +132,10 @@ public class STKShop_Page extends Activity{
 		TextView Stk_name = (TextView)DialogV.findViewById(R.id.stk_name);
 		TextView Stk_by = (TextView)DialogV.findViewById(R.id.stk_by);
 		TextView Stk_detail = (TextView)DialogV.findViewById(R.id.stk_detail);
-		Button but_price = (Button)DialogV.findViewById(R.id.download);
+		but_price = (Button)DialogV.findViewById(R.id.download);
 		but_price.setTypeface(Typeface.DEFAULT_BOLD);
 		try {
-			JSONObject STK_Item = STK_list.get(position);
+			final JSONObject STK_Item = STK_list.get(position);
 			JSONArray STK_Item_arr = STK_Item.getJSONArray("data");
 			String ImgTxt = STK_Item_arr.getJSONObject(0).getString("sk_img") + "." + STK_Item_arr.getJSONObject(0).getString("sk_type");
 			if(ImgTxt.contains(".gif")){
@@ -126,15 +152,31 @@ public class STKShop_Page extends Activity{
 							Preview_img);
 				}
 			}
-
 			Stk_name.setText(STK_Item.getString("sk_bname"));
 			Stk_by.setText("By " + STK_Item.getString("sk_creator_name"));
 			Stk_detail.setText(STK_Item.getString("sk_detail"));
-			if(STK_Item.getString("sk_price_set").equals("0")){
-				but_price.setText("Price: " + "Free");
+			if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
+				but_price.setText("Downloaded");
+				but_price.setEnabled(false);
 			}else{
-				but_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
+				if(STK_Item.getString("sk_price_set").equals("0")){
+					but_price.setText("Price: " + "Free");
+				}else{
+					but_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
+				}
+				but_price.setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View arg0) {
+						try {
+							new stk_permission_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				});
 			}
+
 			ImageView Stick_1 = (ImageView) DialogV.findViewById(R.id.stic_1);
 			ImageView Stick_2 = (ImageView) DialogV.findViewById(R.id.stic_2);
 			ImageView Stick_3 = (ImageView) DialogV.findViewById(R.id.stic_3);
@@ -183,7 +225,6 @@ public class STKShop_Page extends Activity{
 			dialog.setTitle(STK_Item.getString("sk_bname"));
 			dialog.setContentView(DialogV);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		dialog.show();
@@ -259,10 +300,14 @@ public class STKShop_Page extends Activity{
 				
 				TextView txt_price = new TextView(mContext);
 				txt_price.setTypeface(Typeface.DEFAULT_BOLD);
-				if(STK_Item.getString("sk_price_set").equals("0")){
-					txt_price.setText("Price: " + "Free");
+				if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
+					txt_price.setText("Downloaded");
 				}else{
-					txt_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
+					if(STK_Item.getString("sk_price_set").equals("0")){
+						txt_price.setText("Price: " + "Free");
+					}else{
+						txt_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
+					}
 				}
 				
 				txt_price.setTextColor(colors);
@@ -343,6 +388,71 @@ public class STKShop_Page extends Activity{
 						imageAdapter.notifyDataSetChanged();
 					}
 					loading = false;
+				}
+			});
+		}
+	}
+	
+	class stk_permission_Request extends AsyncTask<String, String, String> {
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		protected String doInBackground(String... args) {
+			try {
+				loading = true;
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("id", String.valueOf(SessionManager.getMember(mContext).getUid()) ));
+				params.add(new BasicNameValuePair("stk_id", args[0] ));
+				params.add(new BasicNameValuePair("token",
+						md5Digest(String.valueOf(SessionManager.getMember(mContext).getUid())+args[0]+"acpt46") ));
+				JSONObject json_permission = jParser_permission
+						.makeHttpRequest("http://183.90.171.209/gs_stk_permission/stk_permission_set_one.php",
+								"POST", params);
+				if (json_permission != null) {
+					final JSONObject STK_Item = STK_list.get(Integer.parseInt(args[1]));
+					JSONArray stk_request = STK_Item.getJSONArray("data");
+					JSONArray stk_requestNew = new JSONArray();
+					
+					for(int i=0; i<stk_request.length(); i++){
+						JSONObject jsonOb_New = new JSONObject();
+						jsonOb_New.put("sk_img"
+								, stk_request.getJSONObject(i).getString("sk_img")+"."+stk_request.getJSONObject(i).getString("sk_type"));
+						jsonOb_New.put("sk_id", stk_request.getJSONObject(i).getString("sk_id"));
+						stk_requestNew.put(jsonOb_New);
+					}
+					
+					JSONObject json_ob = null;
+					try {
+						json_ob = new JSONObject(StickJset);
+						json_ob.put(args[0], stk_requestNew);
+						SessionManager.createNewJsonSession(mContext,
+								"StickerSet", json_ob.toString());
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		protected void onProgressUpdate(String... progress) {
+			
+		}
+
+		protected void onPostExecute(String file_url) {
+			//pDialog.dismiss();
+			((Activity) mContext).runOnUiThread(new Runnable() {
+				public void run() {
+					but_price.setText("Downloaded");
+					but_price.setEnabled(false);
+					imageAdapter.notifyDataSetChanged();
 				}
 			});
 		}
@@ -504,6 +614,34 @@ public class STKShop_Page extends Activity{
 		}
 
 		return inSampleSize;
+	}
+	
+	public static final String md5Digest(final String text)
+	{
+	     try
+	     {
+	           // Create MD5 Hash
+	           MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+	           digest.update(text.getBytes());
+	           byte messageDigest[] = digest.digest();
+
+	           // Create Hex String
+	           StringBuffer hexString = new StringBuffer();
+	           int messageDigestLenght = messageDigest.length;
+	           for (int i = 0; i < messageDigestLenght; i++)
+	           {
+	                String hashedData = Integer.toHexString(0xFF & messageDigest[i]);
+	                while (hashedData.length() < 2)
+	                     hashedData = "0" + hashedData;
+	                hexString.append(hashedData);
+	           }
+	           return hexString.toString();
+
+	     } catch (NoSuchAlgorithmException e)
+	     {
+	           e.printStackTrace();
+	     }
+	     return ""; // if text is null then return nothing
 	}
 	
 	@Override

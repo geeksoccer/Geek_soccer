@@ -216,6 +216,7 @@ public class Chat_Team extends Activity {
 					StikerV.setVisibility(RelativeLayout.ABOVE);
 					data.Sticker_Layout_Stat_team = true;
 					StickViewClear();
+					StickerPrepare();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
 					LayoutParams paramsBtn = new LinearLayout.LayoutParams(70, 70);
@@ -270,6 +271,30 @@ public class Chat_Team extends Activity {
 	public void StickViewClear(){
 		for (final String key : Sticker_ImgVSet.keySet()) {
 			Sticker_ImgVSet.get(key).setImageResource(R.drawable.livescore_h);
+		}
+	}
+	
+	public void StickerPrepare(){
+		String StickJset = SessionManager.getJsonSession(Chat_Team.this, "StickerSet");
+		if(StickJset!=null){
+			JSONObject json_ob;
+			try {
+				json_ob = new JSONObject(StickJset);
+				data.Sticker_Set.clear();
+				data.Sticker_UrlSet.clear();
+				for (Iterator<?> league_Item_key = json_ob
+						.keys(); league_Item_key.hasNext();) {
+					String key_Item = (String) league_Item_key
+							.next();
+					JSONArray json_arr = json_ob
+							.getJSONArray(key_Item);
+					data.Sticker_Set
+							.put(key_Item, json_arr);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	

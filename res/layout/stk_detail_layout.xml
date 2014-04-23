@@ -58,7 +58,8 @@
         android:id="@+id/stk_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:background="@color/gray" >
 
         <LinearLayout
             android:layout_width="match_parent"
