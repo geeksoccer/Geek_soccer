@@ -53,6 +53,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -72,6 +74,7 @@ public class STKShop_Page extends Activity{
 	ArrayList<String> STK_exist_list = new ArrayList<String>();
 	String StickJset;
 	Button but_price;
+	ProgressBar down_progress;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -133,6 +136,8 @@ public class STKShop_Page extends Activity{
 		TextView Stk_by = (TextView)DialogV.findViewById(R.id.stk_by);
 		TextView Stk_detail = (TextView)DialogV.findViewById(R.id.stk_detail);
 		but_price = (Button)DialogV.findViewById(R.id.download);
+		down_progress = (ProgressBar)DialogV.findViewById(R.id.download_progress);
+		down_progress.setVisibility(RelativeLayout.GONE);
 		but_price.setTypeface(Typeface.DEFAULT_BOLD);
 		try {
 			final JSONObject STK_Item = STK_list.get(position);
@@ -169,6 +174,9 @@ public class STKShop_Page extends Activity{
 					@Override
 					public void onClick(View arg0) {
 						try {
+							down_progress.setVisibility(RelativeLayout.ABOVE);
+							but_price.setText("Downloading...");
+							but_price.setEnabled(false);
 							new stk_permission_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
 						} catch (JSONException e) {
 							e.printStackTrace();
@@ -241,11 +249,11 @@ public class STKShop_Page extends Activity{
 		}
 
 		public int getCount() {
-			return STK_list.size();//+League_list.size();
+			return STK_list.size();
 		}
 
 		public Object getItem(int position) {
-			return null;//URL_News_text.get(position);
+			return null;
 		}
 
 		public long getItemId(int position) {
@@ -405,7 +413,6 @@ public class STKShop_Page extends Activity{
 
 		protected String doInBackground(String... args) {
 			try {
-				loading = true;
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("id", String.valueOf(SessionManager.getMember(mContext).getUid()) ));
 				params.add(new BasicNameValuePair("stk_id", args[0] ));
@@ -447,11 +454,32 @@ public class STKShop_Page extends Activity{
 		}
 
 		protected void onPostExecute(String file_url) {
-			//pDialog.dismiss();
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
-					but_price.setText("Downloaded");
-					but_price.setEnabled(false);
+					StickJset = SessionManager.getJsonSession(mContext, "StickerSet");
+					int Size_update_chk = STK_exist_list.size();
+					STK_exist_list.clear();
+					if(StickJset!=null){
+						JSONObject json_ob;
+						try {
+							json_ob = new JSONObject(StickJset);
+							for (Iterator<?> league_Item_key = json_ob
+									.keys(); league_Item_key.hasNext();) {
+								String key_Item = (String) league_Item_key
+										.next();
+								STK_exist_list.add(key_Item);
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+					down_progress.setVisibility(RelativeLayout.GONE);
+					if(Size_update_chk!=STK_exist_list.size()){
+						but_price.setText("Downloaded");
+					}else{
+						but_price.setText("Download fail tap to try again..");
+						but_price.setEnabled(true);
+					}
 					imageAdapter.notifyDataSetChanged();
 				}
 			});
