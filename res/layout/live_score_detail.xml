@@ -3,32 +3,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
     <RelativeLayout
         android:id="@+id/Header_Layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         style="?backgroundTheme" >
         
-
-        <ImageView
-            android:id="@+id/Team_Logo"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginLeft="5dp"
-            style="?logoTheme"
-            android:layout_centerVertical="true" />
-
         <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:id="@+id/Title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="20dp"
             android:textStyle="bold"
-            android:text="MATCH DETAILS"
             android:textColor="@color/white"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="MATCH DETAILS" />
+        
+        <LinearLayout 
+            android:id="@+id/Up_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_press"
+            android:layout_centerVertical="true">
+            <ImageView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/ic_action_previous_item"
+	            android:layout_gravity="center_vertical|right"
+	            android:cropToPadding="true"
+	            android:layout_marginLeft="-7dp"/>
+            <ImageView
+                android:id="@+id/Team_Logo"
+                style="?logoTheme"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_vertical"
+	            android:layout_marginLeft="-7dp" />
+        </LinearLayout>
 
     </RelativeLayout>
 

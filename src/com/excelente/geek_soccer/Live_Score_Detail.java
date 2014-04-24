@@ -42,6 +42,7 @@ public class Live_Score_Detail extends Activity{
 	TextView Away_name;
 	ImageView Home_Pic;
 	ImageView Away_Pic;
+	LinearLayout Up_btn;
 	JSONObject getValue;
 	String get_Time = "";
 	String get_Score = "";
@@ -71,6 +72,7 @@ public class Live_Score_Detail extends Activity{
 		View myView = factory.inflate(R.layout.live_score_detail, null);
 		setContentView(myView);
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
+		Up_btn = (LinearLayout)myView.findViewById(R.id.Up_btn);
 		Home_Pic = (ImageView)myView.findViewById(R.id.Home_Pic);
 		Away_Pic = (ImageView)myView.findViewById(R.id.Away_Pic);
 		Score = (TextView)myView.findViewById(R.id.Score);
@@ -89,6 +91,14 @@ public class Live_Score_Detail extends Activity{
 		}else if(type.equals("t")){
 			getValue = data.Match_list_t_JSON.get(position);
 		}
+		
+		Up_btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
 		
 		String Home_img_t = "";
 		String Away_img_t = "";

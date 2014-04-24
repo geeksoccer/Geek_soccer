@@ -6,18 +6,28 @@
 
     <RelativeLayout
         android:id="@+id/Header_Layout"
+        style="?backgroundTheme"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        style="?backgroundTheme" >
-        
+        android:layout_height="50dp" >
 
-        <ImageView
-            android:id="@+id/Team_Logo"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/market_icon"
-            android:layout_centerVertical="true" />
+        <LinearLayout
+            android:id="@+id/Up_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_press" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_action_previous_item" />
+
+            <ImageView
+                android:id="@+id/Team_Logo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/market_icon" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView1"
@@ -25,13 +35,11 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textStyle="bold"
             android:text="STIKER SHOP"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/white"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
+            android:textStyle="bold" />
     </RelativeLayout>
-    
 
     <LinearLayout
         android:id="@+id/list_player_Detail"

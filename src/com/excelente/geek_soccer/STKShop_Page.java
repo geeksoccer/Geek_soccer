@@ -86,6 +86,15 @@ public class STKShop_Page extends Activity{
 		setContentView(myView);
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
 		
+		LinearLayout Up_btn = (LinearLayout)myView.findViewById(R.id.Up_btn);
+		Up_btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
+		
 		data = ControllParameter.getInstance(this);
 		mContext = this;
 		StickJset = SessionManager.getJsonSession(mContext, "StickerSet");
