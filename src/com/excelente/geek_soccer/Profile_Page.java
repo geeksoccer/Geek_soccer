@@ -333,6 +333,8 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 							});
 						}
 					}).start();
+				}else{
+					onBackPressed();
 				}
 				
 			}else{
