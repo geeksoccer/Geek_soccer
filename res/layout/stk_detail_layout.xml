@@ -6,7 +6,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:background="@drawable/head_stk_bg" >
 
         <ImageView
             android:id="@+id/Preview_Image"
@@ -62,7 +65,6 @@
         android:id="@+id/stk_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lines="4"
         android:maxLines="4"
         android:textSize="12sp" />
 
@@ -70,8 +72,7 @@
         android:id="@+id/stk_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/gray" >
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"

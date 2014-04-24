@@ -47,6 +47,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -128,9 +129,13 @@ public class STKShop_Page extends Activity{
 	
 	public void Detail_STK_Dialog(final int position){
 		final Dialog dialog = new Dialog(mContext);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		//dialog.setTitle(STK_Item.getString("sk_bname"));
 		
 		LayoutInflater factory = LayoutInflater.from(this);
 		View DialogV = factory.inflate(R.layout.stk_detail_layout, null);
+		dialog.setContentView(DialogV);
+		dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		ImageView Preview_img = (ImageView)DialogV.findViewById(R.id.Preview_Image);
 		TextView Stk_name = (TextView)DialogV.findViewById(R.id.stk_name);
 		TextView Stk_by = (TextView)DialogV.findViewById(R.id.stk_by);
@@ -229,9 +234,6 @@ public class STKShop_Page extends Activity{
 				}
 				
 			}
-			
-			dialog.setTitle(STK_Item.getString("sk_bname"));
-			dialog.setContentView(DialogV);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
