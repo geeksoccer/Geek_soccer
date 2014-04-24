@@ -59,4 +59,16 @@
     
     <string name="global_news">Global News</string> 
     <string name="team_news">Team News</string>
+    
+    <string name="profile_favorit_team">Favorite Team : </string>
+    <string name="profile_gender">Gender : </string>
+    <string name="profile_email">Email : </string>
+    
+    <string-array name="team_list">
+        <item>Arsenal</item>
+        <item>Chelsea</item>
+        <item>Liverpool</item>
+        <item>Manchester United</item>
+        <item>Other</item>
+    </string-array>
 </resources>

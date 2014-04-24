@@ -469,10 +469,12 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 	
 	@SuppressLint("CommitPrefEdits")
 	private void storeMaxIdToPerference(HilightModel hilightModel, String tag) {
-		SharedPreferences sharePre = getActivity().getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
-		Editor editSharePre = sharePre.edit();
-		editSharePre.putInt(tag, hilightModel.getHilightId());
-		editSharePre.commit();
+		if(getActivity() != null){
+			SharedPreferences sharePre = getActivity().getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
+			Editor editSharePre = sharePre.edit();
+			editSharePre.putInt(tag, hilightModel.getHilightId());
+			editSharePre.commit();
+		}
 	}
 
 	private void doLoadOldHilightToListView(List<HilightModel> result, String tag) { 

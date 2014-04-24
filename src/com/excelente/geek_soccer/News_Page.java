@@ -326,10 +326,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	}
 	
 	private void storeMaxIdToPerference(NewsModel newsModel, String tag) {
-		SharedPreferences sharePre = getActivity().getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
-		Editor editSharePre = sharePre.edit();
-		editSharePre.putInt(tag, newsModel.getNewsId());
-		editSharePre.commit();
+		if(getActivity() != null){
+			SharedPreferences sharePre = getActivity().getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
+			Editor editSharePre = sharePre.edit();
+			editSharePre.putInt(tag, newsModel.getNewsId());
+			editSharePre.commit();
+		}
 	}
 	
 	/*private void doLoadRefeshToListView(List<NewsModel> result, String tag) {

@@ -176,21 +176,32 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
+							MemberModel member;
 							switch (which) {
 								case 0:
-									SessionManager.getMember(MainActivity.this).setTeamId(1);
+									member = SessionManager.getMember(MainActivity.this);
+									member.setTeamId(1);
+									SessionManager.setMember(MainActivity.this, member);
 									break;
 								case 1:
-									SessionManager.getMember(MainActivity.this).setTeamId(2);
+									member = SessionManager.getMember(MainActivity.this);
+									member.setTeamId(2);
+									SessionManager.setMember(MainActivity.this, member);
 									break;
 								case 2:
-									SessionManager.getMember(MainActivity.this).setTeamId(3);
+									member = SessionManager.getMember(MainActivity.this);
+									member.setTeamId(3);
+									SessionManager.setMember(MainActivity.this, member);
 									break;
 								case 3:
-									SessionManager.getMember(MainActivity.this).setTeamId(4);
+									member = SessionManager.getMember(MainActivity.this);
+									member.setTeamId(4);
+									SessionManager.setMember(MainActivity.this, member);
 									break;
 								case 4:
-									SessionManager.getMember(MainActivity.this).setTeamId(5);
+									member = SessionManager.getMember(MainActivity.this);
+									member.setTeamId(5);
+									SessionManager.setMember(MainActivity.this, member);
 									break;
 							}
 							 

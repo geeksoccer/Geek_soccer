@@ -43,34 +43,97 @@
 
     </RelativeLayout>
     
+    <RelativeLayout 
+        	android:id="@+id/Layout_Info"
+        	android:layout_below="@+id/Header_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/news_gray"
+            android:padding="10dp">
+        <TextView
+            android:id="@+id/label_favorite_team"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/label_email"
+            android:layout_below="@+id/label_email"
+            android:text="@string/profile_favorit_team"
+            android:textColor="@color/gray"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+         <TextView
+             android:id="@+id/label_email"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:paddingTop="10dp"
+             android:paddingBottom="10dp"
+             android:text="@string/profile_email"
+             android:textColor="@color/gray"
+             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+         <TextView
+             android:id="@+id/profile_favorit_team"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignBaseline="@+id/label_favorite_team"
+             android:layout_alignBottom="@+id/label_favorite_team"
+             android:layout_alignRight="@+id/profile_email"
+             android:layout_toRightOf="@+id/label_favorite_team"
+             android:gravity="right"
+             android:textAppearance="?android:attr/textAppearanceMedium"
+             android:text="TextView" />
+
+         <TextView
+             android:id="@+id/profile_email"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignBaseline="@+id/label_email"
+             android:layout_alignBottom="@+id/label_email"
+             android:layout_alignParentRight="true"
+             android:gravity="right"
+             android:text="TextView"
+             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+         </RelativeLayout>
+    
     <RelativeLayout
         android:id="@+id/Content_Layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/Header_Layout"
-        android:layout_above="@+id/Footer_Layout" >
+        android:layout_above="@+id/Footer_Layout"
+        android:layout_below="@+id/Layout_Info"
+        android:gravity="center" >
 
-        <ImageView
-            android:id="@+id/member_photo"
-            android:layout_width="200dp"
-            android:layout_height="210dp"
+        <LinearLayout
+            android:id="@+id/layout_photo_"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/member_name"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_action_user"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_press" />
-        
-        <EditText 
+            android:layout_alignRight="@+id/member_name"
+            android:background="@color/common_action_bar_splitter"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/member_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_press"
+                android:padding="5dp"
+                android:src="@drawable/ic_action_user" />
+        </LinearLayout>
+
+        <EditText
             android:id="@+id/member_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/member_photo"
-            android:singleLine="true"
+            android:layout_below="@+id/layout_photo_"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:maxLength="20"
+            android:background="@android:drawable/edit_text"
             android:ems="10"
-            android:background="@android:drawable/edit_text"/>
+            android:maxLength="20"
+            android:singleLine="true"
+            android:gravity="center" />
 
     </RelativeLayout>
     

@@ -48,10 +48,13 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.RelativeLayout; 
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Profile_Page extends Activity implements OnClickListener, ImageChooserListener{
+	
+	public static final int MAX_IMAGE = 512;
 	
 	private LinearLayout upBtn;
 	private ImageView memberPhoto;
@@ -60,7 +63,9 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 
 	private Bitmap bitmapPhoto;
 
-	private ImageChooserManager imageChooserManager;  
+	private ImageChooserManager imageChooserManager;
+	private TextView memberEmail;
+	private TextView memberFT;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,10 +103,10 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		bitmapPhoto = null;
 		
 		upBtn = (LinearLayout) findViewById(R.id.Up_btn);
-		upBtn.setOnClickListener(this);
+		upBtn.setOnClickListener(this);  
 		
 		memberPhoto = (ImageView) findViewById(R.id.member_photo);
-		memberPhoto.setOnClickListener(this);  
+		memberPhoto.setOnClickListener(this);
 		if(SessionManager.hasKey(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())){ 
 			memberPhoto.setImageBitmap(SessionManager.getImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())); 
 		}else{
@@ -112,6 +117,13 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		memberName = (EditText) findViewById(R.id.member_name);
 		memberName.setText(SessionManager.getMember(Profile_Page.this).getNickname());
 		memberPhoto.setOnClickListener(this);
+		
+		memberEmail = (TextView) findViewById(R.id.profile_email);
+		memberEmail.setText(SessionManager.getMember(Profile_Page.this).getEmail());
+		
+		memberFT = (TextView) findViewById(R.id.profile_favorit_team);
+		Log.e("Team", "Team " + SessionManager.getMember(Profile_Page.this).getTeamId());
+		memberFT.setText(getResources().getStringArray(R.array.team_list)[SessionManager.getMember(Profile_Page.this).getTeamId()-1]);
 		
 		saveBtn = (RelativeLayout) findViewById(R.id.Footer_Layout); 
 		saveBtn.setOnClickListener(this);
@@ -318,6 +330,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
+				Log.e("getExtension", "error");
 				Toast.makeText(Profile_Page.this, "Please pick image type png, jpg and jpeg only.", Toast.LENGTH_SHORT).show();
 			}
 		});
@@ -325,51 +338,53 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 
 	@Override
 	public void onImageChosen(final ChosenImage image) {
-		if (image != null) {
-			if(image.getExtension().equalsIgnoreCase("png") || image.getExtension().equalsIgnoreCase("jpg") || image.getExtension().equalsIgnoreCase("jpeg")){
-				bitmapPhoto = BitmapFactory.decodeFile(image.getFilePathOriginal());
-				int width = 200;
-				int height = 200;
-				if(bitmapPhoto.getWidth() < 200){
-					width = bitmapPhoto.getWidth();
-				}
-				
-				if(bitmapPhoto.getHeight() < 200){
-					height = bitmapPhoto.getHeight();
-				}
-				
-				try{
-					
-					bitmapPhoto = Bitmap.createScaledBitmap(bitmapPhoto, width, height, false);
-				
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							memberPhoto.setImageBitmap(bitmapPhoto);
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (image != null) {
+					Log.e("getExtension", image.getExtension());
+					if(image.getExtension().equalsIgnoreCase("png") || image.getExtension().equalsIgnoreCase("jpg") || image.getExtension().equalsIgnoreCase("jpeg")){
+						bitmapPhoto = BitmapFactory.decodeFile(image.getFilePathOriginal());
+						float scale = (bitmapPhoto.getWidth()*1.0f)/(1.0f*bitmapPhoto.getHeight());
+						int width = MAX_IMAGE;
+						int height = MAX_IMAGE;
+						Log.e("getExtension", scale +  " " + bitmapPhoto.getWidth() + ", " + bitmapPhoto.getHeight());
+						if(bitmapPhoto.getWidth() >= MAX_IMAGE || bitmapPhoto.getHeight() >= MAX_IMAGE){
+							
+							if(width > height){
+								height = (int) (height * scale);
+							}else{
+								width = (int) (width * scale);
+							}
+							
+						}else{
+						
+							if(bitmapPhoto.getWidth() < MAX_IMAGE){
+								width = bitmapPhoto.getWidth();
+							}
+							
+							if(bitmapPhoto.getHeight() < MAX_IMAGE){
+								height = bitmapPhoto.getHeight();
+							}
+							
 						}
-
-					});
-					
-				}catch(OutOfMemoryError out){
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
+						
+						try{
+							
+							bitmapPhoto = Bitmap.createScaledBitmap(bitmapPhoto, width, height, false);
+							memberPhoto.setImageBitmap(bitmapPhoto);
+							
+						}catch(OutOfMemoryError out){
 							Toast.makeText(Profile_Page.this, "Please Pick Image Less Size.", Toast.LENGTH_SHORT).show();
 						}
-
-					});
-				}
-				
-			}else{
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
+						
+					}else{
 						Toast.makeText(Profile_Page.this, "Please Pick Image Type png, jpg and jpeg only.", Toast.LENGTH_SHORT).show();
 					}
-
-				});
+				}
 			}
-		}
+		
+		});
 	}
 
 }
