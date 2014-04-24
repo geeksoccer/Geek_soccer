@@ -93,6 +93,16 @@ public class SideMenuLayout implements OnClickListener{
 		data.Menu_View.startAnimation(out);
 	}
 	
+	public void hideMenuNoAni() {
+		data.Menu_Layout.setVisibility(RelativeLayout.GONE);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				data.wm.removeView(data._Menu_Layout);
+			}
+		}, 10);
+	}
+	
 	public void showMenu(Context mContext){
 		data.Menu_Layout.setVisibility(RelativeLayout.ABOVE);
 		data.Menu_title.setText(data.PageNameSelected);
@@ -122,7 +132,7 @@ public class SideMenuLayout implements OnClickListener{
 				
 				Intent gotoProfile = new Intent(mContext, Profile_Page.class);
 				mContext.startActivity(gotoProfile);
-				hideMenu(mContext);
+				hideMenuNoAni();
 				break;
 	
 			}default:
