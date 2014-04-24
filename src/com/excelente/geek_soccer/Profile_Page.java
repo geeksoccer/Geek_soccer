@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.excelente.geek_soccer.utils.ConvertUtil;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
@@ -107,6 +108,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		
 		memberPhoto = (ImageView) findViewById(R.id.member_photo);
 		memberPhoto.setOnClickListener(this);
+		//memberPhoto.getLayoutParams().height = (int) ConvertUtil.convertPixelsToDp(MAX_IMAGE, this);
 		if(SessionManager.hasKey(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())){ 
 			memberPhoto.setImageBitmap(SessionManager.getImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())); 
 		}else{
@@ -116,7 +118,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		
 		memberName = (EditText) findViewById(R.id.member_name);
 		memberName.setText(SessionManager.getMember(Profile_Page.this).getNickname());
-		memberPhoto.setOnClickListener(this);
+		memberName.setSelection(memberName.getText().length());
 		
 		memberEmail = (TextView) findViewById(R.id.profile_email);
 		memberEmail.setText(SessionManager.getMember(Profile_Page.this).getEmail());
@@ -330,7 +332,6 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				Log.e("getExtension", "error");
 				Toast.makeText(Profile_Page.this, "Please pick image type png, jpg and jpeg only.", Toast.LENGTH_SHORT).show();
 			}
 		});
@@ -342,13 +343,11 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 			@Override
 			public void run() {
 				if (image != null) {
-					Log.e("getExtension", image.getExtension());
 					if(image.getExtension().equalsIgnoreCase("png") || image.getExtension().equalsIgnoreCase("jpg") || image.getExtension().equalsIgnoreCase("jpeg")){
 						bitmapPhoto = BitmapFactory.decodeFile(image.getFilePathOriginal());
 						float scale = (bitmapPhoto.getWidth()*1.0f)/(1.0f*bitmapPhoto.getHeight());
 						int width = MAX_IMAGE;
 						int height = MAX_IMAGE;
-						Log.e("getExtension", scale +  " " + bitmapPhoto.getWidth() + ", " + bitmapPhoto.getHeight());
 						if(bitmapPhoto.getWidth() >= MAX_IMAGE || bitmapPhoto.getHeight() >= MAX_IMAGE){
 							
 							if(width > height){
