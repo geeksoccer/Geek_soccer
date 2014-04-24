@@ -59,6 +59,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Chat_All extends Activity{
@@ -123,6 +124,38 @@ public class Chat_All extends Activity{
 		data.lstViewChatAll.setDividerHeight(0);
 		data.Chat_list_LayOut_All = (LinearLayout)findViewById(R.id.Chat_list_Layout);
 		(data.Chat_list_LayOut_All).addView(data.lstViewChatAll);
+		
+		data.lstViewChatAll
+		.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			public boolean onItemLongClick(AdapterView<?> arg0, View v,
+					int position, long arg3) {
+				try {
+					JSONObject txt = data.Chat_Item_list_All
+							.get(position);
+					if (txt.getString("ch_type").contains("T")) {
+						if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+							android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+							clipboard.setText(txt.getString("ch_msg"));
+						} else {
+							android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+							android.content.ClipData clip = android.content.ClipData
+									.newPlainText("Copied",
+											txt.getString("ch_msg"));
+							clipboard.setPrimaryClip(clip);
+						}
+
+						Toast.makeText(mContext, "Copied",
+								Toast.LENGTH_LONG).show();
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return false;
+			}
+		});
+		
 		if(data.Chat_Item_list_All.size()>0){
 			if(data.Chat_list_LayOut_All.getChildCount()>1){
 				data.Chat_list_LayOut_All.removeViewAt(0);

@@ -49,85 +49,99 @@
             android:name="com.excelente.geek_soccer.MainActivity"
             android:label="@string/app_name"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustResize" >
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.News_Page"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.News_Item_Page"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.Live_Score_Page"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.LiveScore_Yesterday"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.LiveScore_Today"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.LiveScore_Tomorrow"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.Live_Score_Detail"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.Chat_Page"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.Chat_All"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.Chat_Team"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.Table_Page"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.Game_Page" 
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.excelente.geek_soccer.Hilight_Item_Page" 
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity android:name="com.excelente.geek_soccer.player.VideoPlayer"
@@ -137,12 +151,14 @@
         
         <activity android:name="com.excelente.geek_soccer.Profile_Page"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity android:name="com.excelente.geek_soccer.STKShop_Page"
             android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" >
         </activity>
         
         <service 

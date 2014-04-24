@@ -59,6 +59,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 public class Chat_Team extends Activity {
 	int width;
@@ -78,7 +79,7 @@ public class Chat_Team extends Activity {
 	Button sendSticker_Btn;
 
 	WindowManager wm;
-	
+
 	LinearLayout input_layout;
 	View StikerV;
 
@@ -108,9 +109,9 @@ public class Chat_Team extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		data = ControllParameter.getInstance(this);
-		
+
 		setContentView(R.layout.chat_layout);
 		mContext = this;
 		data.lstViewChatTeam = new ListView(mContext);
@@ -125,6 +126,38 @@ public class Chat_Team extends Activity {
 		data.lstViewChatTeam.setDividerHeight(0);
 		data.Chat_list_LayOut_Team = (LinearLayout) findViewById(R.id.Chat_list_Layout);
 		(data.Chat_list_LayOut_Team).addView(data.lstViewChatTeam);
+
+		data.lstViewChatTeam
+				.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+					public boolean onItemLongClick(AdapterView<?> arg0, View v,
+							int position, long arg3) {
+						try {
+							JSONObject txt = data.Chat_Item_list_Team
+									.get(position);
+							if (txt.getString("ch_type").contains("T")) {
+								if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+									android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+									clipboard.setText(txt.getString("ch_msg"));
+								} else {
+									android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+									android.content.ClipData clip = android.content.ClipData
+											.newPlainText("Copied",
+													txt.getString("ch_msg"));
+									clipboard.setPrimaryClip(clip);
+								}
+
+								Toast.makeText(mContext, "Copied",
+										Toast.LENGTH_LONG).show();
+							}
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						return false;
+					}
+				});
+
 		if (SessionManager.getMember(Chat_Team.this).getTeamId() == 1) {
 			data.SocketSelect = "5001";
 		} else if (SessionManager.getMember(Chat_Team.this).getTeamId() == 2) {
@@ -158,9 +191,9 @@ public class Chat_Team extends Activity {
 				}
 			}
 		});
-		
+
 		Chat_input.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				if (data.Sticker_Layout_Stat_team) {
@@ -172,26 +205,30 @@ public class Chat_Team extends Activity {
 		final float scale = getResources().getDisplayMetrics().density;
 		pixels = (int) (40 * scale + 0.5f);
 		Chat_input.addTextChangedListener(new TextWatcher() {
-			
+
 			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-				if(Chat_input.getLineCount()>1){
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				if (Chat_input.getLineCount() > 1) {
 					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
-							LinearLayout.LayoutParams.WRAP_CONTENT, (pixels*3)/2));
-				}else{
+							LinearLayout.LayoutParams.WRAP_CONTENT,
+							(pixels * 3) / 2));
+				} else {
 					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
 							LinearLayout.LayoutParams.WRAP_CONTENT, pixels));
 				}
 			}
-			
+
 			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3) {}
-			
+			public void beforeTextChanged(CharSequence arg0, int arg1,
+					int arg2, int arg3) {
+			}
+
 			@Override
-			public void afterTextChanged(Editable arg0) {}
+			public void afterTextChanged(Editable arg0) {
+			}
 		});
-		
+
 		send_Btn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -208,7 +245,7 @@ public class Chat_Team extends Activity {
 		sendSticker_Btn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {				
+			public void onClick(View v) {
 				if (data.Sticker_Layout_Stat_team) {
 					StikerV.setVisibility(RelativeLayout.GONE);
 					data.Sticker_Layout_Stat_team = false;
@@ -219,36 +256,47 @@ public class Chat_Team extends Activity {
 					StickerPrepare();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					LayoutParams paramsBtn = new LinearLayout.LayoutParams(70, 70);
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(70,
+							70);
 					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
-					for(int i=0; i<data.Sticker_Set.size(); i++){
+					for (int i = 0; i < data.Sticker_Set.size(); i++) {
 						final Button StickSet_1 = new Button(mContext);
-						StickSet_1.setBackgroundResource(R.drawable.stk_btn_set);
+						StickSet_1
+								.setBackgroundResource(R.drawable.stk_btn_set);
 						StickSet_1.setLayoutParams(paramsBtn);
 						StickSet_1.setTypeface(Typeface.DEFAULT_BOLD);
-						StickSet_1.setText(""+(i + 1));
-						final int StickPosition = i+1;
-						if(String.valueOf(StickPosition).equals(Stick_Set)){
+						StickSet_1.setText("" + (i + 1));
+						final int StickPosition = i + 1;
+						if (String.valueOf(StickPosition).equals(Stick_Set)) {
 							StickSet_1.setEnabled(false);
-						}else{
+						} else {
 							StickSet_1.setEnabled(true);
 						}
-						StickSet_1.setOnClickListener(new View.OnClickListener() {
-							@Override
-							public void onClick(View arg0) {
-								StickViewClear();
-								Stick_Set = String.valueOf(StickPosition);
-								for(int j=0; j<data.Sticker_Set.size();j++){
-									if(String.valueOf(j+1).equals(Stick_Set)){
-										Sticker_ButVSet.get(String.valueOf(j)).setEnabled(false);
-									}else{
-										Sticker_ButVSet.get(String.valueOf(j)).setEnabled(true);
+						StickSet_1
+								.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View arg0) {
+										StickViewClear();
+										Stick_Set = String
+												.valueOf(StickPosition);
+										for (int j = 0; j < data.Sticker_Set
+												.size(); j++) {
+											if (String.valueOf(j + 1).equals(
+													Stick_Set)) {
+												Sticker_ButVSet.get(
+														String.valueOf(j))
+														.setEnabled(false);
+											} else {
+												Sticker_ButVSet.get(
+														String.valueOf(j))
+														.setEnabled(true);
+											}
+										}
+										StickViewCall(String
+												.valueOf(StickPosition));
 									}
-								}
-								StickViewCall(String.valueOf(StickPosition));
-							}
-										
-						});
+
+								});
 						Sticker_ButVSet.put(String.valueOf(i), StickSet_1);
 						StickerSelectorLayout.addView(StickSet_1);
 					}
@@ -267,29 +315,27 @@ public class Chat_Team extends Activity {
 			}
 		});
 	}
-	
-	public void StickViewClear(){
+
+	public void StickViewClear() {
 		for (final String key : Sticker_ImgVSet.keySet()) {
 			Sticker_ImgVSet.get(key).setImageResource(R.drawable.livescore_h);
 		}
 	}
-	
-	public void StickerPrepare(){
-		String StickJset = SessionManager.getJsonSession(Chat_Team.this, "StickerSet");
-		if(StickJset!=null){
+
+	public void StickerPrepare() {
+		String StickJset = SessionManager.getJsonSession(Chat_Team.this,
+				"StickerSet");
+		if (StickJset != null) {
 			JSONObject json_ob;
 			try {
 				json_ob = new JSONObject(StickJset);
 				data.Sticker_Set.clear();
 				data.Sticker_UrlSet.clear();
-				for (Iterator<?> league_Item_key = json_ob
-						.keys(); league_Item_key.hasNext();) {
-					String key_Item = (String) league_Item_key
-							.next();
-					JSONArray json_arr = json_ob
-							.getJSONArray(key_Item);
-					data.Sticker_Set
-							.put(key_Item, json_arr);
+				for (Iterator<?> league_Item_key = json_ob.keys(); league_Item_key
+						.hasNext();) {
+					String key_Item = (String) league_Item_key.next();
+					JSONArray json_arr = json_ob.getJSONArray(key_Item);
+					data.Sticker_Set.put(key_Item, json_arr);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -297,64 +343,55 @@ public class Chat_Team extends Activity {
 			}
 		}
 	}
-	
-	public void StickViewCall(final String position){
+
+	public void StickViewCall(final String position) {
 		try {
 			JSONArray j_arr = data.Sticker_Set.get(position);
-			
-			if(j_arr!=null){
+
+			if (j_arr != null) {
 				data.Sticker_UrlSet.clear();
 				for (int i = 0; i < j_arr.length(); i++) {
 					JSONObject json_Value = j_arr.getJSONObject(i);
 					data.Sticker_UrlSet.put(
-							position
-									+ "_"
-									+ json_Value
-											.getString("sk_id"),
-							json_Value
-									.getString("sk_img"));
+							position + "_" + json_Value.getString("sk_id"),
+							json_Value.getString("sk_img"));
 
 				}
-			}else{
-				String StickJset = SessionManager.getJsonSession(Chat_Team.this, "StickerSet");
-				if(StickJset!=null){
+			} else {
+				String StickJset = SessionManager.getJsonSession(
+						Chat_Team.this, "StickerSet");
+				if (StickJset != null) {
 					JSONObject json_ob = new JSONObject(StickJset);
 					data.Sticker_Set.clear();
 					data.Sticker_UrlSet.clear();
-					for (Iterator<?> league_Item_key = json_ob
-							.keys(); league_Item_key.hasNext();) {
-						String key_Item = (String) league_Item_key
-								.next();
-						JSONArray json_arr = json_ob
-								.getJSONArray(key_Item);
-						data.Sticker_Set
-								.put(key_Item, json_arr);
+					for (Iterator<?> league_Item_key = json_ob.keys(); league_Item_key
+							.hasNext();) {
+						String key_Item = (String) league_Item_key.next();
+						JSONArray json_arr = json_ob.getJSONArray(key_Item);
+						data.Sticker_Set.put(key_Item, json_arr);
 					}
 					j_arr = data.Sticker_Set.get(position);
-					if(j_arr!=null){
+					if (j_arr != null) {
 						for (int i = 0; i < j_arr.length(); i++) {
 							JSONObject json_Value = j_arr.getJSONObject(i);
 							data.Sticker_UrlSet.put(
-									position
-											+ "_"
-											+ json_Value
-													.getString("sk_id"),
-									json_Value
-											.getString("sk_img"));
+									position + "_"
+											+ json_Value.getString("sk_id"),
+									json_Value.getString("sk_img"));
 
 						}
 					}
-					
+
 				}
 			}
 			int ImgV_p = 0;
 			for (final String key : data.Sticker_UrlSet.keySet()) {
 				ImgV_p++;
-				
-				if(data.Sticker_UrlSet
-						.get(key).contains(".gif")){
-					putBitmap(Sticker_ImgVSet.get(String.valueOf(ImgV_p)), data.Sticker_UrlSet.get(key));
-				}else{
+
+				if (data.Sticker_UrlSet.get(key).contains(".gif")) {
+					putBitmap(Sticker_ImgVSet.get(String.valueOf(ImgV_p)),
+							data.Sticker_UrlSet.get(key));
+				} else {
 					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
 							.get(key));
 					if (bit != null) {
@@ -366,33 +403,32 @@ public class Chat_Team extends Activity {
 					}
 				}
 				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setEnabled(true);
-				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View arg0) {
-						Send_Stick(key);
-					}
-				});
+				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(
+						new View.OnClickListener() {
+							@Override
+							public void onClick(View arg0) {
+								Send_Stick(key);
+							}
+						});
 			}
 			for (int i = ImgV_p; i < Sticker_ImgVSet.size(); i++) {
-				Sticker_ImgVSet.get(String.valueOf(i+1)).setEnabled(false);
-				Sticker_ImgVSet.get(String.valueOf(i+1)).setImageBitmap(null);
+				Sticker_ImgVSet.get(String.valueOf(i + 1)).setEnabled(false);
+				Sticker_ImgVSet.get(String.valueOf(i + 1)).setImageBitmap(null);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void putBitmap(final ImageView imgV, final String key) {
-		Ion.with(imgV)
-		.placeholder(R.drawable.livescore_h)
-		.animateGif(true)
-		.load("http://183.90.171.209/chat/stk/"+key)
-		.setCallback(new FutureCallback<ImageView>() {
-			@Override
-			public void onCompleted(Exception arg0, ImageView arg1) {
-			}
-		});
-	}	
+		Ion.with(imgV).placeholder(R.drawable.livescore_h).animateGif(true)
+				.load("http://183.90.171.209/chat/stk/" + key)
+				.setCallback(new FutureCallback<ImageView>() {
+					@Override
+					public void onCompleted(Exception arg0, ImageView arg1) {
+					}
+				});
+	}
 
 	public void Create_Stick_view() {
 		LayoutInflater factory = LayoutInflater.from(mContext);
@@ -400,7 +436,7 @@ public class Chat_Team extends Activity {
 
 		StikerV.setVisibility(RelativeLayout.GONE);
 		input_layout.addView(StikerV, 0);
-		
+
 		StickerSelectorLayout = (LinearLayout) StikerV
 				.findViewById(R.id.StickerSelecterLayout);
 
@@ -435,11 +471,11 @@ public class Chat_Team extends Activity {
 					new View.OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							Send_Stick(Stick_Set +"_"+key);
+							Send_Stick(Stick_Set + "_" + key);
 						}
 					});
 		}
-		
+
 		Button STK_SHOP_Btn = (Button) StikerV.findViewById(R.id.shop_btn);
 		STK_SHOP_Btn.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -448,10 +484,9 @@ public class Chat_Team extends Activity {
 			}
 		});
 	}
-	
-	public void CallSTKShop(){
-		Intent Shop_intent = new Intent(mContext,
-				STKShop_Page.class);
+
+	public void CallSTKShop() {
+		Intent Shop_intent = new Intent(mContext, STKShop_Page.class);
 		startActivity(Shop_intent);
 	}
 
@@ -481,8 +516,6 @@ public class Chat_Team extends Activity {
 		public long getItemId(int position) {
 			return position;
 		}
-		
-		
 
 		public View getView(final int position, View convertView,
 				ViewGroup parent) {
@@ -492,7 +525,7 @@ public class Chat_Team extends Activity {
 					LinearLayout retval_Main = new LinearLayout(mContext);
 					retval_Main.setOrientation(LinearLayout.VERTICAL);
 					retval_Main.setGravity(Gravity.CENTER);
-					
+
 					LinearLayout retval = new LinearLayout(mContext);
 					retval.setOrientation(LinearLayout.HORIZONTAL);
 					retval.setPadding(0, 5, 0, 5);
@@ -583,20 +616,24 @@ public class Chat_Team extends Activity {
 					}
 
 					name_layout.addView(txt_N);
-					
+
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
-						txt_N.setText(SessionManager.getMember(Chat_Team.this).getNickname());
+						txt_N.setText(SessionManager.getMember(Chat_Team.this)
+								.getNickname());
 						if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
-							Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
-									.getString("m_photo")));
+							Profile_Pic.setImageBitmap(data.BitMapHash
+									.get(txt_Item.getString("m_photo")));
 						} else {
 							startDownload(txt_Item.getString("m_photo"),
 									Profile_Pic);
 						}
 						if (txt_Item.getString("ch_type").contains("S")) {
-							if(txt_Item.getString("ch_msg").contains(".gif")){
-								Ion.with(Sticker).placeholder(R.drawable.soccer_icon).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
-							}else{
+							if (txt_Item.getString("ch_msg").contains(".gif")) {
+								Ion.with(Sticker)
+										.placeholder(R.drawable.soccer_icon)
+										.load("http://183.90.171.209/chat/stk/"
+												+ txt_Item.getString("ch_msg"));
+							} else {
 								if (data.BitMapHash.get(txt_Item
 										.getString("ch_msg")) != null) {
 									Sticker.setImageBitmap(data.BitMapHash
@@ -607,7 +644,7 @@ public class Chat_Team extends Activity {
 											Sticker);
 								}
 							}
-							
+
 							txt_layout.setGravity(Gravity.RIGHT
 									| Gravity.CENTER_VERTICAL);
 							txt_layout.addView(Sticker);
@@ -626,19 +663,22 @@ public class Chat_Team extends Activity {
 					} else {
 						txt_N.setText(txt_Item.getString("m_nickname"));
 						if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
-							Profile_Pic.setImageBitmap(data.BitMapHash.get(txt_Item
-									.getString("m_photo")));
+							Profile_Pic.setImageBitmap(data.BitMapHash
+									.get(txt_Item.getString("m_photo")));
 						} else {
-							startDownloadNonCache(txt_Item.getString("m_photo"),
-									Profile_Pic);
+							startDownloadNonCache(
+									txt_Item.getString("m_photo"), Profile_Pic);
 						}
 						retval.setGravity(Gravity.LEFT
 								| Gravity.CENTER_VERTICAL);
 						retval.addView(Profile_layout);
 						if (txt_Item.getString("ch_type").contains("S")) {
-							if(txt_Item.getString("ch_msg").contains(".gif")){
-								Ion.with(Sticker).placeholder(R.drawable.soccer_icon).load("http://183.90.171.209/chat/stk/"+txt_Item.getString("ch_msg"));
-							}else{
+							if (txt_Item.getString("ch_msg").contains(".gif")) {
+								Ion.with(Sticker)
+										.placeholder(R.drawable.soccer_icon)
+										.load("http://183.90.171.209/chat/stk/"
+												+ txt_Item.getString("ch_msg"));
+							} else {
 								if (data.BitMapHash.get(txt_Item
 										.getString("ch_msg")) != null) {
 									Sticker.setImageBitmap(data.BitMapHash
@@ -649,7 +689,7 @@ public class Chat_Team extends Activity {
 											Sticker);
 								}
 							}
-							
+
 							txt_layout.addView(Sticker);
 							retval.addView(txt_layout);
 						} else {
@@ -707,11 +747,11 @@ public class Chat_Team extends Activity {
 					public void onError(SocketIOException socketIOException) {
 						Log.d("TEST", "test::an Error occured");
 						socketIOException.printStackTrace();
-						if(data.Chat_Item_list_Team.size()>0){
-		                	data.socket_Team.reconnect();
-		                }else{
-		                	RefreshView();
-		                }
+						if (data.Chat_Item_list_Team.size() > 0) {
+							data.socket_Team.reconnect();
+						} else {
+							RefreshView();
+						}
 					}
 
 					@Override
@@ -795,8 +835,9 @@ public class Chat_Team extends Activity {
 						} else if (event.equals("getsticker")) {
 							for (Object object : args) {
 								try {
-									SessionManager.createNewJsonSession(Chat_Team.this,
-											"StickerSet", object.toString());
+									SessionManager.createNewJsonSession(
+											Chat_Team.this, "StickerSet",
+											object.toString());
 									JSONObject json_ob = new JSONObject(object
 											.toString());
 									data.Sticker_Set.clear();
@@ -818,54 +859,57 @@ public class Chat_Team extends Activity {
 					}
 				});
 				data.socket_Team.emit("adduser", data.ID_Send,
-						data.ProFile_pic, SessionManager.getMember(Chat_Team.this).getNickname());
+						data.ProFile_pic,
+						SessionManager.getMember(Chat_Team.this).getNickname());
 			}
 		}).start();
 	}
-	
-	public void RefreshView(){
+
+	public void RefreshView() {
 		data.chatDelay = 0;
 		handler.postDelayed(new Runnable() {
-		    @Override
-		    public void run() {
-		    	data.Chat_list_LayOut_Team.removeAllViews();
+			@Override
+			public void run() {
+				data.Chat_list_LayOut_Team.removeAllViews();
 				TextView RefreshTag = new TextView(mContext);
 				RefreshTag.setText("Tap to refresh");
 				RefreshTag.setGravity(Gravity.CENTER);
 				data.Chat_list_LayOut_Team.addView(RefreshTag);
-				data.Chat_list_LayOut_Team.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View arg0) {
-						data.Chat_list_LayOut_Team.removeAllViews();
-						ProgressBar progress = new ProgressBar(mContext);
-						data.Chat_list_LayOut_Team.addView(progress);
-						(data.Chat_list_LayOut_Team).addView(data.lstViewChatTeam);
-						Chat_Loader();
-					}
-				});
-		    }
+				data.Chat_list_LayOut_Team
+						.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View arg0) {
+								data.Chat_list_LayOut_Team.removeAllViews();
+								ProgressBar progress = new ProgressBar(mContext);
+								data.Chat_list_LayOut_Team.addView(progress);
+								(data.Chat_list_LayOut_Team)
+										.addView(data.lstViewChatTeam);
+								Chat_Loader();
+							}
+						});
+			}
 		}, data.chatDelay);
 	}
-	
+
 	public void chatHandle() {
 		data.chatDelay = 0;
 		handler.postDelayed(new Runnable() {
-		    @Override
-		    public void run() {
-		    	/*
-		    	data.imageAdapterChatTeam.notifyDataSetChanged();
-				data.lstViewChatTeam.setSelection(data.imageAdapterChatTeam
-						.getCount());
-				
-            	if (data.Chat_list_LayOut_Team.getChildCount() > 1) {
+			@Override
+			public void run() {
+				/*
+				 * data.imageAdapterChatTeam.notifyDataSetChanged();
+				 * data.lstViewChatTeam.setSelection(data.imageAdapterChatTeam
+				 * .getCount());
+				 * 
+				 * if (data.Chat_list_LayOut_Team.getChildCount() > 1) {
+				 * data.Chat_list_LayOut_Team.removeViewAt(0); }
+				 */
+				if (data.Chat_list_LayOut_Team.getChildCount() > 1) {
 					data.Chat_list_LayOut_Team.removeViewAt(0);
 				}
-				*/
-		    	if(data.Chat_list_LayOut_Team.getChildCount()>1){
-					data.Chat_list_LayOut_Team.removeViewAt(0);
-				}
-		    	data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
-		    }
+				data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team
+						.size());
+			}
 		}, data.chatDelay);
 	}
 
@@ -984,7 +1028,8 @@ public class Chat_Team extends Activity {
 		Runnable runnable = new Runnable() {
 			public void run() {
 				String _Url = "";
-				if (url.contains("googleusercontent.com") || url.contains("/gs_member/member_images/")) {
+				if (url.contains("googleusercontent.com")
+						|| url.contains("/gs_member/member_images/")) {
 					_Url = url;
 				} else {
 					_Url = "http://183.90.171.209/chat/stk/" + url;
@@ -992,8 +1037,9 @@ public class Chat_Team extends Activity {
 				Bitmap pic = null;
 				if (SessionManager.getImageSession(Chat_Team.this, url) == null) {
 					pic = loadImageFromUrl(_Url);
-					if(pic!=null){
-						SessionManager.createNewImageSession(Chat_Team.this, url, pic);
+					if (pic != null) {
+						SessionManager.createNewImageSession(Chat_Team.this,
+								url, pic);
 						data.BitMapHash.put(url, pic);
 					}
 				} else {
@@ -1020,19 +1066,20 @@ public class Chat_Team extends Activity {
 
 		new Thread(runnable).start();
 	}
-	
+
 	public void startDownloadNonCache(final String url, final ImageView img_H) {
 		Runnable runnable = new Runnable() {
 			public void run() {
 				String _Url = "";
-				if (url.contains("googleusercontent.com") || url.contains("/gs_member/member_images/")) {
+				if (url.contains("googleusercontent.com")
+						|| url.contains("/gs_member/member_images/")) {
 					_Url = url;
 				} else {
 					_Url = "http://183.90.171.209/chat/stk/" + url;
 				}
 				Bitmap pic = null;
 				pic = loadImageFromUrl(_Url);
-				if(pic!=null){
+				if (pic != null) {
 					data.BitMapHash.put(url, pic);
 				}
 				final Bitmap _pic = pic;
