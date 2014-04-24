@@ -210,12 +210,9 @@ public class Chat_Team extends Activity {
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 					int arg3) {
 				if (Chat_input.getLineCount() > 1) {
-					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
-							LinearLayout.LayoutParams.WRAP_CONTENT,
-							(pixels * 3) / 2));
+					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(0, (pixels * 3) / 2, 1));
 				} else {
-					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(
-							LinearLayout.LayoutParams.WRAP_CONTENT, pixels));
+					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(0, pixels, 1));
 				}
 			}
 
