@@ -156,7 +156,7 @@ public class STKShop_Page extends Activity{
 		try {
 			final JSONObject STK_Item = STK_list.get(position);
 			JSONArray STK_Item_arr = STK_Item.getJSONArray("data");
-			String ImgTxt = STK_Item_arr.getJSONObject(0).getString("sk_img") + "." + STK_Item_arr.getJSONObject(0).getString("sk_type");
+			String ImgTxt = STK_Item.getString("sk_preview");
 			if(ImgTxt.contains(".gif")){
 				Ion.with(Preview_img)
 					.placeholder(R.drawable.soccer_icon)
@@ -280,8 +280,7 @@ public class STKShop_Page extends Activity{
 				retval.setPadding(5, 0, 5, 0);
 				retval.setMinimumHeight(50);
 				JSONObject STK_Item = STK_list.get(position);
-				JSONArray STK_Item_arr = STK_Item.getJSONArray("data");
-				String ImgTxt = STK_Item_arr.getJSONObject(0).getString("sk_img") + "." + STK_Item_arr.getJSONObject(0).getString("sk_type");
+				String ImgTxt = STK_Item.getString("sk_preview");
 				
 				ImageView Sticker = new ImageView(mContext);
 				Sticker.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
