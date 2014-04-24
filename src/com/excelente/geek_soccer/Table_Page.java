@@ -286,6 +286,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					flagtplAdapter = false;
 				}
 				
+				tabs.setCurrentTabByTag(tag);
 			}else{
 				Toast.makeText(getActivity(), "No Score Table", Toast.LENGTH_SHORT).show();
 			}

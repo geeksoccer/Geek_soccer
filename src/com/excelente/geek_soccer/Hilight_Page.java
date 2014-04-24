@@ -474,6 +474,8 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			Editor editSharePre = sharePre.edit();
 			editSharePre.putInt(tag, hilightModel.getHilightId());
 			editSharePre.commit();
+			
+			tabs.setCurrentTabByTag(tag);
 		}
 	}
 
@@ -651,7 +653,6 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	} 
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onTabChanged(String tag) {
 		if(tag.equals("tag0")){

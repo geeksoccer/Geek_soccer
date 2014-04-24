@@ -331,6 +331,8 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			Editor editSharePre = sharePre.edit();
 			editSharePre.putInt(tag, newsModel.getNewsId());
 			editSharePre.commit();
+			
+			tabs.setCurrentTabByTag(tag); 
 		}
 	}
 	
