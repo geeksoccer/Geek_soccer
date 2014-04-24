@@ -77,6 +77,9 @@
     <string name="close_app_title">Close App</string>
     <string name="close_app_question">Do you want to close this app?</string>
     
+    <string name="logout_app_title">Logout App</string>
+    <string name="logout_app_question">Do you want to logout this app?</string>
+    
     <string-array name="team_list">
         <item>Arsenal</item>
         <item>Chelsea</item>

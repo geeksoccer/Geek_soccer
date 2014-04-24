@@ -1,28 +1,18 @@
 package com.excelente.geek_soccer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.service.UpdateService;
-import com.excelente.geek_soccer.utils.HttpConnectUtils;
-import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -44,11 +34,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
-	
-	private static final String MEMBER_SIGN_OUT_URL = "http://183.90.171.209/gs_member/member_sign_out.php";
 	
 	boolean customTitleSupported;
 	private CustomViewPager mViewPager;
@@ -66,9 +53,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	ImageView TeamLogo;
 	
 	LinearLayout Content_view;
-	Context mContext;
+	Activity mContext;
 	private TextView title_bar;
-	private Intent serviceIntent; 
+	private static Intent serviceIntent; 
 	private static ControllParameter data;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +158,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		if(SessionManager.getMember(MainActivity.this).getRole() == 1){
 			menu_btn.setVisibility(View.VISIBLE);
 		}else{
-			menu_btn.setVisibility(View.GONE);
+			menu_btn.setVisibility(View.INVISIBLE);
 		}
 		
 		menu_btn.setOnClickListener(new View.OnClickListener() {
@@ -223,19 +210,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 					
 					dialog.create();
 					dialog.show();
-				}
-			}
-		});
-		
-		logout_btn = (ImageView)findViewById(R.id.Logout_btn);
-		logout_btn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) { 
-				if(NetworkUtils.isNetworkAvailable(mContext)){
-					new doSignOutTask(MainActivity.this).execute(SessionManager.getMember(MainActivity.this));
-				}else{
-					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -477,62 +451,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		confirmDialog.setCancelable(true);
 		confirmDialog.show();
 	}
-	
-	class doSignOutTask extends AsyncTask<MemberModel, Void, Boolean>{
-		
-		Activity mActivity; 
-		ProgressDialog mConnectionProgressDialog;
-		
-		public doSignOutTask(Activity context) {
-			mActivity = context;
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			
-			mConnectionProgressDialog = new ProgressDialog(mActivity);
-	        mConnectionProgressDialog.setCancelable(false);
-			mConnectionProgressDialog.setMessage("Signing out...");
-			mConnectionProgressDialog.show();
-		}
-		
-		@Override
-		protected Boolean doInBackground(MemberModel... params) {
-			MemberModel member = params[0];
-			
-			List<NameValuePair> memberParam = new ArrayList<NameValuePair>();
 
-			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_UID, String.valueOf(member.getUid())));
-			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, member.getToken()));
-			
-			String dev_id = Secure.getString(mActivity.getContentResolver(),Secure.ANDROID_ID);
-			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
-				
-			String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_SIGN_OUT_URL, memberParam);
-				
-			if(memberStr.trim().equals("updated token")){ 
-				return true;
-			}
-				
-			return false;
-		}
-		
-		@Override
-		protected void onPostExecute(Boolean memberToken) {
-			super.onPostExecute(memberToken);
-			
-			mConnectionProgressDialog.dismiss();
-			
-			if(memberToken){
-				SessionManager.clearMember(mActivity);
-				if(serviceIntent!=null)
-					stopService(serviceIntent);
-				mActivity.finish();
-			}else{
-				Toast.makeText(mActivity, "Sign Out Failed", Toast.LENGTH_SHORT).show();
-			}
-		}
-		
+	public static Intent getServiceIntent() {
+		return serviceIntent;
 	}
 }

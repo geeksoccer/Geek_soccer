@@ -22,22 +22,13 @@
             android:id="@+id/Title_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/Logout_btn"
+            android:layout_toLeftOf="@+id/Menu_btn"
             android:layout_toRightOf="@+id/Team_Logo"
             android:gravity="center"
             android:textSize="20dp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:text="@string/title_bar_news" />
-        
-         <ImageView
-            android:id="@+id/Logout_btn"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_toLeftOf="@+id/Menu_btn"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-           	android:src="@drawable/log_out" />
          
         <Button
             android:id="@+id/Menu_btn"

@@ -1,8 +1,18 @@
 package com.excelente.geek_soccer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.excelente.geek_soccer.model.MemberModel;
+import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +20,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Handler;
+import android.provider.Settings.Secure;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,16 +40,20 @@ import android.widget.Toast;
 
 public class SideMenuLayout implements OnClickListener{
 	
-	Context mContext;
+	private static final String MEMBER_SIGN_OUT_URL = "http://183.90.171.209/gs_member/member_sign_out.php";
+	
+	Activity mContext;
 
 	private Button profileBtn;
 
 	private Button rateBtn;
 
 	private Button shareBtn;
+
+	private Button logoutBtn;
 	
 	private static ControllParameter data;
-	public LinearLayout CreateMenu(LinearLayout MainLayout, final Context mContext) {
+	public LinearLayout CreateMenu(LinearLayout MainLayout, final Activity mContext) {
 		
 		data = ControllParameter.getInstance(mContext);
 		
@@ -83,6 +99,9 @@ public class SideMenuLayout implements OnClickListener{
 		
 		shareBtn = (Button)data.Menu_View.findViewById(R.id.Share);
 		shareBtn.setOnClickListener(this); 
+		 
+		logoutBtn = (Button)data.Menu_View.findViewById(R.id.logINOUT);
+		logoutBtn.setOnClickListener(this); 
 		
 		return data.Menu_Layout;
 	}
@@ -166,7 +185,11 @@ public class SideMenuLayout implements OnClickListener{
 				hideMenuNoAni();
 				showShareAppDialog();
 				break;
-	
+			}
+			case R.id.logINOUT:{
+				hideMenuNoAni();
+				showLogOutAppDialog();
+				break;
 			}
 		}
 	}
@@ -283,5 +306,114 @@ public class SideMenuLayout implements OnClickListener{
 		}else{ 
 			Toast.makeText(mContext, mContext.getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
 		}
+	}
+	
+	protected void showLogOutAppDialog() {
+		final Dialog confirmDialog = new Dialog(mContext); 
+		
+		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
+		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		TextView question = (TextView)view.findViewById(R.id.dialog_question);
+		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
+		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		
+		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		confirmDialog.setContentView(view);
+		
+		title.setText(mContext.getResources().getString(R.string.logout_app_title));
+		Drawable img = mContext.getResources().getDrawable(R.drawable.log_out);
+		img.setBounds( 0, 0, 60, 60 );
+		title.setCompoundDrawables( img, null, null, null );
+		
+		question.setText(mContext.getResources().getString(R.string.logout_app_question));
+		
+		closeBt.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				confirmDialog.dismiss();
+			}
+
+		}); 
+		
+		btComfirm.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				doLogOutApp(mContext); 
+				confirmDialog.dismiss(); 
+			}
+
+		});
+		
+		confirmDialog.setCancelable(true);
+		confirmDialog.show();
+	}
+
+	protected void doLogOutApp(Activity mContext) {
+		if(NetworkUtils.isNetworkAvailable(mContext)){
+			new doSignOutTask(mContext).execute(SessionManager.getMember(mContext));
+		}else{
+			Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	class doSignOutTask extends AsyncTask<MemberModel, Void, Boolean>{
+		
+		Activity mActivity; 
+		ProgressDialog mConnectionProgressDialog;
+		
+		public doSignOutTask(Activity context) {
+			mActivity = context;
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			
+			mConnectionProgressDialog = new ProgressDialog(mActivity);
+	        mConnectionProgressDialog.setCancelable(false);
+			mConnectionProgressDialog.setMessage("Signing out...");
+			mConnectionProgressDialog.show();
+		}
+		
+		@Override
+		protected Boolean doInBackground(MemberModel... params) {
+			MemberModel member = params[0];
+			
+			List<NameValuePair> memberParam = new ArrayList<NameValuePair>();
+
+			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_UID, String.valueOf(member.getUid())));
+			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, member.getToken()));
+			
+			String dev_id = Secure.getString(mActivity.getContentResolver(),Secure.ANDROID_ID);
+			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
+				
+			String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_SIGN_OUT_URL, memberParam);
+				
+			if(memberStr.trim().equals("updated token")){ 
+				return true;
+			}
+				
+			return false;
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean memberToken) {
+			super.onPostExecute(memberToken);
+			
+			mConnectionProgressDialog.dismiss();
+			
+			if(memberToken){
+				SessionManager.clearMember(mActivity);
+				if(MainActivity.getServiceIntent()!=null)
+					mActivity.stopService(MainActivity.getServiceIntent());
+				mActivity.finish();
+			}else{
+				Toast.makeText(mActivity, "Sign Out Failed", Toast.LENGTH_SHORT).show();
+			}
+		}
+		
 	}
 }
