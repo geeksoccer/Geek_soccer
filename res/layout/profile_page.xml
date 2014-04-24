@@ -110,7 +110,7 @@
             android:layout_alignLeft="@+id/member_name"
             android:layout_alignParentTop="true"
             android:layout_alignRight="@+id/member_name"
-            android:background="@color/common_action_bar_splitter"
+            android:background="@color/news_gray"
             android:gravity="center" >
 
             <ImageView

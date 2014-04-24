@@ -161,6 +161,13 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	}
 	private void menu_setting() {
 		menu_btn = (Button)findViewById(R.id.Menu_btn);
+		
+		if(SessionManager.getMember(MainActivity.this).getRole() == 1){
+			menu_btn.setVisibility(View.VISIBLE);
+		}else{
+			menu_btn.setVisibility(View.GONE);
+		}
+		
 		menu_btn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -168,9 +175,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				if(SessionManager.getMember(MainActivity.this).getRole() == 1){
 					AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
 					dialog.setTitle("Select News Team");
-					
-					CharSequence[] teams = new CharSequence[]{"Arsenal", "Chelsea","Liverpool", "ManU", "Others"};
-					dialog.setSingleChoiceItems(teams, SessionManager.getMember(MainActivity.this).getTeamId()-1, new DialogInterface.OnClickListener() {
+					dialog.setSingleChoiceItems(getResources().getStringArray(R.array.team_list), SessionManager.getMember(MainActivity.this).getTeamId()-1, new DialogInterface.OnClickListener() {
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
