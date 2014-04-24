@@ -48,7 +48,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,14 +72,11 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 
 	private SoftKeyboardHandledLinearLayout layoutProfile;
 	
-	boolean keybroadFlag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e("onCreate", "onCreate");
-		
-		keybroadFlag = true;
 		
 		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
 		imageChooserManager.setImageChooserListener(this);
@@ -131,7 +127,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		
 		memberName = (EditText) findViewById(R.id.member_name);
 		memberName.setText(SessionManager.getMember(Profile_Page.this).getNickname());
-		//memberName.setSelection(memberName.getText().length());
+		memberName.setSelection(memberName.getText().length());
 		
 		memberEmail = (TextView) findViewById(R.id.profile_email);
 		memberEmail.setText(SessionManager.getMember(Profile_Page.this).getEmail());
@@ -407,12 +403,6 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	@Override
 	public void onShown() {
 		memberPhoto.setVisibility(View.GONE);
-		
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		if(imm != null && keybroadFlag){
-			imm.hideSoftInputFromWindow(memberName.getWindowToken(), 0);
-			keybroadFlag = false;
-		}
 	}
 
 	@Override
