@@ -12,9 +12,12 @@ import java.util.Map;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.excelente.geek_soccer.view.SoftKeyboardHandledLinearLayout;
+import com.excelente.geek_soccer.view.SoftKeyboardHandledLinearLayout.OnSoftKeyboardListener;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
@@ -45,6 +48,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,7 +56,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Profile_Page extends Activity implements OnClickListener, ImageChooserListener{
+public class Profile_Page extends Activity implements OnClickListener, ImageChooserListener, OnSoftKeyboardListener{
 	
 	public static final int MAX_IMAGE = 512;
 	
@@ -67,11 +71,17 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	private TextView memberEmail;
 	private TextView memberFT;
 
+	private SoftKeyboardHandledLinearLayout layoutProfile;
+	
+	boolean keybroadFlag;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e("onCreate", "onCreate");
-
+		
+		keybroadFlag = true;
+		
 		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
 		imageChooserManager.setImageChooserListener(this);
 	}
@@ -102,11 +112,15 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		
 		bitmapPhoto = null;
 		
+		layoutProfile = (SoftKeyboardHandledLinearLayout) findViewById(R.id.Layout_PROFILE);
+		layoutProfile.setOnSoftKeyboardListener(this);
+		
 		upBtn = (LinearLayout) findViewById(R.id.Up_btn);
 		upBtn.setOnClickListener(this);  
 		
 		memberPhoto = (ImageView) findViewById(R.id.member_photo);
 		memberPhoto.setOnClickListener(this);
+		memberPhoto.setVisibility(View.VISIBLE);
 		//memberPhoto.getLayoutParams().height = (int) ConvertUtil.convertPixelsToDp(MAX_IMAGE, this);
 		if(SessionManager.hasKey(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())){ 
 			memberPhoto.setImageBitmap(SessionManager.getImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())); 
@@ -117,13 +131,12 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		
 		memberName = (EditText) findViewById(R.id.member_name);
 		memberName.setText(SessionManager.getMember(Profile_Page.this).getNickname());
-		memberName.setSelection(memberName.getText().length());
+		//memberName.setSelection(memberName.getText().length());
 		
 		memberEmail = (TextView) findViewById(R.id.profile_email);
 		memberEmail.setText(SessionManager.getMember(Profile_Page.this).getEmail());
 		
 		memberFT = (TextView) findViewById(R.id.profile_favorit_team);
-		Log.e("Team", "Team " + SessionManager.getMember(Profile_Page.this).getTeamId());
 		memberFT.setText(getResources().getStringArray(R.array.team_list)[SessionManager.getMember(Profile_Page.this).getTeamId()-1]);
 		
 		saveBtn = (RelativeLayout) findViewById(R.id.Footer_Layout); 
@@ -300,10 +313,13 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 			super.onPostExecute(result);
 			dialog.dismiss();
 			if(result.trim().equals("OK Success")){
-				SessionManager.getMember(Profile_Page.this).setNickname(memberName.getText().toString().trim());
+				MemberModel member = SessionManager.getMember(Profile_Page.this);
+				member.setNickname(memberName.getText().toString().trim());
+				SessionManager.setMember(Profile_Page.this, member);
 				
 				if(bitmapPhoto!=null){
-					SessionManager.getMember(Profile_Page.this).setPhoto(MEMBER_IMAGES_URL + SessionManager.getMember(Profile_Page.this).getUid() + ".png");
+					member.setPhoto(MEMBER_IMAGES_URL + SessionManager.getMember(Profile_Page.this).getUid() + ".png");
+					SessionManager.setMember(Profile_Page.this, member);
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
@@ -371,6 +387,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 							
 							bitmapPhoto = Bitmap.createScaledBitmap(bitmapPhoto, width, height, false);
 							memberPhoto.setImageBitmap(bitmapPhoto);
+							memberPhoto.setVisibility(View.VISIBLE);
 							
 						}catch(OutOfMemoryError out){
 							Toast.makeText(Profile_Page.this, "Please Pick Image Less Size.", Toast.LENGTH_SHORT).show();
@@ -384,5 +401,24 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		
 		});
 	}
+
+	@Override
+	public void onShown() {
+		memberPhoto.setVisibility(View.GONE);
+		
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		if(imm != null && keybroadFlag){
+			imm.hideSoftInputFromWindow(memberName.getWindowToken(), 0);
+			keybroadFlag = false;
+		}
+	}
+
+	@Override
+	public void onHidden() {
+		memberPhoto.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void onNoEvent() {}
 
 }
