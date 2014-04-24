@@ -74,6 +74,9 @@
     <string name="share_app_question">Do you want to share app \n for friend\'s known this app?</string>
     <string name="share_by">Share By...</string>
     
+    <string name="close_app_title">Close App</string>
+    <string name="close_app_question">Do you want to close this app?</string>
+    
     <string-array name="team_list">
         <item>Arsenal</item>
         <item>Chelsea</item>
