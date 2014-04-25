@@ -72,7 +72,7 @@ public class ControllParameter {
 	int liveScore_Cur = 1;
 	int chat_Cur = 0;
 	SocketIO socket_All = null;
-	SocketIO socket_Team = null;
+	static SocketIO socket_Team = null;
 	SocketIO socket_LiveScore = null;
 	
 	

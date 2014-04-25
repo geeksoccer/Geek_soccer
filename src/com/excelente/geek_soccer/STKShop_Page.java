@@ -48,6 +48,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -139,7 +140,6 @@ public class STKShop_Page extends Activity{
 	public void Detail_STK_Dialog(final int position){
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		//dialog.setTitle(STK_Item.getString("sk_bname"));
 		
 		LayoutInflater factory = LayoutInflater.from(this);
 		View DialogV = factory.inflate(R.layout.stk_detail_layout, null);
@@ -149,6 +149,14 @@ public class STKShop_Page extends Activity{
 		TextView Stk_name = (TextView)DialogV.findViewById(R.id.stk_name);
 		TextView Stk_by = (TextView)DialogV.findViewById(R.id.stk_by);
 		TextView Stk_detail = (TextView)DialogV.findViewById(R.id.stk_detail);
+		ImageView closeBt = (ImageView) DialogV.findViewById(R.id.close_icon);
+		closeBt.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+
+		}); 
 		but_price = (Button)DialogV.findViewById(R.id.download);
 		down_progress = (ProgressBar)DialogV.findViewById(R.id.download_progress);
 		down_progress.setVisibility(RelativeLayout.GONE);
@@ -172,12 +180,16 @@ public class STKShop_Page extends Activity{
 				}
 			}
 			Stk_name.setText(STK_Item.getString("sk_bname"));
+			Stk_name.setTextSize(16);
 			Stk_by.setText("By " + STK_Item.getString("sk_creator_name"));
+			Stk_by.setTextSize(10);
 			Stk_detail.setText(STK_Item.getString("sk_detail"));
 			if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
 				but_price.setText("Downloaded");
+				but_price.setTextColor(Color.GREEN);
 				but_price.setEnabled(false);
 			}else{
+				but_price.setTextColor(Color.RED);
 				if(STK_Item.getString("sk_price_set").equals("0")){
 					but_price.setText("Price: " + "Free");
 				}else{
@@ -276,7 +288,7 @@ public class STKShop_Page extends Activity{
 			LinearLayout retval = new LinearLayout(mContext);
 			try {
 				retval.setOrientation(LinearLayout.HORIZONTAL);
-				//retval.setGravity(Gravity.CENTER);
+				retval.setGravity(Gravity.CENTER_VERTICAL);
 				retval.setPadding(5, 0, 5, 0);
 				retval.setMinimumHeight(50);
 				JSONObject STK_Item = STK_list.get(position);
@@ -309,26 +321,29 @@ public class STKShop_Page extends Activity{
 				TextView txt_name = new TextView(mContext);
 				txt_name.setTypeface(Typeface.DEFAULT_BOLD);
 				txt_name.setText(STK_Item.getString("sk_bname"));
+				txt_name.setTextSize(16);
 				txt_name.setTextColor(colors);
 				
 				TextView txt_artist_name = new TextView(mContext);
+				txt_artist_name.setTextSize(10);
 				txt_artist_name.setTypeface(Typeface.DEFAULT_BOLD);
 				txt_artist_name.setText("By " + STK_Item.getString("sk_creator_name"));
 				txt_artist_name.setTextColor(colors);
 				
 				TextView txt_price = new TextView(mContext);
 				txt_price.setTypeface(Typeface.DEFAULT_BOLD);
+				
 				if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
+					txt_price.setTextColor(Color.GREEN);
 					txt_price.setText("Downloaded");
 				}else{
+					txt_price.setTextColor(Color.RED);
 					if(STK_Item.getString("sk_price_set").equals("0")){
 						txt_price.setText("Price: " + "Free");
 					}else{
 						txt_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
 					}
 				}
-				
-				txt_price.setTextColor(colors);
 				
 				Detail_Layout.addView(txt_name);
 				Detail_Layout.addView(txt_artist_name);
@@ -484,6 +499,7 @@ public class STKShop_Page extends Activity{
 						}
 					}
 					down_progress.setVisibility(RelativeLayout.GONE);
+					but_price.setTextColor(Color.GREEN);
 					if(Size_update_chk!=STK_exist_list.size()){
 						but_price.setText("Downloaded");
 					}else{

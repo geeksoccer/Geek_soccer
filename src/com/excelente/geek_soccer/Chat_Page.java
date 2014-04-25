@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,25 +57,25 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
         mLocalActivityManager.dispatchCreate(savedInstanceState);
 		tabHost = (TabHost)myView.findViewById(android.R.id.tabhost);
         tabHost.setup(mLocalActivityManager);
-        
-        Intent FeaturedIntent = new Intent().setClass(myView.getContext(), Chat_Team.class);
-        String teamName="";
-        if(teamID == 1){
-        	teamName = "Arsenal Room";
-		}else if(teamID == 2){
-			teamName = "Chelsea Room";
-		}else if(teamID == 3){
-			teamName = "liverpool Room";
-		}else if(teamID == 4){
-			teamName = "ManU Room";
-		}        
-        setupTab(FeaturedIntent, "Team", teamName, 0, true);
-        
-        if(teamID!=0){
-        	Intent browseIntent = new Intent().setClass(myView.getContext(), Chat_All.class);
-            setupTab(browseIntent, "All", "Global Room", 0, false);
+        Log.d("TEST", "teamID::"+teamID);
+        if(teamID!=5){
+        	Intent FeaturedIntent = new Intent().setClass(myView.getContext(), Chat_Team.class);
+            String teamName="";
+            if(teamID == 1){
+            	teamName = "Arsenal Room";
+    		}else if(teamID == 2){
+    			teamName = "Chelsea Room";
+    		}else if(teamID == 3){
+    			teamName = "liverpool Room";
+    		}else if(teamID == 4){
+    			teamName = "ManU Room";
+    		}        
+            setupTab(FeaturedIntent, "Team", teamName, 0, true);
         }
 
+        Intent browseIntent = new Intent().setClass(myView.getContext(), Chat_All.class);
+        setupTab(browseIntent, "All", "Global Room", 0, false);
+        
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
 			tabHost.getTabWidget().getChildAt(i).findViewById(R.id.selected).setVisibility(View.INVISIBLE);
 		}

@@ -111,7 +111,7 @@ public class Chat_Team extends Activity {
 		super.onCreate(savedInstanceState);
 
 		data = ControllParameter.getInstance(this);
-
+		
 		setContentView(R.layout.chat_layout);
 		mContext = this;
 		data.lstViewChatTeam = new ListView(mContext);
