@@ -738,20 +738,25 @@ public class LiveScore_Today extends Activity {
 	}
 	
 	public void NotifyLiveScore(final String Home, final String newScore, final String Away, final String Time) {
-		if(!data.OldTime.equals("FT")){
-			if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
-					|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
-					|| data.OldTime.equals("") ){
-				NotificationManager mNotifyManager = (NotificationManager) mContext
-						.getSystemService(Context.NOTIFICATION_SERVICE);
-				android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
-				mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
-						.setContentText("Time: "+Time)
-						.setSmallIcon(R.drawable.livescore_h)
-						.setDefaults(Notification.DEFAULT_ALL);
-				mNotifyManager.notify(0, mBuilder.build());
-			}
+		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore)==null){
+			SessionManager.setSetting(mContext, SessionManager.setting_notify_livescore, "true");
 		}
+		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
+			if(!data.OldTime.equals("FT")){
+				if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
+						|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
+						|| data.OldTime.equals("") ){
+					NotificationManager mNotifyManager = (NotificationManager) mContext
+							.getSystemService(Context.NOTIFICATION_SERVICE);
+					android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
+					mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
+							.setContentText("Time: "+Time)
+							.setSmallIcon(R.drawable.livescore_h)
+							.setDefaults(Notification.DEFAULT_ALL);
+					mNotifyManager.notify(0, mBuilder.build());
+				}
+			}
+		}		
 	}
 	
 	public static Bitmap loadImageFromUrl(String url) {
