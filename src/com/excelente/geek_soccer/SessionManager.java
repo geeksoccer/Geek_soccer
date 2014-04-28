@@ -14,7 +14,13 @@ import android.util.Log;
  
 public class SessionManager {
     
-    final public static String MEMBER_SHAREPREFERENCE = "MEMBER_SHAREPREFERENCE";
+	public final static String setting_lang = "setting_lang";
+	public final static String setting_notify_team_news = "setting_notify_team_news";
+	public final static String setting_notify_global_news = "setting_notify_global_news";
+	public final static String setting_notify_hilight = "setting_notify_hilight";
+	public final static String setting_notify_livescore = "setting_notify_livescore";
+	
+	public final static String MEMBER_SHAREPREFERENCE = "MEMBER_SHAREPREFERENCE";
 	
 	static MemberModel member;
 	static boolean globalNews = false;
@@ -124,4 +130,16 @@ public class SessionManager {
     	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
     	return memberFile.contains(key);
     }
+    
+    public static void setSetting(Context context, String key, String val) {
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+		Editor editMember = memberFile.edit();
+		editMember.putString(key, val);
+		editMember.commit();
+	}
+    
+    public static String getSetting(Context context, String key) {
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+    	return memberFile.getString(key, "null");
+	}
 }

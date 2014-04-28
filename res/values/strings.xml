@@ -20,6 +20,7 @@
     <string name="title_bar_score_broads">Score Broads</string>
     <string name="title_bar_hilight">Hilights</string>
     <string name="title_bar_profile">PROFILE</string>
+    <string name="title_bar_setting">SETTING</string>
     
     <string name="table_head_seq">#</string>
     <string name="table_head_team">Team</string>
@@ -88,5 +89,10 @@
         <item>Liverpool</item>
         <item>Manchester United</item>
         <item>Other</item>
+    </string-array>
+    
+    <string-array name="lang_list">
+        <item>English</item>
+        <item>Thai</item>
     </string-array>
 </resources>

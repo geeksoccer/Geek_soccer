@@ -51,6 +51,8 @@ public class SideMenuLayout implements OnClickListener{
 	private Button shareBtn;
 
 	private Button logoutBtn;
+
+	private Button settingBtn;
 	
 	private static ControllParameter data;
 	public LinearLayout CreateMenu(LinearLayout MainLayout, final Activity mContext) {
@@ -99,6 +101,9 @@ public class SideMenuLayout implements OnClickListener{
 		
 		shareBtn = (Button)data.Menu_View.findViewById(R.id.Share);
 		shareBtn.setOnClickListener(this); 
+		 
+		settingBtn = (Button)data.Menu_View.findViewById(R.id.Setting);
+		settingBtn.setOnClickListener(this); 
 		 
 		logoutBtn = (Button)data.Menu_View.findViewById(R.id.logINOUT);
 		logoutBtn.setOnClickListener(this); 
@@ -184,6 +189,12 @@ public class SideMenuLayout implements OnClickListener{
 			case R.id.Share:{
 				hideMenuNoAni();
 				showShareAppDialog();
+				break;
+			}
+			case R.id.Setting:{
+				Intent gotoSetting = new Intent(mContext, Setting_Page.class);
+				mContext.startActivity(gotoSetting);
+				hideMenuNoAni();
 				break;
 			}
 			case R.id.logINOUT:{

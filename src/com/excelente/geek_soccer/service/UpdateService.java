@@ -69,9 +69,12 @@ public class UpdateService extends Service{
 				int hilightId = sharePre.getInt(HilightModel.HILIGHT_ID, 0);
 				if(NetworkUtils.isNetworkAvailable(getApplicationContext()) && SessionManager.hasMember(getApplication())){
 					if(!isForeground(getApplicationContext().getPackageName())){ 
-						loadLastNewsTask("tag0", getURLbyTag(member, newsIdTag0, "tag0"));
-						loadLastNewsTask("tag1", getURLbyTag(member, newsIdTag1, "tag1"));
-						loadLastHilightTask(getURLHilight(hilightId));
+						if(!SessionManager.getSetting(getApplicationContext(), SessionManager.setting_notify_team_news).equals("false"))
+							loadLastNewsTask("tag0", getURLbyTag(member, newsIdTag0, "tag0"));
+						if(!SessionManager.getSetting(getApplicationContext(), SessionManager.setting_notify_global_news).equals("false"))
+							loadLastNewsTask("tag1", getURLbyTag(member, newsIdTag1, "tag1"));
+						if(!SessionManager.getSetting(getApplicationContext(), SessionManager.setting_notify_hilight).equals("false"))
+							loadLastHilightTask(getURLHilight(hilightId));
 					}else{
 						//updateMainActivity();
 					}

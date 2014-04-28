@@ -52,14 +52,21 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 	private void checkUpdateNews(Context context) {
 		sharePre = mContext.getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
 		if(!sharePre.getBoolean(UpdateService.NOTIFY_CONNECT_FIRST, true) && SessionManager.hasMember(context)){
+			
 			int newsIdTag0 = sharePre.getInt(NewsModel.NEWS_ID+"tag0", 0);
 			int newsIdTag1 = sharePre.getInt(NewsModel.NEWS_ID+"tag1", 0);
 			int hilightId = sharePre.getInt(HilightModel.HILIGHT_ID, 0);
 			String url = getURLbyTag(SessionManager.getMember(context), newsIdTag0, "tag0");
-			new LoadLastNewsTask("tag0").execute(url);
+			if(!SessionManager.getSetting(mContext, SessionManager.setting_notify_team_news).equals("false"))
+					new LoadLastNewsTask("tag0").execute(url);
+			
 			url = getURLbyTag(SessionManager.getMember(context), newsIdTag1, "tag1");
-			new LoadLastNewsTask("tag1").execute(url);
-			new LoadLastHilightTask().execute(getURLHilight(context, hilightId));
+			if(!SessionManager.getSetting(mContext, SessionManager.setting_notify_global_news).equals("false"))
+					new LoadLastNewsTask("tag1").execute(url);
+			
+			if(!SessionManager.getSetting(mContext, SessionManager.setting_notify_hilight).equals("false"))
+					new LoadLastHilightTask().execute(getURLHilight(context, hilightId));
+			
 		}
 	}
 	
