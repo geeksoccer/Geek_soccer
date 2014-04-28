@@ -99,7 +99,8 @@ public class LiveScore_Today extends Activity {
 		data.lstViewLiveScore.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
-
+		
+		data.lstViewLiveScore.setDividerHeight(0);
 		data.lstViewLiveScore.setClipToPadding(false);
 		data.imageAdapterLiveScore = new ImageAdapter(mContext.getApplicationContext());
 		data.lstViewLiveScore.setAdapter(data.imageAdapterLiveScore);
@@ -174,8 +175,13 @@ public class LiveScore_Today extends Activity {
 
 			LinearLayout retval = new LinearLayout(mContext);
 			retval.setOrientation(LinearLayout.VERTICAL);
-
+			retval.setGravity(Gravity.CENTER);
 			retval.setMinimumHeight(50);
+			
+			LinearLayout bg = new LinearLayout(mContext);
+			bg.setOrientation(LinearLayout.VERTICAL);
+			bg.setGravity(Gravity.CENTER_VERTICAL);
+			
 			JSONObject txt_Item = null;
 			try {
 				if(data.Match_list_c_JSON.size()-1>=position){
@@ -187,6 +193,8 @@ public class LiveScore_Today extends Activity {
 				txt.setTextColor(colors);
 				txt.setTypeface(Typeface.DEFAULT_BOLD);
 				if (!txt_Item.isNull("score")) {
+					bg.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+					bg.setBackgroundResource(R.drawable.card_background_white);
 					txt.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
 					txt.setGravity(Gravity.CENTER);
@@ -297,9 +305,8 @@ public class LiveScore_Today extends Activity {
 					layOut_Detail.addView(layOut_1);
 					layOut_Detail.addView(layOut_2);
 					layOut_Detail.addView(layOut_3);
-
-					retval.addView(layOut_time);
-					retval.addView(layOut_Detail);
+					bg.addView(layOut_time);
+					bg.addView(layOut_Detail);
 					if (chk_ani && last_ItemView - 1 < position) {
 						layOut_time.setAnimation(AnimationUtils.loadAnimation(
 								mContext, R.drawable.listview_anim));
@@ -309,6 +316,8 @@ public class LiveScore_Today extends Activity {
 					//retval.setBackgroundColor(Color.GRAY);
 					//retval.getBackground().setAlpha(200);
 				} else {
+					retval.setPadding(5, 5, 5, 5);
+					bg.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 					txt.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 							LayoutParams.WRAP_CONTENT));
 					txt.setGravity(Gravity.CENTER);
@@ -318,15 +327,15 @@ public class LiveScore_Today extends Activity {
 								.replaceAll("&lrm;", " "));
 					
 					txt.setTextSize(24);
-					retval.addView(txt);
+					bg.addView(txt);
 					if (chk_ani && last_ItemView - 1 < position) {
 						txt.setAnimation(AnimationUtils.loadAnimation(mContext,
 								R.drawable.listview_anim));
 					}
-					retval.setBackgroundColor(Color.DKGRAY);
-					retval.getBackground().setAlpha(200);
+					bg.setBackgroundColor(Color.DKGRAY);
+					bg.getBackground().setAlpha(200);
 				}
-
+				retval.addView(bg);
 				return retval;
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

@@ -157,23 +157,44 @@ public class Live_Score_Detail extends Activity{
 				String eventStr = "";
 				if(Split_item[1].contains("ใบเหลือง")){
 					eventStr = "ได้รับใบเหลือง";
-				}else if(Split_item[1].contains("ใบแดง")){
+				}else if(Split_item[1].contains("Yellow Card")){
+					eventStr = "Yellow Card";
+				}else if(Split_item[1].contains("ใบแดง") ){
 					eventStr = "ได้รับใบแดง";
+				}else if(Split_item[1].contains("Red Card")){
+					eventStr = "Red Card";
 				}else if(Split_item[1].contains("Yellow/Red")){
-					eventStr = "ได้รับใบเหลืองใบที่ 2 / ได้รับใบแดง";
+					if(link_t.contains("/en/")){
+						eventStr = "Yellow/Red";
+					}else{
+						eventStr = "ได้รับใบเหลืองใบที่ 2 / ได้รับใบแดง";
+					}
 				}else if(Split_item[1].contains("ยิงจุดโทษได้")
 						|| Split_item[1].contains("Pen SO Goal")
 						|| Split_item[1].contains("Pen SO Miss")){
-					eventStr = "ทำประตูได้จากจุดโทษ";
+					if(link_t.contains("/en/")){
+						eventStr = "Pen Goal";
+					}else{
+						eventStr = "ทำประตูได้จากจุดโทษ";
+					}	
 				}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
 					eventStr = "ทำเข้าประตูตัวเอง";
+				}else if(Split_item[1].contains("Own Goal")){
+					eventStr = "Own Goal";
 				}else if(Split_item[1].contains("ประตู")){
 					eventStr = "ทำประตูได้";
-				}else if(Split_item[1].contains("แอสซิสต์") ){
+				}else if(Split_item[1].contains("Goal")){
+					eventStr = "Goal";
+				}else if(Split_item[1].contains("แอสซิสต์")){
 					eventStr = "จ่ายให้เพื่อนทำประตูได้";
+				}else if(Split_item[1].contains("Assist")){
+					eventStr = "Assist";
 				}else if(Split_item[1].equals("เปลี่ยนตัว")){
 					eventStr = "เปลี่ยนตัว";
+				}else if(Split_item[1].equals("Substitution")){
+					eventStr = "Substitution";
 				}
+				
 				Toast.makeText(mContext, eventStr, Toast.LENGTH_LONG).show();
 			}
 		});
@@ -248,9 +269,11 @@ public class Live_Score_Detail extends Activity{
 				
 				retval.addView(txt_T);
 				String Event = "";
-				if(Split_item[1].contains("ใบเหลือง")){
+				if(Split_item[1].contains("ใบเหลือง")
+						|| Split_item[1].contains("Yellow Card")){
 					img_E.setImageResource(R.drawable.yellow);
-				}else if(Split_item[1].contains("ใบแดง")){
+				}else if(Split_item[1].contains("ใบแดง")
+						|| Split_item[1].contains("Red Card")){
 					img_E.setImageResource(R.drawable.red);
 				}else if(Split_item[1].contains("Yellow/Red")){
 					ImageView img_EY = new ImageView(mContext);
@@ -263,13 +286,16 @@ public class Live_Score_Detail extends Activity{
 						|| Split_item[1].contains("Pen SO Miss")){
 					Event = "(PG)";
 					img_E.setImageResource(R.drawable.goal);
-				}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
+				}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")
+						|| Split_item[1].contains("Own Goal")){
 					Event = "(OG)";
 					img_E.setImageResource(R.drawable.goal);
-				}else if(Split_item[1].contains("ประตู")){
+				}else if(Split_item[1].contains("ประตู")
+						|| Split_item[1].contains("Goal")){
 					Event = "(G)";
 					img_E.setImageResource(R.drawable.goal);
-				}else if(Split_item[1].contains("แอสซิสต์") ){
+				}else if(Split_item[1].contains("แอสซิสต์")
+						|| Split_item[1].contains("Assist")){
 					Event = "(A)";
 					img_E.setImageResource(R.drawable.assist);
 				}
@@ -280,7 +306,8 @@ public class Live_Score_Detail extends Activity{
 				
 				retval.addView(img_E);
 				retval.addView(txt_N);
-				if(Split_item[1].equals("เปลี่ยนตัว")){
+				if(Split_item[1].equals("เปลี่ยนตัว")
+						|| Split_item[1].equals("Substitution")){
 					txt_N.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					img_E.setImageResource(R.drawable.substitution);
 					txt_N.setText(NameSub[1]);

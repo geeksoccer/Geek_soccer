@@ -288,9 +288,16 @@ public class STKShop_Page extends Activity{
 			LinearLayout retval = new LinearLayout(mContext);
 			try {
 				retval.setOrientation(LinearLayout.HORIZONTAL);
-				retval.setGravity(Gravity.CENTER_VERTICAL);
-				retval.setPadding(5, 0, 5, 0);
+				retval.setGravity(Gravity.CENTER);
 				retval.setMinimumHeight(50);
+				
+				LinearLayout bg = new LinearLayout(mContext);
+				bg.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 120));
+				bg.setGravity(Gravity.CENTER_VERTICAL);
+				bg.setPadding(5, 0, 5, 0);
+				bg.setBackgroundResource(R.drawable.card_background_white);
+				bg.getBackground().setAlpha(200);
+				
 				JSONObject STK_Item = STK_list.get(position);
 				String ImgTxt = STK_Item.getString("sk_preview");
 				
@@ -357,14 +364,16 @@ public class STKShop_Page extends Activity{
 				img.setLayoutParams(new LinearLayout.LayoutParams(30, 30));
 				arrow_layout.addView(img);
 				
-				retval.addView(Sticker);
-				retval.addView(Detail_Layout);
-				retval.addView(arrow_layout);
-				
+				bg.addView(Sticker);
+				bg.addView(Detail_Layout);
+				bg.addView(arrow_layout);
+				retval.addView(bg);
+				/*
 				if(position%2==0){
 					retval.setBackgroundColor(Color.GRAY);
 					retval.getBackground().setAlpha(200);
 				}
+				*/
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
