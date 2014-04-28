@@ -80,6 +80,8 @@
     <string name="logout_app_title">Logout App</string>
     <string name="logout_app_question">Do you want to logout this app?</string>
     
+    <string name="profile_save_success">Save Success.</string>
+    
     <string-array name="team_list">
         <item>Arsenal</item>
         <item>Chelsea</item>

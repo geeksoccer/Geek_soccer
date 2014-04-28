@@ -440,9 +440,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 	}
 	
 	private List<HilightModel> getListView(List<HilightModel> hilightlist, String tag, List<HilightModel> hilightModelList) {
+		tabs.setCurrentTabByTag(tag);
+		
 		if(hilightlist == null || hilightlist.isEmpty()){ 
 			//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show(); 
-			if(hilightModelList == null){  
+			if(hilightModelList == null && getActivity()!=null){  
 				Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
 				return new ArrayList<HilightModel>(); 
 			}
@@ -474,8 +476,6 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			Editor editSharePre = sharePre.edit();
 			editSharePre.putInt(tag, hilightModel.getHilightId());
 			editSharePre.commit();
-			
-			tabs.setCurrentTabByTag(tag);
 		}
 	}
 
@@ -653,6 +653,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	} 
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onTabChanged(String tag) {
 		if(tag.equals("tag0")){

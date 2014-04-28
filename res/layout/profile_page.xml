@@ -110,7 +110,7 @@
 	        <LinearLayout
 	            android:id="@+id/layout_photo_"
 	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
+	            android:layout_height="250dp"
 	            android:layout_alignLeft="@+id/member_name"
 	            android:layout_alignParentTop="true"
 	            android:layout_alignRight="@+id/member_name"
@@ -120,10 +120,16 @@
 	            <ImageView
 	                android:id="@+id/member_photo"
 	                android:layout_width="wrap_content"
-	                android:layout_height="250dp"
+	                android:layout_height="wrap_content"
 	                android:background="@drawable/bg_press"
 	                android:padding="5dp"
 	                android:src="@drawable/ic_action_user" />
+	            
+	            <ProgressBar 
+	                android:id="@+id/member_progressbar"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:visibility="gone"/>
 	        </LinearLayout>
 	
 	        <EditText

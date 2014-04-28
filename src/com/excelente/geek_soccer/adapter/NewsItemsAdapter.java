@@ -250,9 +250,9 @@ public class NewsItemsAdapter extends PagerAdapter{
 		
 		String htmlData = "";
 		if(SessionManager.getMember(mContext).getTeamId() == 2)
-			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"</body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
+			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
 		else
-			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"</body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
+			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
 
 		newsItemView.newsContentWebview.loadData( htmlData, "text/html; charset=UTF-8", null);
         

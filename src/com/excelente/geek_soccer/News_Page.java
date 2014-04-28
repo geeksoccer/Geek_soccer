@@ -266,11 +266,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	}
 	
 	private void doLoadNewsToListView(List<NewsModel> newsList , String tag) {
+		tabs.setCurrentTabByTag(tag);
 		
 		if(tag.equals("tag0")){
 			if(newsList == null || newsList.isEmpty()){
 				//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show();
-				if(newsModelTeamList == null){  
+				if(newsModelTeamList == null && getActivity()!=null){  
 					newsModelTeamList = new ArrayList<NewsModel>(); 
 					Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
 				}
@@ -330,9 +331,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			SharedPreferences sharePre = getActivity().getSharedPreferences(UpdateService.SHARE_PERFERENCE, Context.MODE_PRIVATE);
 			Editor editSharePre = sharePre.edit();
 			editSharePre.putInt(tag, newsModel.getNewsId());
-			editSharePre.commit();
-			
-			tabs.setCurrentTabByTag(tag); 
+			editSharePre.commit(); 
 		}
 	}
 	

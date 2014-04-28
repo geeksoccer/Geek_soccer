@@ -119,26 +119,17 @@ public class NewsAdapter extends BaseAdapter{
 			    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
 					
 			    	public void onLoadingStarted(String imageUri, View view) {
-	           		 	//newsImageImageview.setVisibility(View.GONE);
-	           		 	//newsImageProgressBar.setVisibility(View.VISIBLE);
 		           	};
 		           	
 		           	@Override
 		           	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
-		           		//newsImageImageview.setVisibility(View.VISIBLE);
-		          		//newsImageProgressBar.setVisibility(View.GONE);
 		           	}
 		           	
 		           	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-		           		//newsImageImageview.setVisibility(View.VISIBLE);
-		           		//newsImageProgressBar.setVisibility(View.GONE);
-		           		//urlBitmap.put(imageUri, loadedImage);
 		           	}
 	
 					@Override
 					public void onLoadingCancelled(String imageUri, View view) {
-						//newsImageImageview.setVisibility(View.VISIBLE);
-						//newsImageProgressBar.setVisibility(View.GONE);
 					};
 				});
         	}catch(Exception e){

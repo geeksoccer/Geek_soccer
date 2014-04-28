@@ -28,6 +28,8 @@ import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
@@ -51,6 +53,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout; 
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +74,8 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	private TextView memberFT;
 
 	private SoftKeyboardHandledLinearLayout layoutProfile;
+
+	private ProgressBar progressbar;
 	
 
 	@Override
@@ -117,12 +122,44 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		memberPhoto = (ImageView) findViewById(R.id.member_photo);
 		memberPhoto.setOnClickListener(this);
 		memberPhoto.setVisibility(View.VISIBLE);
+		
+		progressbar = (ProgressBar) findViewById(R.id.member_progressbar);
+		progressbar.setVisibility(View.GONE);
 		//memberPhoto.getLayoutParams().height = (int) ConvertUtil.convertPixelsToDp(MAX_IMAGE, this);
 		if(SessionManager.hasKey(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())){ 
 			memberPhoto.setImageBitmap(SessionManager.getImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())); 
 		}else{
-			doConfigImageLoader(200, 200); 
-			ImageLoader.getInstance().displayImage(SessionManager.getMember(Profile_Page.this).getPhoto(), memberPhoto, getOptionImageLoader(SessionManager.getMember(Profile_Page.this).getPhoto()));
+			doConfigImageLoader(512, 512); 
+			ImageLoader.getInstance().displayImage(SessionManager.getMember(Profile_Page.this).getPhoto(), memberPhoto, getOptionImageLoader(SessionManager.getMember(Profile_Page.this).getPhoto()), new ImageLoadingListener() {
+				
+		    	public void onLoadingStarted(String imageUri, View view) {
+		    		progressbar.setVisibility(View.VISIBLE);
+		    		view.setVisibility(View.GONE);
+	           	};
+	           	
+	           	@Override
+	           	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
+	           		progressbar.setVisibility(View.GONE);
+	           		view.setVisibility(View.VISIBLE);
+	           	}
+	           	
+	           	public void onLoadingComplete(final String imageUri, View view, final Bitmap loadedImage) {
+	           		progressbar.setVisibility(View.GONE);
+	           		view.setVisibility(View.VISIBLE);
+	           		new Thread(new Runnable() {
+						@Override 
+						public void run() {
+							SessionManager.createNewImageSession(getApplicationContext(), imageUri, loadedImage);
+						}
+					});
+	           	}
+
+				@Override
+				public void onLoadingCancelled(String imageUri, View view) {
+					progressbar.setVisibility(View.GONE);
+					view.setVisibility(View.VISIBLE);
+				};
+			});
 		}
 		
 		memberName = (EditText) findViewById(R.id.member_name);
@@ -320,21 +357,13 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 						@Override
 						public void run() {
 							SessionManager.createNewImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto(), bitmapPhoto);
-							runOnUiThread(new Runnable() {
-								
-								@Override
-								public void run() {
-									onBackPressed();
-								}
-							});
 						}
 					}).start();
-				}else{
-					onBackPressed();
 				}
 				
+				Toast.makeText(Profile_Page.this, getResources().getString(R.string.profile_save_success), Toast.LENGTH_SHORT).show(); 
 			}else{
-				Toast.makeText(Profile_Page.this, "Internet Peoblem Try Again.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(Profile_Page.this, getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -394,10 +423,49 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 					}else{
 						Toast.makeText(Profile_Page.this, "Please Pick Image Type png, jpg and jpeg only.", Toast.LENGTH_SHORT).show();
 					}
+					
+					File thumbnailFile = new File(image.getFileThumbnail());
+					if(thumbnailFile.isFile()){
+						try {
+							delete(new File(thumbnailFile.getParent()));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		
 		});
+	}
+	
+	public static void delete(File file) throws IOException{
+	 
+	    	if(file.isDirectory()){
+	 
+	    		//directory is empty, then delete it
+	    		if(file.list().length==0){
+	    		   file.delete();
+	    		}else{
+	    		   //list all the directory contents
+	        	   String files[] = file.list();
+	 
+	        	   for (String temp : files) {
+	        	      //construct the file structure
+	        	      File fileDelete = new File(file, temp);
+	        	      //recursive delete
+	        	     delete(fileDelete);
+	        	   }
+	 
+	        	   //check the directory again, if empty then delete it
+	        	   if(file.list().length==0){
+	           	     file.delete();
+	        	   }
+	    		}
+	 
+	    	}else{
+	    		//if file, then delete it
+	    		file.delete();
+	    	}
 	}
 
 	@Override
