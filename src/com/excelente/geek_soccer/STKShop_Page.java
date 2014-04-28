@@ -292,7 +292,7 @@ public class STKShop_Page extends Activity{
 				retval.setMinimumHeight(50);
 				
 				LinearLayout bg = new LinearLayout(mContext);
-				bg.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 120));
+				bg.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 				bg.setGravity(Gravity.CENTER_VERTICAL);
 				bg.setPadding(5, 0, 5, 0);
 				bg.setBackgroundResource(R.drawable.card_background_white);
