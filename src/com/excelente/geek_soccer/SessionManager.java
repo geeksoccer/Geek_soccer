@@ -1,6 +1,7 @@
 package com.excelente.geek_soccer;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Locale;
 
 import com.excelente.geek_soccer.model.MemberModel;
 
@@ -141,5 +142,27 @@ public class SessionManager {
     public static String getSetting(Context context, String key) {
     	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
     	return memberFile.getString(key, "null");
+	}
+    
+    public static void setLangApp(Context context) {
+    	Locale myLocale = new Locale(getLang(context));
+	    Locale.setDefault(myLocale);
+	    android.content.res.Configuration config = new android.content.res.Configuration();
+	    config.locale = myLocale;
+	    context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+	}
+
+	private static String getLang(Context context) {
+		String langInt = SessionManager.getSetting(context, SessionManager.setting_lang);
+		if(langInt.equals("null")){
+			return "en";
+		}
+		switch (Integer.valueOf(langInt)) {
+			case 0:
+				return "en";
+			case 1:
+				return "th";
+		}
+		return "en";
 	}
 }

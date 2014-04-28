@@ -455,4 +455,18 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	public static Intent getServiceIntent() {
 		return serviceIntent;
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode==2 && data!=null){  
+           String message = data.getStringExtra("COMMAND_APP");   
+           if(message.equals("Restart App")){
+        	   Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage( getBaseContext().getPackageName() );
+   			   i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+   			   startActivity(i);
+   			   finish();
+           }
+        }  
+	}
 }

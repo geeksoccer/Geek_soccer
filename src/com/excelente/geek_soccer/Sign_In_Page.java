@@ -1,7 +1,6 @@
 package com.excelente.geek_soccer;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +69,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		SessionManager.setLangApp(getApplicationContext());
 		cancelNotify();
 		
 		/*MemberModel mem = new MemberModel();

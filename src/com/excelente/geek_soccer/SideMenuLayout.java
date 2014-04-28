@@ -193,7 +193,7 @@ public class SideMenuLayout implements OnClickListener{
 			}
 			case R.id.Setting:{
 				Intent gotoSetting = new Intent(mContext, Setting_Page.class);
-				mContext.startActivity(gotoSetting);
+				mContext.startActivityForResult(gotoSetting, 2);
 				hideMenuNoAni();
 				break;
 			}
@@ -427,4 +427,5 @@ public class SideMenuLayout implements OnClickListener{
 		}
 		
 	}
+	
 }

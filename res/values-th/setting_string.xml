@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="setting_topic_list">
+        <item>อังกฤษ</item>
+        <item>แจ้งเตือนข่าวทีม</item>
+        <item>แจ้งเตือนข่าวบอลรอบโลก</item>
+        <item>แจ้งเตือนไฮไลท์</item>
+        <item>แจ้งเตือนผลบอลสด</item>
+    </string-array>
+    <string-array name="setting_detail_list">
+        <item>แตะเพื่อเปลี่ยนภาษา</item>
+        <item>แตะเพื่อ เปิด/ปิด การแจ้งเตือน</item>
+        <item>แตะเพื่อ เปิด/ปิด การแจ้งเตือน</item>
+        <item>แตะเพื่อ เปิด/ปิด การแจ้งเตือน</item>
+        <item>แตะเพื่อ เปิด/ปิด การแจ้งเตือน</item> 
+    </string-array>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="label_credit">แหล่งที่มา: </string>
+    
+    <string name="str_today_news">วันนี้</string>
+    <string name="str_yesterday_news">เมื่อวาน</string>
+    <string name="str_comments_news">แสดงความคิดเห็น</string>
+    <string name="str_comment_news_send">โพสต์</string>
+
+</resources>

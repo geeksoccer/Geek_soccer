@@ -9,15 +9,23 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class Setting_Page extends Activity implements OnClickListener, OnItemClickListener{
 	
@@ -55,7 +63,6 @@ public class Setting_Page extends Activity implements OnClickListener, OnItemCli
 		
 		for (int i = 0; i < topics.length; i++) {
 			String strVal = SessionManager.getSetting(this, tags[i]);
-			Log.e(tags[i], strVal);
 			if(strVal.equals("null")){
 				if(i==0){
 					strVal = "0"; 
@@ -95,27 +102,79 @@ public class Setting_Page extends Activity implements OnClickListener, OnItemCli
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				switch (which) {
-					case 0:
-						SessionManager.setSetting(getApplicationContext(), sm.getTag(), "0");
-						sm.setTopic(getResources().getStringArray(R.array.lang_list)[0]);
-						sm.setVal("0");
-						settingAdapter.notifyDataSetChanged();
-						break;
-					case 1:
-						SessionManager.setSetting(getApplicationContext(), sm.getTag(), "1");
-						sm.setTopic(getResources().getStringArray(R.array.lang_list)[1]);
-						sm.setVal("1");
-						settingAdapter.notifyDataSetChanged();
-						break;
-				}
 				dialog.dismiss();
+				if(Integer.valueOf(sm.getVal()) != which)
+					showChangeLangDialog(sm, which);
 			}
 			
 		});
 		
 		dialog.create();
 		dialog.show();
+	}
+	
+	protected void showChangeLangDialog(final SettingModel sm, final int which) {
+		final Dialog confirmDialog = new Dialog(this); 
+		
+		View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirm, null);
+		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		TextView question = (TextView)view.findViewById(R.id.dialog_question);
+		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
+		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		 
+		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		confirmDialog.setContentView(view);
+		
+		title.setText(this.getResources().getString(R.string.change_lang_title));
+		Drawable img = this.getResources().getDrawable( R.drawable.ic_settings_language );
+		img.setBounds( 0, 0, 60, 60 );
+		title.setCompoundDrawables( img, null, null, null );
+		
+		question.setText(this.getResources().getString(R.string.change_lang_question));
+		
+		closeBt.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				confirmDialog.dismiss();
+			}
+
+		}); 
+		
+		btComfirm.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				switch (which) {
+					case 0:
+						SessionManager.setSetting(getApplicationContext(), sm.getTag(), "0");
+						sm.setTopic(getResources().getStringArray(R.array.lang_list)[0]);
+						sm.setVal("0");
+						SessionManager.setLangApp(getApplicationContext()); 
+						settingAdapter.notifyDataSetChanged();
+						break;
+					case 1:
+						SessionManager.setSetting(getApplicationContext(), sm.getTag(), "1");
+						sm.setTopic(getResources().getStringArray(R.array.lang_list)[1]);
+						sm.setVal("1");
+						SessionManager.setLangApp(getApplicationContext());
+						settingAdapter.notifyDataSetChanged();
+						break;
+				}
+				
+				confirmDialog.dismiss();
+				Intent intent=new Intent();  
+                intent.putExtra("COMMAND_APP", "Restart App");  
+                setResult(2,intent);  
+                finish();
+			}
+
+		});
+		
+		confirmDialog.setCancelable(true);
+		confirmDialog.show();
 	}
 	
 	@Override

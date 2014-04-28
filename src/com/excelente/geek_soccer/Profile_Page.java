@@ -318,7 +318,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			dialog = ProgressDialog.show(Profile_Page.this, "", "Updating Profile...", true);
+			dialog = ProgressDialog.show(Profile_Page.this, "", getResources().getString(R.string.update_profile), true);
 			dialog.setCancelable(false);
 		}
 		 

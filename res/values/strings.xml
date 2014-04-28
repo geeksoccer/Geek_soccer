@@ -56,7 +56,7 @@
     <string name="HILIGHT_TYPE_CHAMPIAN_CHIP">แชมเปี้ยนชิพ อังกฤษ</string>
     <string name="HILIGHT_TYPE_CAPITAL_ONE_CUP">แคปิตอล วัน คัพ</string>
     
-    <string name="warning_internet">โปรดตรวจสอบการเชื่อมต่ออินเตอร์เน็ต</string> 
+    <string name="warning_internet">Internet Problem Try Again</string> 
     
     <string name="global_news">Global News</string> 
     <string name="team_news">Team News</string>
@@ -81,7 +81,11 @@
     <string name="logout_app_title">Logout App</string>
     <string name="logout_app_question">Do you want to logout this app?</string>
     
+    <string name="change_lang_title">Change Language</string>
+    <string name="change_lang_question">Change Language need restart app. \n Do you want to change language and restart this app?</string>
+    
     <string name="profile_save_success">Save Success.</string>
+    <string name="update_profile">Updating Profile...</string>
     
     <string-array name="team_list">
         <item>Arsenal</item>

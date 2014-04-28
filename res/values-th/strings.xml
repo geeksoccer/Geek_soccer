@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Geek_soccer</string>
+    <string name="action_team">ทีม</string>
+
+    <string name="sign_in_gmail">เข้าสู่ระบบด้วย Gmail</string>
+    
+    <string name="video_title_error">วิดีโอนี้ไม่สามารถเล่นได้</string>
+    <string name="video_message_error">มีปัญหาขณะเล่น</string>
+    <string name="ok">ตกลง</string>
+    <string name="confirm_save">บันทึก</string>
+    
+    <string name="warn_member_name1">กรุณาอัพเดทชื่อ</string>
+    <string name="warn_member_name2">กรุณาใช้ชื่อมากกว่า 2 อักขระ หรือ เปลี่ยนรูป</string>
+    
+    <string name="title_bar_news">ข่าว</string>
+    <string name="title_bar_live_score">ผลฟุตบอลสด</string>
+    <string name="title_bar_chat">พูดคุย</string>
+    <string name="title_bar_score_broads">ตารางคะแนน</string>
+    <string name="title_bar_hilight">ไฮไลท์</string>
+    <string name="title_bar_profile">โปรไฟล์</string>
+    <string name="title_bar_setting">ตั้งค่า</string>
+    
+    <string name="table_ucl">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า แชมเปี้ยนส์ ลีก (รอบแบ่งกลุ่ม รอบสุดท้าย)</string>
+    <string name="table_acl">ได้สิทธิ์แข่งขันฟุตบอลเอเอฟซีแชมเปี้ยนส์ลีก</string>
+    <string name="table_ucl_match">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า แชมเปี้ยนส์ ลีก (รอบคัดเลือก )</string>
+    <string name="table_upl">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า ยูโรป้า ลีก (รอบเพลย์ออฟ )</string>
+    <string name="table_bundes_match">ไปเตะเพลย์ออฟ กับทีมอันดับ 3 ของ บุนเดสลีก้า 2 เพื่อหาทีมตกชั้น</string>
+    <string name="table_fail">ได้สิทธิ์ ตกชั้น</string>
+    <string name="table_par">ได้สิทธิเล่นลีกเดิม</string>
+    
+    <string name="pull_to_refresh_pull_label">ดึงลงเพื่อรีเฟช...</string>
+    <string name="pull_to_refresh_release_label">ปล่อยเพื่อรีเฟช...</string>
+    <string name="pull_to_refresh_refreshing_label">กำลังโหลด...</string>
+    <string name="pull_to_refresh_tap_label">แตะเพื่อรีเฟช...</string>
+    
+    <string name="HILIGHT_TYPE_PREMIER_LEAGUE">พรีเมียร์ลีก</string>
+    <string name="HILIGHT_TYPE_LALIGA">ลาลีกา</string>
+    <string name="HILIGHT_TYPE_CALCAIO_SERIE_A">กัลโช่ เซเรีย อา</string>
+    <string name="HILIGHT_TYPE_LEAGUE_DE_LEAGUE1">ลีกเอิง</string>
+    <string name="HILIGHT_TYPE_BUNDESLIGA">บุนเดสลีกา</string>
+    <string name="HILIGHT_TYPE_UCL">ยูฟ่า แชมป์เปี้ยนส์ ลีก</string>
+    <string name="HILIGHT_TYPE_UPL">ยูฟ่า ยูโรป้า ลีก</string>
+    <string name="HILIGHT_TYPE_CHAMPIAN_CHIP">แชมเปี้ยนชิพ อังกฤษ</string>
+    <string name="HILIGHT_TYPE_CAPITAL_ONE_CUP">แคปิตอล วัน คัพ</string>
+    
+    <string name="warning_internet">โปรดตรวจสอบการเชื่อมต่ออินเตอร์เน็ต</string> 
+    
+    <string name="global_news">ข่าวบอลรอบโลก</string> 
+    <string name="team_news">ข่าวทีมเรา</string>
+    
+    <string name="profile_favorit_team">ทีมที่ชื่นชอบ : </string>
+    <string name="profile_gender">เพศ : </string>
+    <string name="profile_email">อีเมล : </string>
+    
+    <string name="profile_username">ชื่อผู้ใช้</string>
+    
+    <string name="button_confirm_ok">ตกลง</string>
+    <string name="rate_app_title">ให้คะแนนแอพปลิเคชัน</string>
+    <string name="rate_app_question">คุณต้องการให้คะแนนแอพปลิเคชันนี้ \n เพื่อสนับสนุนนักพัฒนาหรือไม่?</string>
+    
+    <string name="share_app_title">แชร์แอพปลิเคชัน</string>
+    <string name="share_app_question">คุณต้องการแชร์แอพปลิเคชันนี้ \n เพื่อให้เพื่อนของคุณรับทราบหรือไม่?</string>
+    <string name="share_by">แชร์กับ...</string>
+    
+    <string name="close_app_title">ปิดแอพปลิเคชัน</string>
+    <string name="close_app_question">คุณต้องการปิดแอพปลิเคชันนี้หรือไม่?</string>
+    
+    <string name="logout_app_title">ออกจากระบบ</string>
+    <string name="logout_app_question">คุณต้องการออกจากระบบนี้หรือไม่?</string>
+    
+    <string name="change_lang_title">เปลี่ยนภาษา</string>
+    <string name="change_lang_question">การเปลียนภาษานั้นจำเป็นต้องมีการรีสตาร์ทแอพปลิเคชัน \n คุณต้องการเปลี่ยนภาษาและรีสตาร์ทแอพปลิเคชั่นนี้หรือไม่?</string>
+    
+    <string name="profile_save_success">บันทึกเรียบร้อย.</string>
+    <string name="update_profile">กำลังอัพเดทโปรไฟล์...</string>
+    
+    <string-array name="team_list">
+        <item>อาเซน่อล</item>
+        <item>เชลซี</item>
+        <item>ลิเวอร์พูล</item>
+        <item>แมนเชสเตอร์ ยูไนเต็ด</item>
+        <item>ทีมอื่น</item>
+    </string-array>
+    
+    <string-array name="lang_list">
+        <item>อังกฤษ</item>
+        <item>ไทย</item>
+    </string-array>
+</resources>
