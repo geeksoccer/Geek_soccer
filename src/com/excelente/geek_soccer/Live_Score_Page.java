@@ -68,13 +68,13 @@ public class Live_Score_Page extends Fragment implements
 		tabHost.setup(mLocalActivityManager);
 
 		Intent YesterdayIntent = new Intent().setClass(getActivity(), LiveScore_Yesterday.class);
-		setupTab(YesterdayIntent, "y", "YESTERDAY", 0, false);
+		setupTab(YesterdayIntent, "y", getResources().getString(R.string.str_yesterday_livescore), 0, false);
 
 		Intent TodayIntent = new Intent().setClass(getActivity(), LiveScore_Today.class);
-		setupTab(TodayIntent, "c", "TODAY", 0, true);
+		setupTab(TodayIntent, "c", getResources().getString(R.string.str_today_livescore), 0, true);
 
 		Intent TomorrowIntent = new Intent().setClass(getActivity(), LiveScore_Tomorrow.class);
-		setupTab(TomorrowIntent, "t", "TOMORROW", 0, false);
+		setupTab(TomorrowIntent, "t", getResources().getString(R.string.str_tomorrow_livescore), 0, false);
 
 		for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
 			tabHost.getTabWidget().getChildAt(i).findViewById(R.id.selected).setVisibility(View.INVISIBLE);

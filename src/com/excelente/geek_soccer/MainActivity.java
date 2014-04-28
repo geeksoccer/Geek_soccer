@@ -299,35 +299,35 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		this.mViewPager.setOffscreenPageLimit(4);
 		
 		if(index==0){
-			data.PageNameSelected = "NEWS";
+			data.PageNameSelected = getResources().getString(R.string.title_bar_news);
 			news_tab.setBackgroundResource(R.drawable.news_h);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==1){
-			data.PageNameSelected = "LIVESCORE";
+			data.PageNameSelected = getResources().getString(R.string.title_bar_live_score);
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore_h);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==2){
-			data.PageNameSelected = "CHAT ROOM";
+			data.PageNameSelected = getResources().getString(R.string.title_bar_chat);
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat_h);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==3){
-			data.PageNameSelected = "SCORE BOARD";
+			data.PageNameSelected = getResources().getString(R.string.title_bar_score_broads);
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board_h);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==4){
-			data.PageNameSelected = "HILIGHT";
+			data.PageNameSelected = getResources().getString(R.string.title_bar_hilight);
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);

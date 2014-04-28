@@ -14,11 +14,11 @@
     <string name="warn_member_name1">Please Update Name</string>
     <string name="warn_member_name2">Please Use Character Name More Than 2 OR Change Image</string>
     
-    <string name="title_bar_news">News</string>
-    <string name="title_bar_live_score">Live Score</string>
-    <string name="title_bar_chat">Chat</string>
-    <string name="title_bar_score_broads">Score Broads</string>
-    <string name="title_bar_hilight">Hilights</string>
+    <string name="title_bar_news">NEWS</string>
+    <string name="title_bar_live_score">LIVE SCORE</string>
+    <string name="title_bar_chat">CHAT ROOM</string>
+    <string name="title_bar_score_broads">SCORE BROAD</string>
+    <string name="title_bar_hilight">HILIGHT</string>
     <string name="title_bar_profile">PROFILE</string>
     <string name="title_bar_setting">SETTING</string>
     
@@ -86,6 +86,16 @@
     
     <string name="profile_save_success">Save Success.</string>
     <string name="update_profile">Updating Profile...</string>
+    
+    <string name="str_today_livescore">TODAY</string>
+    <string name="str_yesterday_livescore">YESTERDAY</string>
+    <string name="str_tomorrow_livescore">TOMORROW</string>
+    
+   	<string name="chat_global">Global Room</string>
+    <string name="chat_arsenal">Arsenal Room</string>
+    <string name="chat_chelsea">Chelsea Room</string>
+    <string name="chat_liverpool">liverpool Room</string>
+    <string name="chat_manu">ManU Room</string>
     
     <string-array name="team_list">
         <item>Arsenal</item>

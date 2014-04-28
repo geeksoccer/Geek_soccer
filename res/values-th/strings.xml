@@ -16,7 +16,7 @@
     
     <string name="title_bar_news">ข่าว</string>
     <string name="title_bar_live_score">ผลฟุตบอลสด</string>
-    <string name="title_bar_chat">พูดคุย</string>
+    <string name="title_bar_chat">ห้องพูดคุย</string>
     <string name="title_bar_score_broads">ตารางคะแนน</string>
     <string name="title_bar_hilight">ไฮไลท์</string>
     <string name="title_bar_profile">โปรไฟล์</string>
@@ -75,6 +75,17 @@
     
     <string name="profile_save_success">บันทึกเรียบร้อย.</string>
     <string name="update_profile">กำลังอัพเดทโปรไฟล์...</string>
+    
+    <string name="str_today_livescore">วันนี้</string>
+    <string name="str_yesterday_livescore">เมื่อวานนี้</string>
+    <string name="str_tomorrow_livescore">พรุ่งนี้</string>
+    
+    <string name="chat_global">ห้องรวม</string>
+    <string name="chat_arsenal">ห้องอาเซน่อล</string>
+    <string name="chat_chelsea">ห้องเชลซี</string>
+    <string name="chat_liverpool">ห้องลิเวอร์พูล</string>
+    <string name="chat_manu">ห้องแมนยู</string>
+    
     
     <string-array name="team_list">
         <item>อาเซน่อล</item>

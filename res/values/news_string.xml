@@ -5,6 +5,7 @@
     
     <string name="str_today_news">Today</string>
     <string name="str_yesterday_news">Yesterday</string>
+    <string name="str_tomorrow_news">Tomorrow</string>
     <string name="str_comments_news">Comments</string>
     <string name="str_comment_news_send">Post</string>
 
