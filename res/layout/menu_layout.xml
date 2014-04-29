@@ -16,7 +16,8 @@
             android:layout_height="35dp"
             android:layout_marginLeft="5dp"
             style="?logoTheme"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_press" />
         
         <TextView
             android:id="@+id/Title_bar"

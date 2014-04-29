@@ -61,7 +61,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	Button menu_btn;
 	ImageView logout_btn;
 	ImageView news_btn;
-	ImageView TeamLogo;
+	LinearLayout TeamLogo;
 	
 	LinearLayout Content_view;
 	Activity mContext;
@@ -120,7 +120,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	//----------------------Ched: (For Admin Member)-----------------------------
 
 	private void Team_LogoSetting(){
-		TeamLogo = (ImageView)findViewById(R.id.Team_Logo);
+		TeamLogo = (LinearLayout)findViewById(R.id.Up_btn);
 		TeamLogo.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

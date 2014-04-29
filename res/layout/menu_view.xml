@@ -14,37 +14,43 @@
             android:id="@+id/Profile"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/title_bar_profile" />
+            android:text="@string/title_bar_profile"
+            android:drawableLeft="@drawable/ic_action_user" />
 
         <Button
             android:id="@+id/Rate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/rate_app_title" />
+            android:text="@string/rate_app_title"
+            android:drawableLeft="@drawable/news_likes_selected" />
         
         <Button
             android:id="@+id/Share"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/share_app_title" />
+            android:text="@string/share_app_title"
+            android:drawableLeft="@drawable/ic_action_share" />
 
         <Button
             android:id="@+id/help"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/title_bar_help" />
+            android:text="@string/title_bar_help"
+            android:drawableLeft="@drawable/ic_action_help" />
 
         <Button
             android:id="@+id/Setting"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/title_bar_setting" />
+            android:text="@string/title_bar_setting"
+            android:drawableLeft="@drawable/ic_action_settings" />
         
         <Button
             android:id="@+id/logINOUT"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/logout_app_title" />
+            android:text="@string/logout_app_title"
+            android:drawableLeft="@drawable/log_out" />
     </LinearLayout>
 
 </LinearLayout>
