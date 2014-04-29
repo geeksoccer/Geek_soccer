@@ -28,6 +28,16 @@ public class ControllParameter {
     		ID_Send = String.valueOf(SessionManager.getMember(mContext).getUid());
     		ProFile_pic = SessionManager.getMember(mContext).getPhoto();
     		Name_Send = SessionManager.getMember(mContext).getNickname();
+    		int teamID = SessionManager.getMember(mContext).getTeamId();
+    		if(teamID == 1){
+    			TeamSelect = "Arsenal";
+    		}else if(teamID == 2){
+    			TeamSelect = "Chelsea";
+    		}else if(teamID == 3){
+    			TeamSelect = "Liverpool";
+    		}else if(teamID == 4){
+    			TeamSelect = "Manchester United";
+    		}
     	}
     }
 
@@ -62,6 +72,7 @@ public class ControllParameter {
 	String Name_Send;
 	String OldScore = "";
 	String OldTime = "";
+	static String TeamSelect = "";
 	
 	Boolean app_Status=true;
 	Boolean chat_on_All = false;

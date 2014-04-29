@@ -444,8 +444,8 @@ public class LiveScore_Today extends Activity {
 									score_ag = String.valueOf(Ag_home+Sc_home)+ " - " + String.valueOf(Ag_away+SC_away);
 								}
 							}
-							if (away.contains("Arsenal")
-									|| Home.contains("Arsenal")) {
+							if (away.contains(ControllParameter.TeamSelect)
+									|| Home.contains(ControllParameter.TeamSelect)) {
 								data.Match_list_c_JSON.add(new JSONObject().put("League"
 										, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
 								JSONObject j_data = new JSONObject();
@@ -658,8 +658,8 @@ public class LiveScore_Today extends Activity {
 													score_ag = String.valueOf(Ag_home+Sc_home)+ " - " + String.valueOf(Ag_away+SC_away);
 												}
 											}
-											if (away.contains("Arsenal")
-													|| Home.contains("Arsenal")) {
+											if (away.contains(ControllParameter.TeamSelect)
+													|| Home.contains(ControllParameter.TeamSelect)) {
 												data.Match_list_c_JSON.add(new JSONObject().put("League"
 														, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
 												JSONObject j_data = new JSONObject();
@@ -743,18 +743,22 @@ public class LiveScore_Today extends Activity {
 		}
 		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
 			if(!data.OldTime.equals("FT")){
-				if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
-						|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
-						|| data.OldTime.equals("") ){
-					NotificationManager mNotifyManager = (NotificationManager) mContext
-							.getSystemService(Context.NOTIFICATION_SERVICE);
-					android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
-					mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
-							.setContentText("Time: "+Time)
-							.setSmallIcon(R.drawable.livescore_h)
-							.setDefaults(Notification.DEFAULT_ALL);
-					mNotifyManager.notify(0, mBuilder.build());
+				if(!Time.equals("FT")
+						|| !data.OldTime.equals("")){
+					if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
+							|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
+							|| data.OldTime.equals("") ){
+						NotificationManager mNotifyManager = (NotificationManager) mContext
+								.getSystemService(Context.NOTIFICATION_SERVICE);
+						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
+						mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
+								.setContentText("Time: "+Time)
+								.setSmallIcon(R.drawable.livescore_h)
+								.setDefaults(Notification.DEFAULT_ALL);
+						mNotifyManager.notify(0, mBuilder.build());
+					}
 				}
+				
 			}
 		}		
 	}

@@ -415,8 +415,8 @@ public class LiveScore_Tomorrow extends Activity {
 									score_ag = String.valueOf(Ag_home+Sc_home)+ " - " + String.valueOf(Ag_away+SC_away);
 								}
 							}
-							if (away.contains("Arsenal")
-									|| Home.contains("Arsenal")) {
+							if (away.contains(ControllParameter.TeamSelect)
+									|| Home.contains(ControllParameter.TeamSelect)) {
 								data.Match_list_t_JSON.add(new JSONObject().put("League"
 										, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
 								JSONObject j_data = new JSONObject();
