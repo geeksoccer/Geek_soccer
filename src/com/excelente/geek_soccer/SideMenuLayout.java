@@ -421,6 +421,7 @@ public class SideMenuLayout implements OnClickListener{
 				if(MainActivity.getServiceIntent()!=null)
 					mActivity.stopService(MainActivity.getServiceIntent());
 				mActivity.finish();
+				android.os.Process.killProcess(android.os.Process.myPid());
 			}else{
 				Toast.makeText(mActivity, "Sign Out Failed", Toast.LENGTH_SHORT).show();
 			}

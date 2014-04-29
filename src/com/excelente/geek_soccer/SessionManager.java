@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Locale;
 
 import com.excelente.geek_soccer.model.MemberModel;
+import com.excelente.geek_soccer.utils.SecurePreferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,38 +29,77 @@ public class SessionManager {
 	
 	public static MemberModel getMember(Context context) {
 		MemberModel member = new MemberModel();
-		SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
-		member.setUid(memberFile.getInt(MemberModel.MEMBER_UID, 0));
-		member.setTeamId(memberFile.getInt(MemberModel.MEMBER_TEAM_ID, 0));
-		member.setToken(memberFile.getString(MemberModel.MEMBER_TOKEN, ""));
-		member.setBirthday(memberFile.getString(MemberModel.MEMBER_BIRTHDAY, ""));
-		member.setGender(memberFile.getInt(MemberModel.MEMBER_GENDER, 0));
-		member.setNickname(memberFile.getString(MemberModel.MEMBER_NICKNAME, ""));
-		member.setPhoto(memberFile.getString(MemberModel.MEMBER_PHOTO, ""));
-		member.setEmail(memberFile.getString(MemberModel.MEMBER_EMAIL, ""));
-		member.setTypeLogin(memberFile.getString(MemberModel.MEMBER_TYPE_LOGIN, ""));
-		member.setRole(memberFile.getInt(MemberModel.MEMBER_ROLE, 0));
+		SecurePreferences memberFile = new SecurePreferences(context, MEMBER_SHAREPREFERENCE, "GeekSoccer4619", true);
+		
+		if(memberFile.getString(MemberModel.MEMBER_UID) != null)
+			member.setUid(Integer.valueOf(memberFile.getString(MemberModel.MEMBER_UID)));
+		else
+			member.setUid(0);
+		
+		if(memberFile.getString(MemberModel.MEMBER_TEAM_ID) != null)
+			member.setTeamId(Integer.valueOf(memberFile.getString(MemberModel.MEMBER_TEAM_ID)));
+		else
+			member.setTeamId(0);
+		
+		if(memberFile.getString(MemberModel.MEMBER_TOKEN) != null)
+			member.setToken(memberFile.getString(MemberModel.MEMBER_TOKEN));
+		else
+			member.setToken("");
+			
+		if(memberFile.getString(MemberModel.MEMBER_BIRTHDAY) != null)
+			member.setBirthday(memberFile.getString(MemberModel.MEMBER_BIRTHDAY));
+		else
+			member.setBirthday("");
+		
+		if(memberFile.getString(MemberModel.MEMBER_GENDER) != null)
+			member.setGender(Integer.valueOf(memberFile.getString(MemberModel.MEMBER_GENDER)));
+		else
+			member.setGender(0);
+		
+		if(memberFile.getString(MemberModel.MEMBER_NICKNAME) != null)
+			member.setNickname(memberFile.getString(MemberModel.MEMBER_NICKNAME));
+		else
+			member.setNickname("");
+		
+		if(memberFile.getString(MemberModel.MEMBER_PHOTO) != null)
+			member.setPhoto(memberFile.getString(MemberModel.MEMBER_PHOTO));
+		else
+			member.setPhoto("");
+		
+		if(memberFile.getString(MemberModel.MEMBER_EMAIL) != null)
+			member.setEmail(memberFile.getString(MemberModel.MEMBER_EMAIL));
+		else
+			member.setPhoto("");
+		
+		if(memberFile.getString(MemberModel.MEMBER_TYPE_LOGIN) != null)
+			member.setTypeLogin(memberFile.getString(MemberModel.MEMBER_TYPE_LOGIN));
+		else
+			member.setTypeLogin("");
+		
+		if(memberFile.getString(MemberModel.MEMBER_ROLE) != null)
+			member.setRole(Integer.valueOf(memberFile.getString(MemberModel.MEMBER_ROLE)));
+		else
+			member.setRole(0);
+		
 		SessionManager.member = member;
+		
 		return member;
 	}
 	
 	public static void setMember(Context context, MemberModel member) {
 		if(member != null){
-			SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
-		
-			Editor editMember = memberFile.edit();
-			editMember.putInt(MemberModel.MEMBER_UID, member.getUid());
-			editMember.putString(MemberModel.MEMBER_USER, member.getUser());
-			editMember.putInt(MemberModel.MEMBER_TEAM_ID, member.getTeamId());
-			editMember.putString(MemberModel.MEMBER_TOKEN, member.getToken());
-			editMember.putString(MemberModel.MEMBER_BIRTHDAY, member.getBirthday());
-			editMember.putInt(MemberModel.MEMBER_GENDER, member.getGender());
-			editMember.putString(MemberModel.MEMBER_NICKNAME, member.getNickname());
-			editMember.putString(MemberModel.MEMBER_PHOTO, member.getPhoto());
-			editMember.putString(MemberModel.MEMBER_EMAIL, member.getEmail());
-			editMember.putString(MemberModel.MEMBER_TYPE_LOGIN, member.getTypeLogin());
-			editMember.putInt(MemberModel.MEMBER_ROLE, member.getRole());
-			editMember.commit();
+			SecurePreferences memberFile = new SecurePreferences(context, MEMBER_SHAREPREFERENCE, "GeekSoccer4619", true);
+			memberFile.put(MemberModel.MEMBER_UID, String.valueOf(member.getUid()));
+			memberFile.put(MemberModel.MEMBER_USER, member.getUser());
+			memberFile.put(MemberModel.MEMBER_TEAM_ID, String.valueOf(member.getTeamId()));
+			memberFile.put(MemberModel.MEMBER_TOKEN, member.getToken());
+			memberFile.put(MemberModel.MEMBER_BIRTHDAY, member.getBirthday());
+			memberFile.put(MemberModel.MEMBER_GENDER, String.valueOf(member.getGender()));
+			memberFile.put(MemberModel.MEMBER_NICKNAME, member.getNickname());
+			memberFile.put(MemberModel.MEMBER_PHOTO, member.getPhoto());
+			memberFile.put(MemberModel.MEMBER_EMAIL, member.getEmail());
+			memberFile.put(MemberModel.MEMBER_TYPE_LOGIN, member.getTypeLogin());
+			memberFile.put(MemberModel.MEMBER_ROLE, String.valueOf(member.getRole()));
 		}
 		
 		SessionManager.member = member;
