@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.excelente.geek_soccer.view.Boast;
 
 import android.app.Activity;
 import android.content.Context;
@@ -195,7 +196,7 @@ public class Live_Score_Detail extends Activity{
 					eventStr = "Substitution";
 				}
 				
-				Toast.makeText(mContext, eventStr, Toast.LENGTH_LONG).show();
+				Boast.makeText(mContext, eventStr, Toast.LENGTH_LONG).show();
 			}
 		});
 		new Live_score_Loader().execute();
