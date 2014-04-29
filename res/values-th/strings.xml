@@ -88,7 +88,7 @@
     <string name="chat_manu">ห้องแมนยู</string>
     
     <string name="sign_logout">เครื่องนี้ได้ออกจากระบบแล้ว</string>
-    <string name="sign_signing_in">กำลังเข้าสู้ระบบ...</string>
+    <string name="sign_signing_in">กำลังเข้าสู่ระบบ...</string>
     <string name="sign_warning">การเชื่อต่อมีปัญหา โปรดลองอีกครั้ง</string>
     <string name="sign_signing_up">กำลังลงทะเบียน...</string>
     <string name="sign_google_no_sync">บัญชีกูเกิ้ลยังไม่ได้เชื่อมต่อ!</string>

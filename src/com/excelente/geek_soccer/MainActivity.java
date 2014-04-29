@@ -379,12 +379,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(NetworkUtils.isNetworkAvailable(this)){ 
+		/*if(NetworkUtils.isNetworkAvailable(this)){ 
 			if(signMemberTask == null){
 				signMemberTask = new doSignTokenTask();
 				signMemberTask.execute();
 			}
-		}
+		}*/
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
