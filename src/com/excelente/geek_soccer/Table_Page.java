@@ -7,6 +7,7 @@ import com.excelente.geek_soccer.adapter.TableAdapter;
 import com.excelente.geek_soccer.model.TableModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.view.Boast;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -380,6 +381,6 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	}
 
 	private void showToast(String string) {
-		Toast.makeText(getActivity(), string, Toast.LENGTH_SHORT).show();
+		Boast.makeText(getActivity(), string, Toast.LENGTH_SHORT).show();
 	}
 }
