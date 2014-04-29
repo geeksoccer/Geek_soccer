@@ -382,10 +382,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 							data.Sticker_Layout_Stat_team = false;
 						}else if(data.Sticker_Layout_Stat_All){
 							data.Sticker_Layout_Stat_All = false;
-						}				
+						}
 						return false;
 					}else{
-						showShareAppDialog();
+						showCloseAppDialog(this);
 					}
 					return true;
 				}
@@ -395,20 +395,25 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 						data.Sticker_Layout_Stat_team = false;
 					}else if(data.Sticker_Layout_Stat_All){
 						data.Sticker_Layout_Stat_All = false;
-					}				
+					}			
 					return false;
 				}else{
-					showShareAppDialog();
+					data.app_Status=false;
+					showCloseAppDialog(this);
 				}
 				return true;
 			}
-			
 			
 		}
 		return super.onKeyDown(keyCode, event);
 	}
 	
-	protected void showShareAppDialog() {
+	@Override
+	public void onBackPressed() {
+		showCloseAppDialog(this);
+	}
+	
+	public static void showCloseAppDialog(final Activity mContext) { 
 		final Dialog confirmDialog = new Dialog(mContext); 
 		
 		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
@@ -441,9 +446,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			
 			@Override
 			public void onClick(View v) {
-				data.app_Status=false;
-				finish();
-				confirmDialog.dismiss(); 
+				confirmDialog.dismiss();
+				mContext.finish(); 
 			}
 
 		});

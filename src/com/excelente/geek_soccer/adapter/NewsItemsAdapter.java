@@ -221,7 +221,7 @@ public class NewsItemsAdapter extends PagerAdapter{
         		timeout = false;
         		newsWaitProcessbar.setVisibility(View.GONE);
         		
-        		if(!urls.isEmpty()){
+        		if(urls!=null && !urls.isEmpty()){
         			new PushImageTask(view, urls, newsModel.getNewsContent()).execute();
         		}
         	}

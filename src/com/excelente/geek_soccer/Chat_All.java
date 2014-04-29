@@ -1151,7 +1151,6 @@ public class Chat_All extends Activity{
 						StikerV.setVisibility(RelativeLayout.GONE);
 						return false;
 					} else {
-						finish();
 						return false;
 					}
 				}
@@ -1160,8 +1159,6 @@ public class Chat_All extends Activity{
 					StikerV.setVisibility(RelativeLayout.GONE);
 					return false;
 				} else {
-
-					finish();
 					return false;
 				}
 			}

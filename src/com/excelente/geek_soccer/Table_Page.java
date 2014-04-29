@@ -288,8 +288,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				
 				tabs.setCurrentTabByTag(tag);
 			}else{
-				Toast.makeText(getActivity(), "No Score Table", Toast.LENGTH_SHORT).show();
-			}
+				if(getActivity()!=null){
+					Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
+				}
+			} 
 			
 			tableWaitProcessbar.setVisibility(View.GONE);
 		}

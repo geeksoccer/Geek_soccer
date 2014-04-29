@@ -3,11 +3,12 @@ package com.excelente.geek_soccer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -22,30 +23,14 @@ import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -127,40 +112,11 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		progressbar.setVisibility(View.GONE);
 		//memberPhoto.getLayoutParams().height = (int) ConvertUtil.convertPixelsToDp(MAX_IMAGE, this);
 		if(SessionManager.hasKey(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())){ 
-			memberPhoto.setImageBitmap(SessionManager.getImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())); 
+			Bitmap bitmapPhoto = SessionManager.getImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto());
+			memberPhoto.setImageBitmap(resizeBitMap(bitmapPhoto));
 		}else{
-			doConfigImageLoader(512, 512); 
-			ImageLoader.getInstance().displayImage(SessionManager.getMember(Profile_Page.this).getPhoto(), memberPhoto, getOptionImageLoader(SessionManager.getMember(Profile_Page.this).getPhoto()), new ImageLoadingListener() {
-				
-		    	public void onLoadingStarted(String imageUri, View view) {
-		    		progressbar.setVisibility(View.VISIBLE);
-		    		view.setVisibility(View.GONE);
-	           	};
-	           	
-	           	@Override
-	           	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
-	           		progressbar.setVisibility(View.GONE);
-	           		view.setVisibility(View.VISIBLE);
-	           	}
-	           	
-	           	public void onLoadingComplete(final String imageUri, View view, final Bitmap loadedImage) {
-	           		progressbar.setVisibility(View.GONE);
-	           		view.setVisibility(View.VISIBLE);
-	           		new Thread(new Runnable() {
-						@Override 
-						public void run() {
-							SessionManager.createNewImageSession(getApplicationContext(), imageUri, loadedImage);
-						}
-					});
-	           	}
-
-				@Override
-				public void onLoadingCancelled(String imageUri, View view) {
-					progressbar.setVisibility(View.GONE);
-					view.setVisibility(View.VISIBLE);
-				};
-			});
-		}
+			new GetImageUriTask(this, memberPhoto, progressbar).execute(SessionManager.getMember(Profile_Page.this).getPhoto());
+		} 
 		
 		memberName = (EditText) findViewById(R.id.member_name);
 		memberName.setText(SessionManager.getMember(Profile_Page.this).getNickname());
@@ -175,77 +131,19 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		saveBtn = (RelativeLayout) findViewById(R.id.Footer_Layout); 
 		saveBtn.setOnClickListener(this);
 	}
-	
-	private void doConfigImageLoader(int w, int h) {
-		
-		File cacheDir = StorageUtils.getCacheDirectory(this);
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-		        .memoryCacheExtraOptions(w, h) // default = device screen dimensions
-		        .discCacheExtraOptions(w, h, CompressFormat.PNG, 100, null)
-		        .threadPoolSize(3) // default
-		        .threadPriority(Thread.NORM_PRIORITY - 1) // default
-		        .tasksProcessingOrder(QueueProcessingType.FIFO) // default
-		        .denyCacheImageMultipleSizesInMemory()
-		        .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-		        .memoryCacheSize(2 * 1024 * 1024)
-		        .memoryCacheSizePercentage(13) // default
-		        .discCache(new UnlimitedDiscCache(cacheDir)) // default
-		        .discCacheSize(20 * 1024 * 1024)
-		        .discCacheFileCount(100)
-		        .discCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default
-		        .imageDownloader(new CustomImageDownaloder(this))
-		        .defaultDisplayImageOptions(DisplayImageOptions.createSimple()) // default
-		        .writeDebugLogs()
-		        .build();
-		ImageLoader.getInstance().init(config);
-	}
-	
-	private DisplayImageOptions getOptionImageLoader(String url) {
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Referer", "http://localhost");
-		
-		DisplayImageOptions options = new DisplayImageOptions.Builder()
-	        //.showImageOnLoading(R.drawable.soccer_icon) // resource or drawable
-	        //.showImageForEmptyUri(R.drawable.soccer_icon) // resource or drawable
-	        //.showImageOnFail(R.drawable.soccer_icon) // resource or drawable
-	        .resetViewBeforeLoading(false)  // default
-	        //.delayBeforeLoading(500)
-	        .cacheInMemory(false)
-	        .cacheOnDisc(false)
-	        .considerExifParams(false) // default
-	        .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
-	        .bitmapConfig(Bitmap.Config.RGB_565) // default
-	        //.decodingOptions()
-	        .displayer(new SimpleBitmapDisplayer()) // default
-	        .handler(new Handler()) // default
-	        .extraForDownloader(headers)
-	        .build();
-		
-		return options;
-	}
-	
-	public class CustomImageDownaloder extends BaseImageDownloader {
 
-	    public CustomImageDownaloder(Context context) {
-	        super(context);
-	    }
-
-	    public CustomImageDownaloder(Context context, int connectTimeout, int readTimeout) {
-	        super(context, connectTimeout, readTimeout);
-	    }
-
-	    @SuppressWarnings("unchecked")
-		@Override
-	    protected HttpURLConnection createConnection(String url, Object extra) throws IOException {
-	        HttpURLConnection conn = super.createConnection(url, extra);
-	        Map<String, String> headers = (Map<String, String>) extra;
-	        if (headers != null) {
-	            for (Map.Entry<String, String> header : headers.entrySet()) {
-	                conn.setRequestProperty(header.getKey(), header.getValue());
-	            }
-	        }
-	        return conn;
-	    }
+	private Bitmap resizeBitMap(Bitmap bitmapPhoto) {
+		
+		float scale = (bitmapPhoto.getWidth()*1.0f)/(1.0f*bitmapPhoto.getHeight());
+		int width = MAX_IMAGE;
+		int height = MAX_IMAGE;
+		if(width > height){
+			height = (int) (height * scale);
+		}else{
+			width = (int) (width * scale);
+		}
+		bitmapPhoto = Bitmap.createScaledBitmap(bitmapPhoto, width, height, false);
+		return bitmapPhoto;
 	}
 
 	@Override
@@ -467,6 +365,89 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	    		file.delete();
 	    	}
 	}
+	 
+	private class GetImageUriTask extends AsyncTask<String, Void, Bitmap> {
+		Activity activity;
+		ImageView imageView;
+		String imageUri;
+		
+		public GetImageUriTask(Activity activity, ImageView imageView, ProgressBar progressbar) {
+			this.activity = activity;
+			this.imageView = imageView;
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			
+			progressbar.setVisibility(View.VISIBLE);
+			imageView.setVisibility(View.GONE);
+		}
+		
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            Bitmap map = null;
+            for (String url : urls) {
+                map = downloadImage(url);
+            }
+            imageUri = urls[0];
+            return map;
+        }
+ 
+        // Sets the Bitmap returned by doInBackground
+        @Override
+        protected void onPostExecute(final Bitmap result) {
+            imageView.setImageBitmap(result);
+            progressbar.setVisibility(View.GONE);
+            imageView.setVisibility(View.VISIBLE);
+            
+            if(result!=null){
+	       		new Thread(new Runnable() {
+					@Override 
+					public void run() {
+						SessionManager.createNewImageSession(activity, imageUri, result); 
+					}
+				});
+            }
+        }
+ 
+        // Creates Bitmap from InputStream and returns it
+        private Bitmap downloadImage(String url) {
+            Bitmap bitmap = null;
+            InputStream stream = null;
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inSampleSize = 1;
+ 
+            try {
+                stream = getHttpConnection(url);
+                bitmap = BitmapFactory.decodeStream(stream, null, bmOptions);
+                stream.close();
+            } catch (IOException e1) {
+            	return bitmap;
+            }
+            return bitmap;
+        }
+ 
+        // Makes HttpURLConnection and returns InputStream
+        private InputStream getHttpConnection(String urlString) throws IOException {
+            InputStream stream = null;
+            URL url = new URL(urlString);
+            URLConnection connection = url.openConnection();
+ 
+            try {
+                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                httpConnection.setRequestMethod("GET");
+                httpConnection.connect();
+ 
+                if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    stream = httpConnection.getInputStream();
+                }
+            } catch (Exception ex) {
+            	return stream;
+            }
+            return stream;
+        }
+    }
 
 	@Override
 	public void onShown() {

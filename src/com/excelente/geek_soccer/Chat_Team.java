@@ -1152,7 +1152,6 @@ public class Chat_Team extends Activity {
 						StikerV.setVisibility(RelativeLayout.GONE);
 						return false;
 					} else {
-						finish();
 						return false;
 					}
 				}
@@ -1161,8 +1160,6 @@ public class Chat_Team extends Activity {
 					StikerV.setVisibility(RelativeLayout.GONE);
 					return false;
 				} else {
-
-					finish();
 					return false;
 				}
 			}
