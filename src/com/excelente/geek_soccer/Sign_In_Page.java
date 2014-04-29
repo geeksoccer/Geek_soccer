@@ -227,10 +227,10 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	    	authenGoogleAccount = (AuthenGoogleAccount) new AuthenGoogleAccount(this, accountarrs[0], SCOPE).execute();
 	    	authenGoogleAccount.setOnConnectGoogleAccount(this);
 	   	} else {
-			Toast.makeText(this, "No Google Account Sync!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getResources().getString(R.string.sign_google_no_sync), Toast.LENGTH_SHORT).show();
 		}
 	}
-	
+	 
 	private void gotoMainPage(MemberModel memberSignedIn) {
         Intent intent = new Intent(Sign_In_Page.this, MainActivity.class);
         intent.putExtra(NewsModel.NEWS_ID+"tag", getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0));
@@ -241,10 +241,9 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	
 	private void doSelectTeam() {
     	AlertDialog.Builder dialog = new AlertDialog.Builder(Sign_In_Page.this);
-		dialog.setTitle("Select Favorite Team");
+		dialog.setTitle(getResources().getString(R.string.dailog_favorite_team));
 		
-		CharSequence[] teams = new CharSequence[]{"Arsenal", "Chelsea","Liverpool", "Manchester United", "Others"};
-		dialog.setSingleChoiceItems(teams, 0, new DialogInterface.OnClickListener() {
+		dialog.setSingleChoiceItems(getResources().getStringArray(R.array.team_list), 0, new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -301,8 +300,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			
-			mConnectionProgressDialog.setMessage("Signing in...");
+			 
+			mConnectionProgressDialog.setMessage(getResources().getString(R.string.sign_signing_in));
 			mConnectionProgressDialog.show();
 			
 			signProgressbar.setVisibility(View.VISIBLE);
@@ -353,8 +352,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			if(memberSignedIn == null){
 				signProgressbar.setVisibility(View.GONE);
 				signInGoogleAccountButton.setVisibility(View.VISIBLE);
-				Toast.makeText(getApplicationContext(), "Internet problem or this member using on any device", Toast.LENGTH_SHORT).show();
-				mPlusClient.disconnect();
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.sign_warning), Toast.LENGTH_SHORT).show();
+				mPlusClient.disconnect(); 
 			}else if(memberSignedIn.getUid() < 1 && memberSignedIn.getTypeLogin().equals("google_plus")){
 				signProgressbar.setVisibility(View.GONE);
 				signInGoogleAccountButton.setVisibility(View.VISIBLE);
@@ -378,8 +377,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		protected void onPreExecute() {
 			super.onPreExecute();
 			
-			mConnectionProgressDialog.setMessage("Signing up...");
-			mConnectionProgressDialog.show();
+			mConnectionProgressDialog.setMessage(getResources().getString(R.string.sign_signing_up));
+			mConnectionProgressDialog.show(); 
 			
 			signProgressbar.setVisibility(View.VISIBLE);
 			signInGoogleAccountButton.setVisibility(View.GONE);
@@ -436,8 +435,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 				gotoMainPage(memberSignedUp);
 				SessionManager.setMember(Sign_In_Page.this, memberSignedUp); 
 			}else{
-				Toast.makeText(getApplicationContext(), "Signed Up Fail Or Internet Problem", Toast.LENGTH_SHORT).show();
-				mPlusClient.disconnect();
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
+				mPlusClient.disconnect(); 
 				signProgressbar.setVisibility(View.GONE);
 				signInGoogleAccountButton.setVisibility(View.VISIBLE);
 			}
@@ -489,8 +488,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			if(SessionManager.hasMember(Sign_In_Page.this)){
 				gotoMainPage(memberToken);
 			}else{
-				signProgressbar.setVisibility(View.GONE);
-				signInGoogleAccountButton.setVisibility(View.VISIBLE);
+		    	syncInGoogleAccount();
 			}
 		}
 		

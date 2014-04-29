@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -57,12 +58,14 @@ public static String getStrHttpGetConnect(String url){
 
 	        HttpEntity entity = response.getEntity();
 	        
-	        if (entity != null) {
-
-	            InputStream instream = entity.getContent();
-	            result = convertStreamToString(instream);
-	            
-	            instream.close();
+	        if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+		        if (entity != null) {
+	
+		            InputStream instream = entity.getContent();
+		            result = convertStreamToString(instream);
+		            
+		            instream.close();
+		        }
 	        }
 
 	        return result;
@@ -88,12 +91,15 @@ public static String getStrHttpGetConnect(String url){
 			httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 			HttpResponse response = httpclient.execute(httpPost);
 			HttpEntity entity = response.getEntity();
-			if (entity != null) {
-				
-				InputStream content = entity.getContent();
-				result = convertStreamToString(content);
-				
-				content.close();
+			
+			if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+				if (entity != null) {
+					
+					InputStream content = entity.getContent();
+					result = convertStreamToString(content);
+					
+					content.close();
+				}
 			}
 			
 			return result;

@@ -155,7 +155,7 @@ public class SessionManager {
 	private static String getLang(Context context) {
 		String langInt = SessionManager.getSetting(context, SessionManager.setting_lang);
 		if(langInt.equals("null")){
-			return "en";
+			return "th";
 		}
 		switch (Integer.valueOf(langInt)) {
 			case 0:

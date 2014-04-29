@@ -65,7 +65,7 @@ public class Setting_Page extends Activity implements OnClickListener, OnItemCli
 			String strVal = SessionManager.getSetting(this, tags[i]);
 			if(strVal.equals("null")){
 				if(i==0){
-					strVal = "0"; 
+					strVal = "1"; 
 					topics[i] = getResources().getStringArray(R.array.lang_list)[Integer.valueOf(strVal)];
 				}else
 					strVal = "true"; 

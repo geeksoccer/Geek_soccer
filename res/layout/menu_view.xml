@@ -14,37 +14,37 @@
             android:id="@+id/Profile"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Profile" />
+            android:text="@string/title_bar_profile" />
 
         <Button
             android:id="@+id/Rate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Rate App" />
+            android:text="@string/rate_app_title" />
         
         <Button
             android:id="@+id/Share"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Share App" />
+            android:text="@string/share_app_title" />
 
         <Button
             android:id="@+id/help"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Help" />
+            android:text="@string/title_bar_help" />
 
         <Button
             android:id="@+id/Setting"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Setting" />
+            android:text="@string/title_bar_setting" />
         
         <Button
             android:id="@+id/logINOUT"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Logout" />
+            android:text="@string/logout_app_title" />
     </LinearLayout>
 
 </LinearLayout>
