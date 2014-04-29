@@ -239,7 +239,8 @@ public class Chat_All extends Activity{
 					StickerPrepare();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					LayoutParams paramsBtn = new LinearLayout.LayoutParams(70, 70);
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams((int) (48 * scale + 0.5f),
+							(int)(48 * scale + 0.5f));
 					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
 					for(int i=0; i<data.Sticker_Set.size(); i++){
 						final Button StickSet_1 = new Button(mContext);
