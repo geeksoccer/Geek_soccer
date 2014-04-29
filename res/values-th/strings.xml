@@ -93,7 +93,7 @@
     <string name="sign_signing_up">กำลังลงทะเบียน...</string>
     <string name="sign_google_no_sync">บัญชีกูเกิ้ลยังไม่ได้เชื่อมต่อ!</string>
     
-    <string name="dailog_select_team">เลือกดูมุนมองของทีม</string>
+    <string name="dailog_select_team">เลือกดูมุมมองของทีม</string>
     <string name="dailog_favorite_team">เลือกทีมที่ชื่นชอบ</string>
     
     <string-array name="team_list">

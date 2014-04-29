@@ -483,8 +483,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		if(requestCode==2 && data!=null){  
            String message = data.getStringExtra("COMMAND_APP");   
            if(message.equals("Restart App")){
-        	   Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage( getBaseContext().getPackageName() );
-   			   i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        	   Intent i = new Intent(getApplicationContext(), Sign_In_Page.class);
    			   startActivity(i);
    			   finish();
            }

@@ -538,8 +538,6 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			super.onPostExecute(result);
 			if(result!=null && !result.isEmpty()){
 				doLoadHilightToListView(result, tag); 
-			}else{
-				Toast.makeText(getActivity(), "No Hilight Update", Toast.LENGTH_SHORT).show();
 			}
 			
 			hilightListview.onRefreshComplete();

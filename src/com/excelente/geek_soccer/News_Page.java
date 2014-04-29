@@ -256,8 +256,6 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			super.onPostExecute(result);
 			if(result!=null && !result.isEmpty()){
 				doLoadNewsToListView(result, tag);
-			}else{
-				Toast.makeText(getActivity(), "No News Update", Toast.LENGTH_SHORT).show();
 			}
 			
 			newsListView.onRefreshComplete();
@@ -266,7 +264,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	}
 	
 	private void doLoadNewsToListView(List<NewsModel> newsList , String tag) {
-		tabs.setCurrentTabByTag(tag);
+		if(SessionManager.getMember(getActivity()).getTeamId()>4){
+			tabWidget.setVisibility(View.GONE);
+			tabs.setCurrentTab(1);
+		}else{
+			tabs.setCurrentTabByTag(tag);
+		}
 		
 		if(tag.equals("tag0")){
 			if(newsList == null || newsList.isEmpty()){
