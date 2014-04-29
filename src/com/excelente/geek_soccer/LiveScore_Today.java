@@ -753,7 +753,7 @@ public class LiveScore_Today extends Activity {
 						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
 						mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
 								.setContentText("Time: "+Time)
-								.setSmallIcon(R.drawable.livescore_h)
+								.setSmallIcon(R.drawable.notify_livescore)
 								.setDefaults(Notification.DEFAULT_ALL);
 						mNotifyManager.notify(0, mBuilder.build());
 					}
