@@ -272,9 +272,9 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				Toast.makeText(Profile_Page.this, "Please pick image type png, jpg and jpeg only.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(Profile_Page.this, getResources().getString(R.string.profile_pick_image), Toast.LENGTH_SHORT).show();
 			}
-		});
+		}); 
 	}
 
 	@Override
@@ -319,7 +319,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 						}
 						
 					}else{
-						Toast.makeText(Profile_Page.this, "Please Pick Image Type png, jpg and jpeg only.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(Profile_Page.this, getResources().getString(R.string.profile_pick_image), Toast.LENGTH_SHORT).show();
 					}
 					
 					File thumbnailFile = new File(image.getFileThumbnail());

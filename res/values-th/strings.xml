@@ -96,6 +96,9 @@
     <string name="dailog_select_team">เลือกดูมุมมองของทีม</string>
     <string name="dailog_favorite_team">เลือกทีมที่ชื่นชอบ</string>
     
+    <string name="profile_pick_image">กรุณาเลือกชนิดรูปภาพเป็น png, jpg หรือ jpeg เท่านั้น</string>
+    <string name="profile_pick_less_image">กรุณาเลือกรูปที่มีขนาดเล็กกว่านี้.</string>
+    
     <string-array name="team_list">
         <item>อาเซน่อล</item>
         <item>เชลซี</item>

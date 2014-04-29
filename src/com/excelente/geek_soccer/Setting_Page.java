@@ -152,14 +152,14 @@ public class Setting_Page extends Activity implements OnClickListener, OnItemCli
 						SessionManager.setSetting(getApplicationContext(), sm.getTag(), "0");
 						sm.setTopic(getResources().getStringArray(R.array.lang_list)[0]);
 						sm.setVal("0");
-						SessionManager.setLangApp(getApplicationContext()); 
+						//SessionManager.setLangApp(getApplicationContext()); 
 						settingAdapter.notifyDataSetChanged();
 						break;
 					case 1:
 						SessionManager.setSetting(getApplicationContext(), sm.getTag(), "1");
 						sm.setTopic(getResources().getStringArray(R.array.lang_list)[1]);
 						sm.setVal("1");
-						SessionManager.setLangApp(getApplicationContext());
+						//SessionManager.setLangApp(getApplicationContext());
 						settingAdapter.notifyDataSetChanged();
 						break;
 				}

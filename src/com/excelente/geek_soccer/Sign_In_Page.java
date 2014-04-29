@@ -69,7 +69,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		SessionManager.setLangApp(getApplicationContext());
+		//SessionManager.setLangApp(getApplicationContext());
 		cancelNotify();
 		
 		/*MemberModel mem = new MemberModel();
