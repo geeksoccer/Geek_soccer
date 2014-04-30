@@ -1142,6 +1142,16 @@ public class Chat_Team extends Activity {
 
 		return inSampleSize;
 	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (data.socket_Team == null) {
+			Chat_Loader();
+		}else if (!data.socket_Team.isConnected()) {
+			Chat_Loader();
+		}
+	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
