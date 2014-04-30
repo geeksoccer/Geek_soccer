@@ -243,7 +243,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
     	AlertDialog.Builder dialog = new AlertDialog.Builder(Sign_In_Page.this);
 		dialog.setTitle(getResources().getString(R.string.dailog_favorite_team));
 		
-		dialog.setSingleChoiceItems(getResources().getStringArray(R.array.team_list), 0, new DialogInterface.OnClickListener() {
+		dialog.setSingleChoiceItems(getResources().getStringArray(R.array.team_list), -1, new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
