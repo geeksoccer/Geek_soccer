@@ -364,11 +364,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}		
 	}
 	
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if(data.Menu_Layout!=null){
@@ -447,6 +442,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			public void onClick(View v) {
 				confirmDialog.dismiss();
 				SessionManager.clearMemberOnly(mContext);
+				//android.os.Process.killProcess(android.os.Process.myPid());
 				mContext.finish(); 
 			}
 

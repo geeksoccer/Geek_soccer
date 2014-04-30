@@ -43,9 +43,11 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -151,29 +153,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsContentWebview.getSettings().setBuiltInZoomControls(true); 
 		newsItemView.newsContentWebview.getSettings().setPluginState(PluginState.ON);
         //newsItemView.newsContentWebview.getSettings().setDefaultTextEncodingName("utf-8");
-		newsItemView.newsContentWebview.setWebChromeClient(new WebChromeClient(){
-
-			public void onProgressChanged(WebView view, int progress){
-        		newsWaitProcessbar.setProgress(progress);
-            }
-
-			@Override
-			public void onShowCustomView(View view, CustomViewCallback callback) {
-				Log.e("onShowCustomView-", "test");
-				super.onShowCustomView(view, callback);
-			}
-
-			@Override
-			public void onReceivedTouchIconUrl(WebView view, String url, boolean precomposed) {
-				Log.e("onReceivedTouchIconUrl-", url);
-				super.onReceivedTouchIconUrl(view, url, precomposed);
-			}
-
-			@Override
-			public void onHideCustomView() {
-				super.onHideCustomView();
-			}
-        });
+		newsItemView.newsContentWebview.setWebChromeClient(new MyWebChromeClient());
 		
 		newsItemView.newsContentWebview.setWebViewClient(new WebViewClient(){
         	boolean timeout;
@@ -345,6 +325,55 @@ public class NewsItemsAdapter extends PagerAdapter{
 			
 		} 
 		
+	}
+	
+	private class MyWebChromeClient extends WebChromeClient {
+	    FrameLayout.LayoutParams LayoutParameters = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+	    private View mCustomView;
+		private RelativeLayout mContentView;
+		private FrameLayout mCustomViewContainer;
+		private WebChromeClient.CustomViewCallback mCustomViewCallback;
+		
+		public void onProgressChanged(WebView view, int progress){
+    		newsWaitProcessbar.setProgress(progress);
+        }
+	    @Override
+	    public void onShowCustomView(View view, CustomViewCallback callback) {
+	        // if a view already exists then immediately terminate the new one
+	        if (mCustomView != null) {
+	            callback.onCustomViewHidden();
+	            return;
+	        } 
+	        mContentView = (RelativeLayout) newsItemPage.findViewById(R.id.Content_Layout);
+	        mContentView.setVisibility(View.GONE);
+	        mCustomViewContainer = new FrameLayout(newsItemPage);
+	        mCustomViewContainer.setLayoutParams(LayoutParameters);
+	        mCustomViewContainer.setBackgroundResource(android.R.color.black);
+	        view.setLayoutParams(LayoutParameters);
+	        mCustomViewContainer.addView(view);
+	        mCustomView = view;
+	        mCustomViewCallback = callback;
+	        mCustomViewContainer.setVisibility(View.VISIBLE);
+	        newsItemPage.setContentView(mCustomViewContainer);
+	    }
+
+	    @Override
+	    public void onHideCustomView() {
+	        if (mCustomView == null) {
+	            return;
+	        } else {
+	            // Hide the custom view.  
+	            mCustomView.setVisibility(View.GONE);
+	            // Remove the custom view from its container.  
+	            mCustomViewContainer.removeView(mCustomView);
+	            mCustomView = null;
+	            mCustomViewContainer.setVisibility(View.GONE);
+	            mCustomViewCallback.onCustomViewHidden();
+	            // Show the content view.  
+	            mContentView.setVisibility(View.VISIBLE);
+	            newsItemPage.setContentView(mContentView);
+	        }
+	    }
 	}
 	
 	public class PostNewsLikes extends AsyncTask<NewsModel, Void, String>{

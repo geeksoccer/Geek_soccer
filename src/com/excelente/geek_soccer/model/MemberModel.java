@@ -28,7 +28,7 @@ public class MemberModel implements Serializable{
 	
 	public static final String MEMBER_GLOBAL_NEWS = "m_global_news";
 	
-	int uid;
+	long uid;
 	String user;
 	String pass;
 	String birthday;
@@ -41,10 +41,10 @@ public class MemberModel implements Serializable{
     int role;
     String token;
     
-	public int getUid() {
+	public long getUid() {
 		return uid;
 	}
-	public void setUid(int uid) {
+	public void setUid(long uid) {
 		this.uid = uid;
 	}
 	public String getUser() {
@@ -122,7 +122,7 @@ public class MemberModel implements Serializable{
 			JSONArray memberJsonArr = new JSONArray(result);
 			JSONObject memberObj = (JSONObject) memberJsonArr.get(0); 
 		
-			member.setUid(memberObj.getInt(MemberModel.MEMBER_UID));
+			member.setUid(memberObj.getLong(MemberModel.MEMBER_UID));
 			member.setUser(memberObj.getString(MemberModel.MEMBER_USER)); 
 			member.setBirthday(memberObj.getString(MemberModel.MEMBER_BIRTHDAY));
 			member.setGender(memberObj.getInt(MemberModel.MEMBER_GENDER)); 

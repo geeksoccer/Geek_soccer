@@ -23,7 +23,7 @@ public class CommentModel implements Serializable{
 	public static final String MAX_COMMENT = "max_comment"; 
 	
 	int commentId;
-	int memberUid; 
+	long memberUid; 
 	int newsId;
 	String commentContent;
 	String comment_create_time;
@@ -42,10 +42,10 @@ public class CommentModel implements Serializable{
 	public void setCommentId(int commentId) {
 		this.commentId = commentId;
 	}
-	public int getMemberUid() {
+	public long getMemberUid() {
 		return memberUid;
 	}
-	public void setMemberUid(int l) { 
+	public void setMemberUid(long l) { 
 		this.memberUid = l;
 	}
 	public int getNewsId() {
