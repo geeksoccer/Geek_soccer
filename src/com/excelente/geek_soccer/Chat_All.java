@@ -488,6 +488,7 @@ public class Chat_All extends Activity{
 	}
 	
 	public void CallSTKShop(){
+		StikerV.setVisibility(RelativeLayout.GONE);
 		Intent Shop_intent = new Intent(mContext,
 				STKShop_Page.class);
 		startActivity(Shop_intent);
@@ -724,7 +725,7 @@ public class Chat_All extends Activity{
 		}
 
 	}
-	
+
 	public void Chat_Loader() {
 		new Thread(new Runnable() {
 			@Override

@@ -141,7 +141,6 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.d("TEST", "OHHHHH");
 		data.BitMapHash.clear();
 		if(data.Chat_Item_list_Team!=null
 				&&data.lstViewChatTeam!=null
@@ -156,17 +155,6 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 			data.imageAdapterChatAll.notifyDataSetChanged();
 			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 		}
-		
-		if (data.socket_Team != null) {
-			if (!data.socket_Team.isConnected()) {
-				data.socket_Team.reconnect();
-			}
-		}
-		
-		if (data.socket_All != null) {
-			if (!data.socket_All.isConnected()) {
-				data.socket_All.reconnect();
-			}
-		}
 	}
+	
 }

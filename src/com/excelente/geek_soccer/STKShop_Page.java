@@ -713,13 +713,18 @@ public class STKShop_Page extends Activity{
 		overridePendingTransition(R.anim.in_trans_right_left, R.anim.out_trans_left_right);
 		if(data.socket_Team != null) {
 			if (data.socket_Team.isConnected()) {
-				data.socket_Team.disconnect();
+				data.socket_Team.emit("adduser", data.ID_Send,
+						data.ProFile_pic,
+						SessionManager.getMember(mContext).getNickname());
+				
 			}
 		}
 		
 		if(data.socket_All != null) {
 			if (data.socket_All.isConnected()) {
-				data.socket_All.disconnect();
+				data.socket_All.emit("adduser", data.ID_Send,
+						data.ProFile_pic,
+						SessionManager.getMember(mContext).getNickname());
 			}
 		}
 		finish();
