@@ -177,6 +177,8 @@ public class Chat_Team extends Activity {
 		}
 		if (data.socket_Team == null) {
 			Chat_Loader();
+		}else if (!data.socket_Team.isConnected()) {
+			Chat_Loader();
 		}
 
 		Chat_input = (EditText) findViewById(R.id.Chat_input);

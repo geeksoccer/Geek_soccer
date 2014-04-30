@@ -163,7 +163,9 @@ public class Chat_All extends Activity{
 			data.imageAdapterChatAll.notifyDataSetChanged();
 			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 		}
-		if(data.socket_All==null){
+		if (data.socket_All == null) {
+			Chat_Loader();
+		}else if(!data.socket_All.isConnected()){
 			Chat_Loader();
 		}
        

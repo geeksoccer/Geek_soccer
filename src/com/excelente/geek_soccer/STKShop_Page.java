@@ -711,6 +711,19 @@ public class STKShop_Page extends Activity{
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.in_trans_right_left, R.anim.out_trans_left_right);
+		if(data.socket_Team != null) {
+			if (data.socket_Team.isConnected()) {
+				Log.d("TEST", "data.socket_Team::Dis");
+				data.socket_Team.disconnect();
+			}
+		}
+		
+		if(data.socket_All != null) {
+			if (data.socket_All.isConnected()) {
+				Log.d("TEST", "data.socket_All::Dis");
+				data.socket_All.disconnect();
+			}
+		}
 		finish();
 	}
 }
