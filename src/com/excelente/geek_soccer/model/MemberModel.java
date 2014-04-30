@@ -121,7 +121,7 @@ public class MemberModel implements Serializable{
 			
 			JSONArray memberJsonArr = new JSONArray(result);
 			JSONObject memberObj = (JSONObject) memberJsonArr.get(0); 
-				
+		
 			member.setUid(memberObj.getInt(MemberModel.MEMBER_UID));
 			member.setUser(memberObj.getString(MemberModel.MEMBER_USER)); 
 			member.setBirthday(memberObj.getString(MemberModel.MEMBER_BIRTHDAY));

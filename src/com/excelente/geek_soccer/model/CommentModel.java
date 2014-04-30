@@ -45,8 +45,8 @@ public class CommentModel implements Serializable{
 	public int getMemberUid() {
 		return memberUid;
 	}
-	public void setMemberUid(int memberUid) {
-		this.memberUid = memberUid;
+	public void setMemberUid(int l) { 
+		this.memberUid = l;
 	}
 	public int getNewsId() {
 		return newsId;

@@ -6,6 +6,7 @@ import java.util.Locale;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.SecurePreferences;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -204,5 +205,20 @@ public class SessionManager {
 				return "th";
 		}
 		return "en";
+	}
+
+	public static void clearMemberOnly(Activity context) {
+		SecurePreferences memberFile = new SecurePreferences(context, MEMBER_SHAREPREFERENCE, "GeekSoccer4619", true);
+		memberFile.removeValue(MemberModel.MEMBER_UID);
+		memberFile.removeValue(MemberModel.MEMBER_USER);
+		memberFile.removeValue(MemberModel.MEMBER_TEAM_ID);
+		memberFile.removeValue(MemberModel.MEMBER_TOKEN);
+		memberFile.removeValue(MemberModel.MEMBER_BIRTHDAY);
+		memberFile.removeValue(MemberModel.MEMBER_GENDER);
+		memberFile.removeValue(MemberModel.MEMBER_NICKNAME);
+		memberFile.removeValue(MemberModel.MEMBER_PHOTO);
+		memberFile.removeValue(MemberModel.MEMBER_EMAIL);
+		memberFile.removeValue(MemberModel.MEMBER_TYPE_LOGIN);
+		memberFile.removeValue(MemberModel.MEMBER_ROLE);
 	}
 }

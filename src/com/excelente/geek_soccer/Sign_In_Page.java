@@ -72,15 +72,6 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		SessionManager.setLangApp(getApplicationContext());
 		cancelNotify();
 		
-		/*MemberModel mem = new MemberModel();
-		mem.setUid(14);
-		mem.setTeamId(1);
-		mem.setRole(2);
-		mem.setNickname("ched");
-		mem.setToken("1234");
-		SessionManager.setMember(getApplicationContext(), mem);
-		gotoMainPage(SessionManager.getMember());*/
-		
 		if(SessionManager.hasMember(this)){
 			gotoMainPage(SessionManager.getMember(this));
 		}else{
@@ -181,7 +172,6 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 
     @Override
     public void onDisconnected() {
-        Log.e("SignIn", "disconnected");
     }
     
     private String[] getAccountNames() {
@@ -334,17 +324,19 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			
 			String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_SIGN_IN_URL, memberParam);
 			
-			if(memberStr.trim().equals("member not yet")){ 
+			if(memberStr.trim().equals("member not yet")){  
 				return member;
-			}else if(memberStr.trim().equals("this member using on any device")){
+			}else if(memberStr.trim().equals("this member using on any device")){	 
 				return null;
 			}
+			
+			Log.e("UID", memberStr);
 			MemberModel memberSignedIn = MemberModel.convertMemberJSONToList(memberStr);
 			
 			return memberSignedIn;
 		}
 		
-		@Override
+		@Override 
 		protected void onPostExecute(MemberModel memberSignedIn) {
 			super.onPostExecute(memberSignedIn);
 			mConnectionProgressDialog.dismiss();

@@ -77,7 +77,6 @@ public class AuthenGoogleAccount extends AsyncTask<Void, Void, String> {
 				setProfileData(result);
 				authenGoogleAccount.onConnect();
 			}
-			Log.e(TAG, result);
 		}
 
 		protected void onError(String msg, Exception e) {
