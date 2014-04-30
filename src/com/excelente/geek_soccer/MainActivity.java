@@ -1,30 +1,20 @@
 package com.excelente.geek_soccer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.service.UpdateService;
-import com.excelente.geek_soccer.utils.HttpConnectUtils;
-import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
@@ -44,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
 	
@@ -66,7 +55,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	LinearLayout Content_view;
 	Activity mContext;
 	private TextView title_bar;
-	private doSignTokenTask signMemberTask = null;
 	private static Intent serviceIntent; 
 	private static ControllParameter data;
 	@Override
@@ -379,12 +367,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(NetworkUtils.isNetworkAvailable(this)){ 
-			if(signMemberTask == null){
-				signMemberTask = new doSignTokenTask();
-				signMemberTask.execute();
-			}
-		}
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -489,57 +471,5 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
    			   android.os.Process.killProcess(android.os.Process.myPid());
            }
         }  
-	}
-	
-	public class doSignTokenTask extends AsyncTask<Void, Void, MemberModel>{
-	
-		private static final String MEMBER_TOKEN_URL = "http://183.90.171.209/gs_member/member_token.php";
-		
-		@Override
-		protected MemberModel doInBackground(Void... params) {
-			
-			SharedPreferences memberFile = getSharedPreferences(SessionManager.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
-			
-			if(!memberFile.getString(MemberModel.MEMBER_TOKEN, "").equals("")){
-	
-				List<NameValuePair> memberParam = new ArrayList<NameValuePair>();
-				
-				String token = memberFile.getString(MemberModel.MEMBER_TOKEN, "");
-	
-				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, token));
-				
-				String dev_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
-				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
-				
-				String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_TOKEN_URL, memberParam);
-				
-				if(memberStr.trim().equals("")){ 
-					return null;
-				}
-				
-				if(memberStr.trim().equals("member not yet")){ 
-					MemberModel member = new MemberModel();
-					member.setUser("member not yet");
-					return member;
-				}
-				
-				//MemberModel memberSignedIn = MemberModel.convertMemberJSONToList(memberStr);
-				return null;
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(MemberModel memberToken) {
-			super.onPostExecute(memberToken);
-			if(memberToken != null && memberToken.getUser().equals("member not yet")){
-				Toast.makeText(mContext, getResources().getString(R.string.sign_logout), Toast.LENGTH_SHORT).show();
-				SessionManager.clearMember(mContext);
-				finish();
-			}
-			
-			signMemberTask = null;
-		}
-		
 	}
 }

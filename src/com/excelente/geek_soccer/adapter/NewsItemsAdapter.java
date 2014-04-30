@@ -3,8 +3,6 @@ package com.excelente.geek_soccer.adapter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +30,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -162,20 +159,19 @@ public class NewsItemsAdapter extends PagerAdapter{
 
 			@Override
 			public void onShowCustomView(View view, CustomViewCallback callback) {
+				Log.e("onShowCustomView-", "test");
 				super.onShowCustomView(view, callback);
-				Log.e("onShowCustomView", "OK");
 			}
 
 			@Override
 			public void onReceivedTouchIconUrl(WebView view, String url, boolean precomposed) {
+				Log.e("onReceivedTouchIconUrl-", url);
 				super.onReceivedTouchIconUrl(view, url, precomposed);
-				Log.e("onReceivedTouchIconUrl", "OK");
 			}
 
 			@Override
 			public void onHideCustomView() {
 				super.onHideCustomView();
-				Log.e("onHideCustomView", "OK");
 			}
         });
 		
@@ -206,7 +202,7 @@ public class NewsItemsAdapter extends PagerAdapter{
         	@Override
         	public void onLoadResource(WebView view, String url) {
         		super.onLoadResource(view, url);
-        		Log.e("onLoadResource-", url);
+        		
         		String upic_me = "http://upic.me/";
         		String image_ohozaa_com = "http://image.ohozaa.com/";
         		
@@ -226,27 +222,6 @@ public class NewsItemsAdapter extends PagerAdapter{
         		}
         	}
         });
-		
-		if (Build.VERSION.SDK_INT >= 16) {  
-		    Class<?> clazz = newsItemView.newsContentWebview.getSettings().getClass();
-		    Method method;
-			try {
-				method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
-				if (method != null) {
-			        try {
-						method.invoke(newsItemView.newsContentWebview.getSettings(), true);
-					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-					}
-			    }
-			} catch (NoSuchMethodException e1) {
-				e1.printStackTrace();
-			}
-		}
 		
 		String htmlData = "";
 		if(SessionManager.getMember(mContext).getTeamId() == 2)
