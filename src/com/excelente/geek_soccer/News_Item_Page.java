@@ -311,7 +311,6 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			doToggleBar();
 		}else{
 			super.onBackPressed();
-			
 			overridePendingTransition(R.anim.in_trans_right_left, R.anim.out_trans_left_right);
 		}
 		

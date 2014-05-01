@@ -27,15 +27,18 @@ import com.excelente.geek_soccer.view.CustomWebView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,11 +46,9 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -109,6 +110,7 @@ public class NewsItemsAdapter extends PagerAdapter{
         
         ((ViewPager) container).addView(convertView,0);
         
+        
         return convertView;
 	}
 	
@@ -123,7 +125,6 @@ public class NewsItemsAdapter extends PagerAdapter{
 		TextView newsReadsTextview = (TextView) ((View) view).findViewById(R.id.news_reads_textview);
 		ImageView newsCommentImageview = (ImageView) ((View) view).findViewById(R.id.news_comment_imageView);
 		TextView newsCommentsTextview = (TextView) ((View) view).findViewById(R.id.news_comments_textview);
-		LinearLayout newsHead = (LinearLayout) ((View) view).findViewById(R.id.news_header);
 		
 		((ViewPager) collection).removeView(newsTopicTextview); 
 		((ViewPager) collection).removeView(newsCreateTimeTextview);
@@ -134,7 +135,6 @@ public class NewsItemsAdapter extends PagerAdapter{
 		((ViewPager) collection).removeView(newsReadsTextview);
 		((ViewPager) collection).removeView(newsCommentImageview);
 		((ViewPager) collection).removeView(newsCommentsTextview);
-		((ViewPager) collection).removeView(newsHead);
         ((ViewPager) collection).removeView((View) view);
         newsItemViews.remove(position);
     }
@@ -152,12 +152,28 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsContentWebview.getSettings().setJavaScriptEnabled(true);
 		newsItemView.newsContentWebview.getSettings().setBuiltInZoomControls(true); 
 		newsItemView.newsContentWebview.getSettings().setPluginState(PluginState.ON);
+		newsItemView.newsContentWebview.getSettings().setUserAgent(0);
         //newsItemView.newsContentWebview.getSettings().setDefaultTextEncodingName("utf-8");
-		newsItemView.newsContentWebview.setWebChromeClient(new MyWebChromeClient());
+		newsItemView.newsContentWebview.setWebChromeClient(new WebChromeClient(){
+			public void onProgressChanged(WebView view, int progress){
+	    		newsWaitProcessbar.setProgress(progress);
+	        }
+		});
 		
 		newsItemView.newsContentWebview.setWebViewClient(new WebViewClient(){
         	boolean timeout;
         	List<String> urls;
+        	
+        	@Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Uri uri = Uri.parse(url);
+                if (uri.getHost().contains("youtube.com")) {
+                    NewsItemsAdapter.viewYoutube(newsItemPage, url);
+                    return true;
+                }
+
+                return false;
+            }
         	
         	@Override
         	public void onPageStarted(final WebView view, String url, Bitmap favicon) {
@@ -200,6 +216,26 @@ public class NewsItemsAdapter extends PagerAdapter{
         		if(urls!=null && !urls.isEmpty()){
         			new PushImageTask(view, urls, newsModel.getNewsContent()).execute();
         		}
+        		
+        		String javascript = "javascript:" +
+        	            "var iframes = document.getElementsByTagName('iframe');" +
+        	            "for (var i = 0, l = iframes.length; i < l; i++) {" +
+        	            "   var iframe = iframes[i]," +
+        	            "   a = document.createElement('a');" +
+        	            "   a.setAttribute('href', iframe.src);" +
+        	            "   d = document.createElement('div');" +
+        	            "   d.style.width = iframe.offsetWidth + 'px';" +
+        	            "   d.style.height = iframe.offsetHeight + 'px';" +
+        	            "   d.style.top = iframe.offsetTop + 'px';" +
+        	            "   d.style.left = iframe.offsetLeft + 'px';" +
+        	            "   d.style.position = 'absolute';" +
+        	            "   d.style.opacity = '0';" +
+        	            "   d.style.filter = 'alpha(opacity=0)';" +
+        	            "   d.style.background = 'black';" +
+        	            "   a.appendChild(d);" +
+        	            "   iframe.offsetParent.appendChild(a);" +
+        	            "}";
+        	        view.loadUrl(javascript);
         	}
         });
 		
@@ -257,6 +293,33 @@ public class NewsItemsAdapter extends PagerAdapter{
 			newsItemView.newsLikeImageview.setImageResource(R.drawable.news_likes_selected);
 		}
 	}
+	
+	public static void viewYoutube(Context context, String url) {
+        NewsItemsAdapter.viewWithPackageName(context, url, "com.google.android.youtube");
+    }
+
+    public static void viewWithPackageName(Context context, String url, String packageName) {
+        try {
+            Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            if (isAppInstalled(context, packageName)) {
+                viewIntent.setPackage(packageName);
+            }
+            context.startActivity(viewIntent);
+        } catch (Exception e) {
+            Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(viewIntent);
+        }
+    }
+
+    public static boolean isAppInstalled(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (NameNotFoundException e) {
+        }
+        return false;
+    }
 	
 	@Override
 	public int getCount() {
@@ -325,55 +388,6 @@ public class NewsItemsAdapter extends PagerAdapter{
 			
 		} 
 		
-	}
-	
-	private class MyWebChromeClient extends WebChromeClient {
-	    FrameLayout.LayoutParams LayoutParameters = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-	    private View mCustomView;
-		private RelativeLayout mContentView;
-		private FrameLayout mCustomViewContainer;
-		private WebChromeClient.CustomViewCallback mCustomViewCallback;
-		
-		public void onProgressChanged(WebView view, int progress){
-    		newsWaitProcessbar.setProgress(progress);
-        }
-	    @Override
-	    public void onShowCustomView(View view, CustomViewCallback callback) {
-	        // if a view already exists then immediately terminate the new one
-	        if (mCustomView != null) {
-	            callback.onCustomViewHidden();
-	            return;
-	        } 
-	        mContentView = (RelativeLayout) newsItemPage.findViewById(R.id.Content_Layout);
-	        mContentView.setVisibility(View.GONE);
-	        mCustomViewContainer = new FrameLayout(newsItemPage);
-	        mCustomViewContainer.setLayoutParams(LayoutParameters);
-	        mCustomViewContainer.setBackgroundResource(android.R.color.black);
-	        view.setLayoutParams(LayoutParameters);
-	        mCustomViewContainer.addView(view);
-	        mCustomView = view;
-	        mCustomViewCallback = callback;
-	        mCustomViewContainer.setVisibility(View.VISIBLE);
-	        newsItemPage.setContentView(mCustomViewContainer);
-	    }
-
-	    @Override
-	    public void onHideCustomView() {
-	        if (mCustomView == null) {
-	            return;
-	        } else {
-	            // Hide the custom view.  
-	            mCustomView.setVisibility(View.GONE);
-	            // Remove the custom view from its container.  
-	            mCustomViewContainer.removeView(mCustomView);
-	            mCustomView = null;
-	            mCustomViewContainer.setVisibility(View.GONE);
-	            mCustomViewCallback.onCustomViewHidden();
-	            // Show the content view.  
-	            mContentView.setVisibility(View.VISIBLE);
-	            newsItemPage.setContentView(mContentView);
-	        }
-	    }
 	}
 	
 	public class PostNewsLikes extends AsyncTask<NewsModel, Void, String>{
