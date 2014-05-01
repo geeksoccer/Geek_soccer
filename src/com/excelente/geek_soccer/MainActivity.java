@@ -441,7 +441,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			@Override
 			public void onClick(View v) {
 				confirmDialog.dismiss();
-				SessionManager.clearMemberOnly(mContext);
+				//SessionManager.clearMemberOnly(mContext);
 				//android.os.Process.killProcess(android.os.Process.myPid());
 				mContext.finish(); 
 			}

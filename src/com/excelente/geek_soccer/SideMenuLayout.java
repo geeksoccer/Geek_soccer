@@ -53,6 +53,8 @@ public class SideMenuLayout implements OnClickListener{
 	private Button logoutBtn;
 
 	private Button settingBtn;
+
+	private Button menuBtn;
 	
 	private static ControllParameter data;
 	public LinearLayout CreateMenu(LinearLayout MainLayout, final Activity mContext) {
@@ -84,8 +86,14 @@ public class SideMenuLayout implements OnClickListener{
 				hideMenu(mContext);
 			}
 		});
-		Button menu_btn = (Button)MenuLayV.findViewById(R.id.Menu_btn);
-		menu_btn.setOnClickListener(new View.OnClickListener() {
+		
+		menuBtn = (Button) data.Menu_Layout.findViewById(R.id.Menu_btn);
+		if(SessionManager.getMember(mContext).getRole() == 2){
+			menuBtn.setVisibility(View.GONE);
+		}else{
+			menuBtn.setVisibility(View.VISIBLE);
+		}
+		menuBtn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {

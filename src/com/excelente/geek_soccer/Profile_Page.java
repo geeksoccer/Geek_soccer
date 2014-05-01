@@ -61,6 +61,8 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	private SoftKeyboardHandledLinearLayout layoutProfile;
 
 	private ProgressBar progressbar;
+
+	private LinearLayout layoutPhoto;
 	
 
 	@Override
@@ -104,6 +106,9 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		upBtn = (LinearLayout) findViewById(R.id.Up_btn);
 		upBtn.setOnClickListener(this);  
 		
+		layoutPhoto = (LinearLayout) findViewById(R.id.layout_photo_);
+		layoutPhoto.setVisibility(View.VISIBLE); 
+		  
 		memberPhoto = (ImageView) findViewById(R.id.member_photo);
 		memberPhoto.setOnClickListener(this);
 		memberPhoto.setVisibility(View.VISIBLE);
@@ -450,12 +455,14 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
     }
 
 	@Override
-	public void onShown() {
+	public void onShown() { 
+		layoutPhoto.setVisibility(View.GONE);
 		memberPhoto.setVisibility(View.GONE);
 	}
 
 	@Override
 	public void onHidden() {
+		layoutPhoto.setVisibility(View.VISIBLE);
 		memberPhoto.setVisibility(View.VISIBLE);
 	}
 
