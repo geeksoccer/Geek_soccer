@@ -137,7 +137,7 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 	        	
 	        }
 	}
-	
+	/*
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -156,5 +156,5 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 		}
 	}
-	
+	*/
 }

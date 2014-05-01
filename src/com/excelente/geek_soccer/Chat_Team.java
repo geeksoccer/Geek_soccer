@@ -6,6 +6,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.apache.http.HttpEntity;
@@ -345,14 +346,29 @@ public class Chat_Team extends Activity {
 
 	public void StickViewCall(final String position) {
 		try {
-			JSONArray j_arr = data.Sticker_Set.get(position);
-
+			ArrayList<String> STK_exist_list = new ArrayList<String>();
+			for (String key : data.Sticker_Set.keySet()) {
+				STK_exist_list.add(key);
+			}
+			
+			JSONArray j_arr = null;
+			String S_postion = "";
+			if(STK_exist_list.size()>0){
+				if(STK_exist_list.size()>(Integer.parseInt(position)-1)){
+					S_postion = STK_exist_list.get(Integer.parseInt(position)-1);
+					j_arr = data.Sticker_Set.get(S_postion);
+				}else{
+					S_postion = STK_exist_list.get(0);
+					j_arr = data.Sticker_Set.get(S_postion);
+				}
+			}
+			
 			if (j_arr != null) {
 				data.Sticker_UrlSet.clear();
 				for (int i = 0; i < j_arr.length(); i++) {
 					JSONObject json_Value = j_arr.getJSONObject(i);
 					data.Sticker_UrlSet.put(
-							position + "_" + json_Value.getString("sk_id"),
+							S_postion + "_" + json_Value.getString("sk_id"),
 							json_Value.getString("sk_img"));
 
 				}
@@ -369,12 +385,26 @@ public class Chat_Team extends Activity {
 						JSONArray json_arr = json_ob.getJSONArray(key_Item);
 						data.Sticker_Set.put(key_Item, json_arr);
 					}
-					j_arr = data.Sticker_Set.get(position);
+					
+					STK_exist_list = new ArrayList<String>();
+					for (String key : data.Sticker_Set.keySet()) {
+						STK_exist_list.add(key);
+					}
+					if(STK_exist_list.size()>0){
+						if(STK_exist_list.size()>(Integer.parseInt(position)-1)){
+							S_postion = STK_exist_list.get(Integer.parseInt(position)-1);
+							j_arr = data.Sticker_Set.get(S_postion);
+						}else{
+							S_postion = STK_exist_list.get(0);
+							j_arr = data.Sticker_Set.get(S_postion);
+						}
+					}
+
 					if (j_arr != null) {
 						for (int i = 0; i < j_arr.length(); i++) {
 							JSONObject json_Value = j_arr.getJSONObject(i);
 							data.Sticker_UrlSet.put(
-									position + "_"
+									S_postion + "_"
 											+ json_Value.getString("sk_id"),
 									json_Value.getString("sk_img"));
 

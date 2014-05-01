@@ -6,6 +6,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -344,62 +345,83 @@ public class Chat_All extends Activity{
 		}
 	}
 	
-	public void StickViewCall(final String position){
+	public void StickViewCall(final String position) {
 		try {
-			JSONArray j_arr = data.Sticker_Set.get(position);
+			ArrayList<String> STK_exist_list = new ArrayList<String>();
+			for (String key : data.Sticker_Set.keySet()) {
+				STK_exist_list.add(key);
+			}
 			
-			if(j_arr!=null){
+			JSONArray j_arr = null;
+			String S_postion = "";
+			if(STK_exist_list.size()>0){
+				if(STK_exist_list.size()>(Integer.parseInt(position)-1)){
+					S_postion = STK_exist_list.get(Integer.parseInt(position)-1);
+					j_arr = data.Sticker_Set.get(S_postion);
+				}else{
+					S_postion = STK_exist_list.get(0);
+					j_arr = data.Sticker_Set.get(S_postion);
+				}
+			}
+			
+			if (j_arr != null) {
 				data.Sticker_UrlSet.clear();
 				for (int i = 0; i < j_arr.length(); i++) {
 					JSONObject json_Value = j_arr.getJSONObject(i);
 					data.Sticker_UrlSet.put(
-							position
-									+ "_"
-									+ json_Value
-											.getString("sk_id"),
-							json_Value
-									.getString("sk_img"));
+							S_postion + "_" + json_Value.getString("sk_id"),
+							json_Value.getString("sk_img"));
 
 				}
-			}else{
-				String StickJset = SessionManager.getJsonSession(Chat_All.this, "StickerSet");
-				if(StickJset!=null){
+			} else {
+				String StickJset = SessionManager.getJsonSession(
+						Chat_All.this, "StickerSet");
+				if (StickJset != null) {
 					JSONObject json_ob = new JSONObject(StickJset);
 					data.Sticker_Set.clear();
 					data.Sticker_UrlSet.clear();
-					for (Iterator<?> league_Item_key = json_ob
-							.keys(); league_Item_key.hasNext();) {
-						String key_Item = (String) league_Item_key
-								.next();
-						JSONArray json_arr = json_ob
-								.getJSONArray(key_Item);
-						data.Sticker_Set
-								.put(key_Item, json_arr);
+					for (Iterator<?> league_Item_key = json_ob.keys(); league_Item_key
+							.hasNext();) {
+						String key_Item = (String) league_Item_key.next();
+						JSONArray json_arr = json_ob.getJSONArray(key_Item);
+						data.Sticker_Set.put(key_Item, json_arr);
 					}
-					j_arr = data.Sticker_Set.get(position);
-					if(j_arr!=null){
+					
+					STK_exist_list = new ArrayList<String>();
+					for (String key : data.Sticker_Set.keySet()) {
+						STK_exist_list.add(key);
+					}
+					if(STK_exist_list.size()>0){
+						if(STK_exist_list.size()>(Integer.parseInt(position)-1)){
+							S_postion = STK_exist_list.get(Integer.parseInt(position)-1);
+							j_arr = data.Sticker_Set.get(S_postion);
+						}else{
+							S_postion = STK_exist_list.get(0);
+							j_arr = data.Sticker_Set.get(S_postion);
+						}
+					}
+
+					if (j_arr != null) {
 						for (int i = 0; i < j_arr.length(); i++) {
 							JSONObject json_Value = j_arr.getJSONObject(i);
 							data.Sticker_UrlSet.put(
-									position
-											+ "_"
-											+ json_Value
-													.getString("sk_id"),
-									json_Value
-											.getString("sk_img"));
+									S_postion + "_"
+											+ json_Value.getString("sk_id"),
+									json_Value.getString("sk_img"));
 
 						}
 					}
-					
+
 				}
 			}
 			int ImgV_p = 0;
 			for (final String key : data.Sticker_UrlSet.keySet()) {
 				ImgV_p++;
-				if(data.Sticker_UrlSet
-						.get(key).contains(".gif")){
-					putBitmap(Sticker_ImgVSet.get(String.valueOf(ImgV_p)), data.Sticker_UrlSet.get(key));
-				}else{
+
+				if (data.Sticker_UrlSet.get(key).contains(".gif")) {
+					putBitmap(Sticker_ImgVSet.get(String.valueOf(ImgV_p)),
+							data.Sticker_UrlSet.get(key));
+				} else {
 					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
 							.get(key));
 					if (bit != null) {
@@ -411,16 +433,17 @@ public class Chat_All extends Activity{
 					}
 				}
 				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setEnabled(true);
-				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View arg0) {
-						Send_Stick(key);
-					}
-				});
+				Sticker_ImgVSet.get(String.valueOf(ImgV_p)).setOnClickListener(
+						new View.OnClickListener() {
+							@Override
+							public void onClick(View arg0) {
+								Send_Stick(key);
+							}
+						});
 			}
 			for (int i = ImgV_p; i < Sticker_ImgVSet.size(); i++) {
-				Sticker_ImgVSet.get(String.valueOf(i+1)).setEnabled(false);
-				Sticker_ImgVSet.get(String.valueOf(i+1)).setImageBitmap(null);
+				Sticker_ImgVSet.get(String.valueOf(i + 1)).setEnabled(false);
+				Sticker_ImgVSet.get(String.valueOf(i + 1)).setImageBitmap(null);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
