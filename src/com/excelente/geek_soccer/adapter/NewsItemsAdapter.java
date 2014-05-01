@@ -152,7 +152,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsContentWebview.getSettings().setJavaScriptEnabled(true);
 		newsItemView.newsContentWebview.getSettings().setBuiltInZoomControls(true); 
 		newsItemView.newsContentWebview.getSettings().setPluginState(PluginState.ON);
-		newsItemView.newsContentWebview.getSettings().setUserAgent(0);
+		//newsItemView.newsContentWebview.getSettings().setUserAgent(0);
         //newsItemView.newsContentWebview.getSettings().setDefaultTextEncodingName("utf-8");
 		newsItemView.newsContentWebview.setWebChromeClient(new WebChromeClient(){
 			public void onProgressChanged(WebView view, int progress){
