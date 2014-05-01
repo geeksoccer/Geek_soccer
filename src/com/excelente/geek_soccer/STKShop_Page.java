@@ -185,11 +185,24 @@ public class STKShop_Page extends Activity{
 			Stk_by.setTextSize(10);
 			Stk_detail.setText(STK_Item.getString("sk_detail"));
 			if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
-				but_price.setText("Downloaded");
-				but_price.setTextColor(Color.GREEN);
-				but_price.setEnabled(false);
-			}else{
+				but_price.setText("Remove");
 				but_price.setTextColor(Color.RED);
+				but_price.setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View arg0) {
+						try {
+							down_progress.setVisibility(RelativeLayout.ABOVE);
+							but_price.setText("Removing...");
+							but_price.setEnabled(false);
+							new stk_delete_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}else{
+				but_price.setTextColor(Color.GREEN);
 				if(STK_Item.getString("sk_price_set").equals("0")){
 					but_price.setText("Price: " + "Free");
 				}else{
@@ -341,10 +354,10 @@ public class STKShop_Page extends Activity{
 				txt_price.setTypeface(Typeface.DEFAULT_BOLD);
 				
 				if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
-					txt_price.setTextColor(Color.GREEN);
+					txt_price.setTextColor(Color.RED);
 					txt_price.setText("Downloaded");
 				}else{
-					txt_price.setTextColor(Color.RED);
+					txt_price.setTextColor(Color.GREEN);
 					if(STK_Item.getString("sk_price_set").equals("0")){
 						txt_price.setText("Price: " + "Free");
 					}else{
@@ -508,11 +521,87 @@ public class STKShop_Page extends Activity{
 						}
 					}
 					down_progress.setVisibility(RelativeLayout.GONE);
-					but_price.setTextColor(Color.GREEN);
+					but_price.setTextColor(Color.RED);
 					if(Size_update_chk!=STK_exist_list.size()){
 						but_price.setText("Downloaded");
 					}else{
 						but_price.setText("Download fail tap to try again..");
+						but_price.setEnabled(true);
+					}
+					imageAdapter.notifyDataSetChanged();
+				}
+			});
+		}
+	}
+	
+	class stk_delete_Request extends AsyncTask<String, String, String> {
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		protected String doInBackground(String... args) {
+			try {
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("id", String.valueOf(SessionManager.getMember(mContext).getUid()) ));
+				params.add(new BasicNameValuePair("stk_id", args[0] ));
+				params.add(new BasicNameValuePair("token",
+						md5Digest(String.valueOf(SessionManager.getMember(mContext).getUid())+args[0]+"acpt46") ));
+				JSONObject json_permission = jParser_permission
+						.makeHttpRequest("http://183.90.171.209/gs_stk_permission/stk_permission_del_one.php",
+								"POST", params);
+				Log.d("TEST", "json_permission::"+json_permission);
+				if (json_permission != null) {
+					JSONObject json_ob = null;
+					try {
+						json_ob = new JSONObject(StickJset);
+						json_ob.remove(args[0]);
+						SessionManager.createNewJsonSession(mContext,
+								"StickerSet", json_ob.toString());
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		protected void onProgressUpdate(String... progress) {
+			
+		}
+
+		protected void onPostExecute(String file_url) {
+			((Activity) mContext).runOnUiThread(new Runnable() {
+				public void run() {
+					StickJset = SessionManager.getJsonSession(mContext, "StickerSet");
+					int Size_update_chk = STK_exist_list.size();
+					STK_exist_list.clear();
+					if(StickJset!=null){
+						JSONObject json_ob;
+						try {
+							json_ob = new JSONObject(StickJset);
+							for (Iterator<?> league_Item_key = json_ob
+									.keys(); league_Item_key.hasNext();) {
+								String key_Item = (String) league_Item_key
+										.next();
+								STK_exist_list.add(key_Item);
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+					down_progress.setVisibility(RelativeLayout.GONE);
+					but_price.setTextColor(Color.GREEN);
+					if(Size_update_chk!=STK_exist_list.size()){
+						but_price.setText("Remove Success");
+						but_price.setEnabled(false);
+					}else{
+						but_price.setText("Remove fail tap to try again..");
 						but_price.setEnabled(true);
 					}
 					imageAdapter.notifyDataSetChanged();
