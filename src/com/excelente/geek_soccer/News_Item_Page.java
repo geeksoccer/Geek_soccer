@@ -22,6 +22,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -31,6 +33,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -90,7 +93,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		newsItemPosition = -1;
+		newsItemPosition = -100;
 		
 		if(savedInstanceState!=null){
 			if(News_Page.newsModelTeamList==null){
@@ -200,9 +203,11 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			}
 		});
 		
-		if(newsItemPosition!=-1){
-			View child = contentFlipView.getChildAt(newsItemPosition);
-			WebView wb = (WebView) child.findViewById(R.id.news_content_webview);
+		if(newsItemPosition!=-100){ 
+			PagerAdapter adapter = contentFlipView.getAdapter();
+			Fragment fragment = (Fragment) ((Adapter) adapter).getItem(contentFlipView.getCurrentItem());
+			View activeView = fragment.getView();
+			WebView wb = (WebView) activeView.findViewById(R.id.news_content_webview);
 			wb.loadUrl("javascript:window.location.reload(true)");
 		}
 		
