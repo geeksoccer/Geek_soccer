@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -494,6 +495,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
+		Log.e(">>>>>>>>>>>>>>onSaveInstanceState<<<<<<<<<<<<<<", ">>>>>>>>>>>>>>onSaveInstanceState<<<<<<<<<<<<<<");
 		super.onSaveInstanceState(savedInstanceState);
 		if(News_Page.newsModelTeamList!=null && !News_Page.newsModelTeamList.isEmpty()){
 			Gson gson = new Gson();
@@ -509,6 +511,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		Log.e(">>>>>>>>>>>>>>onRestoreInstanceState<<<<<<<<<<<<<<", ">>>>>>>>>>>>>>onRestoreInstanceState<<<<<<<<<<<<<<");
 		super.onRestoreInstanceState(savedInstanceState);
 		String newsModelTeamstr = savedInstanceState.getString("newsModelTeamList");
 		News_Page.newsModelTeamList = NewsModel.convertNewsStrToList(newsModelTeamstr);
