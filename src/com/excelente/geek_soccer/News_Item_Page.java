@@ -90,13 +90,13 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		if(savedInstanceState!=null){
 			if(News_Page.newsModelTeamList==null){
 				String newsModelTeamstr = savedInstanceState.getString("newsModelTeamList");
-				//Log.e(">>>>>>>>>>>>>>onCreate<<<<<<<<<<<<<<", newsModelTeamstr);
+				Log.e(">>>>>>>>>>>>>>onCreate<<<<<<<<<<<<<<", newsModelTeamstr);
 				News_Page.newsModelTeamList = NewsModel.convertNewsStrToList(newsModelTeamstr);
 			}
 			
 			if(News_Page.newsModelGlobalList==null){
 				String newsModelGlobalstr = savedInstanceState.getString("newsModelGlobalList");
-				//Log.e(">>>>>>>>>>>>>>onCreate<<<<<<<<<<<<<<", newsModelGlobalstr);
+				Log.e(">>>>>>>>>>>>>>onCreate<<<<<<<<<<<<<<", newsModelGlobalstr);
 				News_Page.newsModelGlobalList = NewsModel.convertNewsStrToList(newsModelGlobalstr);
 			}
 		}
