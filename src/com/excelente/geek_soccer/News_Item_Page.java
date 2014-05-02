@@ -189,7 +189,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 					}
 				}
 				
-				oldPosition = position;
+				oldPosition = position; 
 			}
 			
 			@Override
@@ -203,13 +203,10 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			}
 		});
 		
-		if(newsItemPosition!=-100){ 
-			PagerAdapter adapter = contentFlipView.getAdapter();
-			Fragment fragment = (Fragment) ((Adapter) adapter).getItem(contentFlipView.getCurrentItem());
-			View activeView = fragment.getView();
-			WebView wb = (WebView) activeView.findViewById(R.id.news_content_webview);
+		/*if(newsItemPosition!=-99){
+			WebView wb = (WebView)contentFlipView.findViewWithTag("lin");
 			wb.loadUrl("javascript:window.location.reload(true)");
-		}
+		}*/
 		
 		//comment listview 
 		commentListview = (ListView) findViewById(R.id.news_comment_listview);

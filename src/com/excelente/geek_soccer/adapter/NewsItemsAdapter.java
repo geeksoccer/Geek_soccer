@@ -95,6 +95,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
 		newsItemView.newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
 		newsItemView.newsContentWebview = (CustomWebView) convertView.findViewById(R.id.news_content_webview);
+		newsItemView.newsContentWebview.setTag("lin");
 		newsItemView.newsCreditTextview = (TextView) convertView.findViewById(R.id.news_credit_textview);
 		newsItemView.newsLikeImageview = (ImageView) convertView.findViewById(R.id.news_like); 
 		newsItemView.newsLikesTextview = (TextView) convertView.findViewById(R.id.news_likes_textview);
