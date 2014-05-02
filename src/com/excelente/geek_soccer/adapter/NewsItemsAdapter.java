@@ -198,7 +198,6 @@ public class NewsItemsAdapter extends PagerAdapter{
         	@Override
         	public void onLoadResource(WebView view, String url) {
         		super.onLoadResource(view, url);
-        		
         		String upic_me = "http://upic.me/";
         		String image_ohozaa_com = "http://image.ohozaa.com/";
         		
@@ -234,16 +233,36 @@ public class NewsItemsAdapter extends PagerAdapter{
         	            "   d.style.background = 'black';" +
         	            "   a.appendChild(d);" +
         	            "   iframe.offsetParent.appendChild(a);" +
-        	            "}";
-        	        view.loadUrl(javascript);
+        	            "}"; 
+        	    view.loadUrl(javascript);
+        	    
+        	    String javascripts = "javascript:" +
+        	            "var iframes = document.getElementsByTagName('embed');" +
+        	            "for (var i = 0, l = iframes.length; i < l; i++) {" +
+        	            "   var iframe = iframes[i]," +
+        	            "   a = document.createElement('a');" +
+        	            "   a.setAttribute('href', iframe.src);" +
+        	            "   d = document.createElement('div');" +
+        	            "   d.style.width = iframe.offsetWidth + 'px';" +
+        	            "   d.style.height = iframe.offsetHeight + 'px';" +
+        	            "   d.style.top = iframe.offsetTop + 'px';" +
+        	            "   d.style.left = iframe.offsetLeft + 'px';" +
+        	            "   d.style.position = 'absolute';" +
+        	            "   d.style.opacity = '0';" +
+        	            "   d.style.filter = 'alpha(opacity=0)';" +
+        	            "   d.style.background = 'black';" +
+        	            "   a.appendChild(d);" +
+        	            "   iframe.offsetParent.appendChild(a);" +
+        	            "}"; 
+        	    view.loadUrl(javascripts);
         	}
         });
 		
 		String htmlData = "";
 		if(SessionManager.getMember(mContext).getTeamId() == 2)
-			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
+			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
 		else
-			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
+			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
 
 		newsItemView.newsContentWebview.loadData( htmlData, "text/html; charset=UTF-8", null);
         
@@ -376,9 +395,9 @@ public class NewsItemsAdapter extends PagerAdapter{
 			
 			String htmlData = "";
 			if(SessionManager.getMember(mContext).getTeamId() == 2)
-				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ html +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
+				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ html +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
 			else
-				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ html +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
+				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ html +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
 	
 			for (int i=0; i < urls.size(); i++) {
 				htmlData = htmlData.replace(urls.get(i), base64s.get(i));  
