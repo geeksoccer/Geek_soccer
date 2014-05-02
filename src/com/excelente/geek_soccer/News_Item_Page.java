@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -82,10 +83,14 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	public TextView headeTitleTextview;
 	private NewsItemsAdapter newsItemAdaptor;
 	private String tag; 
+	
+	int newsItemPosition; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		newsItemPosition = -1;
 		
 		if(savedInstanceState!=null){
 			if(News_Page.newsModelTeamList==null){
@@ -99,6 +104,8 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				Log.e(">>>>>>>>>>>>>>onCreate<<<<<<<<<<<<<<", newsModelGlobalstr);
 				News_Page.newsModelGlobalList = NewsModel.convertNewsStrToList(newsModelGlobalstr);
 			}
+			
+			newsItemPosition = savedInstanceState.getInt("positionNewItemPage");
 		}
 		
 		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(News_Item_Page.this).getTeamId());
@@ -192,6 +199,12 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 				
 			}
 		});
+		
+		if(newsItemPosition!=-1){
+			View child = contentFlipView.getChildAt(newsItemPosition);
+			WebView wb = (WebView) child.findViewById(R.id.news_content_webview);
+			wb.reload();
+		}
 		
 		//comment listview 
 		commentListview = (ListView) findViewById(R.id.news_comment_listview);
@@ -522,6 +535,9 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			Gson gson = new Gson();
 			savedInstanceState.putString("newsModelGlobalList", gson.toJson(News_Page.newsModelGlobalList));
 		}
+		
+		if(contentFlipView!=null)
+			savedInstanceState.putInt("positionNewItemPage", contentFlipView.getCurrentItem());
 	}
 
 }
