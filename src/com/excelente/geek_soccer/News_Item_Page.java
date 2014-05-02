@@ -203,7 +203,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		if(newsItemPosition!=-1){
 			View child = contentFlipView.getChildAt(newsItemPosition);
 			WebView wb = (WebView) child.findViewById(R.id.news_content_webview);
-			wb.reload();
+			wb.loadUrl("javascript:window.location.reload(true)");
 		}
 		
 		//comment listview 
