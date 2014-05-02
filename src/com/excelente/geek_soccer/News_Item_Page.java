@@ -143,6 +143,8 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		contentFlipView.setCurrentItem(position);
 		contentFlipView.setOffscreenPageLimit(0);
 		
+		newsItemAdaptor.notifyDataSetChanged();
+		
 		newsloaded = true;
 		contentFlipView.setOnPageChangeListener(new OnPageChangeListener() {
 			int oldPosition = 0;
