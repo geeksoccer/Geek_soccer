@@ -87,6 +87,13 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		String newsModelTeamstr = savedInstanceState.getString("newsModelTeamList");
+		Log.e(">>>>>>>>>>>>>>onCreate<<<<<<<<<<<<<<", newsModelTeamstr);
+		News_Page.newsModelTeamList = NewsModel.convertNewsStrToList(newsModelTeamstr);
+		
+		String newsModelGlobalstr = savedInstanceState.getString("newsModelGlobalList");
+		News_Page.newsModelGlobalList = NewsModel.convertNewsStrToList(newsModelGlobalstr);
+		
 		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(News_Item_Page.this).getTeamId());
 		
 		initAnimation();
@@ -504,20 +511,8 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	  
 		if(News_Page.newsModelGlobalList!=null && !News_Page.newsModelGlobalList.isEmpty()){
 			Gson gson = new Gson();
-			gson.toJson(News_Page.newsModelGlobalList);
-			savedInstanceState.putString("newsModelGlobalList", gson.toJson(News_Page.newsModelTeamList));
+			savedInstanceState.putString("newsModelGlobalList", gson.toJson(News_Page.newsModelGlobalList));
 		}
-	}
-	
-	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		Log.e(">>>>>>>>>>>>>>onRestoreInstanceState<<<<<<<<<<<<<<", ">>>>>>>>>>>>>>onRestoreInstanceState<<<<<<<<<<<<<<");
-		super.onRestoreInstanceState(savedInstanceState);
-		String newsModelTeamstr = savedInstanceState.getString("newsModelTeamList");
-		News_Page.newsModelTeamList = NewsModel.convertNewsStrToList(newsModelTeamstr);
-		
-		String newsModelGlobalstr = savedInstanceState.getString("newsModelGlobalList");
-		News_Page.newsModelGlobalList = NewsModel.convertNewsStrToList(newsModelGlobalstr);
 	}
 
 }
