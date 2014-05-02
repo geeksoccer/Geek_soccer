@@ -15,6 +15,7 @@ import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.google.gson.Gson;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -489,6 +490,31 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			newsloaded = true;
 		}
 
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		if(News_Page.newsModelTeamList!=null && !News_Page.newsModelTeamList.isEmpty()){
+			Gson gson = new Gson();
+			savedInstanceState.putString("newsModelTeamList", gson.toJson(News_Page.newsModelTeamList));
+		}
+	  
+		if(News_Page.newsModelGlobalList!=null && !News_Page.newsModelGlobalList.isEmpty()){
+			Gson gson = new Gson();
+			gson.toJson(News_Page.newsModelGlobalList);
+			savedInstanceState.putString("newsModelGlobalList", gson.toJson(News_Page.newsModelTeamList));
+		}
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		String newsModelTeamstr = savedInstanceState.getString("newsModelTeamList");
+		News_Page.newsModelTeamList = NewsModel.convertNewsStrToList(newsModelTeamstr);
+		
+		String newsModelGlobalstr = savedInstanceState.getString("newsModelGlobalList");
+		News_Page.newsModelGlobalList = NewsModel.convertNewsStrToList(newsModelGlobalstr);
 	}
 
 }
