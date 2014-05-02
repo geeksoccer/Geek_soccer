@@ -121,7 +121,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		
 		contentFlipView = (ViewPager) findViewById(R.id.Content_Pager);
 		
-		newsItemAdaptor = new NewsItemsAdapter(News_Item_Page.this, newsWaitProcessbar, News_Page.getNewsListbyTag(tag));
+		newsItemAdaptor = new NewsItemsAdapter(News_Item_Page.this, newsWaitProcessbar, News_Page.getNewsListbyTag(tag, this));
 		
 		contentFlipView.setAdapter(newsItemAdaptor);
 		contentFlipView.setCurrentItem(position);
@@ -490,4 +490,5 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		}
 
 	}
+
 }

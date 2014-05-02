@@ -469,29 +469,29 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		} 
 	}
 	
-	public static List<NewsModel> getNewsListbyTag(String tag) {
+	public static List<NewsModel> getNewsListbyTag(String tag, Context context) {
 		List<NewsModel> newsModelList = new ArrayList<NewsModel>(); 
 			if(tag.equals("tag0")){
-				newsModelList = getNewsModelTeamList();
+				newsModelList = getNewsModelTeamList(context);
 			}else if(tag.equals("tag1")){
-				newsModelList = getNewsModelGlobalList();
+				newsModelList = getNewsModelGlobalList(context);
 			}
-		return newsModelList;
+		return newsModelList; 
 	}
 
-	public static List<NewsModel> getNewsModelTeamList() {
-		return newsModelTeamList;
+	public static List<NewsModel> getNewsModelTeamList(Context context) {
+		return newsModelTeamList; 
 	}
 
-	public static void setNewsModelTeamList(List<NewsModel> newsModelTeamList) {
+	public void setNewsModelTeamList(List<NewsModel> newsModelTeamList) {
 		News_Page.newsModelTeamList = newsModelTeamList;
 	}
 
-	public static List<NewsModel> getNewsModelGlobalList() {
+	public static List<NewsModel> getNewsModelGlobalList(Context context) {
 		return newsModelGlobalList;
 	}
 
-	public static void setNewsModelGlobalList(List<NewsModel> newsModelGlobalList) {
+	public void setNewsModelGlobalList(List<NewsModel> newsModelGlobalList) {
 		News_Page.newsModelGlobalList = newsModelGlobalList;
 	}
 	

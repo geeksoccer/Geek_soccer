@@ -116,6 +116,13 @@ public class SessionManager {
 		SessionManager.member = null;
 	}
 	
+	public static void clearByKey(Context context, String key) {
+		SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+		Editor editMember = memberFile.edit();
+		editMember.remove(key);
+		editMember.commit();
+	}
+	
 	public static boolean hasMember(Context context) {
 		if(SessionManager.getMember(context) != null && SessionManager.getMember(context).getUid()>0){
 			return true;
