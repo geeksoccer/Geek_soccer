@@ -76,6 +76,7 @@ public class STKShop_Page extends Activity{
 	ArrayList<String> STK_exist_list = new ArrayList<String>();
 	String StickJset;
 	Button but_price;
+	Button but_delete;
 	ProgressBar down_progress;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +159,8 @@ public class STKShop_Page extends Activity{
 
 		}); 
 		but_price = (Button)DialogV.findViewById(R.id.download);
-		down_progress = (ProgressBar)DialogV.findViewById(R.id.download_progress);
+		but_delete = (Button)DialogV.findViewById(R.id.remove);
+		down_progress = (ProgressBar)DialogV.findViewById(R.id.download_progress);		
 		down_progress.setVisibility(RelativeLayout.GONE);
 		but_price.setTypeface(Typeface.DEFAULT_BOLD);
 		try {
@@ -185,44 +187,46 @@ public class STKShop_Page extends Activity{
 			Stk_by.setTextSize(10);
 			Stk_detail.setText(STK_Item.getString("sk_detail"));
 			if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
-				but_price.setText("Remove");
-				but_price.setTextColor(Color.RED);
-				but_price.setOnClickListener(new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View arg0) {
-						try {
-							down_progress.setVisibility(RelativeLayout.ABOVE);
-							but_price.setText("Removing...");
-							but_price.setEnabled(false);
-							new stk_delete_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				});
-			}else{
+				but_price.setText("Downloaded");
+				but_price.setEnabled(false);
 				but_price.setTextColor(Color.GREEN);
+			}else{
+				but_delete.setVisibility(RelativeLayout.GONE);
+				but_price.setTextColor(Color.RED);
 				if(STK_Item.getString("sk_price_set").equals("0")){
 					but_price.setText("Price: " + "Free");
 				}else{
 					but_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
 				}
-				but_price.setOnClickListener(new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View arg0) {
-						try {
-							down_progress.setVisibility(RelativeLayout.ABOVE);
-							but_price.setText("Downloading...");
-							but_price.setEnabled(false);
-							new stk_permission_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				});
 			}
+			but_price.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					try {
+						down_progress.setVisibility(RelativeLayout.ABOVE);
+						but_price.setText("Downloading...");
+						but_price.setEnabled(false);
+						new stk_permission_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			but_delete.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					try {
+						down_progress.setVisibility(RelativeLayout.ABOVE);
+						but_price.setText("Removing...");
+						but_price.setEnabled(false);
+						new stk_delete_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			});
 
 			ImageView Stick_1 = (ImageView) DialogV.findViewById(R.id.stic_1);
 			ImageView Stick_2 = (ImageView) DialogV.findViewById(R.id.stic_2);
@@ -354,10 +358,10 @@ public class STKShop_Page extends Activity{
 				txt_price.setTypeface(Typeface.DEFAULT_BOLD);
 				
 				if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
-					txt_price.setTextColor(Color.RED);
+					txt_price.setTextColor(Color.GREEN);
 					txt_price.setText("Downloaded");
 				}else{
-					txt_price.setTextColor(Color.GREEN);
+					txt_price.setTextColor(Color.RED);
 					if(STK_Item.getString("sk_price_set").equals("0")){
 						txt_price.setText("Price: " + "Free");
 					}else{
@@ -521,9 +525,10 @@ public class STKShop_Page extends Activity{
 						}
 					}
 					down_progress.setVisibility(RelativeLayout.GONE);
-					but_price.setTextColor(Color.RED);
+					but_price.setTextColor(Color.GREEN);
 					if(Size_update_chk!=STK_exist_list.size()){
 						but_price.setText("Downloaded");
+						but_delete.setVisibility(RelativeLayout.ABOVE);
 					}else{
 						but_price.setText("Download fail tap to try again..");
 						but_price.setEnabled(true);
@@ -569,13 +574,13 @@ public class STKShop_Page extends Activity{
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return null;
+			return args[1];
 		}
 		protected void onProgressUpdate(String... progress) {
 			
 		}
 
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(final String position) {
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
 					StickJset = SessionManager.getJsonSession(mContext, "StickerSet");
@@ -598,8 +603,29 @@ public class STKShop_Page extends Activity{
 					down_progress.setVisibility(RelativeLayout.GONE);
 					but_price.setTextColor(Color.GREEN);
 					if(Size_update_chk!=STK_exist_list.size()){
+						but_delete.setVisibility(RelativeLayout.GONE);
 						but_price.setText("Remove Success");
 						but_price.setEnabled(false);
+						data.chatDelay = 2000;
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									final JSONObject STK_Item = STK_list.get(Integer.parseInt(position) );
+									
+									if(STK_Item.getString("sk_price_set").equals("0")){
+										but_price.setText("Price: " + "Free");
+									}else{
+										but_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
+									}
+									but_price.setTextColor(Color.RED);
+									but_price.setEnabled(true);
+								} catch (JSONException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}								
+							}
+						}, data.chatDelay);
 					}else{
 						but_price.setText("Remove fail tap to try again..");
 						but_price.setEnabled(true);
