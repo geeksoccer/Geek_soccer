@@ -747,7 +747,8 @@ public class LiveScore_Today extends Activity {
 						|| !data.OldTime.equals("")){
 					if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
 							|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
-							|| data.OldTime.equals("") ){
+							|| data.OldTime.equals("")
+							|| (!Time.equals(data.OldTime) && ((data.OldTime.equals("HT")))) ){
 						NotificationManager mNotifyManager = (NotificationManager) mContext
 								.getSystemService(Context.NOTIFICATION_SERVICE);
 						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
