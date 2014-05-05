@@ -47,7 +47,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	Button score_board_tab;
 	Button game_tab;
 	
-	Button menu_btn;
+	ImageView menu_btn;  
 	ImageView logout_btn;
 	ImageView news_btn;
 	LinearLayout TeamLogo;
@@ -153,7 +153,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		});
 	}
 	private void menu_setting() {
-		menu_btn = (Button)findViewById(R.id.Menu_btn);
+		menu_btn = (ImageView) findViewById(R.id.Menu_btn);
 		
 		if(SessionManager.getMember(MainActivity.this).getRole() == 1){
 			menu_btn.setVisibility(View.VISIBLE);

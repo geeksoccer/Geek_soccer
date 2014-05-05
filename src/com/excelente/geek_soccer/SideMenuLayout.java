@@ -54,7 +54,7 @@ public class SideMenuLayout implements OnClickListener{
 
 	private Button settingBtn;
 
-	private Button menuBtn;
+	private ImageView menuBtn;
 	
 	private static ControllParameter data;
 	public LinearLayout CreateMenu(LinearLayout MainLayout, final Activity mContext) {
@@ -87,7 +87,7 @@ public class SideMenuLayout implements OnClickListener{
 			}
 		});
 		
-		menuBtn = (Button) data.Menu_Layout.findViewById(R.id.Menu_btn);
+		menuBtn = (ImageView) data.Menu_Layout.findViewById(R.id.Menu_btn);
 		if(SessionManager.getMember(mContext).getRole() == 2){
 			menuBtn.setVisibility(View.GONE);
 		}else{

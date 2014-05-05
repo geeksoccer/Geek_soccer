@@ -43,7 +43,7 @@
             android:textColor="@color/white"
             android:text="@string/title_bar_news" />
          
-        <Button
+        <ImageView
             android:id="@+id/Menu_btn"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -51,7 +51,8 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:visibility="invisible"
-            android:background="@drawable/menu_btn" />
+            android:src="@drawable/menu_btn"
+            android:background="@drawable/bg_press" />
 
     </RelativeLayout>
 
