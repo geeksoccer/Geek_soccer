@@ -7,12 +7,15 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.excelente.geek_soccer.adapter.TeamAdapter;
 import com.excelente.geek_soccer.authen.AuthenGoogleAccount;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.NewsModel;
+import com.excelente.geek_soccer.model.TeamModel;
 import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -25,22 +28,32 @@ import com.google.android.gms.plus.PlusClient;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.IntentSender.SendIntentException;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Sign_In_Page extends Activity implements View.OnClickListener, ConnectionCallbacks, OnConnectionFailedListener, AuthenGoogleAccount.OnConnectGoogleAccount{
@@ -65,11 +78,18 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	private AccountManager mAccountManager;
 
 	private AuthenGoogleAccount authenGoogleAccount;
+	
+	String[] teamsName;
+	int[] teamsColor;
+	int[] teamsLogo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		SessionManager.setLangApp(getApplicationContext());
+		ThemeUtils.setThemeByTeamId(this, 0);
+		setResourceTeamModel();
+		
 		cancelNotify();
 		
 		if(SessionManager.hasMember(this)){
@@ -81,6 +101,27 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		}
 	}
 	
+	private void setResourceTeamModel() {
+		
+		teamsName = getResources().getStringArray(R.array.team_list);
+		
+		teamsColor = new int[]{
+								R.color.news_arsenal, 
+								R.color.news_chelsea, 
+								R.color.news_liverpool, 
+								R.color.news_manu, 
+								R.color.news_default
+							  };
+		
+		teamsLogo = new int[]{
+								R.drawable.logo_arsenal, 
+								R.drawable.logo_chelsea, 
+								R.drawable.logo_liverpool,
+								R.drawable.logo_manchester_united, 
+								R.drawable.ic_action_overflow
+							};
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -230,38 +271,39 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	}
 	
 	private void doSelectTeam() {
-    	AlertDialog.Builder dialog = new AlertDialog.Builder(Sign_In_Page.this);
-		dialog.setTitle(getResources().getString(R.string.dailog_favorite_team));
 		
-		dialog.setSingleChoiceItems(getResources().getStringArray(R.array.team_list), -1, new DialogInterface.OnClickListener() {
-			
+		ArrayList<TeamModel> teamList = getTeamList();
+		View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.dialog_select_team, null);
+		
+		final Dialog selectTeamDialog = new Dialog(this); 
+		selectTeamDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		selectTeamDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		selectTeamDialog.setContentView(view);
+		selectTeamDialog.setCancelable(false);
+		
+		ListView lvTeam = (ListView) view.findViewById(R.id.lv_team);
+		
+		TeamAdapter teamAdap = new TeamAdapter(this, teamList);
+		lvTeam.setAdapter(teamAdap); 
+		lvTeam.setOnItemClickListener(new OnItemClickListener() {
+
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				switch (which) {
-					case 0:
-						doRegister(0);
-						break;
-					case 1:
-						doRegister(1);
-						break;
-					case 2:
-						doRegister(2);
-						break;
-					case 3:
-						doRegister(3);
-						break;
-					case 4:
-						doRegister(4);
-						break;
-				}
-				dialog.dismiss();
+			public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+				showConfirmDialog(selectTeamDialog, position);
 			}
-			
 		});
 		
-		dialog.setCancelable(false);
-		dialog.create();
-		dialog.show();
+		selectTeamDialog.show();
+	}
+
+	private ArrayList<TeamModel> getTeamList() {
+		ArrayList<TeamModel> teamList = new ArrayList<TeamModel>();
+		
+    	for (int i = 0; i < teamsName.length; i++) {
+			TeamModel team = new TeamModel(teamsName[i], teamsLogo[i], teamsColor[i]);
+			teamList.add(team);
+		}
+		return teamList;
 	}
 
 	private void doRegister(int teamId) {
@@ -283,6 +325,58 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		}else{
 			Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
 		}
+	}
+	 
+	protected void showConfirmDialog(final Dialog selectTeamDialog, final int teamId) {
+		
+		ThemeUtils.setThemeByTeamId(this, teamId+1); 
+		
+		final Dialog confirmDialog = new Dialog(this);  
+		
+		View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirm, null);
+		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		TextView question = (TextView)view.findViewById(R.id.dialog_question);
+		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
+		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		
+		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		confirmDialog.setContentView(view);
+	
+		title.setText(getResources().getString(R.string.title_select_team));
+		Drawable img = this.getResources().getDrawable( teamsLogo[teamId]);
+		img.setBounds( 0, 0, 60, 60 );
+		title.setCompoundDrawables( img, null, null, null );
+		
+		if(teamId == 4){
+			question.setText(getResources().getString(R.string.question_select_team_other));
+		}else{
+			question.setText(getResources().getString(R.string.question_select_team));
+		}
+		
+		closeBt.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				confirmDialog.dismiss();
+				ThemeUtils.setThemeByTeamId(Sign_In_Page.this, 0); 
+			}
+
+		}); 
+		
+		btComfirm.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				doRegister(teamId);
+				confirmDialog.dismiss();
+				selectTeamDialog.dismiss();
+			}
+
+		});
+		
+		confirmDialog.setCancelable(true);
+		confirmDialog.show();
 	}
 
 	public class doSignInTask extends AsyncTask<MemberModel, Void, MemberModel>{ 
