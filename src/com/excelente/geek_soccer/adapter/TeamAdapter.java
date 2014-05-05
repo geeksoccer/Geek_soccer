@@ -7,16 +7,14 @@ import com.excelente.geek_soccer.model.TeamModel;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class TeamAdapter extends BaseAdapter implements OnTouchListener{
+public class TeamAdapter extends BaseAdapter{
 	
 	Activity activity;
 	List<TeamModel> teamList;
@@ -42,7 +40,6 @@ public class TeamAdapter extends BaseAdapter implements OnTouchListener{
 			view.teamName = (TextView) convertView.findViewById(R.id.team_name);
 			view.teamLogo = (ImageView) convertView.findViewById(R.id.team_logo);
 			view.teamColor = (RelativeLayout) convertView.findViewById(R.id.team_color);
-			view.teamPress = (RelativeLayout) convertView.findViewById(R.id.team_press);
 			
 			convertView.setTag(view);
 		}else{
@@ -54,7 +51,6 @@ public class TeamAdapter extends BaseAdapter implements OnTouchListener{
 		view.teamName.setText(team.getTeamName());
 		view.teamLogo.setImageResource(team.getTeamLogo());
 		view.teamColor.setBackgroundResource(team.getTeamColor());
-		view.teamPress.setOnTouchListener(this);
 		
 		return convertView;
 	}
@@ -72,11 +68,6 @@ public class TeamAdapter extends BaseAdapter implements OnTouchListener{
 	@Override
 	public long getItemId(int position) {
 		return teamList.indexOf(teamList.get(position)); 
-	}
-
-	@Override
-	public boolean onTouch(View arg0, MotionEvent arg1) {
-		return false;
 	}
 	
 }
