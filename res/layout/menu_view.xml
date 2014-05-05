@@ -4,7 +4,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/silver"
@@ -12,45 +12,112 @@
 
         <Button
             android:id="@+id/Profile"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_bar_profile"
-            android:drawableLeft="@drawable/ic_action_user" />
+            android:drawableLeft="@drawable/ic_action_user"
+            android:background="@drawable/bg_press"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"/>
+        
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
 
         <Button
             android:id="@+id/Rate"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/rate_app_title"
-            android:drawableLeft="@drawable/news_likes_selected" />
+            android:drawableLeft="@drawable/news_likes_selected"
+            android:background="@drawable/bg_press"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+        
+        
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
         
         <Button
             android:id="@+id/Share"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/share_app_title"
-            android:drawableLeft="@drawable/ic_action_share" />
+            android:drawableLeft="@drawable/ic_action_share"
+            android:background="@drawable/bg_press"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+        
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
 
         <Button
             android:id="@+id/help"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_bar_help"
-            android:drawableLeft="@drawable/ic_action_help" />
+            android:drawableLeft="@drawable/ic_action_help"
+            android:background="@drawable/bg_press"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+        
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
 
         <Button
             android:id="@+id/Setting"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_bar_setting"
-            android:drawableLeft="@drawable/ic_action_settings" />
+            android:drawableLeft="@drawable/ic_action_settings"
+            android:background="@drawable/bg_press"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+        
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
         
         <Button
             android:id="@+id/logINOUT"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/logout_app_title"
-            android:drawableLeft="@drawable/log_out" />
+            android:drawableLeft="@drawable/log_out"
+            android:background="@drawable/bg_press"
+            android:textStyle="bold"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp" />
+        
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
     </LinearLayout>
 
 </LinearLayout>

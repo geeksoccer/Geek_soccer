@@ -22,6 +22,8 @@
     <string name="title_bar_profile">Profile</string>
     <string name="title_bar_setting">Setting</string>
     <string name="title_bar_help">Help</string>
+    <string name="title_bar_match_detail">MATCH DETAILS</string>
+    <string name="title_bar_sticker_shop">STICKER SHOP</string>
     
     <string name="table_head_seq">#</string>
     <string name="table_head_team">Team</string>
@@ -109,6 +111,8 @@
     
     <string name="profile_pick_image">Please pick image type png, jpg or jpeg only</string>
     <string name="profile_pick_less_image">Please Pick Image Less Size.</string>
+    
+    <string name="put_message"> Put Message</string>
     
     <string-array name="team_list">
         <item>Arsenal</item>

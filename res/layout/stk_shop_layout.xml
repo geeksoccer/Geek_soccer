@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="STIKER SHOP"
+            android:text="@string/title_bar_sticker_shop"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/white"
             android:textStyle="bold" />

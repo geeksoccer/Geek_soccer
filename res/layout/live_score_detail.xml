@@ -18,7 +18,7 @@
             android:textSize="20dp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:text="MATCH DETAILS" />
+            android:text="@string/title_bar_match_detail" />
         
         <LinearLayout 
             android:id="@+id/Up_btn"
