@@ -74,7 +74,7 @@
     <string name="logout_app_question">คุณต้องการออกจากระบบนี้หรือไม่?</string>
     
     <string name="change_lang_title">เปลี่ยนภาษา</string>
-    <string name="change_lang_question">การเปลียนภาษานั้นจำเป็นต้องมีการรีสตาร์ทแอพปลิเคชัน \n คุณต้องการเปลี่ยนภาษาและรีสตาร์ทแอพปลิเคชั่นนี้หรือไม่?</string>
+    <string name="change_lang_question">การเปลี่ยนภาษานั้นจำเป็น \n ต้องมีการรีสตาร์ทแอพปลิเคชัน \n\n คุณต้องการเปลี่ยนภาษาและ \n รีสตาร์ทแอพปลิเคชั่นนี้หรือไม่?</string>
     
     <string name="profile_save_success">บันทึกเรียบร้อย.</string>
     <string name="update_profile">กำลังอัพเดทโปรไฟล์...</string>
