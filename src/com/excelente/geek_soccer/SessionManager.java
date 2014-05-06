@@ -211,7 +211,7 @@ public class SessionManager {
 			case 1:
 				return "th";
 		}
-		return "en";
+		return "th";
 	}
 
 	public static void clearMemberOnly(Activity context) {
