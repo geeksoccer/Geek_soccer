@@ -57,7 +57,7 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
         mLocalActivityManager.dispatchCreate(savedInstanceState);
 		tabHost = (TabHost)myView.findViewById(android.R.id.tabhost);
         tabHost.setup(mLocalActivityManager);
-        Log.d("TEST", "teamID::"+teamID);
+
         if(teamID!=5){
         	Intent FeaturedIntent = new Intent().setClass(myView.getContext(), Chat_Team.class);
             String teamName="";

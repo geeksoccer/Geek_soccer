@@ -9,12 +9,15 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
@@ -23,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.excelente.geek_soccer.chat_menu.Chat_Menu_LongClick;
+import com.excelente.geek_soccer.date_convert.Date_Covert;
 import com.koushikdutta.ion.Ion;
 
 import io.socket.IOAcknowledge;
@@ -36,6 +41,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -60,7 +66,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Chat_All extends Activity{
@@ -131,28 +136,8 @@ public class Chat_All extends Activity{
 
 			public boolean onItemLongClick(AdapterView<?> arg0, View v,
 					int position, long arg3) {
-				try {
-					JSONObject txt = data.Chat_Item_list_All
-							.get(position);
-					if (txt.getString("ch_type").contains("T")) {
-						if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-							android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-							clipboard.setText(txt.getString("ch_msg"));
-						} else {
-							android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-							android.content.ClipData clip = android.content.ClipData
-									.newPlainText("Copied",
-											txt.getString("ch_msg"));
-							clipboard.setPrimaryClip(clip);
-						}
-
-						Toast.makeText(mContext, "Copied",
-								Toast.LENGTH_LONG).show();
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				new Chat_Menu_LongClick().ChatMenu(mContext, data.Chat_Item_list_All
+						.get(position));
 				return false;
 			}
 		});
@@ -164,11 +149,8 @@ public class Chat_All extends Activity{
 			data.imageAdapterChatAll.notifyDataSetChanged();
 			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 		}
-		if (data.socket_All == null) {
-			Chat_Loader();
-		}else if(!data.socket_All.isConnected()){
-			Chat_Loader();
-		}
+		
+		new check_Permit().execute();
        
     	Chat_input = (EditText)findViewById(R.id.Chat_input);
     	send_Btn = (Button)findViewById(R.id.send_btn);
@@ -635,7 +617,11 @@ public class Chat_All extends Activity{
 									LayoutParams.MATCH_PARENT,
 									LayoutParams.WRAP_CONTENT));
 							txt_D.setGravity(Gravity.CENTER);
-							txt_D.setText(txt_Item.getString("ch_date"));
+							String Date = txt_Item.getString("ch_date");
+							if(ControllParameter.Laugage_Select==1){
+								Date = Date_Covert.Mont_ConV(Date_Covert.Day_ConV(Date));
+							}
+							txt_D.setText(Date);
 							txt_D.setTextColor(Color.BLACK);
 							txt_D.setTypeface(Typeface.DEFAULT_BOLD);
 							retval_Main.addView(txt_D);
@@ -646,7 +632,11 @@ public class Chat_All extends Activity{
 								LayoutParams.MATCH_PARENT,
 								LayoutParams.WRAP_CONTENT));
 						txt_D.setGravity(Gravity.CENTER);
-						txt_D.setText(txt_Item.getString("ch_date"));
+						String Date = txt_Item.getString("ch_date");
+						if(ControllParameter.Laugage_Select==1){
+							Date = Date_Covert.Mont_ConV(Date_Covert.Day_ConV(Date));
+						}
+						txt_D.setText(Date);
 						txt_D.setTextColor(Color.BLACK);
 						txt_D.setTypeface(Typeface.DEFAULT_BOLD);
 						retval_Main.addView(txt_D);
@@ -748,6 +738,50 @@ public class Chat_All extends Activity{
 		}
 
 	}
+	
+	class check_Permit extends AsyncTask<String, String, String> {
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		protected String doInBackground(String... args) {
+			try {
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("id", String.valueOf(SessionManager.getMember(mContext).getUid()) ));
+				JSONObject json = jParser
+						.makeHttpRequest("http://183.90.171.209/gs_member_permission/check_chat_permission.php",
+								"POST", params);
+				if (json != null) {
+					return json.getString("return_code");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return "";
+		}
+		protected void onProgressUpdate(String... progress) {
+			
+		}
+
+		protected void onPostExecute(final String outPut) {
+			//pDialog.dismiss();
+			((Activity) mContext).runOnUiThread(new Runnable() {
+				public void run() {
+					
+					if(outPut.equals("1")){
+						if (data.socket_All == null) {
+							Chat_Loader();
+						}else if (!data.socket_All.isConnected()) {
+							Chat_Loader();
+						}
+					}else{
+						RefreshView("Your account is baning!");
+					}
+				}
+			});
+		}
+	}
 
 	public void Chat_Loader() {
 		new Thread(new Runnable() {
@@ -786,7 +820,7 @@ public class Chat_All extends Activity{
 			                if(data.Chat_Item_list_All.size()>0){
 			                	data.socket_All.reconnect();
 			                }else{
-			                	RefreshView();
+			                	RefreshView("Tap to refresh");
 			                }
 			            }
 
@@ -900,14 +934,14 @@ public class Chat_All extends Activity{
 
 	}
 	
-	public void RefreshView(){
+	public void RefreshView(final String txt){
 		data.chatDelay = 0;
 		handler.postDelayed(new Runnable() {
 		    @Override
 		    public void run() {
 		    	data.Chat_list_LayOut_All.removeAllViews();
 				TextView RefreshTag = new TextView(mContext);
-				RefreshTag.setText("Tap to refresh");
+				RefreshTag.setText(txt);
 				RefreshTag.setGravity(Gravity.CENTER);
 				data.Chat_list_LayOut_All.addView(RefreshTag);
 				data.Chat_list_LayOut_All.setOnClickListener(new View.OnClickListener() {

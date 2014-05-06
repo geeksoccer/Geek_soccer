@@ -38,6 +38,12 @@ public class ControllParameter {
     		}else if(teamID == 4){
     			TeamSelect = "Manchester United";
     		}
+    		
+    		if(!SessionManager.getSetting(context, SessionManager.setting_lang).equals("null")){
+    			Laugage_Select = Integer.parseInt(SessionManager.getSetting(context, SessionManager.setting_lang));
+    		}else{
+    			Laugage_Select = 1;
+    		}
     	}
     }
 
@@ -73,6 +79,7 @@ public class ControllParameter {
 	String OldScore = "";
 	String OldTime = "";
 	static String TeamSelect = "";
+	static int Laugage_Select = 0;
 	
 	Boolean app_Status=true;
 	Boolean chat_on_All = false;
