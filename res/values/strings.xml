@@ -118,6 +118,9 @@
     
     <string name="put_message"> Put Message</string>
     
+    <string name="rule_title"> Application Rule</string>
+    <string name="rule_detal">1... \n 2... \n 3...</string>
+    
     <string-array name="team_list">
         <item>Arsenal</item>
         <item>Chelsea</item>

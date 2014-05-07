@@ -88,7 +88,6 @@ public class Chat_Menu_LongClick {
 				isMenu=true;
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(isMenu){

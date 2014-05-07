@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import com.excelente.geek_soccer.chat_menu.Chat_Menu_LongClick;
 import com.excelente.geek_soccer.date_convert.Date_Covert;
+import com.excelente.geek_soccer.user_rule.User_Rule;
 import com.koushikdutta.ion.Ion;
 
 import io.socket.IOAcknowledge;
@@ -150,6 +151,11 @@ public class Chat_All extends Activity{
 			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 		}
 		
+		if (data.socket_All == null) {
+			Chat_Loader();
+		}else if (!data.socket_All.isConnected()) {
+			Chat_Loader();
+		}
 		new check_Permit().execute();
        
     	Chat_input = (EditText)findViewById(R.id.Chat_input);
@@ -273,27 +279,11 @@ public class Chat_All extends Activity{
 			}
 		});
     	
-    	String StickJset = SessionManager.getJsonSession(Chat_All.this, "StickerSet");
-		if(StickJset!=null){
-			try {
-				JSONObject json_ob = new JSONObject(StickJset);
-				data.Sticker_Set.clear();
-				data.Sticker_UrlSet.clear();
-				for (Iterator<?> league_Item_key = json_ob
-						.keys(); league_Item_key.hasNext();) {
-					String key_Item = (String) league_Item_key
-							.next();
-					//data.Sticker_Set.add(key_Item);
-					JSONArray json_arr = json_ob.getJSONArray(key_Item);
-					for (int i = 0; i < json_arr.length(); i++) {
-						JSONObject json_Value = json_arr.getJSONObject(i);
-						data.Sticker_UrlSet.put(key_Item+"_"+json_Value.getString("sk_id"),
-								json_Value.getString("sk_img"));
-					}
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+		Chat_input.setEnabled(ControllParameter.BanStatus);
+		sendSticker_Btn.setEnabled(ControllParameter.BanStatus);
+		if(!ControllParameter.BanStatus){
+			Chat_input.setHint("คุณถูกระงับการโต้ตอบ");
+			send_Btn.setBackgroundResource(R.drawable.question_btn);
 		}
 	}
 	
@@ -770,13 +760,16 @@ public class Chat_All extends Activity{
 				public void run() {
 					
 					if(outPut.equals("1")){
-						if (data.socket_All == null) {
-							Chat_Loader();
-						}else if (!data.socket_All.isConnected()) {
-							Chat_Loader();
-						}
+						ControllParameter.BanStatus = true;
+						Chat_input.setEnabled(ControllParameter.BanStatus);
+						send_Btn.setEnabled(ControllParameter.BanStatus);
+						sendSticker_Btn.setEnabled(ControllParameter.BanStatus);
 					}else{
-						RefreshView("Your account is baning!");
+						ControllParameter.BanStatus = false;
+						Chat_input.setEnabled(ControllParameter.BanStatus);
+						sendSticker_Btn.setEnabled(ControllParameter.BanStatus);
+						Chat_input.setHint("คุณถูกระงับการโต้ตอบ");
+						send_Btn.setBackgroundResource(R.drawable.question_btn);
 					}
 				}
 			});
@@ -976,10 +969,14 @@ public class Chat_All extends Activity{
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
-				if(!Msg_Send.equals("")){
-					data.socket_All.emit("sendchat", Msg_Send);
-					Msg_Send="";
+				if(ControllParameter.BanStatus){
+					Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
+					if(!Msg_Send.equals("") && ControllParameter.BanStatus){
+						data.socket_All.emit("sendchat", Msg_Send);
+						Msg_Send="";
+					}
+				}else{
+					User_Rule.showRuleDialog(mContext);
 				}
 			}
 		}, data.chatDelay);
@@ -992,7 +989,7 @@ public class Chat_All extends Activity{
 			@Override
 			public void run() {
 				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
-				if(!Msg_Send.equals("")){
+				if(!Msg_Send.equals("") && ControllParameter.BanStatus){
 					data.socket_All.emit("sendsticker", Msg_Send);
 					Msg_Send="";
 				}

@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import com.excelente.geek_soccer.chat_menu.Chat_Menu_LongClick;
 import com.excelente.geek_soccer.date_convert.Date_Covert;
+import com.excelente.geek_soccer.user_rule.User_Rule;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import io.socket.IOAcknowledge;
@@ -163,6 +164,11 @@ public class Chat_Team extends Activity {
 					.getCount());
 		}
 		
+		if (data.socket_Team == null) {
+			Chat_Loader();
+		}else if (!data.socket_Team.isConnected()) {
+			Chat_Loader();
+		}
 		new check_Permit().execute();
 
 		Chat_input = (EditText) findViewById(R.id.Chat_input);
@@ -297,6 +303,13 @@ public class Chat_Team extends Activity {
 				}
 			}
 		});
+		
+		Chat_input.setEnabled(ControllParameter.BanStatus);
+		sendSticker_Btn.setEnabled(ControllParameter.BanStatus);
+		if(!ControllParameter.BanStatus){
+			Chat_input.setHint("คุณถูกระงับการโต้ตอบ");
+			send_Btn.setBackgroundResource(R.drawable.question_btn);
+		}
 	}
 
 	public void StickViewClear() {
@@ -763,13 +776,16 @@ public class Chat_Team extends Activity {
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
 					if(outPut.equals("1")){
-						if (data.socket_Team == null) {
-							Chat_Loader();
-						}else if (!data.socket_Team.isConnected()) {
-							Chat_Loader();
-						}
+						ControllParameter.BanStatus = true;
+						Chat_input.setEnabled(ControllParameter.BanStatus);
+						send_Btn.setEnabled(ControllParameter.BanStatus);
+						sendSticker_Btn.setEnabled(ControllParameter.BanStatus);
 					}else{
-						RefreshView("Your account is baning!");
+						ControllParameter.BanStatus = false;
+						Chat_input.setEnabled(ControllParameter.BanStatus);
+						sendSticker_Btn.setEnabled(ControllParameter.BanStatus);
+						Chat_input.setHint("คุณถูกระงับการโต้ตอบ");
+						send_Btn.setBackgroundResource(R.drawable.question_btn);
 					}
 				}
 			});
@@ -982,10 +998,14 @@ public class Chat_Team extends Activity {
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
-				if (!Msg_Send.equals("")) {
-					data.socket_Team.emit("sendchat", Msg_Send);
-					Msg_Send = "";
+				if(ControllParameter.BanStatus){
+					Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
+					if (!Msg_Send.equals("")) {
+						data.socket_Team.emit("sendchat", Msg_Send);
+						Msg_Send = "";
+					}
+				}else{
+					User_Rule.showRuleDialog(mContext);
 				}
 			}
 		}, data.chatDelay);
@@ -997,7 +1017,7 @@ public class Chat_Team extends Activity {
 			@Override
 			public void run() {
 				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
-				if (!Msg_Send.equals("")) {
+				if (!Msg_Send.equals("") && ControllParameter.BanStatus) {
 					data.socket_Team.emit("sendsticker", Msg_Send);
 					Msg_Send = "";
 				}

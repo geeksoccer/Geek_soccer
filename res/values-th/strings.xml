@@ -107,6 +107,9 @@
     
     <string name="put_message"> ใส่ข้อความ</string>
     
+    <string name="rule_title"> กฎในการใช้งานแอพฯ</string>
+    <string name="rule_detal">1... \n 2... \n 3...</string>
+    
     <string-array name="team_list">
         <item>อาเซน่อล</item>
         <item>เชลซี</item>
