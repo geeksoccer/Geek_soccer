@@ -29,6 +29,10 @@ public class SessionManager {
 	static boolean globalNews = false;
 	
 	public static MemberModel getMember(Context context) {
+		if(context == null){
+			return null;
+		}
+		
 		MemberModel member = new MemberModel();
 		SecurePreferences memberFile = new SecurePreferences(context, MEMBER_SHAREPREFERENCE, "GeekSoccer4619", true);
 		

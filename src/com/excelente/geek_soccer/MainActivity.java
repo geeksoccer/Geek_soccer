@@ -22,7 +22,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -364,47 +363,35 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}		
 	}
 	
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if(data.Menu_Layout!=null){
-				if(data.Menu_Layout.getVisibility()==0){
-					new SideMenuLayout().hideMenu(mContext);
-					return false;
-				}else{
-					if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
-						if(data.Sticker_Layout_Stat_team){
-							data.Sticker_Layout_Stat_team = false;
-						}else if(data.Sticker_Layout_Stat_All){
-							data.Sticker_Layout_Stat_All = false;
-						}
-						return false;
-					}else{
-						showCloseAppDialog(this);
-					}
-					return true;
-				}
+	@Override
+	public void onBackPressed() {
+		if(data.Menu_Layout!=null){
+			if(data.Menu_Layout.getVisibility()==0){
+				new SideMenuLayout().hideMenu(mContext);
 			}else{
 				if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
 					if(data.Sticker_Layout_Stat_team){
 						data.Sticker_Layout_Stat_team = false;
 					}else if(data.Sticker_Layout_Stat_All){
 						data.Sticker_Layout_Stat_All = false;
-					}			
-					return false;
+					}
 				}else{
-					data.app_Status=false;
 					showCloseAppDialog(this);
 				}
-				return true;
 			}
-			
+		}else{
+			if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
+				if(data.Sticker_Layout_Stat_team){
+					data.Sticker_Layout_Stat_team = false;
+				}else if(data.Sticker_Layout_Stat_All){
+					data.Sticker_Layout_Stat_All = false;
+				}			
+			}else{
+				data.app_Status=false;
+				showCloseAppDialog(this);
+			}
 		}
-		return super.onKeyDown(keyCode, event);
-	}
-	
-	@Override
-	public void onBackPressed() {
-		showCloseAppDialog(this);
+		//showCloseAppDialog(this);
 	}
 	
 	public static void showCloseAppDialog(final Activity mContext) { 

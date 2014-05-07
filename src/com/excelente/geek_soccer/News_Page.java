@@ -264,6 +264,10 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	}
 	
 	private void doLoadNewsToListView(List<NewsModel> newsList , String tag) {
+		if(getActivity()==null){
+			return;
+		}
+		
 		if(SessionManager.getMember(getActivity()).getTeamId()>4){
 			tabWidget.setVisibility(View.GONE);
 			tabs.setCurrentTab(1);

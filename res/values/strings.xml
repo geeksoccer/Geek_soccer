@@ -17,7 +17,7 @@
     <string name="title_bar_news">NEWS</string>
     <string name="title_bar_live_score">LIVE SCORE</string>
     <string name="title_bar_chat">CHAT ROOM</string>
-    <string name="title_bar_score_broads">SCORE BROAD</string>
+    <string name="title_bar_score_broads">SCORE BOARD</string>
     <string name="title_bar_hilight">HILIGHT</string>
     <string name="title_bar_profile">Profile</string>
     <string name="title_bar_setting">Setting</string>
@@ -59,7 +59,7 @@
     <string name="HILIGHT_TYPE_CHAMPIAN_CHIP">แชมเปี้ยนชิพ อังกฤษ</string>
     <string name="HILIGHT_TYPE_CAPITAL_ONE_CUP">แคปิตอล วัน คัพ</string>
     
-    <string name="warning_internet">Internet Problem Try Again</string> 
+    <string name="warning_internet">Please check your internet connection or try again later</string> 
     
     <string name="global_news">Global News</string> 
     <string name="team_news">Team News</string>
@@ -91,7 +91,7 @@
     <string name="question_select_team">Next time you can\'t change favorite team. \n\n Do you want to selected this team?</string>
     <string name="question_select_team_other">Next time if version of app update,\n you can select favorite team again. \n\n Don\'t you want to select exist team list?</string>
     
-    <string name="profile_save_success">Save Success.</string>
+    <string name="profile_save_success">Data saved successfully.</string>
     <string name="update_profile">Updating Profile...</string>
     
     <string name="str_today_livescore">TODAY</string>
