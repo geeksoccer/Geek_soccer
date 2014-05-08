@@ -46,6 +46,7 @@ import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -984,5 +985,12 @@ public class LiveScore_Today extends Activity {
 		}
 
 		return inSampleSize;
+	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			return false;
+		}
+		return true;
 	}
 }
