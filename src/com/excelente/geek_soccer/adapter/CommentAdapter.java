@@ -29,6 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class CommentAdapter extends BaseAdapter{
         TextView commentNicknameTextview = (TextView) convertView.findViewById(R.id.comment_nickname);
         commentNicknameTextview.setText(comment.getMemberNickname());
         
+        final float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, context.getResources().getDisplayMetrics());
         if(!SessionManager.hasKey(context, comment.getMemberPhoto())){ 
 	        doConfigImageLoader(100, 100);
 	        ImageLoader.getInstance().displayImage(comment.getMemberPhoto(), commentImageImageview, getOptionImageLoader(comment.getMemberPhoto()), new SimpleImageLoadingListener(){
@@ -85,11 +87,12 @@ public class CommentAdapter extends BaseAdapter{
 	        	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 	        		commentImageImageview.setVisibility(View.VISIBLE);
 	        		commentImageProgressBar.setVisibility(View.GONE);
+	        		((ImageView)view).setImageBitmap(resizeBitMap(loadedImage, (int) px));
 	        		SessionManager.createNewImageSession(context, imageUri, loadedImage);
 	        	};
 	        });
         }else{
-        	commentImageImageview.setImageBitmap(SessionManager.getImageSession(context, comment.getMemberPhoto()));
+        	commentImageImageview.setImageBitmap(resizeBitMap(SessionManager.getImageSession(context, comment.getMemberPhoto()), (int) px));
         	commentImageImageview.setVisibility(View.VISIBLE);
         	commentImageProgressBar.setVisibility(View.GONE);
         }
@@ -98,6 +101,20 @@ public class CommentAdapter extends BaseAdapter{
         commentUpdateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(context, DateNewsUtils.convertStrDateTimeDate(comment.getComment_update_time())));
         
 		return convertView;
+	}
+	
+	private Bitmap resizeBitMap(Bitmap bitmapPhoto, int MAX_IMAGE) {
+		
+		float scale = (bitmapPhoto.getWidth()*1.0f)/(1.0f*bitmapPhoto.getHeight());
+		int width = MAX_IMAGE;
+		int height = MAX_IMAGE;
+		if(width > height){
+			height = (int) (height * scale);
+		}else{
+			width = (int) (width * scale);
+		}
+		bitmapPhoto = Bitmap.createScaledBitmap(bitmapPhoto, width, height, false);
+		return bitmapPhoto;
 	}
 	
 	private void doConfigImageLoader(int w, int h) {
