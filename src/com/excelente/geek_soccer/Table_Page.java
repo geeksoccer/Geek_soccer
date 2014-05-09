@@ -383,4 +383,5 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	private void showToast(String string) {
 		Boast.makeText(getActivity(), string, Toast.LENGTH_SHORT).show();
 	}
+	
 }

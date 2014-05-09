@@ -365,33 +365,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	
 	@Override
 	public void onBackPressed() {
-		if(data.Menu_Layout!=null){
-			if(data.Menu_Layout.getVisibility()==0){
-				new SideMenuLayout().hideMenu(mContext);
-			}else{
-				if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
-					if(data.Sticker_Layout_Stat_team){
-						data.Sticker_Layout_Stat_team = false;
-					}else if(data.Sticker_Layout_Stat_All){
-						data.Sticker_Layout_Stat_All = false;
-					}
-				}else{
-					showCloseAppDialog(this);
-				}
-			}
-		}else{
-			if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
-				if(data.Sticker_Layout_Stat_team){
-					data.Sticker_Layout_Stat_team = false;
-				}else if(data.Sticker_Layout_Stat_All){
-					data.Sticker_Layout_Stat_All = false;
-				}			
-			}else{
-				data.app_Status=false;
-				showCloseAppDialog(this);
-			}
-		}
-		//showCloseAppDialog(this);
+		showCloseAppDialog(this);
 	}
 	
 	public static void showCloseAppDialog(final Activity mContext) { 
