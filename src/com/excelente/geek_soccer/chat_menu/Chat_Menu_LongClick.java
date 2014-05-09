@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.excelente.geek_soccer.ControllParameter;
+import com.excelente.geek_soccer.GetdipSize;
 import com.excelente.geek_soccer.JSONParser;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
@@ -40,8 +41,6 @@ public class Chat_Menu_LongClick {
 	public void ChatMenu(final Context mContext, final JSONObject jsonOb) {
 		this.jsonOb = jsonOb;
 		this.mContext = mContext;
-		final float scale = mContext.getResources().getDisplayMetrics().density;
-		int pixels = (int) (75 * scale + 0.5f);
 		
 		Boolean isMenu = false;
 		
@@ -69,7 +68,7 @@ public class Chat_Menu_LongClick {
 				Copy_txt.setBackgroundResource(R.drawable.bg_press);
 				Copy_txt.setTextSize(18);
 				Copy_txt.setLayoutParams(new LinearLayout.LayoutParams(
-						LayoutParams.MATCH_PARENT, pixels));
+						LayoutParams.MATCH_PARENT, GetdipSize.dip(mContext, 48)));
 				Copy_txt.setGravity(Gravity.CENTER);
 				Copy_txt.setText("Copy");
 				MainLayout.addView(Copy_txt);
@@ -91,7 +90,7 @@ public class Chat_Menu_LongClick {
 				Report_txt.setBackgroundResource(R.drawable.bg_press);
 				Report_txt.setTextSize(18);
 				Report_txt.setLayoutParams(new LinearLayout.LayoutParams(
-						LayoutParams.MATCH_PARENT, pixels));
+						LayoutParams.MATCH_PARENT, GetdipSize.dip(mContext, 48)));
 				Report_txt.setGravity(Gravity.CENTER);
 				Report_txt.setText("Ban Report");
 				MainLayout.addView(Report_txt);

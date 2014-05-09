@@ -111,8 +111,6 @@ public class Chat_All extends Activity {
 	static HashMap<String, Button> Sticker_ButVSet = new HashMap<String, Button>();
 	SessionManager sesPrefer;
 
-	int pixels;
-
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -183,8 +181,6 @@ public class Chat_All extends Activity {
 			}
 		});
 
-		final float scale = getResources().getDisplayMetrics().density;
-		pixels = (int) (40 * scale + 0.5f);
 		Chat_input.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -192,10 +188,10 @@ public class Chat_All extends Activity {
 					int arg3) {
 				if (Chat_input.getLineCount() > 1) {
 					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(0,
-							(pixels * 3) / 2, 1));
+							(GetdipSize.dip(mContext, 40) * 3) / 2, 1));
 				} else {
 					Chat_input.setLayoutParams(new LinearLayout.LayoutParams(0,
-							pixels, 1));
+							GetdipSize.dip(mContext, 40), 1));
 				}
 			}
 
@@ -236,9 +232,7 @@ public class Chat_All extends Activity {
 					StickerPrepare();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					LayoutParams paramsBtn = new LinearLayout.LayoutParams(
-							(int) (48 * scale + 0.5f),
-							(int) (48 * scale + 0.5f));
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 48), GetdipSize.dip(mContext, 48));
 					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
 					for (int i = 0; i < data.Sticker_Set.size(); i++) {
 						final Button StickSet_1 = new Button(mContext);
