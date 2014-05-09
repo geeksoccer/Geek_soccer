@@ -21,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -142,8 +143,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				data._Menu_Layout = new SideMenuLayout().CreateMenu(MainLayout, mContext);
 				WindowManager.LayoutParams params = new WindowManager.LayoutParams(
 						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
-						WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-								| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+						WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+						WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+							| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+							| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
 						PixelFormat.TRANSLUCENT);
 
 				params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
