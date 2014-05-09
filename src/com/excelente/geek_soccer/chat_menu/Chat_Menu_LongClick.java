@@ -70,7 +70,7 @@ public class Chat_Menu_LongClick {
 				Copy_txt.setLayoutParams(new LinearLayout.LayoutParams(
 						LayoutParams.MATCH_PARENT, GetdipSize.dip(mContext, 48)));
 				Copy_txt.setGravity(Gravity.CENTER);
-				Copy_txt.setText("Copy");
+				Copy_txt.setText(R.string.copy_str);
 				MainLayout.addView(Copy_txt);
 				Copy_Setup(Copy_txt, C_dialog);
 				isMenu=true;
@@ -92,7 +92,7 @@ public class Chat_Menu_LongClick {
 				Report_txt.setLayoutParams(new LinearLayout.LayoutParams(
 						LayoutParams.MATCH_PARENT, GetdipSize.dip(mContext, 48)));
 				Report_txt.setGravity(Gravity.CENTER);
-				Report_txt.setText("Ban Report");
+				Report_txt.setText(R.string.report_str);
 				MainLayout.addView(Report_txt);
 				Report_Setup(Report_txt, C_dialog);
 				line = new View(mContext);

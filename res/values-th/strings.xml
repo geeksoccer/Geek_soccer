@@ -110,6 +110,9 @@
     <string name="rule_title"> กฎในการใช้งานแอพฯ</string>
     <string name="rule_detal">1... \n 2... \n 3...</string>
     
+    <string name="copy_str">คัดลอกข้อความ</string>
+    <string name="report_str">แจ้งแบนผู้ใช้</string>
+    
     <string-array name="team_list">
         <item>อาเซน่อล</item>
         <item>เชลซี</item>
