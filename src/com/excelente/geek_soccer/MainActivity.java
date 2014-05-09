@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -363,9 +364,38 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}		
 	}
 	
-	@Override
-	public void onBackPressed() {
-		showCloseAppDialog(this);
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if(data.Menu_Layout!=null){
+				if(data.Menu_Layout.getVisibility()==0){
+					new SideMenuLayout().hideMenu(mContext);
+				}else{
+					if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
+						if(data.Sticker_Layout_Stat_team){
+							data.Sticker_Layout_Stat_team = false;
+						}else if(data.Sticker_Layout_Stat_All){
+							data.Sticker_Layout_Stat_All = false;
+						}
+					}else{
+						showCloseAppDialog(this);
+					}
+				}
+				
+			}else{
+				if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
+					if(data.Sticker_Layout_Stat_team){
+						data.Sticker_Layout_Stat_team = false;
+					}else if(data.Sticker_Layout_Stat_All){
+						data.Sticker_Layout_Stat_All = false;
+					}
+				}else{
+					data.app_Status=false;
+					showCloseAppDialog(this);
+				}
+			}
+		}
+		
+		return true;
 	}
 	
 	public static void showCloseAppDialog(final Activity mContext) { 
