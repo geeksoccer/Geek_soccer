@@ -80,7 +80,7 @@ public class ControllParameter {
 	String OldTime = "";
 	static String TeamSelect = "";
 	static int Laugage_Select = 0;
-	static Boolean BanStatus = true;
+	public static Boolean BanStatus = true;
 	
 	Boolean app_Status=true;
 	Boolean chat_on_All = false;

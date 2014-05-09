@@ -10,6 +10,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.JSONParser;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
@@ -34,10 +35,14 @@ public class Chat_Menu_LongClick {
 	JSONParser jParser = new JSONParser();
 	Dialog C_dialog;
 	LinearLayout MainLayout;
+	View line;
 	
 	public void ChatMenu(final Context mContext, final JSONObject jsonOb) {
 		this.jsonOb = jsonOb;
 		this.mContext = mContext;
+		final float scale = mContext.getResources().getDisplayMetrics().density;
+		int pixels = (int) (75 * scale + 0.5f);
+		
 		Boolean isMenu = false;
 		
 		C_dialog = new Dialog(mContext);
@@ -47,44 +52,55 @@ public class Chat_Menu_LongClick {
 		MainLayout.setOrientation(LinearLayout.VERTICAL);
 		MainLayout.setGravity(Gravity.CENTER);
 		C_dialog.setContentView(MainLayout);
-		C_dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT,
+		C_dialog.getWindow().setLayout(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT);
 		C_dialog.getWindow().clearFlags(
 				WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 
 		try {
 			if (jsonOb.getString("ch_type").contains("T")) {
-				TextView Copy_txt = new TextView(mContext);
-				Copy_txt.setBackgroundResource(R.drawable.bg_press);
-				Copy_txt.setTextSize(18);
-				Copy_txt.setLayoutParams(new LinearLayout.LayoutParams(
-						LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				Copy_txt.setGravity(Gravity.CENTER);
-				Copy_txt.setText("Copy");
-				MainLayout.addView(Copy_txt);
-				Copy_Setup(Copy_txt, C_dialog);
-				
-				View line = new View(mContext);
+				line = new View(mContext);
 				line.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 1));
 				line.setBackgroundColor(color.gray);
 				line.setPadding(5, 0, 5, 0);
 				MainLayout.addView(line);
+				
+				TextView Copy_txt = new TextView(mContext);
+				Copy_txt.setBackgroundResource(R.drawable.bg_press);
+				Copy_txt.setTextSize(18);
+				Copy_txt.setLayoutParams(new LinearLayout.LayoutParams(
+						LayoutParams.MATCH_PARENT, pixels));
+				Copy_txt.setGravity(Gravity.CENTER);
+				Copy_txt.setText("Copy");
+				MainLayout.addView(Copy_txt);
+				Copy_Setup(Copy_txt, C_dialog);
 				isMenu=true;
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		line = new View(mContext);
+		line.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 1));
+		line.setBackgroundColor(color.gray);
+		line.setPadding(5, 0, 5, 0);
+		MainLayout.addView(line);
 		try {
-			if(!String.valueOf(SessionManager.getMember(mContext).getUid()).equals(jsonOb.getString("ch_uid"))){
+			if(!String.valueOf(SessionManager.getMember(mContext).getUid()).equals(jsonOb.getString("ch_uid"))
+					&& ControllParameter.BanStatus){
 				TextView Report_txt = new TextView(mContext);
 				Report_txt.setBackgroundResource(R.drawable.bg_press);
 				Report_txt.setTextSize(18);
 				Report_txt.setLayoutParams(new LinearLayout.LayoutParams(
-						LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+						LayoutParams.MATCH_PARENT, pixels));
 				Report_txt.setGravity(Gravity.CENTER);
 				Report_txt.setText("Ban Report");
 				MainLayout.addView(Report_txt);
 				Report_Setup(Report_txt, C_dialog);
+				line = new View(mContext);
+				line.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 1));
+				line.setBackgroundColor(color.gray);
+				line.setPadding(5, 0, 5, 0);
+				MainLayout.addView(line);
 				isMenu=true;
 			}
 		} catch (JSONException e) {

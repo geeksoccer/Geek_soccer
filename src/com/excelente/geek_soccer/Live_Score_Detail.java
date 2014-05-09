@@ -13,10 +13,13 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.Boast;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -62,6 +65,11 @@ public class Live_Score_Detail extends Activity{
 	String score_t = "";
 	Boolean loading = false;
 	Boolean FirstLoad = true;
+	String Home_img_t = "";
+	String Away_img_t = "";
+	String Home_name_t = "";
+	String Away_name_t = "";
+	String score_ag_t = "";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,12 +108,7 @@ public class Live_Score_Detail extends Activity{
 				onBackPressed();
 			}
 		});
-		
-		String Home_img_t = "";
-		String Away_img_t = "";
-		String Home_name_t = "";
-		String Away_name_t = "";
-		String score_ag_t = "";
+
 		try {
 			Time_t = getValue.getString("Time").substring(3);
 			link_t = getValue.getString("link").replace("/en/", "/th/")+"/play-by-play";
@@ -402,7 +405,14 @@ public class Live_Score_Detail extends Activity{
 												.replaceAll("&nbsp;", " ");
 										score_ag_t = getValue
 												.getString("score_ag");
-
+										if (!Away_name_t.contains(ControllParameter.TeamSelect)
+												&& !Home_name_t.contains(ControllParameter.TeamSelect)) {
+											NotifyLiveScore(Home_name_t, score_t, Away_name_t, Time_t);
+											data.OldScore = score_t;
+											data.OldTime = Time_t;
+										}
+										
+										
 										Time.setText(Time_t);
 										Score.setText(score_t);
 
@@ -427,7 +437,6 @@ public class Live_Score_Detail extends Activity{
 					try {
 						Thread.sleep(30000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
@@ -436,6 +445,33 @@ public class Live_Score_Detail extends Activity{
 			}
 		};
 		new Thread(runnable).start();
+	}
+	
+	public void NotifyLiveScore(final String Home, final String newScore, final String Away, final String Time) {
+		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore)==null){
+			SessionManager.setSetting(mContext, SessionManager.setting_notify_livescore, "true");
+		}
+		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
+			if(!data.OldTime.equals("FT")){
+				if(!Time.equals("FT")
+						|| !data.OldTime.equals("")){
+					if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
+							|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
+							|| data.OldTime.equals("")
+							|| (!Time.equals(data.OldTime) && ((data.OldTime.equals("HT")))) ){
+						NotificationManager mNotifyManager = (NotificationManager) mContext
+								.getSystemService(Context.NOTIFICATION_SERVICE);
+						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
+						mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
+								.setContentText("Time: "+Time)
+								.setSmallIcon(R.drawable.notify_livescore)
+								.setDefaults(Notification.DEFAULT_ALL);
+						mNotifyManager.notify(0, mBuilder.build());
+					}
+				}
+				
+			}
+		}		
 	}
 	
 	public class HtmlHelper_LiveScore {
