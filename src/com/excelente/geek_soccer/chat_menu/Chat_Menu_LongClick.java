@@ -51,7 +51,7 @@ public class Chat_Menu_LongClick {
 		MainLayout.setOrientation(LinearLayout.VERTICAL);
 		MainLayout.setGravity(Gravity.CENTER);
 		C_dialog.setContentView(MainLayout);
-		C_dialog.getWindow().setLayout(LayoutParams.WRAP_CONTENT,
+		C_dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT);
 		C_dialog.getWindow().clearFlags(
 				WindowManager.LayoutParams.FLAG_DIM_BEHIND);
