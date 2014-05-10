@@ -112,6 +112,10 @@
     
     <string name="copy_str">คัดลอกข้อความ</string>
     <string name="report_str">แจ้งแบนผู้ใช้</string>
+    <string name="report">แจ้งแบน</string>
+    <string name="fail_report">ล้มเหลว</string>
+    <string name="success_report">สำเร็จ</string>
+    <string name="used_report">คุณเคยแจ้งแบน</string>
     
     <string-array name="team_list">
         <item>อาเซน่อล</item>

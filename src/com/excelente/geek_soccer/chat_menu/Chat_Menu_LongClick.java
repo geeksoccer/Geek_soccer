@@ -201,18 +201,27 @@ public class Chat_Menu_LongClick {
 			//pDialog.dismiss();
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
+					String report_str = mContext.getResources().getString(R.string.report);
 					if(outPut.equals("0")){
-						Toast.makeText(mContext, "Report fail!", Toast.LENGTH_LONG).show();
+						String report_fail = mContext.getResources().getString(R.string.fail_report);
+						Toast.makeText(mContext, report_str + " " + report_fail + "!", Toast.LENGTH_LONG).show();
 					}else if(outPut.equals("1")){
 						try {
-							Toast.makeText(mContext, "Report \"" + jsonOb.getString("m_nickname") + "\" success", Toast.LENGTH_LONG).show();
+							String report_success = mContext.getResources().getString(R.string.success_report);
+							Toast.makeText(mContext, report_str + " \"" + jsonOb.getString("m_nickname") + "\" "+report_success, Toast.LENGTH_LONG).show();
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}else if(outPut.equals("2")){
 						try {
-							Toast.makeText(mContext, "You used to report \""+jsonOb.getString("m_nickname") +"\"", Toast.LENGTH_LONG).show();
+							String report_used = mContext.getResources().getString(R.string.used_report);
+							if(report_used.equals("คุณเคยแจ้งแบน")){
+								Toast.makeText(mContext, report_used + " \""+jsonOb.getString("m_nickname") +"\" " + "แล้ว", Toast.LENGTH_LONG).show();
+							}else{
+								Toast.makeText(mContext, report_used + " \""+jsonOb.getString("m_nickname") +"\"", Toast.LENGTH_LONG).show();
+							}
+							
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
