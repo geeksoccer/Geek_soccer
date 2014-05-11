@@ -116,6 +116,8 @@ public class Live_Score_Detail extends Activity{
 			Away_img_t = getValue.getString("Away_img");
 			Home_name_t = getValue.getString("Home");
 			score_t = getValue.getString("score").replaceAll("&nbsp;", " ");
+			data.OldScore_Detail = score_t;
+			data.OldTime_Detail = Time_t;
 			Away_name_t = getValue.getString("Away");
 			score_ag_t = getValue.getString("score_ag");
 		} catch (JSONException e) {
@@ -408,8 +410,8 @@ public class Live_Score_Detail extends Activity{
 										if (!Away_name_t.contains(ControllParameter.TeamSelect)
 												&& !Home_name_t.contains(ControllParameter.TeamSelect)) {
 											NotifyLiveScore(Home_name_t, score_t, Away_name_t, Time_t);
-											data.OldScore = score_t;
-											data.OldTime = Time_t;
+											data.OldScore_Detail = score_t;
+											data.OldTime_Detail = Time_t;
 										}
 										
 										
@@ -452,13 +454,13 @@ public class Live_Score_Detail extends Activity{
 			SessionManager.setSetting(mContext, SessionManager.setting_notify_livescore, "true");
 		}
 		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
-			if(!data.OldTime.equals("FT")){
+			if(!data.OldTime_Detail.equals("FT")){
 				if(!Time.equals("FT")
-						|| !data.OldTime.equals("")){
-					if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
-							|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
-							|| data.OldTime.equals("")
-							|| (!Time.equals(data.OldTime) && ((data.OldTime.equals("HT")))) ){
+						|| !data.OldTime_Detail.equals("")){
+					if((!newScore.equals(data.OldScore_Detail) && !data.OldScore_Detail.equals(""))
+							|| (!Time.equals(data.OldTime_Detail) && ((Time.equals("HT")) || Time.equals("FT")))
+							|| data.OldTime_Detail.equals("")
+							|| (!Time.equals(data.OldTime_Detail) && ((data.OldTime_Detail.equals("HT")))) ){
 						NotificationManager mNotifyManager = (NotificationManager) mContext
 								.getSystemService(Context.NOTIFICATION_SERVICE);
 						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);

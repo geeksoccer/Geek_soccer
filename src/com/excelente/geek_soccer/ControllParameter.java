@@ -78,6 +78,8 @@ public class ControllParameter {
 	String Name_Send;
 	String OldScore = "";
 	String OldTime = "";
+	String OldScore_Detail = "";
+	String OldTime_Detail = "";
 	static String TeamSelect = "";
 	static int Laugage_Select = 0;
 	public static Boolean BanStatus = true;
