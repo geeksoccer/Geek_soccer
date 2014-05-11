@@ -159,49 +159,52 @@ public class Live_Score_Detail extends Activity{
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
 				String txt_Item = player_Detail.get(position);
-				String Split_item[] = txt_Item.replaceAll("&quot;", "\"").split(":");
-				String eventStr = "";
-				if(Split_item[1].contains("ใบเหลือง")){
-					eventStr = "ได้รับใบเหลือง";
-				}else if(Split_item[1].contains("Yellow Card")){
-					eventStr = "Yellow Card";
-				}else if(Split_item[1].contains("ใบแดง") ){
-					eventStr = "ได้รับใบแดง";
-				}else if(Split_item[1].contains("Red Card")){
-					eventStr = "Red Card";
-				}else if(Split_item[1].contains("Yellow/Red")){
-					if(link_t.contains("/en/")){
-						eventStr = "Yellow/Red";
-					}else{
-						eventStr = "ได้รับใบเหลืองใบที่ 2 / ได้รับใบแดง";
+				if(!txt_Item.equals("NotFoundData")){
+					String Split_item[] = txt_Item.replaceAll("&quot;", "\"").split(":");
+					String eventStr = "";
+					if(Split_item[1].contains("ใบเหลือง")){
+						eventStr = "ได้รับใบเหลือง";
+					}else if(Split_item[1].contains("Yellow Card")){
+						eventStr = "Yellow Card";
+					}else if(Split_item[1].contains("ใบแดง") ){
+						eventStr = "ได้รับใบแดง";
+					}else if(Split_item[1].contains("Red Card")){
+						eventStr = "Red Card";
+					}else if(Split_item[1].contains("Yellow/Red")){
+						if(link_t.contains("/en/")){
+							eventStr = "Yellow/Red";
+						}else{
+							eventStr = "ได้รับใบเหลืองใบที่ 2 / ได้รับใบแดง";
+						}
+					}else if(Split_item[1].contains("ยิงจุดโทษได้")
+							|| Split_item[1].contains("Pen SO Goal")
+							|| Split_item[1].contains("Pen SO Miss")){
+						if(link_t.contains("/en/")){
+							eventStr = "Pen Goal";
+						}else{
+							eventStr = "ทำประตูได้จากจุดโทษ";
+						}	
+					}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
+						eventStr = "ทำเข้าประตูตัวเอง";
+					}else if(Split_item[1].contains("Own Goal")){
+						eventStr = "Own Goal";
+					}else if(Split_item[1].contains("ประตู")){
+						eventStr = "ทำประตูได้";
+					}else if(Split_item[1].contains("Goal")){
+						eventStr = "Goal";
+					}else if(Split_item[1].contains("แอสซิสต์")){
+						eventStr = "จ่ายให้เพื่อนทำประตูได้";
+					}else if(Split_item[1].contains("Assist")){
+						eventStr = "Assist";
+					}else if(Split_item[1].equals("เปลี่ยนตัว")){
+						eventStr = "เปลี่ยนตัว";
+					}else if(Split_item[1].equals("Substitution")){
+						eventStr = "Substitution";
 					}
-				}else if(Split_item[1].contains("ยิงจุดโทษได้")
-						|| Split_item[1].contains("Pen SO Goal")
-						|| Split_item[1].contains("Pen SO Miss")){
-					if(link_t.contains("/en/")){
-						eventStr = "Pen Goal";
-					}else{
-						eventStr = "ทำประตูได้จากจุดโทษ";
-					}	
-				}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
-					eventStr = "ทำเข้าประตูตัวเอง";
-				}else if(Split_item[1].contains("Own Goal")){
-					eventStr = "Own Goal";
-				}else if(Split_item[1].contains("ประตู")){
-					eventStr = "ทำประตูได้";
-				}else if(Split_item[1].contains("Goal")){
-					eventStr = "Goal";
-				}else if(Split_item[1].contains("แอสซิสต์")){
-					eventStr = "จ่ายให้เพื่อนทำประตูได้";
-				}else if(Split_item[1].contains("Assist")){
-					eventStr = "Assist";
-				}else if(Split_item[1].equals("เปลี่ยนตัว")){
-					eventStr = "เปลี่ยนตัว";
-				}else if(Split_item[1].equals("Substitution")){
-					eventStr = "Substitution";
+					
+					Boast.makeText(mContext, eventStr, Toast.LENGTH_LONG).show();
 				}
 				
-				Boast.makeText(mContext, eventStr, Toast.LENGTH_LONG).show();
 			}
 		});
 		new Live_score_Loader().execute();
