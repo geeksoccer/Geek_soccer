@@ -306,77 +306,18 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	}
 
 	private void setToastSeq(TableModel tableModel) { 
-		
-		if(tableModel.getTableLeague().equals(Table_Page.PREMIER_LEAGUE)){
-			if(tableModel.getTableSeq() < 4){
-				showToast(getResources().getString(R.string.table_ucl));
-			}else if(tableModel.getTableSeq() < 5){ 
-				showToast(getResources().getString(R.string.table_ucl_match));
-			}else if(tableModel.getTableSeq() < 6){ 
-				showToast(getResources().getString(R.string.table_upl));
-			}else if(tableModel.getTableSeq() > 17){ 
-				showToast(getResources().getString(R.string.table_fail));
-			}else{
-				showToast(getResources().getString(R.string.table_par));
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.BUNDESLIGA)){
-			if(tableModel.getTableSeq() < 4){
-				showToast(getResources().getString(R.string.table_ucl));
-			}else if(tableModel.getTableSeq() < 5){
-				showToast(getResources().getString(R.string.table_ucl_match));
-			}else if(tableModel.getTableSeq() < 7){
-				showToast(getResources().getString(R.string.table_upl));
-			}else if(tableModel.getTableSeq() > 16){
-				showToast(getResources().getString(R.string.table_fail));
-			}else if(tableModel.getTableSeq() > 15){
-				showToast(getResources().getString(R.string.table_bundes_match));
-			}else{
-				showToast(getResources().getString(R.string.table_par));
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.LALIGA)){
-			if(tableModel.getTableSeq() < 4){
-				showToast(getResources().getString(R.string.table_ucl));
-			}else if(tableModel.getTableSeq() < 5){
-				showToast(getResources().getString(R.string.table_ucl_match));
-			}else if(tableModel.getTableSeq() < 7){
-				showToast(getResources().getString(R.string.table_upl));
-			}else if(tableModel.getTableSeq() > 17){
-				showToast(getResources().getString(R.string.table_fail));
-			}else{
-				showToast(getResources().getString(R.string.table_par));
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.CALCAIO_SERIE_A)){
-			if(tableModel.getTableSeq() < 3){
-				showToast(getResources().getString(R.string.table_ucl));
-			}else if(tableModel.getTableSeq() < 4){
-				showToast(getResources().getString(R.string.table_ucl_match));
-			}else if(tableModel.getTableSeq() < 6){
-				showToast(getResources().getString(R.string.table_upl));
-			}else if(tableModel.getTableSeq() > 17){
-				showToast(getResources().getString(R.string.table_fail));
-			}else{
-				showToast(getResources().getString(R.string.table_par));
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.LEAGUE_DE_LEAGUE1)){
-			if(tableModel.getTableSeq() < 3){
-				showToast(getResources().getString(R.string.table_ucl));
-			}else if(tableModel.getTableSeq() < 4){
-				showToast(getResources().getString(R.string.table_ucl_match));
-			}else if(tableModel.getTableSeq() < 6){
-				showToast(getResources().getString(R.string.table_upl));
-			}else if(tableModel.getTableSeq() > 17){
-				showToast(getResources().getString(R.string.table_fail));
-			}else{
-				showToast(getResources().getString(R.string.table_par));
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.THAI_PREMIER_LEAGUE)){
-			if(tableModel.getTableSeq() < 2){
-				showToast(getResources().getString(R.string.table_acl));
-			}else if(tableModel.getTableSeq() > 15){
-				showToast(getResources().getString(R.string.table_fail));
-			}else{
-				showToast(getResources().getString(R.string.table_par));
-			}
+		if(tableModel.getTableStatus().trim().equals("ucl") || tableModel.getTableStatus().trim().equals("afc")){
+			showToast(getResources().getString(R.string.table_ucl));
+		}else if(tableModel.getTableStatus().trim().equals("ucl_pf")){
+			showToast(getResources().getString(R.string.table_ucl_match));
+		}else if(tableModel.getTableStatus().trim().equals("urp")){
+			showToast(getResources().getString(R.string.table_upl));
+		}else if(tableModel.getTableStatus().trim().equals("fail_pf")){
+			showToast(getResources().getString(R.string.table_bundes_match));
+		}else if(tableModel.getTableStatus().trim().equals("fail")){
+			showToast(getResources().getString(R.string.table_fail));
+		}else{
+			showToast(getResources().getString(R.string.table_par));
 		}
 	}
 

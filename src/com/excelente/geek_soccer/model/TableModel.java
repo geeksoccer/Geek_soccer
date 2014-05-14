@@ -28,6 +28,7 @@ public class TableModel implements Serializable{
 	public static final String TABLE_LOSE_GOAL = "table_lose_goal";
 	public static final String TABLE_RESULT_GOAL = "table_result_goal";
 	public static final String TABLE_MARK = "table_mark";
+	public static final String TABLE_STATUS = "table_status";
 	
 	int tableId;
 	String tableLeague;
@@ -45,6 +46,7 @@ public class TableModel implements Serializable{
 	int tableLoseGoal;
 	int tableResultGoal;
 	int tableMark;
+	String tableStatus;
 	
 	public int getTableId() {
 		return tableId;
@@ -143,6 +145,12 @@ public class TableModel implements Serializable{
 		this.tableMark = tableMark;
 	}
 	
+	public String getTableStatus() {
+		return tableStatus;
+	}
+	public void setTableStatus(String tableStatus) {
+		this.tableStatus = tableStatus;
+	}
 	public static List<TableModel> convertTableStrToList(String result) {  
 		
 		List<TableModel> tableList = new ArrayList<TableModel>();
@@ -170,6 +178,7 @@ public class TableModel implements Serializable{
 				table.setTableLoseGoal(tableObj.getInt(TABLE_LOSE_GOAL));
 				table.setTableResultGoal(tableObj.getInt(TABLE_RESULT_GOAL));
 				table.setTableMark(tableObj.getInt(TABLE_MARK));
+				table.setTableStatus(tableObj.getString(TABLE_STATUS));
 				
 				tableList.add(table);
 			}

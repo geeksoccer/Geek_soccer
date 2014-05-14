@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
-import com.excelente.geek_soccer.Table_Page;
 import com.excelente.geek_soccer.model.TableModel;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -154,73 +153,29 @@ public class TableAdapter extends BaseAdapter{
 		
 		return convertView;
 	}
-
-	private void setSeqColor(View convertView, TableModel tableModel) { 
-		if(tableModel.getTableSeq()%2 == 0){ 
-			convertView.setBackgroundResource(R.drawable.bg_press_table_gray); 
+	
+	private int getColorSeq(String status, int seq){
+		if(status.trim().equals("ucl") || status.trim().equals("afc")){
+			return R.drawable.bg_press_table_green;
+		}else if(status.trim().equals("ucl_pf")){
+			return R.drawable.bg_press_table_green_light;
+		}else if(status.trim().equals("urp")){
+			return R.drawable.bg_press_table_blue_light;
+		}else if(status.trim().equals("fail_pf")){
+			return R.drawable.bg_press_table_yellow;
+		}else if(status.trim().equals("fail")){
+			return R.drawable.bg_press_table_red;
 		}else{
-			convertView.setBackgroundResource(R.drawable.bg_press_table_white); 
-		}
-		
-		if(tableModel.getTableLeague().equals(Table_Page.PREMIER_LEAGUE)){
-			if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
-			}else if(tableModel.getTableSeq() < 5){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
-			}else if(tableModel.getTableSeq() < 6){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
-			}else if(tableModel.getTableSeq() > 17){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.BUNDESLIGA)){
-			if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
-			}else if(tableModel.getTableSeq() < 5){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
-			}else if(tableModel.getTableSeq() < 7){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
-			}else if(tableModel.getTableSeq() > 16){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
-			}else if(tableModel.getTableSeq() > 15){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_yellow); 
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.LALIGA)){
-			if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
-			}else if(tableModel.getTableSeq() < 5){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
-			}else if(tableModel.getTableSeq() < 7){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
-			}else if(tableModel.getTableSeq() > 17){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.CALCAIO_SERIE_A)){
-			if(tableModel.getTableSeq() < 3){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
-			}else if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
-			}else if(tableModel.getTableSeq() < 6){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
-			}else if(tableModel.getTableSeq() > 17){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.LEAGUE_DE_LEAGUE1)){
-			if(tableModel.getTableSeq() < 3){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
-			}else if(tableModel.getTableSeq() < 4){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green_light); 
-			}else if(tableModel.getTableSeq() < 6){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_blue_light); 
-			}else if(tableModel.getTableSeq() > 17){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
-			}
-		}else if(tableModel.getTableLeague().equals(Table_Page.THAI_PREMIER_LEAGUE)){
-			if(tableModel.getTableSeq() < 2){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_green); 
-			}else if(tableModel.getTableSeq() > 15){
-				convertView.setBackgroundResource(R.drawable.bg_press_table_red); 
+			if(seq%2 == 0){ 
+				return R.drawable.bg_press_table_gray; 
+			}else{
+				return R.drawable.bg_press_table_white; 
 			}
 		}
+	}
+
+	private void setSeqColor(View convertView, TableModel tableModel) {
+		convertView.setBackgroundResource(getColorSeq(tableModel.getTableStatus(), tableModel.getTableSeq())); 
 	}
 
 	@Override

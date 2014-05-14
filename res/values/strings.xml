@@ -36,13 +36,13 @@
     <string name="table_head_result_goal">GD</string>
     <string name="table_head_mark">Pts</string>
     
-    <string name="table_ucl">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า แชมเปี้ยนส์ ลีก (รอบแบ่งกลุ่ม รอบสุดท้าย)</string>
-    <string name="table_acl">ได้สิทธิ์แข่งขันฟุตบอลเอเอฟซีแชมเปี้ยนส์ลีก</string>
-    <string name="table_ucl_match">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า แชมเปี้ยนส์ ลีก (รอบคัดเลือก )</string>
-    <string name="table_upl">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า ยูโรป้า ลีก (รอบเพลย์ออฟ )</string>
-    <string name="table_bundes_match">ไปเตะเพลย์ออฟ กับทีมอันดับ 3 ของ บุนเดสลีก้า 2 เพื่อหาทีมตกชั้น</string>
-    <string name="table_fail">ได้สิทธิ์ ตกชั้น</string>
-    <string name="table_par">ได้สิทธิเล่นลีกเดิม</string>
+    <string name="table_ucl">UEFA Champions League (final round)</string>
+    <string name="table_acl">AFC Champions League</string>
+    <string name="table_ucl_match">UEFA Champions League (Qualifier round)</string>
+    <string name="table_upl">UEFA Europa League</string>
+    <string name="table_bundes_match">Play-Off Find Fail Division</string>
+    <string name="table_fail">Fail Division</string>
+    <string name="table_par">Nothing</string>
     
     <string name="pull_to_refresh_pull_label">Pull to refresh...</string>
     <string name="pull_to_refresh_release_label">Release to refresh...</string>
