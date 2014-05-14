@@ -303,7 +303,7 @@ public class Chat_Team extends Activity {
 		
 		Chat_input.setEnabled(ControllParameter.BanStatus);
 		if(!ControllParameter.BanStatus){
-			Chat_input.setHint("คุณถูกระงับการโต้ตอบ");
+			Chat_input.setHint(R.string.chat_ban);
 			send_Btn.setBackgroundResource(R.drawable.question_btn);
 		}
 	}
@@ -778,7 +778,7 @@ public class Chat_Team extends Activity {
 					}else{
 						ControllParameter.BanStatus = false;
 						Chat_input.setEnabled(ControllParameter.BanStatus);
-						Chat_input.setHint("คุณถูกระงับการโต้ตอบ");
+						Chat_input.setHint(R.string.chat_ban);
 						send_Btn.setBackgroundResource(R.drawable.question_btn);
 					}
 				}

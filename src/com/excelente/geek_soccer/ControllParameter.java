@@ -16,11 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class ControllParameter {
-	private static ControllParameter instance = null;
+	private  static ControllParameter instance = null;
 
 	Context mContext;
 
-    private ControllParameter(Context context) {
+	private  ControllParameter(Context context) {
         //randomizeServers();
     	mContext = context;
     	

@@ -1,5 +1,7 @@
 package com.excelente.geek_soccer;
 
+import com.excelente.geek_soccer.R;
+
 import android.app.Activity;
 import android.app.LocalActivityManager;
 import android.content.Context;
