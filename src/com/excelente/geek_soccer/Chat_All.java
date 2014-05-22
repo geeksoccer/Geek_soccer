@@ -136,8 +136,16 @@ public class Chat_All extends Activity {
 
 					public boolean onItemLongClick(AdapterView<?> arg0, View v,
 							int position, long arg3) {
-						new Chat_Menu_LongClick().ChatMenu(mContext,
-								data.Chat_Item_list_All.get(position));
+						String m_photo;
+						try {
+							m_photo = data.Chat_Item_list_Team.get(position).getString("m_photo");
+							new Chat_Menu_LongClick().ChatMenu(mContext,
+									data.Chat_Item_list_All.get(position), data.BitMapHash.get(m_photo));
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
 						return false;
 					}
 				});

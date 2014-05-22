@@ -20,15 +20,18 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.excelente.geek_soccer.GetdipSize;
 
 public class Chat_Menu_LongClick {
 	JSONObject jsonOb;
@@ -36,9 +39,11 @@ public class Chat_Menu_LongClick {
 	JSONParser jParser = new JSONParser();
 	Dialog C_dialog;
 	LinearLayout MainLayout;
+	LinearLayout ListMenuLayout;
+	ImageView ProfileImg;
 	View line;
 	
-	public void ChatMenu(final Context mContext, final JSONObject jsonOb) {
+	public void ChatMenu(final Context mContext, final JSONObject jsonOb, Bitmap ProfileBitmap) {
 		this.jsonOb = jsonOb;
 		this.mContext = mContext;
 		
@@ -47,9 +52,19 @@ public class Chat_Menu_LongClick {
 		C_dialog = new Dialog(mContext);
 		C_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
-		MainLayout = new LinearLayout(mContext);
-		MainLayout.setOrientation(LinearLayout.VERTICAL);
+		MainLayout  = new LinearLayout(mContext);
+		MainLayout.setOrientation(LinearLayout.HORIZONTAL);
 		MainLayout.setGravity(Gravity.CENTER);
+		
+		ProfileImg = new ImageView(mContext);
+		ProfileImg.setLayoutParams(new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 96), GetdipSize.dip(mContext, 96)));
+		ProfileImg.setImageBitmap(ProfileBitmap);
+		MainLayout.addView(ProfileImg);
+		
+		ListMenuLayout = new LinearLayout(mContext);
+		ListMenuLayout.setOrientation(LinearLayout.VERTICAL);
+		ListMenuLayout.setGravity(Gravity.CENTER);
+		MainLayout.addView(ListMenuLayout);
 		C_dialog.setContentView(MainLayout);
 		C_dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT);
@@ -62,7 +77,7 @@ public class Chat_Menu_LongClick {
 				line.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 1));
 				line.setBackgroundColor(color.gray);
 				line.setPadding(5, 0, 5, 0);
-				MainLayout.addView(line);
+				ListMenuLayout.addView(line);
 				
 				TextView Copy_txt = new TextView(mContext);
 				Copy_txt.setBackgroundResource(R.drawable.bg_press);
@@ -71,7 +86,7 @@ public class Chat_Menu_LongClick {
 						LayoutParams.MATCH_PARENT, GetdipSize.dip(mContext, 48)));
 				Copy_txt.setGravity(Gravity.CENTER);
 				Copy_txt.setText(R.string.copy_str);
-				MainLayout.addView(Copy_txt);
+				ListMenuLayout.addView(Copy_txt);
 				Copy_Setup(Copy_txt, C_dialog);
 				isMenu=true;
 			}
@@ -82,7 +97,7 @@ public class Chat_Menu_LongClick {
 		line.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 1));
 		line.setBackgroundColor(color.gray);
 		line.setPadding(5, 0, 5, 0);
-		MainLayout.addView(line);
+		ListMenuLayout.addView(line);
 		try {
 			if(!String.valueOf(SessionManager.getMember(mContext).getUid()).equals(jsonOb.getString("ch_uid"))
 					&& ControllParameter.BanStatus){
@@ -93,13 +108,13 @@ public class Chat_Menu_LongClick {
 						LayoutParams.MATCH_PARENT, GetdipSize.dip(mContext, 48)));
 				Report_txt.setGravity(Gravity.CENTER);
 				Report_txt.setText(R.string.report_str);
-				MainLayout.addView(Report_txt);
+				ListMenuLayout.addView(Report_txt);
 				Report_Setup(Report_txt, C_dialog);
 				line = new View(mContext);
 				line.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 1));
 				line.setBackgroundColor(color.gray);
 				line.setPadding(5, 0, 5, 0);
-				MainLayout.addView(line);
+				ListMenuLayout.addView(line);
 				isMenu=true;
 			}
 		} catch (JSONException e) {
