@@ -32,6 +32,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
@@ -141,6 +142,8 @@ public class Live_Score_Detail extends Activity{
 		
 		if(score_ag_t.length()>=5){
 			txt_Aggregate.setText("AGGREGATE: "+score_ag_t);
+		}else{
+			txt_Aggregate.setVisibility(RelativeLayout.GONE);
 		}
 		if(type.equals("c")){
 			checkRefreshDetail();

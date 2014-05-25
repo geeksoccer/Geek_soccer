@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,7 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 		if (container == null) {
             return null;
         }
-        return (TabHost)inflater.inflate(R.layout.live_score_page, container, false);
+        return (TabHost)inflater.inflate(R.layout.chat_page, container, false);
 	}
 
 	
