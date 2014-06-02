@@ -869,8 +869,13 @@ public class Chat_Team extends Activity {
 				JSONObject json = jParser
 						.makeHttpRequest("http://183.90.171.209/gs_member_permission/check_chat_permission.php",
 								"POST", params);
+				
 				if (json != null) {
 					return json.getString("return_code");
+				}else{
+					if(args.length>0){
+						return "N";
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -888,11 +893,17 @@ public class Chat_Team extends Activity {
 						ControllParameter.BanStatus = true;
 						Chat_input.setEnabled(ControllParameter.BanStatus);
 						send_Btn.setEnabled(ControllParameter.BanStatus);
-					}else{
+					}else if(outPut.equals("0")){
 						ControllParameter.BanStatus = false;
 						Chat_input.setEnabled(ControllParameter.BanStatus);
 						Chat_input.setHint(R.string.chat_ban);
 						send_Btn.setBackgroundResource(R.drawable.question_btn);
+					}else if(outPut.equals("")){
+						ControllParameter.BanStatus = false;
+						Chat_input.setEnabled(ControllParameter.BanStatus);
+						Chat_input.setHint(R.string.chat_ban);
+						send_Btn.setBackgroundResource(R.drawable.question_btn);
+						new check_Permit().execute("CheckAgain");
 					}
 				}
 			});

@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.excelente.geek_soccer.Chat_Team.check_Permit;
 import com.excelente.geek_soccer.chat_menu.Chat_Menu_LongClick;
 import com.excelente.geek_soccer.date_convert.Date_Covert;
 import com.excelente.geek_soccer.user_rule.User_Rule;
@@ -875,8 +876,13 @@ public class Chat_All extends Activity {
 						.makeHttpRequest(
 								"http://183.90.171.209/gs_member_permission/check_chat_permission.php",
 								"POST", params);
+				
 				if (json != null) {
 					return json.getString("return_code");
+				}else{
+					if(args.length>0){
+						return "N";
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -897,11 +903,17 @@ public class Chat_All extends Activity {
 						ControllParameter.BanStatus = true;
 						Chat_input.setEnabled(ControllParameter.BanStatus);
 						send_Btn.setEnabled(ControllParameter.BanStatus);
-					} else {
+					} else if(outPut.equals("0")){
 						ControllParameter.BanStatus = false;
 						Chat_input.setEnabled(ControllParameter.BanStatus);
 						Chat_input.setHint(R.string.chat_ban);
 						send_Btn.setBackgroundResource(R.drawable.question_btn);
+					}else if(outPut.equals("")){
+						ControllParameter.BanStatus = false;
+						Chat_input.setEnabled(ControllParameter.BanStatus);
+						Chat_input.setHint(R.string.chat_ban);
+						send_Btn.setBackgroundResource(R.drawable.question_btn);
+						new check_Permit().execute();
 					}
 				}
 			});
