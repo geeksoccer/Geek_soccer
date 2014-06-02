@@ -23,13 +23,11 @@ import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.utils.YoutubeViewUtils;
 import com.excelente.geek_soccer.view.CustomWebView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -169,7 +167,7 @@ public class NewsItemsAdapter extends PagerAdapter{
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Uri uri = Uri.parse(url);
                 if (uri.getHost().contains("youtube.com")) {
-                    NewsItemsAdapter.viewYoutube(newsItemPage, url);
+                    YoutubeViewUtils.viewYoutube(newsItemPage, url);
                     return true;
                 }
 
@@ -313,33 +311,6 @@ public class NewsItemsAdapter extends PagerAdapter{
 			newsItemView.newsLikeImageview.setImageResource(R.drawable.news_likes_selected);
 		}
 	}
-	
-	public static void viewYoutube(Context context, String url) {
-        NewsItemsAdapter.viewWithPackageName(context, url, "com.google.android.youtube");
-    }
-
-    public static void viewWithPackageName(Context context, String url, String packageName) {
-        try {
-            Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            if (isAppInstalled(context, packageName)) {
-                viewIntent.setPackage(packageName);
-            }
-            context.startActivity(viewIntent);
-        } catch (Exception e) {
-            Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            context.startActivity(viewIntent);
-        }
-    }
-
-    public static boolean isAppInstalled(Context context, String packageName) {
-        PackageManager packageManager = context.getPackageManager();
-        try {
-            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (NameNotFoundException e) {
-        }
-        return false;
-    }
 	
 	@Override
 	public int getCount() {

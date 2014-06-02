@@ -22,8 +22,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -31,9 +29,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebView;
 import android.widget.AbsListView;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -96,15 +92,13 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		newsItemPosition = -100;
 		
 		if(savedInstanceState!=null){
-			if(News_Page.newsModelTeamList==null){
+			if(News_Page.newsModelTeamList==null && savedInstanceState.containsKey("newsModelTeamList")){
 				String newsModelTeamstr = savedInstanceState.getString("newsModelTeamList");
-				Log.e(">>>>>>>>>>>>>>onCreate<<<<<<<<<<<<<<", newsModelTeamstr);
 				News_Page.newsModelTeamList = NewsModel.convertNewsStrToList(newsModelTeamstr);
 			}
 			
-			if(News_Page.newsModelGlobalList==null){
+			if(News_Page.newsModelGlobalList==null && savedInstanceState.containsKey("newsModelGlobalList")){
 				String newsModelGlobalstr = savedInstanceState.getString("newsModelGlobalList");
-				Log.e(">>>>>>>>>>>>>>onCreate<<<<<<<<<<<<<<", newsModelGlobalstr);
 				News_Page.newsModelGlobalList = NewsModel.convertNewsStrToList(newsModelGlobalstr);
 			}
 			

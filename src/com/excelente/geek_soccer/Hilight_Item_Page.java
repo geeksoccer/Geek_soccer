@@ -18,6 +18,7 @@ import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.google.gson.Gson;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -80,6 +81,8 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		  
+		doLoadSavedInstanceState(savedInstanceState);
 		
 		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
 		
@@ -91,6 +94,119 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		commentListview.setVisibility(View.GONE);
 		
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
+	}
+	
+	private void doLoadSavedInstanceState(Bundle savedInstanceState) {
+		if(savedInstanceState!=null){ 
+			if(Hilight_Page.hilightListAll==null && savedInstanceState.containsKey("hilightListAll")){ 
+				String hilightModelstr = savedInstanceState.getString("hilightListAll");
+				Hilight_Page.hilightListAll = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+			if(Hilight_Page.hilightListBl==null && savedInstanceState.containsKey("hilightListBl")){
+				String hilightModelstr = savedInstanceState.getString("hilightListBl");
+				Hilight_Page.hilightListBl = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+			if(Hilight_Page.hilightListFl==null && savedInstanceState.containsKey("hilightListFl")){
+				String hilightModelstr = savedInstanceState.getString("hilightListFl");
+				Hilight_Page.hilightListFl = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+			if(Hilight_Page.hilightListGl==null && savedInstanceState.containsKey("hilightListGl")){
+				String hilightModelstr = savedInstanceState.getString("hilightListGl");
+				Hilight_Page.hilightListGl = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+			if(Hilight_Page.hilightListLl==null && savedInstanceState.containsKey("hilightListLl")){
+				String hilightModelstr = savedInstanceState.getString("hilightListLl");
+				Hilight_Page.hilightListLl = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+			if(Hilight_Page.hilightListPl==null && savedInstanceState.containsKey("hilightListPl")){
+				String hilightModelstr = savedInstanceState.getString("hilightListPl");
+				Hilight_Page.hilightListPl = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+			if(Hilight_Page.hilightListUcl==null && savedInstanceState.containsKey("hilightListUcl")){
+				String hilightModelstr = savedInstanceState.getString("hilightListUcl");
+				Hilight_Page.hilightListUcl = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+			if(Hilight_Page.hilightListUpl==null && savedInstanceState.containsKey("hilightListUpl")){
+				String hilightModelstr = savedInstanceState.getString("hilightListUpl");
+				Hilight_Page.hilightListUpl = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+			if(Hilight_Page.hilightListCapital==null && savedInstanceState.containsKey("hilightListCapital")){
+				String hilightModelstr = savedInstanceState.getString("hilightListCapital");
+				Hilight_Page.hilightListCapital = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+			if(Hilight_Page.hilightListChamp==null && savedInstanceState.containsKey("hilightListChamp")){
+				String hilightModelstr = savedInstanceState.getString("hilightListChamp");
+				Hilight_Page.hilightListChamp = HilightModel.convertHilightStrToList(hilightModelstr);
+			}
+			
+		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		if(Hilight_Page.hilightListAll!=null && !Hilight_Page.hilightListAll.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListAll", gson.toJson(Hilight_Page.hilightListAll));
+		}
+	  
+		if(Hilight_Page.hilightListBl!=null && !Hilight_Page.hilightListBl.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListBl", gson.toJson(Hilight_Page.hilightListBl));
+		}
+		
+		if(Hilight_Page.hilightListFl!=null && !Hilight_Page.hilightListFl.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListFl", gson.toJson(Hilight_Page.hilightListFl));
+		}
+		
+		if(Hilight_Page.hilightListGl!=null && !Hilight_Page.hilightListGl.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListGl", gson.toJson(Hilight_Page.hilightListGl));
+		}
+		
+		if(Hilight_Page.hilightListLl!=null && !Hilight_Page.hilightListLl.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListLl", gson.toJson(Hilight_Page.hilightListLl));
+		}
+		
+		if(Hilight_Page.hilightListPl!=null && !Hilight_Page.hilightListPl.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListPl", gson.toJson(Hilight_Page.hilightListPl));
+		}
+		
+		if(Hilight_Page.hilightListUcl !=null && !Hilight_Page.hilightListUcl.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListUcl", gson.toJson(Hilight_Page.hilightListUcl));
+		}
+		
+		if(Hilight_Page.hilightListUpl !=null && !Hilight_Page.hilightListUpl.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListUpl", gson.toJson(Hilight_Page.hilightListUpl));
+		}
+		
+		if(Hilight_Page.hilightListCapital !=null && !Hilight_Page.hilightListCapital.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListCapital", gson.toJson(Hilight_Page.hilightListCapital));
+		}
+		
+		if(Hilight_Page.hilightListChamp !=null && !Hilight_Page.hilightListChamp.isEmpty()){
+			Gson gson = new Gson();
+			outState.putString("hilightListChamp", gson.toJson(Hilight_Page.hilightListChamp));
+		}
+		
+		if(contentFlipView!=null)
+			outState.putInt("positionHilightItemPage", contentFlipView.getSelectedItemPosition());
 	}
 	
 	private void initView(Intent intent) {

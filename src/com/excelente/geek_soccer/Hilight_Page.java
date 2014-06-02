@@ -55,10 +55,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 	public static List<HilightModel> hilightListLl;
 	public static List<HilightModel> hilightListGl;
 	public static List<HilightModel> hilightListFl;
-	private static List<HilightModel> hilightListUcl;
-	private static List<HilightModel> hilightListUpl;
-	private static List<HilightModel> hilightListChamp;
-	private static List<HilightModel> hilightListCapital;
+	public static List<HilightModel> hilightListUcl;
+	public static List<HilightModel> hilightListUpl;
+	public static List<HilightModel> hilightListChamp;
+	public static List<HilightModel> hilightListCapital;
 	
 	View hilightPage;
 	private ProgressBar hilightWaitProcessbar;

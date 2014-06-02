@@ -8,6 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,6 +33,7 @@ import com.excelente.geek_soccer.player.VideoPlayer;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.utils.YoutubeViewUtils;
 
 public class HilightItemsAdapter extends BaseAdapter{
 	
@@ -150,9 +152,16 @@ public class HilightItemsAdapter extends BaseAdapter{
 				if(NetworkUtils.isNetworkAvailable(mContext)){
 					HilightItemModel hilightItem = (HilightItemModel)adap.getAdapter().getItem(pos);
 					
-					Intent intent = new Intent(mContext, VideoPlayer.class);
-					intent.putExtra(VideoPlayer.VDO_URL, hilightItem.getHilightItemLink().trim());
-					mContext.startActivity(intent); 
+					String url = hilightItem.getHilightItemLink().trim();
+					Uri uri = Uri.parse(url);
+	                if (uri.getHost().contains("youtube.com")) {
+	                    YoutubeViewUtils.viewYoutube(mContext, url);
+	                }else{
+	                	Intent intent = new Intent(mContext, VideoPlayer.class);
+	                	intent.putExtra(VideoPlayer.VDO_URL, hilightItem.getHilightItemLink().trim());
+	                	mContext.startActivity(intent); 
+	                }
+	                
 				}else{
 					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
 				}

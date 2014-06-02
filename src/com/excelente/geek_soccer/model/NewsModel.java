@@ -163,18 +163,18 @@ public class NewsModel implements Serializable{
 				
 				NewsModel news = new NewsModel();
 				news.setNewsId(newsObj.getInt(NewsModel.NEWS_ID));
-				news.setNewsLink(newsObj.getString(NewsModel.NEWS_LINK)); 
+				news.setNewsLink(newsObj.getString(NewsModel.NEWS_LINK).trim()); 
 				news.setNewsTeamId(newsObj.getInt(NewsModel.NEWS_TEAM_ID));
-				news.setNewsTopic(StringEscapeUtils.unescapeHtml4(newsObj.getString(NewsModel.NEWS_TOPIC)));
-				news.setNewsImage(newsObj.getString(NewsModel.NEWS_IMAGE)); 
-				news.setNewsContent(newsObj.getString(NewsModel.NEWS_CONTENT));
-				news.setNewsCredit(newsObj.getString(NewsModel.NEWS_CREDIT));
+				news.setNewsTopic(StringEscapeUtils.unescapeHtml4(newsObj.getString(NewsModel.NEWS_TOPIC)).trim());
+				news.setNewsImage(newsObj.getString(NewsModel.NEWS_IMAGE).trim()); 
+				news.setNewsContent(newsObj.getString(NewsModel.NEWS_CONTENT).trim());
+				news.setNewsCredit(newsObj.getString(NewsModel.NEWS_CREDIT).trim());
 				news.setNewsLikes(newsObj.getInt(NewsModel.NEWS_LIKES));
 				news.setNewsComments(newsObj.getInt(NewsModel.NEWS_COMMENTS));
-				news.setNewsLanguage(newsObj.getString(NewsModel.NEWS_LANGUAGE));
+				news.setNewsLanguage(newsObj.getString(NewsModel.NEWS_LANGUAGE).trim());
 				news.setNewsReads(newsObj.getInt(NewsModel.NEWS_READS));
-				news.setNewsCreateTime(newsObj.getString(NewsModel.NEWS_CREATE_TIME));
-				news.setNewsUpdateTime(newsObj.getString(NewsModel.NEWS_UPDATE_TIME));
+				news.setNewsCreateTime(newsObj.getString(NewsModel.NEWS_CREATE_TIME).trim());
+				news.setNewsUpdateTime(newsObj.getString(NewsModel.NEWS_UPDATE_TIME).trim());
 				news.setStatusView(newsObj.getInt(NewsModel.NEWS_STATUS_VIEW));
 				news.setStatusLike(newsObj.getInt(NewsModel.NEWS_STATUS_LIKE));
 				

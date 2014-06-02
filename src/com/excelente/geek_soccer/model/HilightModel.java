@@ -131,15 +131,15 @@ public class HilightModel implements Serializable{
 				
 				HilightModel hilight = new HilightModel();
 				hilight.setHilightId(hilightObj.getInt(HILIGHT_ID));
-				hilight.setHilightLink(hilightObj.getString(HILIGHT_LINK));
-				hilight.setHilightType(hilightObj.getString(HILIGHT_TYPE));
-				hilight.setHilightTopic(hilightObj.getString(HILIGHT_TOPIC));
-				hilight.setHilightImage(hilightObj.getString(HILIGHT_IMAGE));
+				hilight.setHilightLink(hilightObj.getString(HILIGHT_LINK).trim());
+				hilight.setHilightType(hilightObj.getString(HILIGHT_TYPE).trim());
+				hilight.setHilightTopic(hilightObj.getString(HILIGHT_TOPIC).trim());
+				hilight.setHilightImage(hilightObj.getString(HILIGHT_IMAGE).trim());
 				hilight.setHilightLikes(hilightObj.getInt(HILIGHT_LIKES));
 				hilight.setHilightViews(hilightObj.getInt(HILIGHT_VIEWS));
 				hilight.setHilightComments(hilightObj.getInt(HILIGHT_COMMENTS));
-				hilight.setHilightCreateTime(hilightObj.getString(HILIGHT_CREATE_TIME));
-				hilight.setHilightUpdateTime(hilightObj.getString(HILIGHT_UPDATE_TIME));
+				hilight.setHilightCreateTime(hilightObj.getString(HILIGHT_CREATE_TIME).trim());
+				hilight.setHilightUpdateTime(hilightObj.getString(HILIGHT_UPDATE_TIME).trim());
 				hilight.setStatusLike(hilightObj.getInt(HILIGHT_STATUS_LIKE));
 				hilight.setStatusView(hilightObj.getInt(HILIGHT_STATUS_VIEW));
 				
