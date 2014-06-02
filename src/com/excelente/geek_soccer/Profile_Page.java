@@ -67,10 +67,10 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState); 
 		Log.e("onCreate", "onCreate");
-		
-		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
+		 
+		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE, false);
 		imageChooserManager.setImageChooserListener(this);
 	}
 	

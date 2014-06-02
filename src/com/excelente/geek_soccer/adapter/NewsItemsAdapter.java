@@ -37,6 +37,7 @@ import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -165,6 +166,7 @@ public class NewsItemsAdapter extends PagerAdapter{
         	
         	@Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        		Log.e("LOG", url);
                 Uri uri = Uri.parse(url);
                 if (uri.getHost().contains("youtube.com")) {
                     YoutubeViewUtils.viewYoutube(newsItemPage, url);
