@@ -203,6 +203,26 @@ public class SessionManager {
 	    config.locale = myLocale;
 	    context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
 	}
+    
+    public static int getTeamColor(Context context) {
+    	
+    	if(hasMember(context)){
+    		switch (getMember(context).getTeamId()) {
+				case 1:
+					return R.color.news_arsenal;
+				case 2:
+					return R.color.news_chelsea;
+				case 3:
+					return R.color.news_liverpool;
+				case 4:
+					return R.color.news_manu;
+				default:
+					return R.color.news_default;
+			}
+    	}
+    	
+    	return R.color.news_default;
+	}
 
 	private static String getLang(Context context) {
 		String langInt = SessionManager.getSetting(context, SessionManager.setting_lang);
