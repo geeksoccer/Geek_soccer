@@ -108,7 +108,7 @@ public class Chat_All extends Activity {
 	ImageView Stick_11;
 	ImageView Stick_12;
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
-	static HashMap<String, Button> Sticker_ButVSet = new HashMap<String, Button>();
+	static HashMap<String, ImageView> Sticker_ButVSet = new HashMap<String, ImageView>();
 	SessionManager sesPrefer;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -241,19 +241,24 @@ public class Chat_All extends Activity {
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
 					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 48), GetdipSize.dip(mContext, 48));
+					LayoutParams paramsLine = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 1), LayoutParams.MATCH_PARENT);
 					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
+					View line = new View(mContext);
+					line.setBackgroundColor(Color.DKGRAY);
+					line.setLayoutParams(paramsLine);
+					StickerSelectorLayout.addView(line);
 					for (int i = 0; i < data.Sticker_Set.size(); i++) {
-						final Button StickSet_1 = new Button(mContext);
-						StickSet_1
-								.setBackgroundResource(R.drawable.stk_btn_set);
+						final ImageView StickSet_1 = new ImageView(mContext);
 						StickSet_1.setLayoutParams(paramsBtn);
-						StickSet_1.setTypeface(Typeface.DEFAULT_BOLD);
-						StickSet_1.setText("" + (i + 1));
 						final int StickPosition = i + 1;
+						StickBTNPrepare(String
+								.valueOf(StickPosition), StickSet_1);
 						if (String.valueOf(StickPosition).equals(Stick_Set)) {
 							StickSet_1.setEnabled(false);
+							StickSet_1.setBackgroundColor(Color.RED);
 						} else {
 							StickSet_1.setEnabled(true);
+							StickSet_1.setBackgroundColor(Color.TRANSPARENT);
 						}
 						StickSet_1
 								.setOnClickListener(new View.OnClickListener() {
@@ -262,19 +267,27 @@ public class Chat_All extends Activity {
 										StickViewClear();
 										Stick_Set = String
 												.valueOf(StickPosition);
+										
 										for (int j = 0; j < data.Sticker_Set
 												.size(); j++) {
 											if (String.valueOf(j + 1).equals(
 													Stick_Set)) {
 												Sticker_ButVSet.get(
 														String.valueOf(j))
+														.setBackgroundColor(Color.RED);
+												Sticker_ButVSet.get(
+														String.valueOf(j))
 														.setEnabled(false);
 											} else {
+												Sticker_ButVSet.get(
+														String.valueOf(j))
+														.setBackgroundColor(Color.TRANSPARENT);
 												Sticker_ButVSet.get(
 														String.valueOf(j))
 														.setEnabled(true);
 											}
 										}
+										
 										StickViewCall(String
 												.valueOf(StickPosition));
 									}
@@ -282,6 +295,10 @@ public class Chat_All extends Activity {
 								});
 						Sticker_ButVSet.put(String.valueOf(i), StickSet_1);
 						StickerSelectorLayout.addView(StickSet_1);
+						line = new View(mContext);
+						line.setBackgroundColor(Color.DKGRAY);
+						line.setLayoutParams(paramsLine);
+						StickerSelectorLayout.addView(line);
 					}
 				}
 			}
@@ -330,6 +347,97 @@ public class Chat_All extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	public void StickBTNPrepare(final String position, ImageView StkBtn){
+		try {
+			ArrayList<String> STK_exist_list = new ArrayList<String>();
+			for (String key : data.Sticker_Set.keySet()) {
+				STK_exist_list.add(key);
+			}
+			
+			JSONArray j_arr = null;
+			String S_postion = "";
+			if(STK_exist_list.size()>0){
+				if(STK_exist_list.size()>(Integer.parseInt(position)-1)){
+					S_postion = STK_exist_list.get(Integer.parseInt(position)-1);
+					j_arr = data.Sticker_Set.get(S_postion);
+				}else{
+					S_postion = STK_exist_list.get(0);
+					j_arr = data.Sticker_Set.get(S_postion);
+				}
+			}
+			
+			if (j_arr != null) {
+				data.Sticker_UrlSet.clear();
+				for (int i = 0; i < j_arr.length(); i++) {
+					JSONObject json_Value = j_arr.getJSONObject(i);
+					data.Sticker_UrlSet.put(
+							S_postion + "_" + json_Value.getString("sk_id"),
+							json_Value.getString("sk_img"));
+
+				}
+			} else {
+				String StickJset = SessionManager.getJsonSession(
+						Chat_All.this, "StickerSet");
+				if (StickJset != null) {
+					JSONObject json_ob = new JSONObject(StickJset);
+					data.Sticker_Set.clear();
+					data.Sticker_UrlSet.clear();
+					for (Iterator<?> league_Item_key = json_ob.keys(); league_Item_key
+							.hasNext();) {
+						String key_Item = (String) league_Item_key.next();
+						JSONArray json_arr = json_ob.getJSONArray(key_Item);
+						data.Sticker_Set.put(key_Item, json_arr);
+					}
+					
+					STK_exist_list = new ArrayList<String>();
+					for (String key : data.Sticker_Set.keySet()) {
+						STK_exist_list.add(key);
+					}
+					if(STK_exist_list.size()>0){
+						if(STK_exist_list.size()>(Integer.parseInt(position)-1)){
+							S_postion = STK_exist_list.get(Integer.parseInt(position)-1);
+							j_arr = data.Sticker_Set.get(S_postion);
+						}else{
+							S_postion = STK_exist_list.get(0);
+							j_arr = data.Sticker_Set.get(S_postion);
+						}
+					}
+
+					if (j_arr != null) {
+						for (int i = 0; i < j_arr.length(); i++) {
+							JSONObject json_Value = j_arr.getJSONObject(i);
+							data.Sticker_UrlSet.put(
+									S_postion + "_"
+											+ json_Value.getString("sk_id"),
+									json_Value.getString("sk_img"));
+
+						}
+					}
+
+				}
+			}
+			for (final String key : data.Sticker_UrlSet.keySet()) {
+				Log.d("TEST", "GET1STIMG::"+data.Sticker_UrlSet.get(key));
+				Log.d("TEST", "GET1STIMG_Key::"+key);
+				if (data.Sticker_UrlSet.get(key).contains(".gif")) {
+					putBitmap(StkBtn,
+							data.Sticker_UrlSet.get(key));
+				} else {
+					Bitmap bit = data.BitMapHash.get(data.Sticker_UrlSet
+							.get(key));
+					if (bit != null) {
+						StkBtn.setImageBitmap(bit);
+					} else {
+						startDownload(data.Sticker_UrlSet.get(key), StkBtn);
+					}
+				}
+				break;				
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 
