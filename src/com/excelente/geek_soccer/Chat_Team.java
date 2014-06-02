@@ -430,8 +430,6 @@ public class Chat_Team extends Activity {
 				}
 			}
 			for (final String key : data.Sticker_UrlSet.keySet()) {
-				Log.d("TEST", "GET1STIMG::"+data.Sticker_UrlSet.get(key));
-				Log.d("TEST", "GET1STIMG_Key::"+key);
 				if (data.Sticker_UrlSet.get(key).contains(".gif")) {
 					putBitmap(StkBtn,
 							data.Sticker_UrlSet.get(key));
