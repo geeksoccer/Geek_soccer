@@ -265,10 +265,10 @@ public class Chat_Team extends Activity {
 								.valueOf(StickPosition), StickSet_1);
 						if (String.valueOf(StickPosition).equals(Stick_Set)) {
 							StickSet_1.setEnabled(false);
-							StickSet_1.setBackgroundColor(Color.RED);
+							StickSet_1.setBackgroundResource(SessionManager.getTeamColor(mContext));
 						} else {
 							StickSet_1.setEnabled(true);
-							StickSet_1.setBackgroundColor(Color.TRANSPARENT);
+							StickSet_1.setBackgroundResource(R.color.tran);
 						}
 						StickSet_1
 								.setOnClickListener(new View.OnClickListener() {
@@ -284,14 +284,14 @@ public class Chat_Team extends Activity {
 													Stick_Set)) {
 												Sticker_ButVSet.get(
 														String.valueOf(j))
-														.setBackgroundColor(Color.RED);
+														.setBackgroundResource(SessionManager.getTeamColor(mContext));
 												Sticker_ButVSet.get(
 														String.valueOf(j))
 														.setEnabled(false);
 											} else {
 												Sticker_ButVSet.get(
 														String.valueOf(j))
-														.setBackgroundColor(Color.TRANSPARENT);
+														.setBackgroundResource(R.color.tran);
 												Sticker_ButVSet.get(
 														String.valueOf(j))
 														.setEnabled(true);
