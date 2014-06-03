@@ -239,7 +239,7 @@ public class Chat_All extends Activity {
 					StickerPrepare();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 30), GetdipSize.dip(mContext, 30));
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 35), GetdipSize.dip(mContext, 35));
 					LayoutParams paramsLine = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 1), LayoutParams.MATCH_PARENT);
 					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
 					View line = new View(mContext);
