@@ -25,7 +25,6 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.excelente.geek_soccer.chat_menu.Chat_Menu_LongClick;
 import com.excelente.geek_soccer.date_convert.Date_Covert;
 import com.excelente.geek_soccer.user_rule.User_Rule;
@@ -250,11 +249,12 @@ public class Chat_Team extends Activity {
 					StickerPrepare();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 35), GetdipSize.dip(mContext, 35));
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 40), GetdipSize.dip(mContext, 40));
 					LayoutParams paramsLine = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 1), LayoutParams.MATCH_PARENT);
 					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
 					View line = new View(mContext);
-					line.setBackgroundColor(Color.DKGRAY);
+					line.setBackgroundColor(Color.GRAY);
+					line.getBackground().setAlpha(100);
 					line.setLayoutParams(paramsLine);
 					StickerSelectorLayout.addView(line);
 					for (int i = 0; i < data.Sticker_Set.size(); i++) {
@@ -306,7 +306,8 @@ public class Chat_Team extends Activity {
 						Sticker_ButVSet.put(String.valueOf(i), StickSet_1);
 						StickerSelectorLayout.addView(StickSet_1);
 						line = new View(mContext);
-						line.setBackgroundColor(Color.DKGRAY);
+						line.setBackgroundColor(Color.GRAY);
+						line.getBackground().setAlpha(100);
 						line.setLayoutParams(paramsLine);
 						StickerSelectorLayout.addView(line);
 					}
