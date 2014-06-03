@@ -20,6 +20,7 @@
     <color name="tran">#0000</color>
     <color name="bluefortab">#8AFF7F</color>
     <color name="background">#CEF0FF</color>
+    <color name="graylittle">#c7c7c7</color>
     
     <color name="table_green">#8AC52A</color>
     <color name="table_green_light">#BEEE73</color>
