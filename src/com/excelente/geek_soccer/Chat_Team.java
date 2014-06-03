@@ -250,7 +250,7 @@ public class Chat_Team extends Activity {
 					StickerPrepare();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 48), GetdipSize.dip(mContext, 48));
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 30), GetdipSize.dip(mContext, 30));
 					LayoutParams paramsLine = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 1), LayoutParams.MATCH_PARENT);
 					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
 					View line = new View(mContext);

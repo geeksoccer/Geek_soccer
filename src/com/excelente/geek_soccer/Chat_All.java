@@ -25,8 +25,6 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.excelente.geek_soccer.Chat_Team.check_Permit;
 import com.excelente.geek_soccer.chat_menu.Chat_Menu_LongClick;
 import com.excelente.geek_soccer.date_convert.Date_Covert;
 import com.excelente.geek_soccer.user_rule.User_Rule;
@@ -241,7 +239,7 @@ public class Chat_All extends Activity {
 					StickerPrepare();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 48), GetdipSize.dip(mContext, 48));
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 30), GetdipSize.dip(mContext, 30));
 					LayoutParams paramsLine = new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 1), LayoutParams.MATCH_PARENT);
 					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
 					View line = new View(mContext);
