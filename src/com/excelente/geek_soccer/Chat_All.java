@@ -878,7 +878,12 @@ public class Chat_All extends Activity {
 								"POST", params);
 				
 				if (json != null) {
-					return json.getString("return_code");
+					String retCode = json.getString("return_code");
+					if(retCode.equals("1") && args.length>0){
+						Msg_Send = args[0];
+						chat_Sender();
+					}
+					return retCode;
 				}else{
 					if(args.length>0){
 						return "N";
@@ -898,7 +903,7 @@ public class Chat_All extends Activity {
 			// pDialog.dismiss();
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
-
+					Chat_input.setText("");
 					if (outPut.equals("1")) {
 						ControllParameter.BanStatus = true;
 						Chat_input.setEnabled(ControllParameter.BanStatus);
@@ -909,11 +914,9 @@ public class Chat_All extends Activity {
 						Chat_input.setHint(R.string.chat_ban);
 						send_Btn.setBackgroundResource(R.drawable.question_btn);
 					}else if(outPut.equals("")){
-						ControllParameter.BanStatus = false;
-						Chat_input.setEnabled(ControllParameter.BanStatus);
-						Chat_input.setHint(R.string.chat_ban);
+						ControllParameter.BanStatus = null;
+						Chat_input.setHint(R.string.con_lost);
 						send_Btn.setBackgroundResource(R.drawable.question_btn);
-						new check_Permit().execute();
 					}
 				}
 			});
@@ -1120,15 +1123,20 @@ public class Chat_All extends Activity {
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				if (ControllParameter.BanStatus) {
-					Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
-					if (!Msg_Send.equals("") && ControllParameter.BanStatus) {
-						data.socket_All.emit("sendchat", Msg_Send);
-						Msg_Send = "";
+				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
+				if(ControllParameter.BanStatus!=null){
+					if (ControllParameter.BanStatus) {
+						if (!Msg_Send.equals("")) {
+							data.socket_All.emit("sendchat", Msg_Send);
+							Msg_Send = "";
+						}
+					} else {
+						User_Rule.showRuleDialog(mContext);
 					}
-				} else {
-					User_Rule.showRuleDialog(mContext);
+				}else{
+					new check_Permit().execute(Msg_Send);
 				}
+				
 			}
 		}, data.chatDelay);
 
@@ -1139,15 +1147,20 @@ public class Chat_All extends Activity {
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				if (ControllParameter.BanStatus) {
-					Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
-					if (!Msg_Send.equals("") && ControllParameter.BanStatus) {
-						data.socket_All.emit("sendsticker", Msg_Send);
-						Msg_Send = "";
+				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
+				if(ControllParameter.BanStatus!=null){
+					if (ControllParameter.BanStatus) {
+						if (!Msg_Send.equals("")) {
+							data.socket_All.emit("sendsticker", Msg_Send);
+							Msg_Send = "";
+						}
+					} else {
+						User_Rule.showRuleDialog(mContext);
 					}
-				} else {
-					User_Rule.showRuleDialog(mContext);
+				}else{
+					new check_Permit().execute(Msg_Send);
 				}
+				
 			}
 		}, data.chatDelay);
 

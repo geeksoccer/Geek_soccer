@@ -117,6 +117,7 @@
     <string name="success_report">สำเร็จ</string>
     <string name="used_report">คุณเคยแจ้งแบน</string>
     <string name="chat_ban">คุณถูกระงับการโต้ตอบ</string>
+    <string name="con_lost">การเชื่อมต่อล้มเหลว</string>
     
     <string-array name="team_list">
         <item>อาเซน่อล</item>
