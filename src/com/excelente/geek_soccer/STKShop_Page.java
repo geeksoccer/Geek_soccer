@@ -187,16 +187,16 @@ public class STKShop_Page extends Activity{
 			Stk_by.setTextSize(10);
 			Stk_detail.setText(STK_Item.getString("sk_detail"));
 			if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
-				but_price.setText("Downloaded");
+				but_price.setText(" Downloaded ");
 				but_price.setEnabled(false);
 				but_price.setTextColor(Color.GREEN);
 			}else{
 				but_delete.setVisibility(RelativeLayout.GONE);
 				but_price.setTextColor(Color.RED);
 				if(STK_Item.getString("sk_price_set").equals("0")){
-					but_price.setText("Price: " + "Free");
+					but_price.setText(" Free ");
 				}else{
-					but_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
+					but_price.setText(" " + STK_Item.getString("sk_price_set") + " $ ");
 				}
 			}
 			but_price.setOnClickListener(new View.OnClickListener() {
@@ -205,7 +205,7 @@ public class STKShop_Page extends Activity{
 				public void onClick(View arg0) {
 					try {
 						down_progress.setVisibility(RelativeLayout.ABOVE);
-						but_price.setText("Downloading...");
+						but_price.setText(" Downloading... ");
 						but_price.setEnabled(false);
 						new stk_permission_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
 					} catch (JSONException e) {
@@ -219,7 +219,7 @@ public class STKShop_Page extends Activity{
 				public void onClick(View arg0) {
 					try {
 						down_progress.setVisibility(RelativeLayout.ABOVE);
-						but_price.setText("Removing...");
+						but_price.setText(" Removing... ");
 						but_price.setEnabled(false);
 						new stk_delete_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
 					} catch (JSONException e) {
@@ -527,10 +527,10 @@ public class STKShop_Page extends Activity{
 					down_progress.setVisibility(RelativeLayout.GONE);
 					but_price.setTextColor(Color.GREEN);
 					if(Size_update_chk!=STK_exist_list.size()){
-						but_price.setText("Downloaded");
+						but_price.setText(" Downloaded ");
 						but_delete.setVisibility(RelativeLayout.ABOVE);
 					}else{
-						but_price.setText("Download fail tap to try again..");
+						but_price.setText(" Download fail tap to try again.. ");
 						but_price.setEnabled(true);
 					}
 					imageAdapter.notifyDataSetChanged();
@@ -604,7 +604,7 @@ public class STKShop_Page extends Activity{
 					but_price.setTextColor(Color.GREEN);
 					if(Size_update_chk!=STK_exist_list.size()){
 						but_delete.setVisibility(RelativeLayout.GONE);
-						but_price.setText("Remove Success");
+						but_price.setText(" Remove Success ");
 						but_price.setEnabled(false);
 						data.chatDelay = 2000;
 						handler.postDelayed(new Runnable() {
@@ -614,9 +614,9 @@ public class STKShop_Page extends Activity{
 									final JSONObject STK_Item = STK_list.get(Integer.parseInt(position) );
 									
 									if(STK_Item.getString("sk_price_set").equals("0")){
-										but_price.setText("Price: " + "Free");
+										but_price.setText(" Free ");
 									}else{
-										but_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
+										but_price.setText(" " + STK_Item.getString("sk_price_set") + " $ ");
 									}
 									but_price.setTextColor(Color.RED);
 									but_price.setEnabled(true);
@@ -627,7 +627,7 @@ public class STKShop_Page extends Activity{
 							}
 						}, data.chatDelay);
 					}else{
-						but_price.setText("Remove fail tap to try again..");
+						but_price.setText(" Remove fail tap to try again.. ");
 						but_price.setEnabled(true);
 					}
 					imageAdapter.notifyDataSetChanged();
