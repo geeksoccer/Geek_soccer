@@ -26,6 +26,11 @@ import android.support.v4.app.NotificationCompat;
 
 public class NetWorkChageReceiver extends BroadcastReceiver{
 	
+	public interface OnNetworkChangeListener{
+		public void onNetworkConected(Context context, Intent intent);
+		public void onNetworkDisconnect(Context context, Intent intent);
+	}
+	
 	public static final String NOTIFY_INTENT = "NOTIFY_INTENT";
 	public static final int NOTIFY_INTENT_CODE_NEWS = 1000;
 	public static final int NOTIFY_INTENT_CODE_HILIGHT = 2000;
@@ -34,13 +39,23 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
     
 	Context mContext;
 	private SharedPreferences sharePre;
+	OnNetworkChangeListener onNetworkChangeListener;
 	
+	public void setOnNetworkChangeListener(OnNetworkChangeListener onNetworkChangeListener) {
+		this.onNetworkChangeListener = onNetworkChangeListener;
+	}
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		this.mContext = context;
 		
 		if(NetworkUtils.isNetworkAvailable(context)){
 			checkNetwork(context);
+			if(onNetworkChangeListener!=null)
+				onNetworkChangeListener.onNetworkConected(context, intent); 
+		}else{
+			if(onNetworkChangeListener!=null)
+				onNetworkChangeListener.onNetworkDisconnect(context, intent);
 		}
 	}
 
