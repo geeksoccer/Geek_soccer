@@ -915,8 +915,6 @@ public class Chat_All extends Activity {
 						send_Btn.setBackgroundResource(R.drawable.question_btn);
 					}else if(outPut.equals("")){
 						ControllParameter.BanStatus = null;
-						Chat_input.setHint(R.string.con_lost);
-						send_Btn.setBackgroundResource(R.drawable.question_btn);
 					}
 				}
 			});
@@ -1098,7 +1096,11 @@ public class Chat_All extends Activity {
 								data.Chat_list_LayOut_All.addView(progress);
 								(data.Chat_list_LayOut_All)
 										.addView(data.lstViewChatAll);
-								Chat_Loader();
+								if (data.socket_All == null) {
+									Chat_Loader();
+								}else if (!data.socket_All.isConnected()) {
+									Chat_Loader();
+								}
 							}
 						});
 			}
