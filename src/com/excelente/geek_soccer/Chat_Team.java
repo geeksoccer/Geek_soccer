@@ -957,7 +957,7 @@ public class Chat_Team extends Activity {
 
 					@Override
 					public void onDisconnect() {
-
+						data.socket_Team.reconnect();
 						data.chat_on_Team = false;
 						Log.d("TEST", "chat_on::" + data.chat_on_Team);
 					}
@@ -1090,6 +1090,7 @@ public class Chat_Team extends Activity {
 								}else if (!data.socket_Team.isConnected()) {
 									Chat_Loader();
 								}
+								new check_Permit().execute();
 							}
 						});
 			}

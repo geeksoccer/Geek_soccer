@@ -497,7 +497,11 @@ public class LiveScore_Today extends Activity {
 							return 0;
 						}
 					});
-					
+					if(data.Match_list_c_JSON.size()<=0){
+						data.Match_list_c_JSON.add(new JSONObject().put("League"
+								, "[0]" + getResources().getString(R.string.no_match)));
+						return "no";
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -505,7 +509,7 @@ public class LiveScore_Today extends Activity {
 			return null;
 		}
 
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(final String msg) {
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
 					if(data.Match_list_c_JSON.size()>0){
@@ -516,7 +520,7 @@ public class LiveScore_Today extends Activity {
 						chk_ani = false;
 						data.imageAdapterLiveScore.notifyDataSetChanged();
 						
-						if(data.socket_LiveScore==null){
+						if(data.socket_LiveScore==null && msg==null){
 							Live_score_Loader();
 						}
 					}else{

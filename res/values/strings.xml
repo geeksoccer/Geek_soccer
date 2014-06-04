@@ -129,6 +129,7 @@
     <string name="used_report">You used to report</string>
     <string name="chat_ban">Your interactive suspended</string>
     <string name="con_lost">Connection lost</string>
+    <string name="no_match">No have match today</string>
     
     <string-array name="team_list">
         <item>Arsenal</item>

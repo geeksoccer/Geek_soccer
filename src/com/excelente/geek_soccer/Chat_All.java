@@ -965,6 +965,7 @@ public class Chat_All extends Activity {
 
 					@Override
 					public void onDisconnect() {
+						data.socket_All.reconnect();
 						data.chat_on_All = false;
 						Log.d("TEST", "chat_on::" + data.chat_on_All);
 					}
@@ -1101,6 +1102,7 @@ public class Chat_All extends Activity {
 								}else if (!data.socket_All.isConnected()) {
 									Chat_Loader();
 								}
+								new check_Permit().execute();
 							}
 						});
 			}
