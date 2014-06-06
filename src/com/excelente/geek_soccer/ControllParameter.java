@@ -65,6 +65,7 @@ public class ControllParameter {
     HashMap<String, Bitmap> HomeMap = new HashMap<String, Bitmap>();
 	HashMap<String, Bitmap> AwayMap = new HashMap<String, Bitmap>();
 	HashMap<String, Bitmap> BitMapHash = new HashMap<String, Bitmap>();
+	HashMap<String, Boolean> BitMapHashMem = new HashMap<String, Boolean>();
 	HashMap<String, String> player_Detail = new HashMap<String, String>();
 	HashMap<String, JSONArray> Sticker_Set = new HashMap<String, JSONArray>();
 	HashMap<String, String> Sticker_UrlSet = new HashMap<String, String>();

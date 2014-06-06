@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-	<RelativeLayout
+
+    <RelativeLayout
         android:id="@+id/main_action_bar"
+        style="?backgroundTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        style="?backgroundTheme" >
- 
+        android:layout_alignParentTop="true" >
+
         <TextView
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
@@ -18,9 +19,9 @@
             android:layout_centerVertical="true"
             android:drawablePadding="5dp"
             android:padding="10dp"
-            android:textColor="@color/white"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
- 
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white" />
+
         <ImageView
             android:id="@+id/close_icon"
             android:layout_width="wrap_content"
@@ -30,15 +31,20 @@
             android:background="@drawable/bg_press"
             android:padding="10dp"
             android:src="@drawable/ic_action_remove" />
-
     </RelativeLayout>
-    
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:orientation="vertical" >
+    </View>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="5dp"
-        android:background="@drawable/head_stk_bg" >
+        android:padding="5dp" >
 
         <ImageView
             android:id="@+id/Preview_Image"
@@ -64,54 +70,64 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-				 >
-
-                <Button
-                    android:id="@+id/download"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/btn_download"
-                    android:text="Free" />
-
-                <Button
-                    android:id="@+id/remove"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/del_icon" />
-
-                <ProgressBar
-                    android:id="@+id/download_progress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
+            <Button
+                android:id="@+id/remove"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_marginTop="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/del_icon" />
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="5dp" >
+
+        <Button
+            android:id="@+id/download"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_download"
+            android:text="FREE" />
+
+        <ProgressBar
+            android:id="@+id/download_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:orientation="vertical" >
+    </View>
 
     <TextView
         android:id="@+id/detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Detail:"
-        android:textSize="16sp"
-        android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:text="Detail:"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/stk_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="4"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:maxLines="4"
         android:textSize="12sp" />
 
     <LinearLayout

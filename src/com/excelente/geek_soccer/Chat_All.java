@@ -1265,23 +1265,35 @@ public class Chat_All extends Activity {
 				}
 				Bitmap pic = null;
 				if (SessionManager.getImageSession(Chat_All.this, url) == null) {
-					pic = loadImageFromUrl(_Url);
-					if (pic != null) {
-						SessionManager.createNewImageSession(Chat_All.this,
-								url, pic);
-						data.BitMapHash.put(url, pic);
-					}
+					if(data.BitMapHashMem.get(_Url)==null){
+						data.BitMapHashMem.put(_Url, false);
+						pic = loadImageFromUrl(_Url);
+						if (pic != null) {
+							SessionManager.createNewImageSession(Chat_All.this,
+									url, pic);
+							data.BitMapHash.put(url, pic);
+						}
+					}else if(data.BitMapHashMem.get(_Url)){
+						pic = loadImageFromUrl(_Url);
+						if (pic != null) {
+							SessionManager.createNewImageSession(Chat_All.this,
+									url, pic);
+							data.BitMapHash.put(url, pic);
+						}
+					}					
 				} else {
 					pic = SessionManager.getImageSession(Chat_All.this, url);
 					data.BitMapHash.put(url, pic);
 				}
 				final Bitmap _pic = pic;
+				final String _UrlMem = _Url;
 
 				if (img_H != null) {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
 							if (_pic == null) {
+								data.BitMapHashMem.put(_UrlMem, true);
 								img_H.setImageResource(R.drawable.soccer_icon);
 							} else {
 								img_H.setImageBitmap(_pic);
@@ -1307,17 +1319,29 @@ public class Chat_All extends Activity {
 					_Url = "http://183.90.171.209/chat/stk/" + url;
 				}
 				Bitmap pic = null;
-				pic = loadImageFromUrl(_Url);
-				if (pic != null) {
-					data.BitMapHash.put(url, pic);
+				if(data.BitMapHashMem.get(_Url)==null){
+					data.BitMapHashMem.put(_Url, false);
+					pic = loadImageFromUrl(_Url);
+					if (pic != null) {
+						data.BitMapHash.put(url, pic);
+					}
+				}else if(data.BitMapHashMem.get(_Url)){
+					data.BitMapHashMem.put(_Url, false);
+					pic = loadImageFromUrl(_Url);
+					if (pic != null) {
+						data.BitMapHash.put(url, pic);
+					}
 				}
+				
 				final Bitmap _pic = pic;
+				final String _UrlMem = _Url;
 
 				if (img_H != null) {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
 							if (_pic == null) {
+								data.BitMapHashMem.put(_UrlMem, true);
 								img_H.setImageResource(R.drawable.soccer_icon);
 							} else {
 								img_H.setImageBitmap(_pic);
