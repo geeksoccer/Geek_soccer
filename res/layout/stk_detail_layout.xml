@@ -81,11 +81,14 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:gravity="center"
+        android:background="@drawable/btn_download"
         android:layout_marginBottom="5dp" >
-
+<!-- 
         <Button
             android:id="@+id/download"
             android:layout_width="0dp"
@@ -95,7 +98,14 @@
             android:layout_weight="1"
             android:background="@drawable/btn_download"
             android:text="FREE" />
-
+ -->
+ 		<TextView
+            android:id="@+id/downloadtxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="FREE" />
         <ProgressBar
             android:id="@+id/download_progress"
             android:layout_width="wrap_content"
