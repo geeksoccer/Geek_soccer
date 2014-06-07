@@ -33,7 +33,7 @@ import com.excelente.geek_soccer.player.VideoPlayer;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
-import com.excelente.geek_soccer.utils.YoutubeViewUtils;
+import com.excelente.geek_soccer.utils.IntentVideoViewUtils;
 
 public class HilightItemsAdapter extends BaseAdapter{
 	
@@ -155,8 +155,10 @@ public class HilightItemsAdapter extends BaseAdapter{
 					String url = hilightItem.getHilightItemLink().trim();
 					Uri uri = Uri.parse(url);
 	                if (uri.getHost().contains("youtube.com")) {
-	                    YoutubeViewUtils.viewYoutube(mContext, url);
-	                }else{
+	                    IntentVideoViewUtils.playYoutubeVideo(mContext, url);
+	                }else if (uri.getHost().contains("facebook.com")) {
+	                    IntentVideoViewUtils.playFacebookVideo(mContext, url);
+	                }{
 	                	Intent intent = new Intent(mContext, VideoPlayer.class);
 	                	intent.putExtra(VideoPlayer.VDO_URL, hilightItem.getHilightItemLink().trim());
 	                	mContext.startActivity(intent); 

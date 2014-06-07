@@ -23,7 +23,7 @@ import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
-import com.excelente.geek_soccer.utils.YoutubeViewUtils;
+import com.excelente.geek_soccer.utils.IntentVideoViewUtils;
 import com.excelente.geek_soccer.view.CustomWebView;
 
 import android.annotation.SuppressLint;
@@ -169,8 +169,11 @@ public class NewsItemsAdapter extends PagerAdapter{
         		Log.e("LOG", url);
                 Uri uri = Uri.parse(url);
                 if (uri.getHost().contains("youtube.com")) {
-                    YoutubeViewUtils.viewYoutube(newsItemPage, url);
+                    IntentVideoViewUtils.playYoutubeVideo(newsItemPage, url);
                     return true;
+                }else if (uri.getHost().contains("facebook.com")){
+                	IntentVideoViewUtils.playFacebookVideo(newsItemPage, url);
+                	return true;
                 }
 
                 return false;
