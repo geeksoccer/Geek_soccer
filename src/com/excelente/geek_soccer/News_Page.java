@@ -21,6 +21,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,6 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.ImageView;
@@ -116,19 +115,20 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
 				}else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-					setMessageEmptyListView(newsModelTeamList, newsAdapterTeam, newsListViewTeam);
+					setMessageEmptyListView(newsModelTeamList, newsAdapterTeam, newsListViewTeam, "tag0");
 				}
 			}
 		}
 		
 	} 
 
-	private void setMessageEmptyListView(List<NewsModel> newslist, ListAdapter newsAdapter, ListView newsListView) {
+	private void setMessageEmptyListView(List<NewsModel> newslist, NewsAdapter newsAdapter, PullToRefreshListView newsListView, String tag) {
 		newsWaitProgressBar.setVisibility(View.GONE);
 		newslist = new ArrayList<NewsModel>();
 		newsAdapter = new NewsAdapter(getActivity(), newslist);
 		newsListView.setAdapter(newsAdapter); 
 		newsListView.setVisibility(View.VISIBLE);
+		setListViewEvents(newsListView, newsAdapter, tag);
 	}
 
 	private void initView() {
@@ -410,9 +410,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			@Override
 			public void onRefresh() {
 				if (NetworkUtils.isNetworkAvailable(getActivity())){
+					Log.e("0000000000000000000000000", "onRefresh");
 					new LoadLastNewsTask(newsListView, tag).execute(getURLbyTag(getActivity(), 0, tag));
-				}else
+				}else{
+					newsListView.onRefreshComplete();
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		
@@ -471,7 +474,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
 				else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-					setMessageEmptyListView(newsModelTeamList, newsAdapterTeam, newsListViewTeam);
+					setMessageEmptyListView(newsModelTeamList, newsAdapterTeam, newsListViewTeam, "tag0");
 				}
 			}
 		}else if(tag.equals("tag1")){
@@ -483,7 +486,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(getActivity(), 0, "tag1"));
 				else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-					setMessageEmptyListView(newsModelGlobalList, newsAdapterGlobal, newsListViewGlobal);
+					setMessageEmptyListView(newsModelGlobalList, newsAdapterGlobal, newsListViewGlobal, "tag1");
 				}
 			}
 		} 

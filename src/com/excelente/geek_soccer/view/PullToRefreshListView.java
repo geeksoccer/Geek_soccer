@@ -342,7 +342,7 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
     public void onRefresh() {
         Log.d(TAG, "onRefresh");
 
-        if (mOnRefreshListener != null) {
+        if (mOnRefreshListener != null) {   
             mOnRefreshListener.onRefresh();
         }
     }
@@ -384,7 +384,8 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
             if (mRefreshState != REFRESHING) {
                 prepareForRefresh();
                 onRefresh();
-            }
+           }
+   
         }
 
     }

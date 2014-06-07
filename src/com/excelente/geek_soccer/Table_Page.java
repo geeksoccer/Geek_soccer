@@ -21,8 +21,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -160,17 +158,19 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 				}else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-					setMessageEmptyListView(plAdapter, tablePLLayout);
+					setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
 				}
 			}catch(Exception e){
 				e.printStackTrace();
-				setMessageEmptyListView(plAdapter, tablePLLayout);
+				setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
 			}
 		}
 	}
 	
-	private void setListViewEvents(final PullToRefreshListView hilightListview, final String tag){
+	private void setListViewEvents(final PullToRefreshListView hilightListview, final String tags){
 		hilightListview.setOnRefreshListener(new OnRefreshListener() {
+			
+			String tag = tags;
 			
 			@Override
 			public void onRefresh() {
@@ -179,12 +179,14 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		});
 	}
 	
-	private void setMessageEmptyListView(ListAdapter tableAdapter, ListView tableListView) {
+	private void setMessageEmptyListView(TableAdapter tableAdapter, PullToRefreshListView tableListView, String tag) {
 		tableWaitProcessbar.setVisibility(View.GONE);
 		List<TableModel> tableList = new ArrayList<TableModel>();
 		tableAdapter = new TableAdapter(getActivity(), tableList);
 		tableListView.setAdapter(tableAdapter); 
 		tableListView.setVisibility(View.VISIBLE); 
+		setListViewEvents(tableListView, tag);
+		tableListView.onRefreshComplete();
 	} 
 
 	@Override
@@ -197,8 +199,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(plAdapter, tablePLLayout);
+						setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
 					}
+				}else{
+					tablePLLayout.onRefreshComplete();
 				}
 				setSelectedTab(0);
 			}else if(tabId.equals("tag2")){
@@ -207,8 +211,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						new LoadTableTask(tableBLLayout, blAdapter, "tag2").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + BUNDESLIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(blAdapter, tableBLLayout);
+						setMessageEmptyListView(blAdapter, tableBLLayout, "tag2");
 					}
+				}else{
+					tableBLLayout.onRefreshComplete();
 				}
 				setSelectedTab(1);
 			}else if(tabId.equals("tag3")){
@@ -217,8 +223,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						new LoadTableTask(tableLLLayout, llAdapter, "tag3").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + LALIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(llAdapter, tableLLLayout);
+						setMessageEmptyListView(llAdapter, tableLLLayout, "tag3");
 					}
+				}else{
+					tableLLLayout.onRefreshComplete();
 				}
 				setSelectedTab(2);
 			}else if(tabId.equals("tag4")){
@@ -227,8 +235,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						new LoadTableTask(tableGLLayout, glAdapter, "tag4").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(CALCAIO_SERIE_A, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(glAdapter, tableGLLayout);
+						setMessageEmptyListView(glAdapter, tableGLLayout, "tag4");
 					}
+				}else{
+					tableGLLayout.onRefreshComplete();
 				}
 				setSelectedTab(3);
 			}else if(tabId.equals("tag5")){
@@ -237,8 +247,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						new LoadTableTask(tableFLLayout, flAdapter, "tag5").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(LEAGUE_DE_LEAGUE1, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(flAdapter, tableFLLayout);
+						setMessageEmptyListView(flAdapter, tableFLLayout, "tag5");
 					}
+				}else{
+					tableFLLayout.onRefreshComplete();
 				}
 				setSelectedTab(4);
 			}else if(tabId.equals("tag6")){
@@ -247,8 +259,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						new LoadTableTask(tableTPLLayout, tplAdapter, "tag6").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(THAI_PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(tplAdapter, tableTPLLayout);
+						setMessageEmptyListView(tplAdapter, tableTPLLayout, "tag6");
 					}
+				}else{
+					tableTPLLayout.onRefreshComplete();
 				}
 				setSelectedTab(5);
 			}
@@ -328,10 +342,11 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 			}else{
 				if(getActivity()!=null){
 					Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
-					setListViewEvents(listview, tag);
 				}
 			} 
 			
+			setListViewEvents(listview, tag);
+			listview.onRefreshComplete();
 			tableWaitProcessbar.setVisibility(View.GONE);
 		}
 

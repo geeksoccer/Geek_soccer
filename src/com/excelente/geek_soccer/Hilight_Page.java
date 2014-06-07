@@ -31,8 +31,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -230,21 +228,22 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 					new LoadOldHilightTask(hilightListviewAll, hilightAdapterAll, "tag0").execute(getURLbyTag(0, "tag0"));
 				else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-					setMessageEmptyListView(hilightListAll, hilightAdapterAll, hilightListviewAll);
+					setMessageEmptyListView(hilightListAll, hilightAdapterAll, hilightListviewAll, "tag0");
 				}
 			}catch(Exception e){
 				e.printStackTrace();
-				setMessageEmptyListView(hilightListAll, hilightAdapterAll, hilightListviewAll);
+				setMessageEmptyListView(hilightListAll, hilightAdapterAll, hilightListviewAll, "tag0");
 			}
 		}
 	}
 
-	private void setMessageEmptyListView(List<HilightModel> hilightList, ListAdapter hilightAdapter, ListView hilightListView) {
+	private void setMessageEmptyListView(List<HilightModel> hilightList, HilightAdapter hilightAdapter, PullToRefreshListView hilightListView, String tag) {
 		hilightWaitProcessbar.setVisibility(View.GONE);
 		hilightList = new ArrayList<HilightModel>();
 		hilightAdapter = new HilightAdapter(getActivity(), hilightList);
 		hilightListView.setAdapter(hilightAdapter); 
 		hilightListView.setVisibility(View.VISIBLE); 
+		setListViewEvents(hilightListView, hilightAdapter, tag);
 	} 
 
 	public String getURLbyTag(int id, String tag) {
@@ -619,8 +618,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			public void onRefresh() {
 				if(NetworkUtils.isNetworkAvailable(getActivity())){
 					new LoadLastHilightTask(hilightListview, tag).execute(getURLbyTag(0, tabs.getCurrentTabTag())); 
-				}else
+				}else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+					hilightListview.onRefreshComplete();
+				}
 			}
 		});
 		
@@ -673,11 +674,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewAll, hilightAdapterAll, "tag0").execute(getURLbyTag(0, "tag0"));
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListAll, hilightAdapterAll, hilightListviewAll);
+						setMessageEmptyListView(hilightListAll, hilightAdapterAll, hilightListviewAll, "tag0");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListAll, hilightAdapterAll, hilightListviewAll);
+					setMessageEmptyListView(hilightListAll, hilightAdapterAll, hilightListviewAll, "tag0");
 				}
 			}
 			setSelectedTab(0);
@@ -688,11 +689,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewPl, hilightAdapterPl, "tag1").execute(getURLbyTag(0, "tag1"));
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListPl, hilightAdapterPl, hilightListviewPl);
+						setMessageEmptyListView(hilightListPl, hilightAdapterPl, hilightListviewPl, "tag1");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListPl, hilightAdapterPl, hilightListviewPl);
+					setMessageEmptyListView(hilightListPl, hilightAdapterPl, hilightListviewPl, "tag1");
 				}
 			}
 			setSelectedTab(1);
@@ -703,11 +704,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewBl, hilightAdapterBl, "tag2").execute(getURLbyTag(0, "tag2"));
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListBl, hilightAdapterBl, hilightListviewBl);
+						setMessageEmptyListView(hilightListBl, hilightAdapterBl, hilightListviewBl, "tag2");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListBl, hilightAdapterBl, hilightListviewBl);
+					setMessageEmptyListView(hilightListBl, hilightAdapterBl, hilightListviewBl, "tag2");
 				}
 			}
 			setSelectedTab(2);
@@ -718,11 +719,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewLl, hilightAdapterLl, "tag3").execute(getURLbyTag(0, "tag3"));
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListLl, hilightAdapterLl, hilightListviewLl);
+						setMessageEmptyListView(hilightListLl, hilightAdapterLl, hilightListviewLl, "tag3");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListLl, hilightAdapterLl, hilightListviewLl);
+					setMessageEmptyListView(hilightListLl, hilightAdapterLl, hilightListviewLl, "tag3");
 				}
 			}
 			setSelectedTab(3);
@@ -733,11 +734,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewGl, hilightAdapterGl, "tag4").execute(getURLbyTag(0, "tag4"));
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListGl, hilightAdapterGl, hilightListviewGl);
+						setMessageEmptyListView(hilightListGl, hilightAdapterGl, hilightListviewGl, "tag4");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListGl, hilightAdapterGl, hilightListviewGl);
+					setMessageEmptyListView(hilightListGl, hilightAdapterGl, hilightListviewGl, "tag4");
 				}
 			}
 			
@@ -753,11 +754,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewFl, hilightAdapterFl, "tag5").execute(getURLbyTag(0, "tag5"));
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListFl, hilightAdapterFl, hilightListviewFl);
+						setMessageEmptyListView(hilightListFl, hilightAdapterFl, hilightListviewFl, "tag5");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListFl, hilightAdapterFl, hilightListviewFl);
+					setMessageEmptyListView(hilightListFl, hilightAdapterFl, hilightListviewFl, "tag5");
 				}
 			}
 			
@@ -773,11 +774,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewUcl, hilightAdapterUcl, "tag6").execute(getURLbyTag(0, "tag6"));
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListUcl, hilightAdapterUcl, hilightListviewUcl);
+						setMessageEmptyListView(hilightListUcl, hilightAdapterUcl, hilightListviewUcl, "tag6");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListUcl, hilightAdapterUcl, hilightListviewUcl);
+					setMessageEmptyListView(hilightListUcl, hilightAdapterUcl, hilightListviewUcl, "tag6");
 				}
 			}
 			setSelectedTab(6);
@@ -788,11 +789,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewUpl, hilightAdapterUpl, "tag7").execute(getURLbyTag(0, "tag7"));
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListUpl, hilightAdapterUpl, hilightListviewUpl);
+						setMessageEmptyListView(hilightListUpl, hilightAdapterUpl, hilightListviewUpl, "tag7");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListUpl, hilightAdapterUpl, hilightListviewUpl);
+					setMessageEmptyListView(hilightListUpl, hilightAdapterUpl, hilightListviewUpl, "tag7");
 				}
 			}
 			setSelectedTab(7);
@@ -803,11 +804,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewChamp, hilightAdapterChamp, "tag8").execute(getURLbyTag(0, "tag8"));
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListChamp, hilightAdapterChamp, hilightListviewChamp);
+						setMessageEmptyListView(hilightListChamp, hilightAdapterChamp, hilightListviewChamp, "tag8");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListChamp, hilightAdapterChamp, hilightListviewChamp);
+					setMessageEmptyListView(hilightListChamp, hilightAdapterChamp, hilightListviewChamp, "tag8");
 				}
 			}
 			setSelectedTab(8);
@@ -818,11 +819,11 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 						new LoadOldHilightTask(hilightListviewCapital, hilightAdapterCapital, "tag9").execute(getURLbyTag(0, "tag9"));
 					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(hilightListCapital, hilightAdapterCapital, hilightListviewCapital);
+						setMessageEmptyListView(hilightListCapital, hilightAdapterCapital, hilightListviewCapital, "tag9");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
-					setMessageEmptyListView(hilightListCapital, hilightAdapterCapital, hilightListviewCapital);
+					setMessageEmptyListView(hilightListCapital, hilightAdapterCapital, hilightListviewCapital, "tag9");
 				}
 			}
 			setSelectedTab(9);
