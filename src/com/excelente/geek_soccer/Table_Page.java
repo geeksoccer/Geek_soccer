@@ -1,6 +1,7 @@
 package com.excelente.geek_soccer;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.excelente.geek_soccer.adapter.TableAdapter;
@@ -8,6 +9,8 @@ import com.excelente.geek_soccer.model.TableModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.Boast;
+import com.excelente.geek_soccer.view.PullToRefreshListView;
+import com.excelente.geek_soccer.view.PullToRefreshListView.OnRefreshListener;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
@@ -40,12 +44,12 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	public static final String THAI_PREMIER_LEAGUE = "Thai Premier League";
 	
 	View tableView;
-	private ListView tablePLLayout;
-	private ListView tableBLLayout;
-	private ListView tableLLLayout;
-	private ListView tableGLLayout;
-	private ListView tableFLLayout;
-	private ListView tableTPLLayout;
+	private PullToRefreshListView tablePLLayout;
+	private PullToRefreshListView tableBLLayout;
+	private PullToRefreshListView tableLLLayout;
+	private PullToRefreshListView tableGLLayout;
+	private PullToRefreshListView tableFLLayout;
+	private PullToRefreshListView tableTPLLayout;
 
 	private TableAdapter plAdapter;
 	private TableAdapter blAdapter;
@@ -134,14 +138,14 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	private void initSubView() {
 		
 		tableWaitProcessbar = (ProgressBar) tableView.findViewById(R.id.table_wait_processbar);
-		tableWaitProcessbar.setVisibility(View.GONE);
+		tableWaitProcessbar.setVisibility(View.VISIBLE);
 		
-		tablePLLayout = (ListView) tableView.findViewById(R.id.table_pl);
-		tableBLLayout = (ListView) tableView.findViewById(R.id.table_bl);
-		tableLLLayout = (ListView) tableView.findViewById(R.id.table_ll);
-		tableGLLayout = (ListView) tableView.findViewById(R.id.table_gl);
-		tableFLLayout = (ListView) tableView.findViewById(R.id.table_fl);
-		tableTPLLayout = (ListView) tableView.findViewById(R.id.table_tpl); 
+		tablePLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_pl);
+		tableBLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_bl);
+		tableLLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_ll);
+		tableGLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_gl);
+		tableFLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_fl);
+		tableTPLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_tpl); 
 		
 		flagtplAdapter = true;
 		flagflAdapter = true;
@@ -154,13 +158,34 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 			try{ 
 				if(NetworkUtils.isNetworkAvailable(getActivity())){
 					new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-				}else
+				}else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+					setMessageEmptyListView(plAdapter, tablePLLayout);
+				}
 			}catch(Exception e){
 				e.printStackTrace();
+				setMessageEmptyListView(plAdapter, tablePLLayout);
 			}
 		}
 	}
+	
+	private void setListViewEvents(final PullToRefreshListView hilightListview, final String tag){
+		hilightListview.setOnRefreshListener(new OnRefreshListener() {
+			
+			@Override
+			public void onRefresh() {
+				onTabChanged(tag);
+			}
+		});
+	}
+	
+	private void setMessageEmptyListView(ListAdapter tableAdapter, ListView tableListView) {
+		tableWaitProcessbar.setVisibility(View.GONE);
+		List<TableModel> tableList = new ArrayList<TableModel>();
+		tableAdapter = new TableAdapter(getActivity(), tableList);
+		tableListView.setAdapter(tableAdapter); 
+		tableListView.setVisibility(View.VISIBLE); 
+	} 
 
 	@Override
 	public void onTabChanged(String tabId) {
@@ -170,48 +195,60 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				if(flagplAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity()))
 						new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else
+					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+						setMessageEmptyListView(plAdapter, tablePLLayout);
+					}
 				}
 				setSelectedTab(0);
 			}else if(tabId.equals("tag2")){
 				if(flagblAdapter){
 					if(NetworkUtils.isNetworkAvailable(getActivity()))
 						new LoadTableTask(tableBLLayout, blAdapter, "tag2").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + BUNDESLIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else
+					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+						setMessageEmptyListView(blAdapter, tableBLLayout);
+					}
 				}
 				setSelectedTab(1);
 			}else if(tabId.equals("tag3")){
 				if(flagllAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						new LoadTableTask(tableLLLayout, llAdapter, "tag3").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + LALIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					}else
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+						setMessageEmptyListView(llAdapter, tableLLLayout);
+					}
 				}
 				setSelectedTab(2);
 			}else if(tabId.equals("tag4")){
 				if(flagglAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity()))
 						new LoadTableTask(tableGLLayout, glAdapter, "tag4").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(CALCAIO_SERIE_A, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else
+					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+						setMessageEmptyListView(glAdapter, tableGLLayout);
+					}
 				}
 				setSelectedTab(3);
 			}else if(tabId.equals("tag5")){
 				if(flagflAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity()))
 						new LoadTableTask(tableFLLayout, flAdapter, "tag5").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(LEAGUE_DE_LEAGUE1, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else
+					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+						setMessageEmptyListView(flAdapter, tableFLLayout);
+					}
 				}
 				setSelectedTab(4);
 			}else if(tabId.equals("tag6")){
 				if(flagtplAdapter){
 					if(NetworkUtils.isNetworkAvailable(getActivity()))
 						new LoadTableTask(tableTPLLayout, tplAdapter, "tag6").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(THAI_PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else
+					else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+						setMessageEmptyListView(tplAdapter, tableTPLLayout);
+					}
 				}
 				setSelectedTab(5);
 			}
@@ -234,11 +271,11 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	
 	public class LoadTableTask extends AsyncTask<String, Void, List<TableModel>>{
 		
-		ListView listview;
+		PullToRefreshListView listview;
 		TableAdapter tableAdaptor;
 		String tag;
 		
-		public LoadTableTask(ListView listview, TableAdapter tableAdaptor, String tag) {
+		public LoadTableTask(PullToRefreshListView listview, TableAdapter tableAdaptor, String tag) {
 			this.listview = listview; 
 			this.tableAdaptor = tableAdaptor;
 			this.tag = tag;
@@ -291,6 +328,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 			}else{
 				if(getActivity()!=null){
 					Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
+					setListViewEvents(listview, tag);
 				}
 			} 
 			

@@ -1,5 +1,7 @@
 package com.excelente.geek_soccer.utils;
 
+import com.excelente.geek_soccer.R;
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -28,11 +30,11 @@ public class NetworkUtils {
         int conn = NetworkUtils.getConnectivityStatus(context);
         String status = null;
         if (conn == NetworkUtils.TYPE_WIFI) {
-            status = "Wifi enabled";
+            status = context.getResources().getString(R.string.net_wifi);
         } else if (conn == NetworkUtils.TYPE_MOBILE) {
-            status = "Mobile data enabled";
+            status = context.getResources().getString(R.string.net_mobile);
         } else if (conn == NetworkUtils.TYPE_NOT_CONNECTED) {
-            status = "Not connected to Internet";
+            status = context.getResources().getString(R.string.warning_internet);
         }
         return status;
     }

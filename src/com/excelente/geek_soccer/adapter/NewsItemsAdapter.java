@@ -354,7 +354,11 @@ public class NewsItemsAdapter extends PagerAdapter{
 		    		
 		    		reponseInputStream.close();
 				} catch (ClientProtocolException e) {
+					base64s.add(encodedString);
+					continue;
 				} catch (IOException e) {
+					base64s.add(encodedString);
+					continue;
 				}
 	    		
 	    		base64s.add(encodedString);

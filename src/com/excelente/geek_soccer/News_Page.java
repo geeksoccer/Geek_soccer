@@ -28,6 +28,8 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.ImageView;
@@ -112,12 +114,22 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			if (newsAdapterTeam == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity())){
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
-				}else
+				}else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+					setMessageEmptyListView(newsModelTeamList, newsAdapterTeam, newsListViewTeam);
+				}
 			}
 		}
 		
 	} 
+
+	private void setMessageEmptyListView(List<NewsModel> newslist, ListAdapter newsAdapter, ListView newsListView) {
+		newsWaitProgressBar.setVisibility(View.GONE);
+		newslist = new ArrayList<NewsModel>();
+		newsAdapter = new NewsAdapter(getActivity(), newslist);
+		newsListView.setAdapter(newsAdapter); 
+		newsListView.setVisibility(View.VISIBLE);
+	}
 
 	private void initView() {
 		newsPage = getView();  
@@ -457,8 +469,10 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			if(newsAdapterTeam == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity()))
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
-				else
+				else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+					setMessageEmptyListView(newsModelTeamList, newsAdapterTeam, newsListViewTeam);
+				}
 			}
 		}else if(tag.equals("tag1")){
 			view0.setVisibility(View.INVISIBLE);
@@ -467,8 +481,10 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			if(newsAdapterGlobal == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity()))
 					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(getActivity(), 0, "tag1"));
-				else
+				else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+					setMessageEmptyListView(newsModelGlobalList, newsAdapterGlobal, newsListViewGlobal);
+				}
 			}
 		} 
 	}

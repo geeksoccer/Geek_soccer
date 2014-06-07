@@ -6,6 +6,9 @@
 
     <string name="sign_in_gmail">เข้าสู่ระบบด้วย Gmail</string>
     
+    <string name="net_wifi">Wifi เปิดใช้งานแล้ว</string>
+    <string name="net_mobile">3G เปิดใช้งานแล้ว</string>
+    
     <string name="video_title_error">วิดีโอนี้ไม่สามารถเล่นได้</string>
     <string name="video_message_error">มีปัญหาขณะเล่น</string>
     <string name="ok">ตกลง</string>

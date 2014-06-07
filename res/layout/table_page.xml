@@ -24,35 +24,47 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/table_header" >
 
-            <ListView
+            <com.excelente.geek_soccer.view.PullToRefreshListView
                 android:id="@+id/table_pl"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/news_gray"
+                android:divider="@null" />
 
-            <ListView
+            <com.excelente.geek_soccer.view.PullToRefreshListView
                 android:id="@+id/table_bl"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/news_gray"
+                android:divider="@null" />
 
-            <ListView
+            <com.excelente.geek_soccer.view.PullToRefreshListView
                 android:id="@+id/table_ll"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/news_gray"
+                android:divider="@null" />
 
-            <ListView
+            <com.excelente.geek_soccer.view.PullToRefreshListView
                 android:id="@+id/table_gl"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/news_gray"
+                android:divider="@null" />
 
-            <ListView
+            <com.excelente.geek_soccer.view.PullToRefreshListView
                 android:id="@+id/table_fl"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/news_gray"
+                android:divider="@null" />
 
-            <ListView
+            <com.excelente.geek_soccer.view.PullToRefreshListView
                 android:id="@+id/table_tpl"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/news_gray"
+                android:divider="@null" />
         </FrameLayout>
 
         <ProgressBar
