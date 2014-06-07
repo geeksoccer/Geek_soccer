@@ -469,6 +469,12 @@ public class LiveScore_Yesterday extends Activity {
 							return 0;
 						}
 					});
+					
+					if(data.Match_list_y_JSON.size()<=0){
+						data.Match_list_y_JSON.add(new JSONObject().put("League"
+								, "[0]" + getResources().getString(R.string.no_match)));
+						return "no";
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

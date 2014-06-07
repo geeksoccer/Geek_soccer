@@ -878,7 +878,12 @@ public class Chat_All extends Activity {
 								"POST", params);
 				
 				if (json != null) {
-					return json.getString("return_code");
+					String retCode = json.getString("return_code");
+					if(retCode.equals("1") && args.length>0){
+						Msg_Send = args[0];
+						chat_Sender();
+					}
+					return retCode;
 				}else{
 					if(args.length>0){
 						return "N";
@@ -898,7 +903,7 @@ public class Chat_All extends Activity {
 			// pDialog.dismiss();
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
-
+					Chat_input.setText("");
 					if (outPut.equals("1")) {
 						ControllParameter.BanStatus = true;
 						Chat_input.setEnabled(ControllParameter.BanStatus);
@@ -909,11 +914,7 @@ public class Chat_All extends Activity {
 						Chat_input.setHint(R.string.chat_ban);
 						send_Btn.setBackgroundResource(R.drawable.question_btn);
 					}else if(outPut.equals("")){
-						ControllParameter.BanStatus = false;
-						Chat_input.setEnabled(ControllParameter.BanStatus);
-						Chat_input.setHint(R.string.chat_ban);
-						send_Btn.setBackgroundResource(R.drawable.question_btn);
-						new check_Permit().execute();
+						ControllParameter.BanStatus = null;
 					}
 				}
 			});
@@ -964,6 +965,7 @@ public class Chat_All extends Activity {
 
 					@Override
 					public void onDisconnect() {
+						data.socket_All.reconnect();
 						data.chat_on_All = false;
 						Log.d("TEST", "chat_on::" + data.chat_on_All);
 					}
@@ -1095,7 +1097,12 @@ public class Chat_All extends Activity {
 								data.Chat_list_LayOut_All.addView(progress);
 								(data.Chat_list_LayOut_All)
 										.addView(data.lstViewChatAll);
-								Chat_Loader();
+								if (data.socket_All == null) {
+									Chat_Loader();
+								}else if (!data.socket_All.isConnected()) {
+									Chat_Loader();
+								}
+								new check_Permit().execute();
 							}
 						});
 			}
@@ -1120,15 +1127,20 @@ public class Chat_All extends Activity {
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				if (ControllParameter.BanStatus) {
-					Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
-					if (!Msg_Send.equals("") && ControllParameter.BanStatus) {
-						data.socket_All.emit("sendchat", Msg_Send);
-						Msg_Send = "";
+				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
+				if(ControllParameter.BanStatus!=null){
+					if (ControllParameter.BanStatus) {
+						if (!Msg_Send.equals("")) {
+							data.socket_All.emit("sendchat", Msg_Send);
+							Msg_Send = "";
+						}
+					} else {
+						User_Rule.showRuleDialog(mContext);
 					}
-				} else {
-					User_Rule.showRuleDialog(mContext);
+				}else{
+					new check_Permit().execute(Msg_Send);
 				}
+				
 			}
 		}, data.chatDelay);
 
@@ -1139,15 +1151,20 @@ public class Chat_All extends Activity {
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				if (ControllParameter.BanStatus) {
-					Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
-					if (!Msg_Send.equals("") && ControllParameter.BanStatus) {
-						data.socket_All.emit("sendsticker", Msg_Send);
-						Msg_Send = "";
+				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
+				if(ControllParameter.BanStatus!=null){
+					if (ControllParameter.BanStatus) {
+						if (!Msg_Send.equals("")) {
+							data.socket_All.emit("sendsticker", Msg_Send);
+							Msg_Send = "";
+						}
+					} else {
+						User_Rule.showRuleDialog(mContext);
 					}
-				} else {
-					User_Rule.showRuleDialog(mContext);
+				}else{
+					new check_Permit().execute(Msg_Send);
 				}
+				
 			}
 		}, data.chatDelay);
 
@@ -1248,23 +1265,35 @@ public class Chat_All extends Activity {
 				}
 				Bitmap pic = null;
 				if (SessionManager.getImageSession(Chat_All.this, url) == null) {
-					pic = loadImageFromUrl(_Url);
-					if (pic != null) {
-						SessionManager.createNewImageSession(Chat_All.this,
-								url, pic);
-						data.BitMapHash.put(url, pic);
-					}
+					if(data.BitMapHashMem.get(_Url)==null){
+						data.BitMapHashMem.put(_Url, false);
+						pic = loadImageFromUrl(_Url);
+						if (pic != null) {
+							SessionManager.createNewImageSession(Chat_All.this,
+									url, pic);
+							data.BitMapHash.put(url, pic);
+						}
+					}else if(data.BitMapHashMem.get(_Url)){
+						pic = loadImageFromUrl(_Url);
+						if (pic != null) {
+							SessionManager.createNewImageSession(Chat_All.this,
+									url, pic);
+							data.BitMapHash.put(url, pic);
+						}
+					}					
 				} else {
 					pic = SessionManager.getImageSession(Chat_All.this, url);
 					data.BitMapHash.put(url, pic);
 				}
 				final Bitmap _pic = pic;
+				final String _UrlMem = _Url;
 
 				if (img_H != null) {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
 							if (_pic == null) {
+								data.BitMapHashMem.put(_UrlMem, true);
 								img_H.setImageResource(R.drawable.soccer_icon);
 							} else {
 								img_H.setImageBitmap(_pic);
@@ -1290,17 +1319,29 @@ public class Chat_All extends Activity {
 					_Url = "http://183.90.171.209/chat/stk/" + url;
 				}
 				Bitmap pic = null;
-				pic = loadImageFromUrl(_Url);
-				if (pic != null) {
-					data.BitMapHash.put(url, pic);
+				if(data.BitMapHashMem.get(_Url)==null){
+					data.BitMapHashMem.put(_Url, false);
+					pic = loadImageFromUrl(_Url);
+					if (pic != null) {
+						data.BitMapHash.put(url, pic);
+					}
+				}else if(data.BitMapHashMem.get(_Url)){
+					data.BitMapHashMem.put(_Url, false);
+					pic = loadImageFromUrl(_Url);
+					if (pic != null) {
+						data.BitMapHash.put(url, pic);
+					}
 				}
+				
 				final Bitmap _pic = pic;
+				final String _UrlMem = _Url;
 
 				if (img_H != null) {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
 							if (_pic == null) {
+								data.BitMapHashMem.put(_UrlMem, true);
 								img_H.setImageResource(R.drawable.soccer_icon);
 							} else {
 								img_H.setImageBitmap(_pic);
