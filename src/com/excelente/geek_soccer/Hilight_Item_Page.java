@@ -528,7 +528,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		protected void onPostExecute(CommentModel result) {
 			super.onPostExecute(result);
 			
-			if(result.getMemberNickname() == null){
+			if(result == null || result.getMemberNickname() == null){
 				Toast.makeText(getApplicationContext(), "Missed", Toast.LENGTH_SHORT).show();
 			}else{
 				List<CommentModel> commentList = new ArrayList<CommentModel>();
