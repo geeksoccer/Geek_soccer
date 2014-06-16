@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.json.JSONException;
@@ -37,8 +38,8 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
-public class Live_Score_Detail extends Activity{
-	
+public class Live_Score_Detail extends Activity {
+
 	Context mContext;
 	String URL = "http://www.goal.com";
 	int Detail_positon;
@@ -55,7 +56,7 @@ public class Live_Score_Detail extends Activity{
 	String get_Home_name = "";
 	String get_Away_name = "";
 	private static ControllParameter data;
-	//String player_Detail[];
+	// String player_Detail[];
 	ArrayList<String> player_Detail = new ArrayList<String>();
 	private ListView lstView;
 	private ImageAdapter imageAdapter;
@@ -72,39 +73,46 @@ public class Live_Score_Detail extends Activity{
 	String Home_name_t = "";
 	String Away_name_t = "";
 	String score_ag_t = "";
+
+	JSONParser jParser = new JSONParser();
+	JSONObject jsonTagMap;
+	List<JSONObject> ListDetail = new ArrayList<JSONObject>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		data = ControllParameter.getInstance(this);
-		
+
 		data.fragement_Section_set(0);
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
+		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this)
+				.getTeamId());
 		LayoutInflater factory = LayoutInflater.from(this);
 		View myView = factory.inflate(R.layout.live_score_detail, null);
 		setContentView(myView);
-		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
-		Up_btn = (LinearLayout)myView.findViewById(R.id.Up_btn);
-		Home_Pic = (ImageView)myView.findViewById(R.id.Home_Pic);
-		Away_Pic = (ImageView)myView.findViewById(R.id.Away_Pic);
-		Score = (TextView)myView.findViewById(R.id.Score);
-		Home_name = (TextView)myView.findViewById(R.id.Home_name);
-		Away_name = (TextView)myView.findViewById(R.id.Away_name);
-		Time = (TextView)myView.findViewById(R.id.Time);
-		txt_Aggregate = (TextView)myView.findViewById(R.id.Score_Aggregate);
+		overridePendingTransition(R.anim.in_trans_left_right,
+				R.anim.out_trans_right_left);
+		Up_btn = (LinearLayout) myView.findViewById(R.id.Up_btn);
+		Home_Pic = (ImageView) myView.findViewById(R.id.Home_Pic);
+		Away_Pic = (ImageView) myView.findViewById(R.id.Away_Pic);
+		Score = (TextView) myView.findViewById(R.id.Score);
+		Home_name = (TextView) myView.findViewById(R.id.Home_name);
+		Away_name = (TextView) myView.findViewById(R.id.Away_name);
+		Time = (TextView) myView.findViewById(R.id.Time);
+		txt_Aggregate = (TextView) myView.findViewById(R.id.Score_Aggregate);
 		data.detailPageOpenning = true;
 		mContext = this;
 		position = getIntent().getExtras().getInt("URL");
 		type = getIntent().getExtras().getString("TYPE");
-		if(type.equals("y")){
+		if (type.equals("y")) {
 			getValue = data.Match_list_y_JSON.get(position);
-		}else if(type.equals("c")){
+		} else if (type.equals("c")) {
 			getValue = data.Match_list_c_JSON.get(position);
-		}else if(type.equals("t")){
+		} else if (type.equals("t")) {
 			getValue = data.Match_list_t_JSON.get(position);
 		}
-		
+
 		Up_btn.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				onBackPressed();
@@ -113,7 +121,8 @@ public class Live_Score_Detail extends Activity{
 
 		try {
 			Time_t = getValue.getString("Time").substring(3);
-			link_t = getValue.getString("link").replace("/en/", "/th/")+"/play-by-play";
+			link_t = getValue.getString("link").replace("/en/", "/th/")
+					+ "/live-commentary/main-events";
 			Home_img_t = getValue.getString("Home_img");
 			Away_img_t = getValue.getString("Away_img");
 			Home_name_t = getValue.getString("Home");
@@ -126,29 +135,29 @@ public class Live_Score_Detail extends Activity{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		Time.setText(Time_t);
-		URL+=link_t;
+		URL += link_t;
 		if (data.get_HomeMap(Home_img_t) != null) {
 			Home_Pic.setImageBitmap(data.get_HomeMap(Home_img_t));
 		}
 		if (data.get_AwayMap(Away_img_t) != null) {
 			Away_Pic.setImageBitmap(data.get_AwayMap(Away_img_t));
 		}
-		
+
 		Score.setText(score_t);
 		Home_name.setText(Home_name_t);
 		Away_name.setText(Away_name_t);
-		
-		if(score_ag_t.length()>=5){
-			txt_Aggregate.setText("AGGREGATE: "+score_ag_t);
-		}else{
+
+		if (score_ag_t.length() >= 5) {
+			txt_Aggregate.setText("AGGREGATE: " + score_ag_t);
+		} else {
 			txt_Aggregate.setVisibility(RelativeLayout.GONE);
 		}
-		if(type.equals("c")){
+		if (type.equals("c")) {
 			checkRefreshDetail();
 		}
-		
+
 		lstView = new ListView(mContext);
 		lstView.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -162,65 +171,76 @@ public class Live_Score_Detail extends Activity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
+				JSONObject txt_Item = ListDetail.get(position);
+				try {
+					Boast.makeText(mContext, txt_Item.getString("eventType"), Toast.LENGTH_LONG)
+							.show();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				/*
 				String txt_Item = player_Detail.get(position);
-				if(!txt_Item.equals("NotFoundData")){
-					String Split_item[] = txt_Item.replaceAll("&quot;", "\"").split(":");
+				if (!txt_Item.equals("NotFoundData")) {
+					String Split_item[] = txt_Item.replaceAll("&quot;", "\"")
+							.split(":");
 					String eventStr = "";
-					if(Split_item[1].contains("ใบเหลือง")){
+					if (Split_item[1].contains("ใบเหลือง")) {
 						eventStr = "ได้รับใบเหลือง";
-					}else if(Split_item[1].contains("Yellow Card")){
+					} else if (Split_item[1].contains("Yellow Card")) {
 						eventStr = "Yellow Card";
-					}else if(Split_item[1].contains("ใบแดง") ){
+					} else if (Split_item[1].contains("ใบแดง")) {
 						eventStr = "ได้รับใบแดง";
-					}else if(Split_item[1].contains("Red Card")){
+					} else if (Split_item[1].contains("Red Card")) {
 						eventStr = "Red Card";
-					}else if(Split_item[1].contains("Yellow/Red")){
-						if(link_t.contains("/en/")){
+					} else if (Split_item[1].contains("Yellow/Red")) {
+						if (link_t.contains("/en/")) {
 							eventStr = "Yellow/Red";
-						}else{
+						} else {
 							eventStr = "ได้รับใบเหลืองใบที่ 2 / ได้รับใบแดง";
 						}
-					}else if(Split_item[1].contains("ยิงจุดโทษได้")
+					} else if (Split_item[1].contains("ยิงจุดโทษได้")
 							|| Split_item[1].contains("Pen SO Goal")
-							|| Split_item[1].contains("Pen SO Miss")){
-						if(link_t.contains("/en/")){
+							|| Split_item[1].contains("Pen SO Miss")) {
+						if (link_t.contains("/en/")) {
 							eventStr = "Pen Goal";
-						}else{
+						} else {
 							eventStr = "ทำประตูได้จากจุดโทษ";
-						}	
-					}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")){
+						}
+					} else if (Split_item[1].contains("ทำเข้าประตูตัวเอง")) {
 						eventStr = "ทำเข้าประตูตัวเอง";
-					}else if(Split_item[1].contains("Own Goal")){
+					} else if (Split_item[1].contains("Own Goal")) {
 						eventStr = "Own Goal";
-					}else if(Split_item[1].contains("ประตู")){
+					} else if (Split_item[1].contains("ประตู")) {
 						eventStr = "ทำประตูได้";
-					}else if(Split_item[1].contains("Goal")){
+					} else if (Split_item[1].contains("Goal")) {
 						eventStr = "Goal";
-					}else if(Split_item[1].contains("แอสซิสต์")){
+					} else if (Split_item[1].contains("แอสซิสต์")) {
 						eventStr = "จ่ายให้เพื่อนทำประตูได้";
-					}else if(Split_item[1].contains("Assist")){
+					} else if (Split_item[1].contains("Assist")) {
 						eventStr = "Assist";
-					}else if(Split_item[1].equals("เปลี่ยนตัว")){
+					} else if (Split_item[1].equals("เปลี่ยนตัว")) {
 						eventStr = "เปลี่ยนตัว";
-					}else if(Split_item[1].equals("Substitution")){
+					} else if (Split_item[1].equals("Substitution")) {
 						eventStr = "Substitution";
 					}
-					
-					Boast.makeText(mContext, eventStr, Toast.LENGTH_LONG).show();
+					JSONObject txt_Item = ListDetail.get(position);
+					Boast.makeText(mContext, eventStr, Toast.LENGTH_LONG)
+							.show();
 				}
-				
+*/
 			}
 		});
 		new Live_score_Loader().execute();
-		
-		
+
 	}
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		//this.overridePendingTransition(R.drawable.ani_in, R.drawable.ani_alpha);
+		// this.overridePendingTransition(R.drawable.ani_in,
+		// R.drawable.ani_alpha);
 	}
 
 	class ImageAdapter extends BaseAdapter {
@@ -232,114 +252,132 @@ public class Live_Score_Detail extends Activity{
 		}
 
 		public int getCount() {
-			return player_Detail.size();//+League_list.size();
+			if(ListDetail.size()==0){
+				JSONObject obJdebug = new JSONObject();
+				try {
+					obJdebug.put("NotFound", "NotFound");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ListDetail.add(obJdebug);
+			}
+			return ListDetail.size();
 		}
 
 		public Object getItem(int position) {
-			return null;//URL_News_text.get(position);
+			return null;// URL_News_text.get(position);
 		}
 
 		public long getItemId(int position) {
 			return position;
 		}
 
-		public View getView(final int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView,
+				ViewGroup parent) {
 
 			LinearLayout retval = new LinearLayout(mContext);
 			retval.setOrientation(LinearLayout.HORIZONTAL);
 			retval.setGravity(Gravity.CENTER);
 			retval.setPadding(5, 0, 5, 0);
 			retval.setMinimumHeight(50);
-			String txt_Item = player_Detail.get(position);
+			
 			int colors = Integer.parseInt("000000", 16) + (0xFF000000);
-			if(txt_Item.equals("NotFoundData")){
+
+			if (ListDetail.get(0).isNull("NotFound")) {
 				TextView txt_T = new TextView(mContext);
-				txt_T.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+				txt_T.setLayoutParams(new LinearLayout.LayoutParams(
+						LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 				txt_T.setGravity(Gravity.CENTER);
 				txt_T.setTextColor(colors);
 				txt_T.setPadding(0, 0, 10, 0);
 				txt_T.setText("ยังไม่มีข้อมูลอัพเดทในขณะนี้");
 				retval.addView(txt_T);
-			}else{
-				
+			} else {
+				try {
+				JSONObject txt_Item = ListDetail.get(position);
 				TextView txt_T = new TextView(mContext);
-				txt_T.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				//txt.setGravity(Gravity.CENTER);
+				txt_T.setLayoutParams(new LinearLayout.LayoutParams(
+						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+				// txt.setGravity(Gravity.CENTER);
 				txt_T.setTextColor(colors);
 				txt_T.setPadding(0, 0, 10, 0);
-				
+
 				TextView txt_N = new TextView(mContext);
-				txt_N.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
+				txt_N.setLayoutParams(new LinearLayout.LayoutParams(0,
+						LayoutParams.WRAP_CONTENT, 1));
 				txt_N.setTextColor(colors);
-				
+
 				ImageView img_E = new ImageView(mContext);
 				img_E.setLayoutParams(new LayoutParams(30, 30));
-
-				String Split_item[] = txt_Item.replaceAll("&quot;", "\"").split(":");
-				String NameSub[] = Split_item[2].split("//");
 				
-				txt_T.setText(Split_item[0]+"'");
-				
+				txt_T.setText(txt_Item.getString("time"));
 				retval.addView(txt_T);
-				String Event = "";
-				if(Split_item[1].contains("ใบเหลือง")
-						|| Split_item[1].contains("Yellow Card")){
-					img_E.setImageResource(R.drawable.yellow);
-				}else if(Split_item[1].contains("ใบแดง")
-						|| Split_item[1].contains("Red Card")){
-					img_E.setImageResource(R.drawable.red);
-				}else if(Split_item[1].contains("Yellow/Red")){
-					ImageView img_EY = new ImageView(mContext);
-					img_EY.setLayoutParams(new LayoutParams(30, 30));
-					img_EY.setImageResource(R.drawable.yellow);
-					retval.addView(img_EY);
-					img_E.setImageResource(R.drawable.red);
-				}else if(Split_item[1].contains("ยิงจุดโทษได้")
-						|| Split_item[1].contains("Pen SO Goal")
-						|| Split_item[1].contains("Pen SO Miss")){
-					Event = "(PG)";
-					img_E.setImageResource(R.drawable.goal);
-				}else if(Split_item[1].contains("ทำเข้าประตูตัวเอง")
-						|| Split_item[1].contains("Own Goal")){
-					Event = "(OG)";
-					img_E.setImageResource(R.drawable.goal);
-				}else if(Split_item[1].contains("ประตู")
-						|| Split_item[1].contains("Goal")){
-					Event = "(G)";
-					img_E.setImageResource(R.drawable.goal);
-				}else if(Split_item[1].contains("แอสซิสต์")
-						|| Split_item[1].contains("Assist")){
-					Event = "(A)";
-					img_E.setImageResource(R.drawable.assist);
-				}
-				
-				TextView txt_Sub = new TextView(mContext);
-				txt_Sub.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
-				txt_Sub.setTextColor(colors);
-				
-				retval.addView(img_E);
-				retval.addView(txt_N);
-				if(Split_item[1].equals("เปลี่ยนตัว")
-						|| Split_item[1].equals("Substitution")){
-					txt_N.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+				if(txt_Item.getString("eventType").equals("substitution")){
+					TextView txt_Sub = new TextView(mContext);
+					txt_Sub.setLayoutParams(new LinearLayout.LayoutParams(0,
+							LayoutParams.WRAP_CONTENT, 1));
+					txt_Sub.setTextColor(colors);
+					txt_N.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT));
 					img_E.setImageResource(R.drawable.substitution);
-					txt_N.setText(NameSub[1]);
+					txt_N.setText(txt_Item.getString("subOut"));
 					ImageView img_SubIn = new ImageView(mContext);
 					img_SubIn.setLayoutParams(new LayoutParams(30, 30));
 					img_SubIn.setImageResource(R.drawable.substitution_in);
+					
+					txt_Sub.setText(txt_Item.getString("subIn"));
+					
+					retval.addView(img_E);
+					retval.addView(txt_N);
 					retval.addView(img_SubIn);
-					txt_Sub.setText(NameSub[2]);
 					retval.addView(txt_Sub);
 				}else{
-					txt_N.setText(Event+Split_item[2]);
+					
+					String Event = "";
+					if (txt_Item.getString("eventType").contains("yellow-card")) {
+						img_E.setImageResource(R.drawable.yellow);
+					} else if (txt_Item.getString("eventType").contains("red-card")) {
+						img_E.setImageResource(R.drawable.red);
+					} else if (txt_Item.getString("eventType").contains("yellow/red-card")) {
+						ImageView img_EY = new ImageView(mContext);
+						img_EY.setLayoutParams(new LayoutParams(30, 30));
+						img_EY.setImageResource(R.drawable.yellow);
+						retval.addView(img_EY);
+						img_E.setImageResource(R.drawable.red);
+					} else if (txt_Item.getString("eventType").contains("penalty-goal")) {
+						Event = "(PG)";
+						img_E.setImageResource(R.drawable.goal);
+					} else if (txt_Item.getString("eventType").contains("own-goal")) {
+						Event = "(OG)";
+						img_E.setImageResource(R.drawable.goal);
+					} else if (txt_Item.getString("eventType").contains("goal")) {
+						Event = "(G)";
+						img_E.setImageResource(R.drawable.goal);
+					} else if (txt_Item.getString("eventType").contains("assist")) {
+						Event = "(A)";
+						img_E.setImageResource(R.drawable.assist);
+					}
+					
+					txt_N.setText(Event + txt_Item.getString("text"));
+					retval.addView(img_E);
+					retval.addView(txt_N);
+				}
+				
+				
+				
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-			
-			if(position%2==0){
+	
+			if (position % 2 == 0) {
 				retval.setBackgroundColor(Color.GRAY);
 				retval.getBackground().setAlpha(200);
 			}
-			
+
 			return retval;
 
 		}
@@ -368,23 +406,23 @@ public class Live_Score_Detail extends Activity{
 			}
 			return null;
 		}
+
 		protected void onProgressUpdate(String... progress) {
-			
+
 		}
 
 		protected void onPostExecute(String file_url) {
-			//pDialog.dismiss();
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
-					if(player_Detail.size()<=0){
+					if (player_Detail.size() <= 0) {
 						player_Detail.add("NotFoundData");
 					}
-					if(FirstLoad){
-						LinearLayout list_layout = (LinearLayout)findViewById(R.id.list_player_Detail);					
+					if (FirstLoad) {
+						LinearLayout list_layout = (LinearLayout) findViewById(R.id.list_player_Detail);
 						list_layout.removeAllViews();
 						list_layout.addView(lstView);
 						FirstLoad = false;
-					}else{
+					} else {
 						imageAdapter.notifyDataSetChanged();
 					}
 					loading = false;
@@ -392,7 +430,7 @@ public class Live_Score_Detail extends Activity{
 			});
 		}
 	}
-	
+
 	public void checkRefreshDetail() {
 		Runnable runnable = new Runnable() {
 			public void run() {
@@ -405,23 +443,30 @@ public class Live_Score_Detail extends Activity{
 						public void run() {
 							String score_ag_t = "";
 							try {
-								if (link_t.equals(getValue.getString("link").replace("/en/", "/th/") + "/play-by-play") ) {
-									if ((!Time_t.equals(getValue.getString("Time").substring(3))
-											|| !score_t.equals(getValue.getString("score").replaceAll("&nbsp;", " "))) ) {
+								if (link_t.equals(getValue.getString("link")
+										.replace("/en/", "/th/")
+										+ "/play-by-play")) {
+									if ((!Time_t.equals(getValue.getString(
+											"Time").substring(3)) || !score_t
+											.equals(getValue.getString("score")
+													.replaceAll("&nbsp;", " ")))) {
 										Time_t = getValue.getString("Time")
 												.substring(3);
 										score_t = getValue.getString("score")
 												.replaceAll("&nbsp;", " ");
 										score_ag_t = getValue
 												.getString("score_ag");
-										if (!Away_name_t.contains(ControllParameter.TeamSelect)
-												&& !Home_name_t.contains(ControllParameter.TeamSelect)) {
-											NotifyLiveScore(Home_name_t, score_t, Away_name_t, Time_t);
+										if (!Away_name_t
+												.contains(ControllParameter.TeamSelect)
+												&& !Home_name_t
+														.contains(ControllParameter.TeamSelect)) {
+											NotifyLiveScore(Home_name_t,
+													score_t, Away_name_t,
+													Time_t);
 											data.OldScore_Detail = score_t;
 											data.OldTime_Detail = Time_t;
 										}
-										
-										
+
 										Time.setText(Time_t);
 										Score.setText(score_t);
 
@@ -430,11 +475,15 @@ public class Live_Score_Detail extends Activity{
 													+ score_ag_t);
 										}
 									}
-									if(!loading
-											&&(!getValue.getString("Time").substring(3).contains("HT")
-													&&!getValue.getString("Time").substring(3).contains("FT"))){
+									if (!loading
+											&& (!getValue.getString("Time")
+													.substring(3)
+													.contains("HT") && !getValue
+													.getString("Time")
+													.substring(3)
+													.contains("FT"))) {
 										new Live_score_Loader().execute();
-									}								
+									}
 								}
 							} catch (JSONException e) {
 								e.printStackTrace();
@@ -455,102 +504,110 @@ public class Live_Score_Detail extends Activity{
 		};
 		new Thread(runnable).start();
 	}
-	
-	public void NotifyLiveScore(final String Home, final String newScore, final String Away, final String Time) {
-		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore)==null){
-			SessionManager.setSetting(mContext, SessionManager.setting_notify_livescore, "true");
+
+	public void NotifyLiveScore(final String Home, final String newScore,
+			final String Away, final String Time) {
+		if (SessionManager.getSetting(mContext,
+				SessionManager.setting_notify_livescore) == null) {
+			SessionManager.setSetting(mContext,
+					SessionManager.setting_notify_livescore, "true");
 		}
-		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
-			if(!data.OldTime_Detail.equals("FT")){
-				if(!Time.equals("FT")
-						|| !data.OldTime_Detail.equals("")){
-					if((!newScore.equals(data.OldScore_Detail) && !data.OldScore_Detail.equals(""))
-							|| (!Time.equals(data.OldTime_Detail) && ((Time.equals("HT")) || Time.equals("FT")))
+		if (SessionManager.getSetting(mContext,
+				SessionManager.setting_notify_livescore).equals("true")) {
+			if (!data.OldTime_Detail.equals("FT")) {
+				if (!Time.equals("FT") || !data.OldTime_Detail.equals("")) {
+					if ((!newScore.equals(data.OldScore_Detail) && !data.OldScore_Detail
+							.equals(""))
+							|| (!Time.equals(data.OldTime_Detail) && ((Time
+									.equals("HT")) || Time.equals("FT")))
 							|| data.OldTime_Detail.equals("")
-							|| (!Time.equals(data.OldTime_Detail) && ((data.OldTime_Detail.equals("HT")))) ){
+							|| (!Time.equals(data.OldTime_Detail) && ((data.OldTime_Detail
+									.equals("HT"))))) {
 						NotificationManager mNotifyManager = (NotificationManager) mContext
 								.getSystemService(Context.NOTIFICATION_SERVICE);
-						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
-						mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
-								.setContentText("Time: "+Time)
+						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+								mContext);
+						mBuilder.setContentTitle(
+								Home + " " + newScore + " " + Away)
+								.setContentText("Time: " + Time)
 								.setSmallIcon(R.drawable.notify_livescore)
 								.setDefaults(Notification.DEFAULT_ALL);
 						mNotifyManager.notify(0, mBuilder.build());
 					}
 				}
-				
+
 			}
-		}		
+		}
 	}
-	
+
 	public class HtmlHelper_LiveScore {
 		TagNode rootNode;
 
 		public HtmlHelper_LiveScore(URL htmlPage) throws IOException {
 			HtmlCleaner cleaner = new HtmlCleaner();
-
 			rootNode = cleaner.clean(htmlPage);
 		}
 
-		List<TagNode> getLinksByID(String CSSIDname) {
+		List<TagNode> getLinksByID(String CSSIDname) throws JSONException {
+			
 			List<TagNode> linkList = new ArrayList<TagNode>();
-			TagNode linkElements[] = rootNode.getElementsByName("div", true);
-			for (int i = 0; linkElements != null && i < linkElements.length; i++) {
-				String idName = linkElements[i].getAttributeByName("id");
-				if (idName != null && idName.contains(CSSIDname)) {
-					Log.d("TEST", "_idName::"+idName);
-					TagNode Elements_live_comments_item[] = linkElements[i].getElementsByName("div", true);
-					String outPut = "";
-					for (int j = 0; Elements_live_comments_item != null && j < Elements_live_comments_item.length; j++) {
-						String className = Elements_live_comments_item[j].getAttributeByName("class");
-						
-						if(className!=null){
-							if(className.contains("live_comments_minute")){
-								Log.d("TEST", "Value_Time::"
-								+Elements_live_comments_item[j].getElementsByName("strong", true)[0].getText().toString());
-								outPut = Elements_live_comments_item[j].getElementsByName("strong", true)[0]
-										.getText().toString().replace("&prime;", "")+":";
-							}else if(className.contains("live_comments_text")){
-								if(Elements_live_comments_item[j].getElementsByName("span", true).length>0){
-									String Value_Span = Elements_live_comments_item[j].getElementsByName("span", true)[0].getText().toString();
-									if(!Value_Span.contains("พลาดจุดโทษ")&&!Value_Span.contains("เซฟจุดโทษได้")){
-										outPut+=Value_Span+":";
-										outPut+=Elements_live_comments_item[j].getText().toString().replace(Value_Span, "").substring(1).replaceAll("  ", "//");
-										Log.d("TEST", "Value_text_Span::" + outPut);
-										player_Detail.add(outPut);
-									}
-									
-								}
+			
+			TagNode mainElement[] = rootNode.getElementsByName("ul", true);
+			for (int i = 0; mainElement != null && i < mainElement.length; i++) {
+				String AttValue = mainElement[i].getAttributeByName("class");
+				if (AttValue != null && AttValue.contains("commentaries")) {
+					TagNode liElement[] = mainElement[i].getElementsByName("li", true);
+					for(int j=0; liElement != null && j < liElement.length; j++){
+						String eAttValue = liElement[j].getAttributeByName("data-event-type");
+						if(eAttValue!=null){
+							if(!eAttValue.equals("action")){
+								JSONObject jObOut = new JSONObject();
+								jObOut.put("eventType", eAttValue);
 								
+								TagNode divElement[] = liElement[j].getElementsByName("div", true);
+								for(int k=0; divElement != null && k < divElement.length; k++){
+									AttValue = divElement[k].getAttributeByName("class");
+									if(AttValue!=null){
+										if(AttValue.equals("time")){
+											jObOut.put("time", divElement[k].getText().toString().replace("\n", ""));
+										}else if(AttValue.equals("text")){
+											if(eAttValue.equals("substitution")){
+												TagNode Outtag[] = divElement[k].getElementsByAttValue("class", "sub-out", true, true);
+												TagNode Intag[] = divElement[k].getElementsByAttValue("class", "sub-in", true, true);
+												jObOut.put("subOut", Outtag[0].getText().toString().replace("\n", ""));
+												jObOut.put("subIn", Intag[0].getText().toString().replace("\n", ""));
+											}else{
+												jObOut.put("text", divElement[k].getText().toString().replace("\n", ""));
+											}
+										}
+									}
+								}
+								Log.d("TEST", "jObOut::"+jObOut);
+								ListDetail.add(jObOut);
 							}
 							
 						}
 					}
-					
 				}
 			}
-			
 			return linkList;
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
 		data.detailPageOpenning = false;
 		data.fragement_Section_set(1);
-		overridePendingTransition(R.anim.in_trans_right_left, R.anim.out_trans_left_right);
+		overridePendingTransition(R.anim.in_trans_right_left,
+				R.anim.out_trans_left_right);
 		finish();
 	}
 	/*
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			data.fragement_Section_set(1);
-			overridePendingTransition(R.anim.in_trans_right_left, R.anim.out_trans_left_right);
-			finish();
-			return false;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-	*/
+	 * public boolean onKeyDown(int keyCode, KeyEvent event) { if (keyCode ==
+	 * KeyEvent.KEYCODE_BACK) { data.fragement_Section_set(1);
+	 * overridePendingTransition(R.anim.in_trans_right_left,
+	 * R.anim.out_trans_left_right); finish(); return false; } return
+	 * super.onKeyDown(keyCode, event); }
+	 */
 }
