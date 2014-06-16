@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -81,6 +82,12 @@ public class HilightItemsAdapter extends BaseAdapter{
 	        hilightItemView.hilightCommentImageview = (ImageView) convertView.findViewById(R.id.hilight_comment_imageView);
 	        hilightItemView.hilightCommentsTextview = (TextView) convertView.findViewById(R.id.hilight_comments_textview);
 	        hilightItemView.hilightTypeTextview = (TextView) convertView.findViewById(R.id.hilight_type_textview);
+	        
+	        AlphaAnimation alpha = new AlphaAnimation(0.8f, 0.8f);
+			alpha.setDuration(0);
+			alpha.setFillAfter(true);
+			hilightItemView.hilightTopicTextview.startAnimation(alpha);
+			hilightItemView.hilightTypeTextview.startAnimation(alpha);
 	        
 	        convertView.setTag(hilightItemView);
         }else{

@@ -41,6 +41,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
@@ -61,6 +62,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 	News_Item_Page newsItemPage;
 	
 	Map<Integer, NewsItemView> newsItemViews = new HashMap<Integer, NewsItemsAdapter.NewsItemView>();
+	private AlphaAnimation alpha;
 
 	public NewsItemsAdapter(News_Item_Page context, ProgressBar newsWaitProcessbar, List<NewsModel> newsList) {
 		this.newsItemPage = context;
@@ -68,6 +70,10 @@ public class NewsItemsAdapter extends PagerAdapter{
 		this.mNewList = newsList;
 		this.newsWaitProcessbar = newsWaitProcessbar;
 		newsWaitProcessbar.setVisibility(View.GONE);
+		
+		alpha = new AlphaAnimation(0.8f, 0.8f);
+		alpha.setDuration(0); 
+		alpha.setFillAfter(true);
 	}
 	
 	public class NewsItemView {
@@ -92,6 +98,8 @@ public class NewsItemsAdapter extends PagerAdapter{
 		
 		NewsItemView newsItemView = new NewsItemView(); 
 		newsItemView.newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
+	    newsItemView.newsTopicTextview.startAnimation(alpha);
+		
 		newsItemView.newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
 		newsItemView.newsContentWebview = (CustomWebView) convertView.findViewById(R.id.news_content_webview);
 		newsItemView.newsContentWebview.setTag("lin");
