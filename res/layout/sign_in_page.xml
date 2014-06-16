@@ -10,14 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="40dp"
-        android:background="@drawable/sport_football_pitch"
         android:orientation="vertical">
         
         <ImageView 
-        	android:src="@drawable/score"
+        	android:src="@drawable/logo_gs"
         	android:layout_width="match_parent"
         	android:layout_height="150dp"
-        	android:layout_centerInParent="true"/>
+        	android:layout_centerInParent="true"
+        	android:layout_margin="10dp"/>
         
     	<!-- <EditText 
     	    android:gravity="center"
