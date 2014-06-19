@@ -134,6 +134,7 @@
     <string name="charge">Charge</string>
     <string name="charge_cancel">Cancel</string>
     <string name="charge_ok">Charge</string>
+    <string name="stk_detail">Sticker Detail</string>
     
     <string-array name="team_list">
         <item>Arsenal</item>
