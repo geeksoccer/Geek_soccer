@@ -27,6 +27,11 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.excelente.geek_soccer.inapp_util.IabHelper;
+import com.excelente.geek_soccer.inapp_util.IabResult;
+import com.excelente.geek_soccer.inapp_util.Inventory;
+import com.excelente.geek_soccer.inapp_util.Purchase;
+import com.excelente.geek_soccer.inapp_util.SkuDetails;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.koushikdutta.ion.Ion;
 
@@ -34,6 +39,7 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -58,6 +64,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class STKShop_Page extends Activity{
@@ -75,19 +82,37 @@ public class STKShop_Page extends Activity{
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
 	ArrayList<String> STK_exist_list = new ArrayList<String>();
 	String StickJset;
+	
+	ImageView ProfileImg;
+	public static final int MAX_IMAGE = 512;
 	LinearLayout but_price;
 	TextView but_priceTxt;
 	Button but_delete;
+	ImageView coinImgDialog;
 	ProgressBar down_progress;
+	
+	private String tag;
+	private IabHelper mHelper;
+	private final String base64PublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzZbRV5geQZfh4eS3C+8JSxIJBMo9NGrzdWXVqO7w1/5s6i0BlV0+ygUzeO+uzgVRsXTv99QzISyx0UySpwYLItK3g551yRmdVm/+f8xNvBm0LRipt/HORK5sFK55lL0skIylRtBTxGbR5VbObuiGlRDQbQToQQSgu7GJBsWAs4y0CK78uHqKqD0EHzunK169kjcmNMJomM8zv/RuD/2OkfzsQn1pLDm2WP8CQJw2opDEqlabxaCcz2BBb0RgMY90JuCamPQBakI8trlf5n7PK8iMRRx1oofBfo4UzKBvDhk+K8XyZqDTGCuXCWKzzRBGg7nFgnGmak6MnCYizZGduQIDAQAB";
+	private boolean isSetup;
+	private Purchase purchaseOwned;
+	boolean blnBind;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
+		StartSetup();
+		
 		LayoutInflater factory = LayoutInflater.from(this);
 		View myView = factory.inflate(R.layout.stk_shop_layout, null);
 		setContentView(myView);
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
+		
+		ProfileImg = (ImageView)myView.findViewById(R.id.ProfileImg);
+		Bitmap bitmapPhoto = SessionManager.getImageSession(STKShop_Page.this, SessionManager.getMember(STKShop_Page.this).getPhoto());
+		ProfileImg.setImageBitmap(resizeBitMap(bitmapPhoto));
 		
 		LinearLayout Up_btn = (LinearLayout)myView.findViewById(R.id.Up_btn);
 		Up_btn.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +163,19 @@ public class STKShop_Page extends Activity{
 		
 		new stk_list_Loader().execute();
 	}
+	private Bitmap resizeBitMap(Bitmap bitmapPhoto) {
+		
+		float scale = (bitmapPhoto.getWidth()*1.0f)/(1.0f*bitmapPhoto.getHeight());
+		int width = MAX_IMAGE;
+		int height = MAX_IMAGE;
+		if(width > height){
+			height = (int) (height * scale);
+		}else{
+			width = (int) (width * scale);
+		}
+		bitmapPhoto = Bitmap.createScaledBitmap(bitmapPhoto, width, height, false);
+		return bitmapPhoto;
+	}
 	
 	public void Detail_STK_Dialog(final int position){
 		final Dialog dialog = new Dialog(mContext);
@@ -161,6 +199,7 @@ public class STKShop_Page extends Activity{
 		}); 
 		but_price = (LinearLayout)DialogV.findViewById(R.id.download);
 		but_priceTxt = (TextView)DialogV.findViewById(R.id.downloadtxt);
+		coinImgDialog = (ImageView)DialogV.findViewById(R.id.imgCoin);
 		but_delete = (Button)DialogV.findViewById(R.id.remove);
 		down_progress = (ProgressBar)DialogV.findViewById(R.id.download_progress);		
 		down_progress.setVisibility(RelativeLayout.GONE);
@@ -189,6 +228,7 @@ public class STKShop_Page extends Activity{
 			Stk_by.setTextSize(10);
 			Stk_detail.setText(STK_Item.getString("sk_detail"));
 			if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
+				coinImgDialog.setVisibility(RelativeLayout.GONE);
 				but_priceTxt.setText(" Downloaded ");
 				but_price.setEnabled(false);
 				but_priceTxt.setTextColor(Color.GREEN);
@@ -196,9 +236,10 @@ public class STKShop_Page extends Activity{
 				but_delete.setVisibility(RelativeLayout.GONE);
 				but_priceTxt.setTextColor(Color.RED);
 				if(STK_Item.getString("sk_price_set").equals("0")){
+					coinImgDialog.setVisibility(RelativeLayout.GONE);
 					but_priceTxt.setText(" Free ");
 				}else{
-					but_priceTxt.setText(" " + STK_Item.getString("sk_price_set") + " $ ");
+					but_priceTxt.setText(" " + STK_Item.getString("sk_price_set"));
 				}
 			}
 			but_price.setOnClickListener(new View.OnClickListener() {
@@ -208,8 +249,9 @@ public class STKShop_Page extends Activity{
 					try {
 						down_progress.setVisibility(RelativeLayout.ABOVE);
 						but_priceTxt.setText(" Downloading... ");
+						coinImgDialog.setVisibility(RelativeLayout.GONE);
 						but_price.setEnabled(false);
-						new stk_permission_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));
+						new stk_permission_Request().execute(STK_Item.getString("sk_bid"), String.valueOf(position));					
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -356,8 +398,17 @@ public class STKShop_Page extends Activity{
 				txt_artist_name.setText("By " + STK_Item.getString("sk_creator_name"));
 				txt_artist_name.setTextColor(colors);
 				
+				LinearLayout price_Layout = new LinearLayout(mContext);
+				price_Layout.setOrientation(LinearLayout.HORIZONTAL);
+				
 				TextView txt_price = new TextView(mContext);
 				txt_price.setTypeface(Typeface.DEFAULT_BOLD);
+				
+				price_Layout.addView(txt_price);
+				
+				Detail_Layout.addView(txt_name);
+				Detail_Layout.addView(txt_artist_name);
+				Detail_Layout.addView(price_Layout);
 				
 				if(STK_exist_list.contains(STK_Item.getString("sk_bid"))){
 					txt_price.setTextColor(Color.GREEN);
@@ -367,13 +418,14 @@ public class STKShop_Page extends Activity{
 					if(STK_Item.getString("sk_price_set").equals("0")){
 						txt_price.setText("Price: " + "Free");
 					}else{
-						txt_price.setText("Price: " + STK_Item.getString("sk_price_set") + " $");
+						txt_price.setText("Price: " + STK_Item.getString("sk_price_set"));
+						ImageView coinImg = new ImageView(mContext);
+						coinImg.setLayoutParams(new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 20), GetdipSize.dip(mContext, 20)));
+						coinImg.setImageResource(R.drawable.coin);
+						price_Layout.addView(coinImg);
 					}
 				}
 				
-				Detail_Layout.addView(txt_name);
-				Detail_Layout.addView(txt_artist_name);
-				Detail_Layout.addView(txt_price);
 				
 				LinearLayout arrow_layout = new LinearLayout(mContext);
 				arrow_layout.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1));
@@ -618,7 +670,8 @@ public class STKShop_Page extends Activity{
 									if(STK_Item.getString("sk_price_set").equals("0")){
 										but_priceTxt.setText(" Free ");
 									}else{
-										but_priceTxt.setText(" " + STK_Item.getString("sk_price_set") + " $ ");
+										coinImgDialog.setVisibility(RelativeLayout.ABOVE);
+										but_priceTxt.setText(" " + STK_Item.getString("sk_price_set"));
 									}
 									but_priceTxt.setTextColor(Color.RED);
 									but_price.setEnabled(true);
@@ -822,6 +875,165 @@ public class STKShop_Page extends Activity{
 	           e.printStackTrace();
 	     }
 	     return ""; // if text is null then return nothing
+	}
+	
+	private void StartSetup() {
+		tag = "geek_soccer";
+		
+		mHelper = new IabHelper(STKShop_Page.this, base64PublicKey);
+
+		mHelper.enableDebugLogging(true, tag);
+		try {
+			mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+				@Override
+				public void onIabSetupFinished(IabResult result) {
+					boolean blnSuccess = result.isSuccess();
+					boolean blnFail = result.isFailure();
+ 
+					isSetup = blnSuccess;
+ 
+					Log.i(tag, "mHelper.startSetup() ...");
+					Log.i(tag, "	- blnSuccess return " + String.valueOf(blnSuccess));
+					Log.i(tag, "	- blnFail return " + String.valueOf(blnFail));
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+ 
+			isSetup = false;
+			Log.w(tag, "mHelper.startSetup() - fail!");
+		}
+	}
+	
+	private void Query(final String productID){
+		if (!isSetup) return;
+		 
+		mHelper.queryInventoryAsync(new IabHelper.QueryInventoryFinishedListener() {
+			@Override
+			public void onQueryInventoryFinished(IabResult result, Inventory inv) {
+				boolean blnSuccess = result.isSuccess();
+				boolean blnFail = result.isFailure();
+
+				Log.i(tag, "mHelper.queryInventoryAsync() ...");
+				Log.i(tag, "	- blnSuccess return " + String.valueOf(blnSuccess));
+				Log.i(tag, "	- blnFail return " + String.valueOf(blnFail));
+
+				if (!blnSuccess) return;
+
+				Log.i(tag, "	- inv.hasPurchase()   = " + inv.hasPurchase(productID));
+				Log.i(tag, "	- inv.getPurchase()   = " + inv.getPurchase(productID));
+				Log.i(tag, "	- inv.hasDetails()    = " + inv.hasDetails(productID));
+				Log.i(tag, "	- inv.getSkuDetails() = " + inv.getSkuDetails(productID));
+
+				if (!inv.hasPurchase(productID)) return;
+
+				purchaseOwned = inv.getPurchase(productID);
+
+				Log.i(tag, "	- inv.getPurchase() ...");
+				Log.i(tag, "		.getDeveloperPayload() = " + purchaseOwned.getDeveloperPayload());
+				Log.i(tag, "		.getItemType()         = " + purchaseOwned.getItemType());
+				Log.i(tag, "		.getOrderId()          = " + purchaseOwned.getOrderId());
+				Log.i(tag, "		.getOriginalJson()     = " + purchaseOwned.getOriginalJson());
+				Log.i(tag, "		.getPackageName()      = " + purchaseOwned.getPackageName());
+				Log.i(tag, "		.getPurchaseState()    = " + String.valueOf(purchaseOwned.getPurchaseState()));
+				Log.i(tag, "		.getPurchaseTime()     = " + String.valueOf(purchaseOwned.getPurchaseTime()));
+				Log.i(tag, "		.getSignature()        = " + purchaseOwned.getSignature());
+				Log.i(tag, "		.getSku()              = " + purchaseOwned.getSku());
+				Log.i(tag, "		.getToken()            = " + purchaseOwned.getToken());
+
+				if (!inv.hasDetails(productID)) return;
+
+				SkuDetails skuDetails = inv.getSkuDetails(productID);
+				Log.i(tag, "	- inv.getSkuDetails() ...");
+				Log.i(tag, "		.getDescription() = " + skuDetails.getDescription());
+				Log.i(tag, "		.getPrice()       = " + skuDetails.getPrice());
+				Log.i(tag, "		.getSku()         = " + skuDetails.getSku());
+				Log.i(tag, "		.getTitle()       = " + skuDetails.getTitle());
+				Log.i(tag, "		.getType()        = " + skuDetails.getType());
+			}
+		});
+	}
+	
+	private void purChase(final String stk_ID, final String stk_position, String productID){
+		if (!isSetup) return;
+		mHelper.launchPurchaseFlow(STKShop_Page.this, productID, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
+			@Override
+			public void onIabPurchaseFinished(IabResult result, Purchase info) {
+				
+				boolean blnSuccess = result.isSuccess();
+				boolean blnFail = result.isFailure();
+
+				Log.i(tag, "mHelper.launchPurchaseFlow() - blnSuccess return " + String.valueOf(blnSuccess));
+				Log.i(tag, "mHelper.launchPurchaseFlow() - blnFail return " + String.valueOf(blnFail));
+				
+				new stk_permission_Request().execute(stk_ID, stk_position);
+				
+				if (!blnSuccess) return;
+				
+				purchaseOwned = info;
+				
+				Log.d("TEST", "purchaseOwned.getDeveloperPayload()::"+purchaseOwned.getDeveloperPayload());
+				Log.d("TEST", "purchaseOwned.getItemType()::"+purchaseOwned.getItemType());
+				Log.d("TEST", "purchaseOwned.getOrderId()::"+purchaseOwned.getOrderId());
+				Log.d("TEST", "purchaseOwned.getOriginalJson()::"+purchaseOwned.getOriginalJson());
+				Log.d("TEST", "purchaseOwned.getPackageName()::"+purchaseOwned.getPackageName());
+				Log.d("TEST", "purchaseOwned.getPurchaseState()::"+purchaseOwned.getPurchaseState());
+				Log.d("TEST", "purchaseOwned.getPurchaseTime()::"+purchaseOwned.getPurchaseTime());
+				Log.d("TEST", "purchaseOwned.getSignature()::"+purchaseOwned.getSignature());
+				Log.d("TEST", "purchaseOwned.getSku()::"+purchaseOwned.getSku());
+				Log.d("TEST", "purchaseOwned.getToken()::"+purchaseOwned.getToken());
+			}
+		},  md5Digest(productID));
+	}
+	
+	private void Consume(){
+		if (!isSetup) return;
+		if (purchaseOwned == null) return;
+
+		mHelper.consumeAsync(purchaseOwned, new IabHelper.OnConsumeFinishedListener() {
+			@Override
+			public void onConsumeFinished(Purchase purchase, IabResult result) {
+				boolean blnSuccess = result.isSuccess();
+				boolean blnFail = result.isFailure();
+				Log.i(tag, "mHelper.consumeAsync() ...");
+				Log.i(tag, "	- blnSuccess return " + String.valueOf(blnSuccess));
+				Log.i(tag, "	- blnFail return " + String.valueOf(blnFail));
+
+				if (!blnSuccess) return;
+
+				purchaseOwned = null;
+
+				Log.i(tag, "	- purchase ...");
+				Log.i(tag, "		.getDeveloperPayload() = " + purchase.getDeveloperPayload());
+				Log.i(tag, "		.getItemType()         = " + purchase.getItemType());
+				Log.i(tag, "		.getOrderId()          = " + purchase.getOrderId());
+				Log.i(tag, "		.getOriginalJson()     = " + purchase.getOriginalJson());
+				Log.i(tag, "		.getPackageName()      = " + purchase.getPackageName());
+				Log.i(tag, "		.getPurchaseState()    = " + String.valueOf(purchase.getPurchaseState()));
+				Log.i(tag, "		.getPurchaseTime()     = " + String.valueOf(purchase.getPurchaseTime()));
+				Log.i(tag, "		.getSignature()        = " + purchase.getSignature());
+				Log.i(tag, "		.getSku()              = " + purchase.getSku());
+				Log.i(tag, "		.getToken()            = " + purchase.getToken());
+			}
+		});
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (isSetup) {
+			boolean blnResult = mHelper.handleActivityResult(requestCode, resultCode, data);
+			Log.i(tag, "onActivityResult() - mHelper.handleActivityResult() = " + blnResult);
+ 
+			if (blnResult) return;
+		}
+ 
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+ 
+	@Override
+	protected void onDestroy() {
+		if (isSetup) mHelper.dispose();
+		mHelper = null;
+		super.onDestroy();
 	}
 	
 	@Override

@@ -131,6 +131,7 @@
     <string name="chat_ban">Your interactive suspended</string>
     <string name="con_lost">Connection lost</string>
     <string name="no_match">No have match today</string>
+    <string name="charge">Charge</string>
     
     <string-array name="team_list">
         <item>Arsenal</item>
