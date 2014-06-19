@@ -27,11 +27,7 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.excelente.geek_soccer.inapp_util.IabHelper;
-import com.excelente.geek_soccer.inapp_util.IabResult;
-import com.excelente.geek_soccer.inapp_util.Inventory;
-import com.excelente.geek_soccer.inapp_util.Purchase;
-import com.excelente.geek_soccer.inapp_util.SkuDetails;
+import com.excelente.geek_soccer.purchase_pack.PuchaseProcessDialog;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.koushikdutta.ion.Ion;
 
@@ -64,7 +60,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class STKShop_Page extends Activity{
@@ -91,28 +86,17 @@ public class STKShop_Page extends Activity{
 	ImageView coinImgDialog;
 	ProgressBar down_progress;
 	
-	private String tag;
-	private IabHelper mHelper;
-	private final String base64PublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzZbRV5geQZfh4eS3C+8JSxIJBMo9NGrzdWXVqO7w1/5s6i0BlV0+ygUzeO+uzgVRsXTv99QzISyx0UySpwYLItK3g551yRmdVm/+f8xNvBm0LRipt/HORK5sFK55lL0skIylRtBTxGbR5VbObuiGlRDQbQToQQSgu7GJBsWAs4y0CK78uHqKqD0EHzunK169kjcmNMJomM8zv/RuD/2OkfzsQn1pLDm2WP8CQJw2opDEqlabxaCcz2BBb0RgMY90JuCamPQBakI8trlf5n7PK8iMRRx1oofBfo4UzKBvDhk+K8XyZqDTGCuXCWKzzRBGg7nFgnGmak6MnCYizZGduQIDAQAB";
-	private boolean isSetup;
-	private Purchase purchaseOwned;
-	boolean blnBind;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
-		StartSetup();
+		PuchaseProcessDialog.StartSetup(this);
 		
 		LayoutInflater factory = LayoutInflater.from(this);
 		View myView = factory.inflate(R.layout.stk_shop_layout, null);
 		setContentView(myView);
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
-		
-		ProfileImg = (ImageView)myView.findViewById(R.id.ProfileImg);
-		Bitmap bitmapPhoto = SessionManager.getImageSession(STKShop_Page.this, SessionManager.getMember(STKShop_Page.this).getPhoto());
-		ProfileImg.setImageBitmap(resizeBitMap(bitmapPhoto));
 		
 		LinearLayout Up_btn = (LinearLayout)myView.findViewById(R.id.Up_btn);
 		Up_btn.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +126,19 @@ public class STKShop_Page extends Activity{
 			}
 			
 		}
+		
+		ProfileImg = (ImageView)myView.findViewById(R.id.ProfileImg);
+		Bitmap bitmapPhoto = SessionManager.getImageSession(STKShop_Page.this, SessionManager.getMember(STKShop_Page.this).getPhoto());
+		ProfileImg.setImageBitmap(resizeBitMap(bitmapPhoto));
+		
+		Button CoinChargeBtn = (Button)myView.findViewById(R.id.CoinCharge);
+		CoinChargeBtn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				PuchaseProcessDialog.BuyCoinsDialog(mContext);
+			}
+		});
 		
 		lstView = new ListView(mContext);
 		lstView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -877,151 +874,12 @@ public class STKShop_Page extends Activity{
 	     return ""; // if text is null then return nothing
 	}
 	
-	private void StartSetup() {
-		tag = "geek_soccer";
-		
-		mHelper = new IabHelper(STKShop_Page.this, base64PublicKey);
-
-		mHelper.enableDebugLogging(true, tag);
-		try {
-			mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-				@Override
-				public void onIabSetupFinished(IabResult result) {
-					boolean blnSuccess = result.isSuccess();
-					boolean blnFail = result.isFailure();
- 
-					isSetup = blnSuccess;
- 
-					Log.i(tag, "mHelper.startSetup() ...");
-					Log.i(tag, "	- blnSuccess return " + String.valueOf(blnSuccess));
-					Log.i(tag, "	- blnFail return " + String.valueOf(blnFail));
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
- 
-			isSetup = false;
-			Log.w(tag, "mHelper.startSetup() - fail!");
-		}
-	}
 	
-	private void Query(final String productID){
-		if (!isSetup) return;
-		 
-		mHelper.queryInventoryAsync(new IabHelper.QueryInventoryFinishedListener() {
-			@Override
-			public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-				boolean blnSuccess = result.isSuccess();
-				boolean blnFail = result.isFailure();
-
-				Log.i(tag, "mHelper.queryInventoryAsync() ...");
-				Log.i(tag, "	- blnSuccess return " + String.valueOf(blnSuccess));
-				Log.i(tag, "	- blnFail return " + String.valueOf(blnFail));
-
-				if (!blnSuccess) return;
-
-				Log.i(tag, "	- inv.hasPurchase()   = " + inv.hasPurchase(productID));
-				Log.i(tag, "	- inv.getPurchase()   = " + inv.getPurchase(productID));
-				Log.i(tag, "	- inv.hasDetails()    = " + inv.hasDetails(productID));
-				Log.i(tag, "	- inv.getSkuDetails() = " + inv.getSkuDetails(productID));
-
-				if (!inv.hasPurchase(productID)) return;
-
-				purchaseOwned = inv.getPurchase(productID);
-
-				Log.i(tag, "	- inv.getPurchase() ...");
-				Log.i(tag, "		.getDeveloperPayload() = " + purchaseOwned.getDeveloperPayload());
-				Log.i(tag, "		.getItemType()         = " + purchaseOwned.getItemType());
-				Log.i(tag, "		.getOrderId()          = " + purchaseOwned.getOrderId());
-				Log.i(tag, "		.getOriginalJson()     = " + purchaseOwned.getOriginalJson());
-				Log.i(tag, "		.getPackageName()      = " + purchaseOwned.getPackageName());
-				Log.i(tag, "		.getPurchaseState()    = " + String.valueOf(purchaseOwned.getPurchaseState()));
-				Log.i(tag, "		.getPurchaseTime()     = " + String.valueOf(purchaseOwned.getPurchaseTime()));
-				Log.i(tag, "		.getSignature()        = " + purchaseOwned.getSignature());
-				Log.i(tag, "		.getSku()              = " + purchaseOwned.getSku());
-				Log.i(tag, "		.getToken()            = " + purchaseOwned.getToken());
-
-				if (!inv.hasDetails(productID)) return;
-
-				SkuDetails skuDetails = inv.getSkuDetails(productID);
-				Log.i(tag, "	- inv.getSkuDetails() ...");
-				Log.i(tag, "		.getDescription() = " + skuDetails.getDescription());
-				Log.i(tag, "		.getPrice()       = " + skuDetails.getPrice());
-				Log.i(tag, "		.getSku()         = " + skuDetails.getSku());
-				Log.i(tag, "		.getTitle()       = " + skuDetails.getTitle());
-				Log.i(tag, "		.getType()        = " + skuDetails.getType());
-			}
-		});
-	}
-	
-	private void purChase(final String stk_ID, final String stk_position, String productID){
-		if (!isSetup) return;
-		mHelper.launchPurchaseFlow(STKShop_Page.this, productID, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
-			@Override
-			public void onIabPurchaseFinished(IabResult result, Purchase info) {
-				
-				boolean blnSuccess = result.isSuccess();
-				boolean blnFail = result.isFailure();
-
-				Log.i(tag, "mHelper.launchPurchaseFlow() - blnSuccess return " + String.valueOf(blnSuccess));
-				Log.i(tag, "mHelper.launchPurchaseFlow() - blnFail return " + String.valueOf(blnFail));
-				
-				new stk_permission_Request().execute(stk_ID, stk_position);
-				
-				if (!blnSuccess) return;
-				
-				purchaseOwned = info;
-				
-				Log.d("TEST", "purchaseOwned.getDeveloperPayload()::"+purchaseOwned.getDeveloperPayload());
-				Log.d("TEST", "purchaseOwned.getItemType()::"+purchaseOwned.getItemType());
-				Log.d("TEST", "purchaseOwned.getOrderId()::"+purchaseOwned.getOrderId());
-				Log.d("TEST", "purchaseOwned.getOriginalJson()::"+purchaseOwned.getOriginalJson());
-				Log.d("TEST", "purchaseOwned.getPackageName()::"+purchaseOwned.getPackageName());
-				Log.d("TEST", "purchaseOwned.getPurchaseState()::"+purchaseOwned.getPurchaseState());
-				Log.d("TEST", "purchaseOwned.getPurchaseTime()::"+purchaseOwned.getPurchaseTime());
-				Log.d("TEST", "purchaseOwned.getSignature()::"+purchaseOwned.getSignature());
-				Log.d("TEST", "purchaseOwned.getSku()::"+purchaseOwned.getSku());
-				Log.d("TEST", "purchaseOwned.getToken()::"+purchaseOwned.getToken());
-			}
-		},  md5Digest(productID));
-	}
-	
-	private void Consume(){
-		if (!isSetup) return;
-		if (purchaseOwned == null) return;
-
-		mHelper.consumeAsync(purchaseOwned, new IabHelper.OnConsumeFinishedListener() {
-			@Override
-			public void onConsumeFinished(Purchase purchase, IabResult result) {
-				boolean blnSuccess = result.isSuccess();
-				boolean blnFail = result.isFailure();
-				Log.i(tag, "mHelper.consumeAsync() ...");
-				Log.i(tag, "	- blnSuccess return " + String.valueOf(blnSuccess));
-				Log.i(tag, "	- blnFail return " + String.valueOf(blnFail));
-
-				if (!blnSuccess) return;
-
-				purchaseOwned = null;
-
-				Log.i(tag, "	- purchase ...");
-				Log.i(tag, "		.getDeveloperPayload() = " + purchase.getDeveloperPayload());
-				Log.i(tag, "		.getItemType()         = " + purchase.getItemType());
-				Log.i(tag, "		.getOrderId()          = " + purchase.getOrderId());
-				Log.i(tag, "		.getOriginalJson()     = " + purchase.getOriginalJson());
-				Log.i(tag, "		.getPackageName()      = " + purchase.getPackageName());
-				Log.i(tag, "		.getPurchaseState()    = " + String.valueOf(purchase.getPurchaseState()));
-				Log.i(tag, "		.getPurchaseTime()     = " + String.valueOf(purchase.getPurchaseTime()));
-				Log.i(tag, "		.getSignature()        = " + purchase.getSignature());
-				Log.i(tag, "		.getSku()              = " + purchase.getSku());
-				Log.i(tag, "		.getToken()            = " + purchase.getToken());
-			}
-		});
-	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (isSetup) {
-			boolean blnResult = mHelper.handleActivityResult(requestCode, resultCode, data);
-			Log.i(tag, "onActivityResult() - mHelper.handleActivityResult() = " + blnResult);
+		if (PuchaseProcessDialog.isSetup) {
+			boolean blnResult = PuchaseProcessDialog.mHelper.handleActivityResult(requestCode, resultCode, data);
+			Log.i(PuchaseProcessDialog.tag, "onActivityResult() - mHelper.handleActivityResult() = " + blnResult);
  
 			if (blnResult) return;
 		}
@@ -1031,8 +889,8 @@ public class STKShop_Page extends Activity{
  
 	@Override
 	protected void onDestroy() {
-		if (isSetup) mHelper.dispose();
-		mHelper = null;
+		if (PuchaseProcessDialog.isSetup) PuchaseProcessDialog.mHelper.dispose();
+		PuchaseProcessDialog.mHelper = null;
 		super.onDestroy();
 	}
 	

@@ -122,7 +122,9 @@
     <string name="chat_ban">คุณถูกระงับการโต้ตอบ</string>
     <string name="con_lost">การเชื่อมต่อล้มเหลว</string>
     <string name="no_match">วันนี้ไม่มีรายการแข่งขัน</string>
-    <string name="no_match">เติมเงิน</string>
+    <string name="charge">เติมเงิน</string>
+    <string name="charge_cancel">ยกเลิก</string>
+    <string name="charge_ok">ตกลง</string>
     
     <string-array name="team_list">
         <item>อาเซน่อล</item>
