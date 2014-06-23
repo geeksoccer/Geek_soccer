@@ -74,14 +74,16 @@
             android:background="@drawable/bg_press"
             android:textStyle="bold"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:visibility="gone" />
         
         <View 
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/gray"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"/>
+            android:layout_marginRight="5dp"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/Setting"
