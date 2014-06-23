@@ -814,7 +814,7 @@ public class Chat_All extends Activity {
 										LayoutParams.WRAP_CONTENT,
 										LayoutParams.WRAP_CONTENT));
 						txt_TeamMate.setTypeface(Typeface.DEFAULT_BOLD);
-						txt_TeamMate.setText("(ARS)");
+						txt_TeamMate.setText("");
 						name_layout.addView(txt_TeamMate);
 
 						retval.setGravity(Gravity.LEFT

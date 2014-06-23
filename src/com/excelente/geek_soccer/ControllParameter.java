@@ -57,7 +57,7 @@ public class ControllParameter {
 	ArrayList<String> Match_list_Sub_display = new ArrayList<String>();
     ArrayList<String> item_Type_list = new ArrayList<String>();
     ArrayList<JSONObject> Match_list_y_JSON = new ArrayList<JSONObject>();
-    ArrayList<JSONObject> Match_list_c_JSON = new ArrayList<JSONObject>();
+    public ArrayList<JSONObject> Match_list_c_JSON = new ArrayList<JSONObject>();
     ArrayList<JSONObject> Match_list_t_JSON = new ArrayList<JSONObject>();
 	ArrayList<String> Match_list_Sub = new ArrayList<String>();
 	HashMap<String, String> League_Map = new HashMap<String, String>();
@@ -77,25 +77,25 @@ public class ControllParameter {
 	String ID_Send;
 	String ProFile_pic;
 	String Name_Send;
-	String OldScore = "";
-	String OldTime = "";
+	public String OldScore = "";
+	public String OldTime = "";
 	String OldScore_Detail = "";
 	String OldTime_Detail = "";
-	static String TeamSelect = "";
+	public static String TeamSelect = "";
 	static int Laugage_Select = 0;
 	public static Boolean BanStatus = true;
 	
 	Boolean app_Status=true;
 	Boolean chat_on_All = false;
 	Boolean chat_on_Team = false;
-	Boolean liveScore_on = null;
-	Boolean liveScore_ChkHavePlaying = false;
+	public Boolean liveScore_on = null;
+	public Boolean liveScore_ChkHavePlaying = false;
 	Boolean detailPageOpenning = false;
 	int liveScore_Cur = 1;
 	int chat_Cur = 0;
 	SocketIO socket_All = null;
 	SocketIO socket_Team = null;
-	SocketIO socket_LiveScore = null;
+	public SocketIO socket_LiveScore = null;
 	
 	
 	ArrayList<JSONObject> Chat_Item_list_Team = new ArrayList<JSONObject>();

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -413,11 +414,7 @@ public class LiveScore_Today extends Activity {
 							String Time = "";//json_dt.getString("tp");
 							
 							if(json_dt.getString("ty").equals("playing")){
-								if(json_dt.getString("pr").equals("ht")){
-									Time = "HT";
-								}else{
-									Time = json_dt.getString("tc")+"'";
-								}
+								Time = json_dt.getString("pr");
 							}else if(json_dt.getString("ty").equals("played")){
 								Time = "FT";
 							}else if(json_dt.getString("ty").equals("postponed")){
@@ -457,9 +454,9 @@ public class LiveScore_Today extends Activity {
 								j_data.put("stat", stat);
 								j_data.put("Home", Home);
 								j_data.put("score", score);
-								NotifyLiveScore(Home, score, away, Time);
-								data.OldScore = score;
-								data.OldTime = Time;
+								//NotifyLiveScore(Home, score, away, Time);
+								//data.OldScore = score;
+								//data.OldTime = Time;
 								j_data.put("Away", away);
 								j_data.put("Home_img", Home_img);
 								j_data.put("Away_img", away_img);
@@ -631,11 +628,7 @@ public class LiveScore_Today extends Activity {
 											String Time = "";//json_dt.getString("tp");
 											
 											if(json_dt.getString("ty").equals("playing")){
-												if(json_dt.getString("pr").equals("ht")){
-													Time = "HT";
-												}else{
-													Time = json_dt.getString("tc")+"'";
-												}
+												Time = json_dt.getString("pr");
 											}else if(json_dt.getString("ty").equals("played")){
 												Time = "FT";
 											}else if(json_dt.getString("ty").equals("postponed")){
@@ -675,9 +668,9 @@ public class LiveScore_Today extends Activity {
 												j_data.put("stat", stat);
 												j_data.put("Home", Home);
 												j_data.put("score", score);
-												NotifyLiveScore(Home, score, away, Time);
-												data.OldScore = score;
-												data.OldTime = Time;
+												//NotifyLiveScore(Home, score, away, Time);
+												//data.OldScore = score;
+												//data.OldTime = Time;
 												j_data.put("Away", away);
 												j_data.put("Home_img", Home_img);
 												j_data.put("Away_img", away_img);

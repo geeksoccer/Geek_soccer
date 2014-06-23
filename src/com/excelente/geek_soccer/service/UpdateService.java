@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.Sign_In_Page;
+import com.excelente.geek_soccer.livescore_noty.LiveScore_Noty;
 import com.excelente.geek_soccer.model.HilightModel;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.NewsModel;
@@ -54,6 +55,7 @@ public class UpdateService extends Service{
 			if(SessionManager.hasMember(getApplication()))
 				runUpdateNews(SessionManager.getMember(getApplication()));
 		}
+		LiveScore_Noty.StartLiveScoreChk(this);
 		return Service.START_STICKY;
 	}
 

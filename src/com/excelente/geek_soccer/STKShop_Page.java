@@ -132,6 +132,7 @@ public class STKShop_Page extends Activity{
 		ProfileImg.setImageBitmap(resizeBitMap(bitmapPhoto));
 		
 		Button CoinChargeBtn = (Button)myView.findViewById(R.id.CoinCharge);
+		CoinChargeBtn.setVisibility(RelativeLayout.GONE);
 		CoinChargeBtn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

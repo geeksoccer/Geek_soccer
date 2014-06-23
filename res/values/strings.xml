@@ -7,6 +7,9 @@
 
     <string name="sign_in_gmail">Sign In with Gmail</string>
     
+    <string name="net_wifi">Wifi enabled</string>
+    <string name="net_mobile">3G enabled</string>
+    
     <string name="video_title_error">Sorry, this video can not be played.</string>
     <string name="video_message_error">There are a problem while playing.</string>
     <string name="ok">OK</string>
