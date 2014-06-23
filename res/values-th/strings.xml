@@ -125,6 +125,7 @@
     <string name="charge">เติมเงิน</string>
     <string name="charge_cancel">ยกเลิก</string>
     <string name="charge_ok">ตกลง</string>
+    <string name="stk_detail">รายละเอียดสติ๊กเกอร์</string>
     
     <string-array name="team_list">
         <item>อาเซน่อล</item>
