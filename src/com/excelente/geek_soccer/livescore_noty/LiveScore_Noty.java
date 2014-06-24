@@ -6,14 +6,11 @@ import io.socket.SocketIO;
 import io.socket.SocketIOException;
 
 import java.net.MalformedURLException;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -111,10 +108,7 @@ public class LiveScore_Noty {
 										for(int j=0; j<json_dtArr.length(); j++){
 											JSONObject json_dt = json_dtArr.getJSONObject(j);
 											String Home  = json_dt.getString("ht");
-											String Home_img  = json_dt.getString("hl");
 											String away  = json_dt.getString("at");
-											String away_img  = json_dt.getString("al");
-											String link = json_dt.getString("lk");
 											String Time = "";//json_dt.getString("tp");
 											
 											if(json_dt.getString("ty").equals("playing")){
@@ -128,8 +122,7 @@ public class LiveScore_Noty {
 											}else{
 												Time = json_dt.getString("tp");
 											}
-											
-											String stat = "[no]";
+
 											String score = json_dt.getString("sc");
 											String score_ag = json_dt.getString("ag");
 											if(score.equals("")){
@@ -150,39 +143,10 @@ public class LiveScore_Noty {
 											}
 											if (away.contains(ControllParameter.TeamSelect)
 													|| Home.contains(ControllParameter.TeamSelect)) {
-												data.Match_list_c_JSON.add(new JSONObject().put("League"
-														, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
-												JSONObject j_data = new JSONObject();
-												j_data.put("League", "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
-												j_data.put("Time", "[0]" + Time);
-												j_data.put("stat", stat);
-												j_data.put("Home", Home);
-												j_data.put("score", score);
 												NotifyLiveScore(mContext, Home, score, away, Time);
 												data.OldScore = score;
 												data.OldTime = Time;
-												j_data.put("Away", away);
-												j_data.put("Home_img", Home_img);
-												j_data.put("Away_img", away_img);
-												j_data.put("link", link);
-												j_data.put("score_ag", score_ag);
-												data.Match_list_c_JSON.add(j_data);
 											}
-											if(!Time.contains("FT")){
-												data.liveScore_ChkHavePlaying = true;
-											}
-											JSONObject j_data = new JSONObject();
-											j_data.put("League", League);
-											j_data.put("Time", "[1]" + Time);
-											j_data.put("stat", stat);
-											j_data.put("Home", Home);
-											j_data.put("score", score);
-											j_data.put("Away", away);
-											j_data.put("Home_img", Home_img);
-											j_data.put("Away_img", away_img);
-											j_data.put("link", link);
-											j_data.put("score_ag", score_ag);
-											data.Match_list_c_JSON.add(j_data);
 										}
 									}
 								} catch (JSONException e) {
@@ -191,21 +155,6 @@ public class LiveScore_Noty {
 								}
 								
 							}
-		            		Collections.sort(data.Match_list_c_JSON, new Comparator<JSONObject>() {
-								@Override
-								public int compare(JSONObject s1, JSONObject s2) {
-									try {
-										return s1.getString("League").compareToIgnoreCase(s2.getString("League"));
-									} catch (JSONException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									return 0;
-								}
-							});
-		            		if(data.liveScore_ChkHavePlaying){
-		            			data.liveScore_ChkHavePlaying = false;
-		            		}
 		                }
 		            }
 		        });
@@ -224,23 +173,48 @@ public class LiveScore_Noty {
 			ControllParameter data = ControllParameter.getInstance(mContext);
 			if(!data.OldTime.equals("FT")){
 				if(!Time.equals("FT")
-						|| !data.OldTime.equals("")){
+						|| !data.OldTime.equals("")){				
+					Boolean ChkNotyB15B = ChkNotyB15(Time);
 					if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
 							|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
 							|| data.OldTime.equals("")
-							|| (!Time.equals(data.OldTime) && ((data.OldTime.equals("HT")))) ){
+							|| (!Time.equals(data.OldTime) && ((data.OldTime.equals("HT")))) 
+							|| ChkNotyB15B){
+						String msg = "Time: "+Time;
+						if(ChkNotyB15B){
+							msg = mContext.getResources().getString(R.string.alert_match_nearby);
+						}
 						NotificationManager mNotifyManager = (NotificationManager) mContext
 								.getSystemService(Context.NOTIFICATION_SERVICE);
 						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
 						mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
-								.setContentText("Time: "+Time)
+								.setContentText(msg)
 								.setSmallIcon(R.drawable.notify_livescore)
 								.setDefaults(Notification.DEFAULT_ALL);
-						mNotifyManager.notify(0, mBuilder.build());
+						mNotifyManager.notify(46, mBuilder.build());
 					}
 				}
 				
 			}
 		}		
+	}
+	
+	public static Boolean ChkNotyB15(String Time){
+		if(Time.contains(":")){
+			Calendar c = Calendar.getInstance();
+			int hour = c.get(Calendar.HOUR_OF_DAY);
+			int minute = c.get(Calendar.MINUTE);
+			int minuteConclude = (hour*60)+minute;
+			String timeArr[] = Time.split(":");
+			int hourMatch = Integer.parseInt(timeArr[0]);
+			int minuteMatch = Integer.parseInt(timeArr[1]);
+			int minuteConcludeMatch = (hourMatch*60)+minuteMatch;
+			if(minuteConcludeMatch-minuteConclude==15){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		return false;
 	}
 }

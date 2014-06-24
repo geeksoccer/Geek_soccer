@@ -138,6 +138,7 @@
     <string name="charge_cancel">Cancel</string>
     <string name="charge_ok">Charge</string>
     <string name="stk_detail">Sticker Detail</string>
+    <string name="alert_match_nearby">The game will begin in 15 minutes.</string>
     
     <string-array name="team_list">
         <item>Arsenal</item>
