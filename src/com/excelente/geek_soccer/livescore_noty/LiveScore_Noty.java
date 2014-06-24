@@ -13,15 +13,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
+import com.excelente.geek_soccer.Sign_In_Page;
 
 public class LiveScore_Noty {
+	
+	
 	
 	public static void StartLiveScoreChk(Context mContext){
 		ControllParameter data = ControllParameter.getInstance(mContext);
@@ -184,12 +189,17 @@ public class LiveScore_Noty {
 						if(ChkNotyB15B){
 							msg = mContext.getResources().getString(R.string.alert_match_nearby);
 						}
+						Intent nextToMain = new Intent(mContext, Sign_In_Page.class);
+						nextToMain.putExtra("NOTIFY_INTENT", 4600);
+						PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, nextToMain, 0);
 						NotificationManager mNotifyManager = (NotificationManager) mContext
 								.getSystemService(Context.NOTIFICATION_SERVICE);
 						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
 						mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
 								.setContentText(msg)
 								.setSmallIcon(R.drawable.notify_livescore)
+								.setContentIntent(pIntent)
+								.setAutoCancel(true)
 								.setDefaults(Notification.DEFAULT_ALL);
 						mNotifyManager.notify(46, mBuilder.build());
 					}

@@ -102,6 +102,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			Page_Select(0, true);
 		}else if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 2000){
 			Page_Select(4, true);
+		}else if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 4600){
+			Page_Select(1, true);
 		}
 	}
 
