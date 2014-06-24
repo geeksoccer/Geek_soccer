@@ -52,10 +52,10 @@ public class UpdateService extends Service{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if(newsTask == null){
+			LiveScore_Noty.StartLiveScoreChk(this);
 			if(SessionManager.hasMember(getApplication()))
 				runUpdateNews(SessionManager.getMember(getApplication()));
 		}
-		LiveScore_Noty.StartLiveScoreChk(this);
 		return Service.START_STICKY;
 	}
 
