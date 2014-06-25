@@ -27,6 +27,7 @@ public class SessionManager {
 	public final static String setting_notify_livescore = "setting_notify_livescore";
 	public final static String setting_ask_rateapp = "setting_countdown_rateapp";
 	public final static String setting_count_use = "setting_count_use";
+	public final static String setting_save_mode = "setting_save_mode";
 	
 	public final static String MEMBER_SHAREPREFERENCE = "MEMBER_SHAREPREFERENCE";
 	public final static String FAV_TEAM_KEY = "FAV_TEAM_KEY";

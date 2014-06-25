@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.NewsModel; 
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -33,6 +34,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
@@ -95,13 +97,14 @@ public class NewsAdapter extends BaseAdapter{
         TextView newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
         final ProgressBar newsImageProgressBar = (ProgressBar) convertView.findViewById(R.id.news_image_processbar);
         ImageView newsNewImageview = (ImageView) convertView.findViewById(R.id.news_new);
+        final TextView saveModeTextview = (TextView) convertView.findViewById(R.id.save_mode);
         
         final File cacheFile = ImageLoader.getInstance().getDiscCache().get(newsModel.getNewsImage().replace(".gif", ".png"));
         if(cacheFile.isFile()){
         	new Thread(new Runnable() {
 				
 				@Override
-				public void run() {
+				public void run() { 
 					final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getPath());
 					
 					context.runOnUiThread(new Runnable() {
@@ -113,33 +116,25 @@ public class NewsAdapter extends BaseAdapter{
 					});
 				}
 			}).start();
-        	
-        }else{
-        	try{
-			    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
-					
-			    	public void onLoadingStarted(String imageUri, View view) {
-		           	};
-		           	
-		           	@Override
-		           	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
-		           	}
-		           	
-		           	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-		           	}
-	
-					@Override
-					public void onLoadingCancelled(String imageUri, View view) {
-					};
-				});
-        	}catch(Exception e){
-        		newsImageImageview.setVisibility(View.VISIBLE);
+        	saveModeTextview.setVisibility(View.GONE);
+        }else{ 
+        	String saveMode = SessionManager.getSetting(context, SessionManager.setting_save_mode);
+        	if(saveMode == null || saveMode.equals("false") || saveMode.equals("null")){
+	        	doloadImage(newsModel, newsImageImageview, newsImageProgressBar , saveModeTextview);
+        	}else{
+        		saveModeTextview.setVisibility(View.VISIBLE);
         		newsImageProgressBar.setVisibility(View.GONE);
-        	}finally{
-        		newsImageImageview.setVisibility(View.VISIBLE);
-        		newsImageProgressBar.setVisibility(View.GONE);
+        		newsImageImageview.setVisibility(View.GONE);
         	}
         }
+        
+        saveModeTextview.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				doloadImage(newsModel, newsImageImageview, newsImageProgressBar , saveModeTextview);
+			}
+		});
         
         newsTopicTextview.setText(newsModel.getNewsTopic());
 		newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(context, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime())));
@@ -159,6 +154,35 @@ public class NewsAdapter extends BaseAdapter{
         
 	}
 	
+	private void doloadImage(NewsModel newsModel, ImageView newsImageImageview, ProgressBar newsImageProgressBar, TextView saveModeTextview) { 
+		try{ 
+		    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
+				 
+		    	public void onLoadingStarted(String imageUri, View view) {
+	           	};
+	           	
+	           	@Override
+	           	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
+	           	}
+	           	
+	           	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+	           	}
+
+				@Override
+				public void onLoadingCancelled(String imageUri, View view) {
+				};
+			});
+    	}catch(Exception e){
+    		newsImageImageview.setVisibility(View.VISIBLE);
+    		newsImageProgressBar.setVisibility(View.GONE);
+    		saveModeTextview.setVisibility(View.GONE);
+    	}finally{
+    		newsImageImageview.setVisibility(View.VISIBLE);
+    		newsImageProgressBar.setVisibility(View.GONE);
+    		saveModeTextview.setVisibility(View.GONE);
+    	}
+	}
+
 	private void doConfigImageLoader(int w, int h) {
 		
 		File cacheDir = StorageUtils.getCacheDirectory(context);

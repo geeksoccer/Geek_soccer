@@ -8,6 +8,7 @@ import java.util.Vector;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.utils.DialogUtil;
+import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.os.Bundle;
@@ -68,8 +69,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			finish();
 		}
 		
+		mContext = this;
 		data = ControllParameter.getInstance(this);
 		vidateAskRateApp();
+		askMode(); 
 		
 		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(MainActivity.this).getTeamId());
 		
@@ -78,7 +81,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		startService(serviceIntent);
 		
 		setContentView(R.layout.main);
-		mContext = this;
 		this.intialiseViewPager();
 		
 		//------------Ched: ทำไว้เพื่อ ทดลองกด ดูข่าวทีมอื่นจากเมนู  (For View News Anyone)-----------------------------
@@ -102,6 +104,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	    setPageFromNotification();
 	}
 	
+	private void askMode() {
+		if(NetworkUtils.getConnectivityStatus(mContext) == NetworkUtils.TYPE_MOBILE){
+			DialogUtil.showSaveModeAppDialog(mContext);
+		}
+	}
+
 	private void vidateAskRateApp() {
 		String askRate = SessionManager.getSetting(mContext, SessionManager.setting_ask_rateapp);
 		if(askRate == null || askRate.equals("null")){

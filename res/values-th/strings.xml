@@ -9,6 +9,10 @@
     <string name="net_wifi">Wifi เปิดใช้งานแล้ว</string>
     <string name="net_mobile">3G เปิดใช้งานแล้ว</string>
     
+    <string name="show_photo">ดู</string>
+    <string name="save_mode_title">โหมดประหยัดเครือข่ายมือถือ</string>
+    <string name="save_mode_question">ตอนนี้คุณใช้เครือข่ายมือถือ \n เราขอแนะนำให้คุณใช้โหมดประหยัดเครือข่ายมือถือ\n จะช่วยลดการดาวน์โหลดข้อมูล\n คุณต้องการใช็โหมดประหยัดเครือข่ายมือถือ หรือไม่</string>
+    
     <string name="video_title_error">วิดีโอนี้ไม่สามารถเล่นได้</string>
     <string name="video_message_error">มีปัญหาขณะเล่น</string>
     <string name="ok">ตกลง</string>
