@@ -33,8 +33,6 @@ import org.json.JSONObject;
 
 import com.excelente.geek_soccer.R;
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -45,7 +43,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -440,9 +437,6 @@ public class LiveScore_Today extends Activity {
 								j_data.put("stat", stat);
 								j_data.put("Home", Home);
 								j_data.put("score", score);
-								//NotifyLiveScore(Home, score, away, Time);
-								//data.OldScore = score;
-								//data.OldTime = Time;
 								j_data.put("Away", away);
 								j_data.put("Home_img", Home_img);
 								j_data.put("Away_img", away_img);
@@ -657,9 +651,6 @@ public class LiveScore_Today extends Activity {
 												j_data.put("stat", stat);
 												j_data.put("Home", Home);
 												j_data.put("score", score);
-												//NotifyLiveScore(Home, score, away, Time);
-												//data.OldScore = score;
-												//data.OldTime = Time;
 												j_data.put("Away", away);
 												j_data.put("Home_img", Home_img);
 												j_data.put("Away_img", away_img);
@@ -725,33 +716,6 @@ public class LiveScore_Today extends Activity {
 		};
 
 		new Thread(runnable).start();
-	}
-	
-	public void NotifyLiveScore(final String Home, final String newScore, final String Away, final String Time) {
-		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore)==null){
-			SessionManager.setSetting(mContext, SessionManager.setting_notify_livescore, "true");
-		}
-		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
-			if(!data.OldTime.equals("FT")){
-				if(!Time.equals("FT")
-						|| !data.OldTime.equals("")){
-					if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
-							|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
-							|| data.OldTime.equals("")
-							|| (!Time.equals(data.OldTime) && ((data.OldTime.equals("HT")))) ){
-						NotificationManager mNotifyManager = (NotificationManager) mContext
-								.getSystemService(Context.NOTIFICATION_SERVICE);
-						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
-						mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
-								.setContentText("Time: "+Time)
-								.setSmallIcon(R.drawable.notify_livescore)
-								.setDefaults(Notification.DEFAULT_ALL);
-						mNotifyManager.notify(0, mBuilder.build());
-					}
-				}
-				
-			}
-		}		
 	}
 	
 	public static Bitmap loadImageFromUrl(String url) {

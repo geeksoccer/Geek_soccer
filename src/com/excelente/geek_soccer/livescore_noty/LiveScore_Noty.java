@@ -150,9 +150,9 @@ public class LiveScore_Noty {
 											if (SessionManager.chkFavContain(mContext, id)
 													||away.contains(ControllParameter.TeamSelect)
 													|| Home.contains(ControllParameter.TeamSelect)) {
-												NotifyLiveScore(mContext, Home, score, away, Time);
-												data.OldScore = score;
-												data.OldTime = Time;
+												NotifyLiveScore(mContext, id, Home, score, away, Time);
+												data.OldScoreH.put(id, score);
+												data.OldTimeH.put(id, Time);
 											}
 										}
 									}
@@ -172,22 +172,23 @@ public class LiveScore_Noty {
 		new Thread(runnable).start();
 	}
 	
-	public static void NotifyLiveScore(Context mContext, final String Home, final String newScore, final String Away, final String Time) {
+	public static void NotifyLiveScore(Context mContext, String id, final String Home, final String newScore, final String Away, final String Time) {
 		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore)==null){
 			SessionManager.setSetting(mContext, SessionManager.setting_notify_livescore, "true");
 		}
-		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
-			ControllParameter data = ControllParameter.getInstance(mContext);
-			if(!data.OldTime.equals("FT") && !data.OldTime.equals("")){
+		ControllParameter data = ControllParameter.getInstance(mContext);
+		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")
+				&& data.OldTimeH.get(id)!=null){
+			if(!data.OldTimeH.get(id).equals("FT")){
 				if(!Time.equals("FT")
-						|| !data.OldTime.equals("")){
+						|| !data.OldTimeH.get(id).equals("")){
 					Calendar c_t = Calendar.getInstance();
 					Boolean ChkNotyB15B = ChkNotyB15(Time, c_t);
 					Boolean ChkNotyB180B = ChkNotyB180(Time, c_t);
-					if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
-							|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
-							|| data.OldTime.equals("")
-							|| (!Time.equals(data.OldTime) && ((data.OldTime.equals("HT")))) 
+					if((!newScore.equals(data.OldScoreH.get(id)) && !data.OldScoreH.get(id).equals(""))
+							|| (!Time.equals(data.OldTimeH.get(id)) && ((Time.equals("HT")) || Time.equals("FT")))
+							|| data.OldTimeH.get(id).equals("")
+							|| (!Time.equals(data.OldTimeH.get(id)) && ((data.OldTimeH.get(id).equals("HT")))) 
 							|| ChkNotyB15B
 							|| ChkNotyB180B){
 						String msg = "Time: "+Time;

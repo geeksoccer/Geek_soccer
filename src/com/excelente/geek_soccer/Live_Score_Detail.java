@@ -129,8 +129,6 @@ public class Live_Score_Detail extends Activity {
 			Away_img_t = getValue.getString("Away_img");
 			Home_name_t = getValue.getString("Home");
 			score_t = getValue.getString("score").replaceAll("&nbsp;", " ");
-			data.OldScore_Detail = score_t;
-			data.OldTime_Detail = Time_t;
 			Away_name_t = getValue.getString("Away");
 			score_ag_t = getValue.getString("score_ag");
 		} catch (JSONException e) {

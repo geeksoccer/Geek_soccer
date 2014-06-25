@@ -30,7 +30,7 @@ public class ControllParameter {
     		Name_Send = SessionManager.getMember(mContext).getNickname();
     		int teamID = SessionManager.getMember(mContext).getTeamId();
     		if(teamID == 1){
-    			TeamSelect = "Japan";
+    			TeamSelect = "Arsenal";
     		}else if(teamID == 2){
     			TeamSelect = "Chelsea";
     		}else if(teamID == 3){
@@ -77,10 +77,8 @@ public class ControllParameter {
 	String ID_Send;
 	String ProFile_pic;
 	String Name_Send;
-	public String OldScore = "";
-	public String OldTime = "";
-	String OldScore_Detail = "";
-	String OldTime_Detail = "";
+	public HashMap<String, String> OldScoreH = new HashMap<String, String>();
+	public HashMap<String, String> OldTimeH = new HashMap<String, String>();
 	public static String TeamSelect = "";
 	static int Laugage_Select = 0;
 	public static Boolean BanStatus = true;
