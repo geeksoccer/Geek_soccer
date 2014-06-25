@@ -7,14 +7,17 @@ import java.util.Vector;
 
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.service.UpdateService;
+import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
@@ -35,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+@SuppressLint("SimpleDateFormat")
 public class MainActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
 	
 	boolean customTitleSupported;
@@ -65,6 +69,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}
 		
 		data = ControllParameter.getInstance(this);
+		vidateAskRateApp();
 		
 		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(MainActivity.this).getTeamId());
 		
@@ -97,6 +102,40 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	    setPageFromNotification();
 	}
 	
+	private void vidateAskRateApp() {
+		String askRate = SessionManager.getSetting(mContext, SessionManager.setting_ask_rateapp);
+		if(askRate == null || askRate.equals("null")){
+			SessionManager.setSetting(mContext, SessionManager.setting_ask_rateapp, "false");
+			SessionManager.setSetting(mContext, SessionManager.setting_count_use, "0");
+		}else if(askRate.equals("false")){
+			String countUseStr = SessionManager.getSetting(mContext, SessionManager.setting_count_use);
+			if(countUseStr.equals("null")){ 
+				SessionManager.setSetting(mContext, SessionManager.setting_count_use, "0");
+				return;
+			}
+			
+			long installed;
+			int countUse = Integer.parseInt(countUseStr);
+			try {
+				installed = this.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).firstInstallTime;
+				
+				if(countUse > 30 || System.currentTimeMillis() - installed > 7*24*60*60*1000){
+					DialogUtil.showRateAppDialog(mContext);
+					SessionManager.setSetting(mContext, SessionManager.setting_ask_rateapp, "true");
+				}
+				
+			} catch (NameNotFoundException e) {
+				if(countUse > 30){
+					DialogUtil.showRateAppDialog(mContext);
+					SessionManager.setSetting(mContext, SessionManager.setting_ask_rateapp, "true");
+				}
+			}
+			
+			countUse++;
+			SessionManager.setSetting(mContext, SessionManager.setting_count_use, String.valueOf(countUse));
+		}
+	}
+
 	private void setPageFromNotification() {
 		if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 1000){
 			Page_Select(0, true);
