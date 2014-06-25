@@ -15,13 +15,10 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.Boast;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +27,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -50,6 +48,7 @@ public class Live_Score_Detail extends Activity {
 	ImageView Home_Pic;
 	ImageView Away_Pic;
 	LinearLayout Up_btn;
+	ImageButton Fav_btn;
 	JSONObject getValue;
 	String get_Time = "";
 	String get_Score = "";
@@ -68,6 +67,7 @@ public class Live_Score_Detail extends Activity {
 	String score_t = "";
 	Boolean loading = false;
 	Boolean FirstLoad = true;
+	String id_t = "";
 	String Home_img_t = "";
 	String Away_img_t = "";
 	String Home_name_t = "";
@@ -99,6 +99,7 @@ public class Live_Score_Detail extends Activity {
 		Away_name = (TextView) myView.findViewById(R.id.Away_name);
 		Time = (TextView) myView.findViewById(R.id.Time);
 		txt_Aggregate = (TextView) myView.findViewById(R.id.Score_Aggregate);
+		Fav_btn = (ImageButton)myView.findViewById(R.id.Fav_btn);
 		data.detailPageOpenning = true;
 		mContext = this;
 		position = getIntent().getExtras().getInt("URL");
@@ -110,7 +111,7 @@ public class Live_Score_Detail extends Activity {
 		} else if (type.equals("t")) {
 			getValue = data.Match_list_t_JSON.get(position);
 		}
-
+		
 		Up_btn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -120,6 +121,7 @@ public class Live_Score_Detail extends Activity {
 		});
 
 		try {
+			id_t = getValue.getString("id");
 			Time_t = getValue.getString("Time").substring(3);
 			link_t = getValue.getString("link").replace("/en/", "/th/")
 					+ "/live-commentary/main-events";
@@ -157,6 +159,26 @@ public class Live_Score_Detail extends Activity {
 		if (type.equals("c")) {
 			checkRefreshDetail();
 		}
+
+		if(SessionManager.chkFavContain(mContext, id_t)
+				|| Away_name_t.contains(ControllParameter.TeamSelect)
+				|| Home_name_t.contains(ControllParameter.TeamSelect)){
+			Fav_btn.setImageResource(R.drawable.favorite_icon_full);
+		}
+		
+		Fav_btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(SessionManager.chkFavContain(mContext, id_t)){
+					SessionManager.delFavTeam(mContext, id_t);
+					Fav_btn.setImageResource(R.drawable.favorite_icon_hole);
+				}else{
+					SessionManager.addFavTeam(mContext, id_t);
+					Fav_btn.setImageResource(R.drawable.favorite_icon_full);
+				}
+			}
+		});
 
 		lstView = new ListView(mContext);
 		lstView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -257,7 +279,6 @@ public class Live_Score_Detail extends Activity {
 				try {
 					obJdebug.put("NotFound", "NotFound");
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				ListDetail.add(obJdebug);
@@ -284,7 +305,7 @@ public class Live_Score_Detail extends Activity {
 			
 			int colors = Integer.parseInt("000000", 16) + (0xFF000000);
 
-			if (ListDetail.get(0).isNull("NotFound")) {
+			if (!ListDetail.get(position).isNull("NotFound")) {
 				TextView txt_T = new TextView(mContext);
 				txt_T.setLayoutParams(new LinearLayout.LayoutParams(
 						LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -398,6 +419,7 @@ public class Live_Score_Detail extends Activity {
 			try {
 				loading = true;
 				player_Detail.clear();
+				ListDetail.clear();
 				HtmlHelper_LiveScore live = new HtmlHelper_LiveScore(new URL(
 						URL));
 				live.getLinksByID("play-by-play");
@@ -456,17 +478,6 @@ public class Live_Score_Detail extends Activity {
 												.replaceAll("&nbsp;", " ");
 										score_ag_t = getValue
 												.getString("score_ag");
-										if (!Away_name_t
-												.contains(ControllParameter.TeamSelect)
-												&& !Home_name_t
-														.contains(ControllParameter.TeamSelect)) {
-											NotifyLiveScore(Home_name_t,
-													score_t, Away_name_t,
-													Time_t);
-											data.OldScore_Detail = score_t;
-											data.OldTime_Detail = Time_t;
-										}
-
 										Time.setText(Time_t);
 										Score.setText(score_t);
 
@@ -503,41 +514,6 @@ public class Live_Score_Detail extends Activity {
 			}
 		};
 		new Thread(runnable).start();
-	}
-
-	public void NotifyLiveScore(final String Home, final String newScore,
-			final String Away, final String Time) {
-		if (SessionManager.getSetting(mContext,
-				SessionManager.setting_notify_livescore) == null) {
-			SessionManager.setSetting(mContext,
-					SessionManager.setting_notify_livescore, "true");
-		}
-		if (SessionManager.getSetting(mContext,
-				SessionManager.setting_notify_livescore).equals("true")) {
-			if (!data.OldTime_Detail.equals("FT")) {
-				if (!Time.equals("FT") || !data.OldTime_Detail.equals("")) {
-					if ((!newScore.equals(data.OldScore_Detail) && !data.OldScore_Detail
-							.equals(""))
-							|| (!Time.equals(data.OldTime_Detail) && ((Time
-									.equals("HT")) || Time.equals("FT")))
-							|| data.OldTime_Detail.equals("")
-							|| (!Time.equals(data.OldTime_Detail) && ((data.OldTime_Detail
-									.equals("HT"))))) {
-						NotificationManager mNotifyManager = (NotificationManager) mContext
-								.getSystemService(Context.NOTIFICATION_SERVICE);
-						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-								mContext);
-						mBuilder.setContentTitle(
-								Home + " " + newScore + " " + Away)
-								.setContentText("Time: " + Time)
-								.setSmallIcon(R.drawable.notify_livescore)
-								.setDefaults(Notification.DEFAULT_ALL);
-						mNotifyManager.notify(0, mBuilder.build());
-					}
-				}
-
-			}
-		}
 	}
 
 	public class HtmlHelper_LiveScore {

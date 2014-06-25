@@ -3,6 +3,9 @@ package com.excelente.geek_soccer;
 import java.io.ByteArrayOutputStream;
 import java.util.Locale;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.SecurePreferences;
 
@@ -24,6 +27,7 @@ public class SessionManager {
 	public final static String setting_notify_livescore = "setting_notify_livescore";
 	
 	public final static String MEMBER_SHAREPREFERENCE = "MEMBER_SHAREPREFERENCE";
+	public final static String FAV_TEAM_KEY = "FAV_TEAM_KEY";
 	
 	static MemberModel member;
 	static boolean globalNews = false;
@@ -164,6 +168,53 @@ public class SessionManager {
 		} catch (OutOfMemoryError e) {
 			Log.e("err", "Out of memory error :(");
 			return null;
+		}
+    }
+    
+    public static void addFavTeam(Context context, String value){
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+    	JSONArray FavJArr;
+		try {
+			FavJArr = new JSONArray(memberFile.getString(FAV_TEAM_KEY, "[]"));
+			FavJArr.put(value);
+	    	Editor editMember = memberFile.edit();
+	    	editMember.putString(FAV_TEAM_KEY, FavJArr.toString());
+	    	editMember.commit();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public static void delFavTeam(Context context, String value){
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+    	JSONArray FavJArr;
+		try {
+			FavJArr = new JSONArray(memberFile.getString(FAV_TEAM_KEY, "[]"));
+			JSONArray outputDel = new JSONArray();
+			for(int i=0; i<FavJArr.length(); i++){
+				String FavSindex = FavJArr.getString(i);
+				if(!value.equals(FavSindex)){
+					outputDel.put(FavSindex);
+				}
+			}
+	    	Editor editMember = memberFile.edit();
+	    	editMember.putString(FAV_TEAM_KEY, outputDel.toString());
+	    	editMember.commit();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public static Boolean chkFavContain(Context context, String value){
+    	SharedPreferences memberFile = context.getSharedPreferences(MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
+    	JSONArray FavJArr;
+		try {
+			FavJArr = new JSONArray(memberFile.getString(FAV_TEAM_KEY, "[]"));
+			return FavJArr.toString().contains(value);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return false;
 		}
     }
     

@@ -30,7 +30,7 @@ public class ControllParameter {
     		Name_Send = SessionManager.getMember(mContext).getNickname();
     		int teamID = SessionManager.getMember(mContext).getTeamId();
     		if(teamID == 1){
-    			TeamSelect = "Arsenal";
+    			TeamSelect = "Japan";
     		}else if(teamID == 2){
     			TeamSelect = "Chelsea";
     		}else if(teamID == 3){

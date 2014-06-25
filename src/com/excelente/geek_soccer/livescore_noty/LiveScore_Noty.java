@@ -112,6 +112,7 @@ public class LiveScore_Noty {
 										
 										for(int j=0; j<json_dtArr.length(); j++){
 											JSONObject json_dt = json_dtArr.getJSONObject(j);
+											String id = json_dt.getString("id");
 											String Home  = json_dt.getString("ht");
 											String away  = json_dt.getString("at");
 											String Time = "";//json_dt.getString("tp");
@@ -146,7 +147,8 @@ public class LiveScore_Noty {
 													score_ag = String.valueOf(Ag_home+Sc_home)+ " - " + String.valueOf(Ag_away+SC_away);
 												}
 											}
-											if (away.contains(ControllParameter.TeamSelect)
+											if (SessionManager.chkFavContain(mContext, id)
+													||away.contains(ControllParameter.TeamSelect)
 													|| Home.contains(ControllParameter.TeamSelect)) {
 												NotifyLiveScore(mContext, Home, score, away, Time);
 												data.OldScore = score;
@@ -176,32 +178,30 @@ public class LiveScore_Noty {
 		}
 		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
 			ControllParameter data = ControllParameter.getInstance(mContext);
-			if(!data.OldTime.equals("FT")){
+			if(!data.OldTime.equals("FT") && !data.OldTime.equals("")){
 				if(!Time.equals("FT")
-						|| !data.OldTime.equals("")){				
-					Boolean ChkNotyB15B = ChkNotyB15(Time);
+						|| !data.OldTime.equals("")){
+					Calendar c_t = Calendar.getInstance();
+					Boolean ChkNotyB15B = ChkNotyB15(Time, c_t);
+					Boolean ChkNotyB180B = ChkNotyB180(Time, c_t);
 					if((!newScore.equals(data.OldScore) && !data.OldScore.equals(""))
 							|| (!Time.equals(data.OldTime) && ((Time.equals("HT")) || Time.equals("FT")))
 							|| data.OldTime.equals("")
 							|| (!Time.equals(data.OldTime) && ((data.OldTime.equals("HT")))) 
-							|| ChkNotyB15B){
+							|| ChkNotyB15B
+							|| ChkNotyB180B){
 						String msg = "Time: "+Time;
-						if(ChkNotyB15B){
-							msg = mContext.getResources().getString(R.string.alert_match_nearby);
+						if(Time.contains(":")){
+							if(ChkNotyB15B){
+								msg = mContext.getResources().getString(R.string.alert_match_nearby);
+								NotifyLiveEvent(mContext, Home, newScore, Away, msg);
+							}
+							if(ChkNotyB180B){
+								NotifyLiveEvent(mContext, Home, newScore, Away, msg);
+							}
+						}else{
+							NotifyLiveEvent(mContext, Home, newScore, Away, msg);
 						}
-						Intent nextToMain = new Intent(mContext, Sign_In_Page.class);
-						nextToMain.putExtra("NOTIFY_INTENT", 4600);
-						PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, nextToMain, 0);
-						NotificationManager mNotifyManager = (NotificationManager) mContext
-								.getSystemService(Context.NOTIFICATION_SERVICE);
-						android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
-						mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
-								.setContentText(msg)
-								.setSmallIcon(R.drawable.notify_livescore)
-								.setContentIntent(pIntent)
-								.setAutoCancel(true)
-								.setDefaults(Notification.DEFAULT_ALL);
-						mNotifyManager.notify(46, mBuilder.build());
 					}
 				}
 				
@@ -209,9 +209,24 @@ public class LiveScore_Noty {
 		}		
 	}
 	
-	public static Boolean ChkNotyB15(String Time){
+	public static void NotifyLiveEvent(Context mContext, final String Home, final String newScore, final String Away, final String msg){
+		Intent nextToMain = new Intent(mContext, Sign_In_Page.class);
+		nextToMain.putExtra("NOTIFY_INTENT", 4600);
+		PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, nextToMain, 0);
+		NotificationManager mNotifyManager = (NotificationManager) mContext
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
+		mBuilder.setContentTitle(Home + " " + newScore + " " + Away)
+				.setContentText(msg)
+				.setSmallIcon(R.drawable.notify_livescore)
+				.setContentIntent(pIntent)
+				.setAutoCancel(true)
+				.setDefaults(Notification.DEFAULT_ALL);
+		mNotifyManager.notify(46, mBuilder.build());
+	}
+	
+	public static Boolean ChkNotyB15(String Time, Calendar c){
 		if(Time.contains(":")){
-			Calendar c = Calendar.getInstance();
 			int hour = c.get(Calendar.HOUR_OF_DAY);
 			int minute = c.get(Calendar.MINUTE);
 			int minuteConclude = (hour*60)+minute;
@@ -220,6 +235,24 @@ public class LiveScore_Noty {
 			int minuteMatch = Integer.parseInt(timeArr[1]);
 			int minuteConcludeMatch = (hourMatch*60)+minuteMatch;
 			if(minuteConcludeMatch-minuteConclude==15){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	public static Boolean ChkNotyB180(String Time, Calendar c){
+		if(Time.contains(":")){
+			int hour = c.get(Calendar.HOUR_OF_DAY);
+			int minute = c.get(Calendar.MINUTE);
+			int minuteConclude = (hour*60)+minute;
+			String timeArr[] = Time.split(":");
+			int hourMatch = Integer.parseInt(timeArr[0]);
+			int minuteMatch = Integer.parseInt(timeArr[1]);
+			int minuteConcludeMatch = (hourMatch*60)+minuteMatch;
+			if(minuteConcludeMatch-minuteConclude==180){
 				return true;
 			}else{
 				return false;

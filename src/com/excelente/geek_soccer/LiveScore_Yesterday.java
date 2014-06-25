@@ -52,7 +52,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class LiveScore_Yesterday extends Activity {
@@ -93,25 +92,11 @@ public class LiveScore_Yesterday extends Activity {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
 				if(!data.Match_list_y_JSON.get(position).isNull("score")){
-					String score = "";
-					String link = "";
-					try {
-						score = data.Match_list_y_JSON.get(position).getString("score");
-						link = data.Match_list_y_JSON.get(position).getString("link");
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if(score.contains("vs") || link.length()<=0){
-						Toast.makeText(mContext, "No data available now", Toast.LENGTH_LONG).show();
-					}else{
-						Intent Detail_Page = new Intent(mContext,
-								Live_Score_Detail.class);
-						Detail_Page.putExtra("URL", position);
-						Detail_Page.putExtra("TYPE", "y");
-						startActivity(Detail_Page);
-					}
-					
+					Intent Detail_Page = new Intent(mContext,
+							Live_Score_Detail.class);
+					Detail_Page.putExtra("URL", position);
+					Detail_Page.putExtra("TYPE", "y");
+					startActivity(Detail_Page);
 				}
 				
 			}
@@ -380,6 +365,7 @@ public class LiveScore_Yesterday extends Activity {
 						int chk_ExistTeam_in = data.Match_list_y_JSON.size();
 						for(int j=0; j<json_dtArr.length(); j++){
 							JSONObject json_dt = json_dtArr.getJSONObject(j);
+							String id = json_dt.getString("id");
 							String Home  = json_dt.getString("ht");
 							String Home_img  = json_dt.getString("hl");
 							String away  = json_dt.getString("at");
@@ -429,6 +415,7 @@ public class LiveScore_Yesterday extends Activity {
 								JSONObject j_data = new JSONObject();
 								j_data.put("League", "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
 								j_data.put("Time", "[0]" + Time);
+								j_data.put("id", id);
 								j_data.put("stat", stat);
 								j_data.put("Home", Home);
 								j_data.put("score", score);
@@ -442,6 +429,7 @@ public class LiveScore_Yesterday extends Activity {
 							JSONObject j_data = new JSONObject();
 							j_data.put("League", League);
 							j_data.put("Time", "[1]" + Time);
+							j_data.put("id", id);
 							j_data.put("stat", stat);
 							j_data.put("Home", Home);
 							j_data.put("score", score);
