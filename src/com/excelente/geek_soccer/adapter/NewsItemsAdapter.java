@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -14,6 +15,12 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.parser.Tag;
 
 import com.excelente.geek_soccer.News_Item_Page;
 import com.excelente.geek_soccer.R;
@@ -171,6 +178,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsContentWebview.setWebViewClient(new WebViewClient(){
         	boolean timeout;
         	List<String> urls;
+        	String html = getHtml(newsModel); 
         	
         	@Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -182,13 +190,18 @@ public class NewsItemsAdapter extends PagerAdapter{
                 }else if (uri.getHost().contains("facebook.com")){
                 	IntentVideoViewUtils.playFacebookVideo(newsItemPage, url);
                 	return true;
+                }else if (url.toLowerCase().endsWith("jpg") || url.toLowerCase().endsWith("png") || url.toLowerCase().equals("gif")){
+                	new PushImageTask(view, html).execute(url);
+                	view.stopLoading();
+                	return false;
+                }else{
+                	return true;
                 }
-
-                return false;
             }
-        	
-        	@Override
+
+			@Override
         	public void onPageStarted(final WebView view, String url, Bitmap favicon) {
+				
         		urls = new ArrayList<String>();
         		newsWaitProcessbar.setVisibility(View.VISIBLE);
         		timeout = true;
@@ -207,15 +220,15 @@ public class NewsItemsAdapter extends PagerAdapter{
         		new Handler().postDelayed(timeoutRun, 20000);
         	}
         	
+        	@SuppressLint("DefaultLocale") 
         	@Override
         	public void onLoadResource(WebView view, String url) {
         		super.onLoadResource(view, url);
         		String upic_me = "http://upic.me/";
         		String image_ohozaa_com = "http://image.ohozaa.com/";
-        		
         		if((url.length() > upic_me.length() && url.substring(0, upic_me.length()).equals(upic_me)) || (url.length() > image_ohozaa_com.length() && url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com))){
-        			urls.add(url);
-        		}
+            		urls.add(url);
+            	}
         	}
         	
         	@Override
@@ -225,7 +238,7 @@ public class NewsItemsAdapter extends PagerAdapter{
         		newsWaitProcessbar.setVisibility(View.GONE);
         		
         		if(urls!=null && !urls.isEmpty()){
-        			new PushImageTask(view, urls, newsModel.getNewsContent()).execute();
+        			new PushImagesTask(view, urls, newsModel.getNewsContent()).execute();
         		}
         		
         		String javascript = "javascript:" +
@@ -270,11 +283,7 @@ public class NewsItemsAdapter extends PagerAdapter{
         	}
         });
 		
-		String htmlData = "";
-		if(SessionManager.getMember(mContext).getTeamId() == 2)
-			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
-		else
-			htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
+		String htmlData = getHtml(newsModel);
 
 		newsItemView.newsContentWebview.loadData( htmlData, "text/html; charset=UTF-8", null);
         
@@ -325,19 +334,110 @@ public class NewsItemsAdapter extends PagerAdapter{
 		}
 	}
 	
+	private String getHtml(NewsModel newsModel) { 
+		String htmlData = "";
+		String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
+		if(saveMode != null && saveMode.equals("true")){
+			Document doc = Jsoup.parse(newsModel.getNewsContent());
+			for (Element image : doc.select("img")) {
+				Attributes attrs = new Attributes();
+				attrs.put("href", image.attr("src"));
+				Element a = new Element(Tag.valueOf("a"), "", attrs);
+				a.append(mContext.getString(R.string.show_photo)); 
+				image.replaceWith(a);
+			}
+			
+			htmlData = doc.toString();
+			Log.e(">>>>>>>>>>>>", htmlData);
+			if(SessionManager.getMember(mContext).getTeamId() == 2)
+				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ htmlData +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
+			else
+				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ htmlData +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
+		}else{
+			if(SessionManager.getMember(mContext).getTeamId() == 2)
+				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
+			else
+				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ newsModel.getNewsContent() +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='16px';}</script></html>";
+		}
+		return htmlData;
+	}
+	
 	@Override
 	public int getCount() {
 		return mNewList.size();
 	}
 	
-	public class PushImageTask extends AsyncTask<String, Void, Void>{
+	public class PushImageTask extends AsyncTask<String, Void, String>{
+		
+		WebView webview;
+		String html;
+		String url;
+		
+		public PushImageTask(WebView wv, String html) {
+			this.webview = wv;
+			this.html = html;
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+				url = params[0];
+				String encodedString = "";
+				
+				HttpGet getRequest = new HttpGet(url); 
+				getRequest.addHeader("Referer", "http://localhost");
+	    		DefaultHttpClient client = new DefaultHttpClient();
+	    		try {
+					HttpResponse httpReponse = client.execute(getRequest);
+					InputStream reponseInputStream = httpReponse.getEntity().getContent();
+					
+					Bitmap bm = BitmapFactory.decodeStream(reponseInputStream);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+					bm.compress(Bitmap.CompressFormat.PNG, 75, baos); //bm is the bitmap object   
+					byte[] b = baos.toByteArray();
+		    		encodedString = "data:image/png;base64," + Base64.encodeToString(b, Base64.DEFAULT);
+		    		
+		    		reponseInputStream.close();
+				} catch (ClientProtocolException e){
+					return "";
+				} catch (IOException e) {
+					return "";
+				}
+			
+			return encodedString;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			
+			String javascripts = "javascript:" +
+    	            "var as = document.getElementsByTagName('a');" +
+    	            "for (var i = 0; i < as.length; i++) {" +
+    	            "   var a = as[i];" +
+    	            "   if(a.getAttribute('href') == '"+url+"'){" +
+    	            "   	img = document.createElement('img');" +
+    	            "   	img.setAttribute('src', '"+url+"');" +
+    	            "   	a.parentNode.replaceChild(img, a);" +
+    	            "   	break;" +
+    	            "   }" +
+    	            "}"; 
+			
+			Log.e("...............", result);
+			
+			webview.loadUrl(javascripts);
+			
+		} 
+		
+	}
+	
+	public class PushImagesTask extends AsyncTask<String, Void, Void>{
 		
 		WebView webview;
 		List<String> urls;
 		List<String> base64s;
 		String html;
 		
-		public PushImageTask(WebView wv, List<String> urls, String html) {
+		public PushImagesTask(WebView wv, List<String> urls, String html) {
 			this.webview = wv;
 			this.urls = urls;
 			this.html = html;

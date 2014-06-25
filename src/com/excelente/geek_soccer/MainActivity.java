@@ -115,7 +115,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 	private void askMode() {
 		if(NetworkUtils.getConnectivityStatus(this) == NetworkUtils.TYPE_MOBILE){
-			showSaveModeAppDialog(this);
+			String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
+			if(saveMode == null || saveMode.equals("null") || saveMode.equals("false")){
+				showSaveModeAppDialog(this);
+			}else{
+				doCreate();
+			}
 		}else{
 			doCreate();
 		}
