@@ -16,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
@@ -24,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.HilightModel;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -70,6 +72,8 @@ public class HilightAdapter extends BaseAdapter{
         ImageView hilightView;
         
         ImageView hilightNew;
+        
+        TextView savemodeTextview;
 	}
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -108,6 +112,7 @@ public class HilightAdapter extends BaseAdapter{
 	    		if(hilightModel.getStatusView()==1){
 	    			hilightHolder.hilightView.setImageResource(R.drawable.news_view_selected);
 	    		}
+	    		
 	    	}
 	        
 	        hilightHolder.hilightImageImageview = (ImageView) convertView.findViewById(R.id.hilight_image_imageview);
@@ -117,6 +122,8 @@ public class HilightAdapter extends BaseAdapter{
 	        hilightHolder.hilightImageProgressBar = (ProgressBar) convertView.findViewById(R.id.hilight_image_processbar);
 	        
 	        hilightHolder.hilightNew = (ImageView) convertView.findViewById(R.id.hilight_new);
+	        
+	        hilightHolder.savemodeTextview = (TextView) convertView.findViewById(R.id.save_mode);
         
 	        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(hilightModel.getHilightImage().replace(".gif", ".png"));
 	        if(cacheFile.isFile()){
@@ -137,31 +144,24 @@ public class HilightAdapter extends BaseAdapter{
 				}).start();
 	        	 
 	        }else{
-	        	ImageLoader.getInstance().displayImage(hilightModel.getHilightImage().replace(".gif", ".png"), hilightHolder.hilightImageImageview, getOptionImageLoader(hilightModel.getHilightImage()), new ImageLoadingListener(){
-	            	
-	            	public void onLoadingStarted(String imageUri, View view) { 
-	            		hilightHolder.hilightImageImageview.setVisibility(View.GONE);
-	            		hilightHolder.hilightImageProgressBar.setVisibility(View.VISIBLE);
-	            	};
-	            	
-	            	@Override
-	            	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
-	            		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
-	            		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
-	            	}
-	            	
-	            	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-	            		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
-	            		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
-	            	}
-
-					@Override
-					public void onLoadingCancelled(String arg0, View arg1) {
-						hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
-	            		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
-					};
-	            }); 
+	        	String saveMode = SessionManager.getSetting(context, SessionManager.setting_save_mode);
+	        	if(saveMode == null || saveMode.equals("false") || saveMode.equals("null")){
+	        		doLoadImage(hilightModel, hilightHolder);
+	        	}else{
+	        		hilightHolder.savemodeTextview.setVisibility(View.VISIBLE);
+	        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
+	        		hilightHolder.hilightImageImageview.setVisibility(View.GONE);
+	        	}
+	        
 	        }
+	        
+	        hilightHolder.savemodeTextview.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					doLoadImage(hilightModel, hilightHolder);
+				}
+			});
         
         	hilightHolder.hilightTopicTextview.setText(hilightModel.getHilightTopic().trim());
         	hilightHolder.hilightTypeTextview.setText(hilightModel.getHilightType().replace("&nbsp;", "").trim());
@@ -178,10 +178,41 @@ public class HilightAdapter extends BaseAdapter{
         	count_ani=position;
         }
         
-        return convertView;
+        return convertView; 
         
-	}
+	} 
 	
+	private void doLoadImage(HilightModel hilightModel, final HilightHolder hilightHolder) {
+		ImageLoader.getInstance().displayImage(hilightModel.getHilightImage().replace(".gif", ".png"), hilightHolder.hilightImageImageview, getOptionImageLoader(hilightModel.getHilightImage()), new ImageLoadingListener(){
+        	
+        	public void onLoadingStarted(String imageUri, View view) { 
+        		hilightHolder.savemodeTextview.setVisibility(View.GONE);
+        		hilightHolder.hilightImageImageview.setVisibility(View.GONE);
+        		hilightHolder.hilightImageProgressBar.setVisibility(View.VISIBLE);
+        	};
+        	
+        	@Override
+        	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
+        		hilightHolder.savemodeTextview.setVisibility(View.GONE);
+        		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
+        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
+        	}
+        	
+        	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+        		hilightHolder.savemodeTextview.setVisibility(View.GONE);
+        		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
+        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
+        	}
+
+			@Override
+			public void onLoadingCancelled(String arg0, View arg1) {
+				hilightHolder.savemodeTextview.setVisibility(View.GONE);
+				hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
+        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
+			};
+        }); 
+	}
+
 	private void doConfigImageLoader(int w, int h) {
 		
 		File cacheDir = StorageUtils.getCacheDirectory(context);

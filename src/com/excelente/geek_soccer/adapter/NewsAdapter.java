@@ -154,22 +154,34 @@ public class NewsAdapter extends BaseAdapter{
         
 	}
 	
-	private void doloadImage(NewsModel newsModel, ImageView newsImageImageview, ProgressBar newsImageProgressBar, TextView saveModeTextview) { 
+	private void doloadImage(NewsModel newsModel, final ImageView newsImageImageview, final ProgressBar newsImageProgressBar, final TextView saveModeTextview) { 
 		try{ 
 		    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
 				 
-		    	public void onLoadingStarted(String imageUri, View view) {
-	           	};
-	           	
-	           	@Override
-	           	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
-	           	}
-	           	
-	           	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-	           	}
+		    	public void onLoadingStarted(String imageUri, View view) { 
+		    		saveModeTextview.setVisibility(View.GONE);
+		    		newsImageImageview.setVisibility(View.GONE);
+	        		newsImageProgressBar.setVisibility(View.VISIBLE);
+	        	};
+	        	
+	        	@Override
+	        	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
+	        		saveModeTextview.setVisibility(View.GONE);
+	        		newsImageImageview.setVisibility(View.VISIBLE);
+	        		newsImageProgressBar.setVisibility(View.GONE);
+	        	}
+	        	
+	        	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+	        		saveModeTextview.setVisibility(View.GONE);
+	        		newsImageImageview.setVisibility(View.VISIBLE);
+	        		newsImageProgressBar.setVisibility(View.GONE);
+	        	}
 
 				@Override
-				public void onLoadingCancelled(String imageUri, View view) {
+				public void onLoadingCancelled(String arg0, View arg1) {
+					saveModeTextview.setVisibility(View.GONE);
+					newsImageImageview.setVisibility(View.VISIBLE);
+					newsImageProgressBar.setVisibility(View.GONE);
 				};
 			});
     	}catch(Exception e){

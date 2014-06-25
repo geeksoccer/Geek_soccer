@@ -6,6 +6,7 @@
         <item>แจ้งเตือนข่าวบอลรอบโลก</item>
         <item>แจ้งเตือนไฮไลท์</item>
         <item>แจ้งเตือนผลบอลสด</item>
+        <item>โหมดประหยัด</item>
     </string-array>
     <string-array name="setting_detail_list">
         <item>แตะเพื่อเปลี่ยนภาษา</item>
@@ -13,5 +14,6 @@
         <item>แตะเพื่อ เปิด/ปิด การแจ้งเตือน</item>
         <item>แตะเพื่อ เปิด/ปิด การแจ้งเตือน</item>
         <item>แตะเพื่อ เปิด/ปิด การแจ้งเตือน</item> 
+        <item>แตะเพื่อ เปิด/ปิด โหมดประหยัด</item>
     </string-array>
 </resources>

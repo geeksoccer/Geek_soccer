@@ -6,6 +6,7 @@
         <item>setting_notify_global_news</item>
         <item>setting_notify_hilight</item>
         <item>setting_notify_livescore</item>
+        <item>setting_save_mode</item>
     </string-array>
     <string-array name="setting_topic_list">
         <item>English</item>
@@ -13,6 +14,7 @@
         <item>Notification Global News</item>
         <item>Notification Hilights</item>
         <item>Notification Livescore</item>
+        <item>Save Mode</item>
     </string-array>
     <string-array name="setting_detail_list">
         <item>Touch For Change Language</item>
@@ -20,9 +22,11 @@
         <item>Touch Check Box For On/Off Notification</item>
         <item>Touch Check Box For On/Off Notification</item>
         <item>Touch Check Box For On/Off Notification</item> 
+        <item>Touch Check Box For On/Off Save Mode</item> 
     </string-array>
     <integer-array name="setting_showcb_list">
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>

@@ -21,7 +21,9 @@ import com.excelente.geek_soccer.SessionManager;
 
 public class DialogUtil {
 
-	public static void showRateAppDialog(final Context mContext) {
+	public static void showRateAppDialog(final Context mContext) { 
+		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
+		
 		final Dialog confirmDialog = new Dialog(mContext); 
 		
 		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
@@ -79,6 +81,7 @@ public class DialogUtil {
 	}
 	
 	public static void showShareAppDialog(final Context mContext) {
+		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
 		final Dialog confirmDialog = new Dialog(mContext); 
 		
 		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
@@ -134,6 +137,7 @@ public class DialogUtil {
 	}
 	
 	public static void showSaveModeAppDialog(final Context mContext) {
+		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
 		final Dialog confirmDialog = new Dialog(mContext); 
 		
 		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);

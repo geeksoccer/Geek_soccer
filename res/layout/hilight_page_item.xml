@@ -23,9 +23,17 @@
 	        android:layout_width="100dp"
 	        android:layout_height="130dp"
 	        android:layout_centerInParent="true"
-	        android:background="@color/news_arsenal"
-	        android:scaleType="fitXY"
-	        android:src="@drawable/soccer_icon" />
+	        style="?logoTheme"
+	        android:scaleType="fitXY" />
+	    
+	    <TextView
+	        android:id="@+id/save_mode"  
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:padding="10dp"
+	        android:gravity="center"
+	        android:textColor="@color/gray"
+	        android:text="@string/show_photo" />
     </RelativeLayout>
 
     <TextView

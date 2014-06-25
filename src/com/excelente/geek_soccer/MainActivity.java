@@ -16,11 +16,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -69,10 +71,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			finish();
 		}
 		
+		askMode();
+	}
+	
+	
+	
+	private void doCreate() {
 		mContext = this;
 		data = ControllParameter.getInstance(this);
-		vidateAskRateApp();
-		askMode(); 
+		vidateAskRateApp(); 
 		
 		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(MainActivity.this).getTeamId());
 		
@@ -103,10 +110,14 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		//new Load_LiveScore_Data().data(mContext, Date_Select);
 	    setPageFromNotification();
 	}
-	
+
+
+
 	private void askMode() {
-		if(NetworkUtils.getConnectivityStatus(mContext) == NetworkUtils.TYPE_MOBILE){
-			DialogUtil.showSaveModeAppDialog(mContext);
+		if(NetworkUtils.getConnectivityStatus(this) == NetworkUtils.TYPE_MOBILE){
+			showSaveModeAppDialog(this);
+		}else{
+			doCreate();
 		}
 	}
 
@@ -510,6 +521,56 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
    			   android.os.Process.killProcess(android.os.Process.myPid());
            }
         }  
+	}
+	
+	public void showSaveModeAppDialog(final Context mContext) {
+		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
+		final Dialog confirmDialog = new Dialog(mContext); 
+		
+		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
+		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		TextView question = (TextView)view.findViewById(R.id.dialog_question);
+		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
+		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		
+		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		confirmDialog.setContentView(view);
+		
+		title.setText(mContext.getResources().getString(R.string.save_mode_title));
+		Drawable img = mContext.getResources().getDrawable(R.drawable.ic_action_network_cell);
+		img.setBounds( 0, 0, 60, 60 );
+		title.setCompoundDrawables( img, null, null, null );
+		
+		question.setText(mContext.getResources().getString(R.string.save_mode_question));
+		
+		closeBt.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				doSaveMode(mContext, false);
+				confirmDialog.dismiss();
+			}
+
+		}); 
+		
+		btComfirm.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				doSaveMode(mContext, true);
+				confirmDialog.dismiss();  
+			}
+
+		});
+		 
+		confirmDialog.setCancelable(true);
+		confirmDialog.show();
+	}
+	
+	public void doSaveMode(Context mContext, boolean b) {
+		SessionManager.setSetting(mContext, SessionManager.setting_save_mode, String.valueOf(b)); 
+		doCreate();
 	}
 	
 }

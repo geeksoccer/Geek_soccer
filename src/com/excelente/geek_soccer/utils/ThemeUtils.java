@@ -2,7 +2,7 @@ package com.excelente.geek_soccer.utils;
 
 import com.excelente.geek_soccer.R;
 
-import android.app.Activity;
+import android.content.Context;
 
 public class ThemeUtils {
 	
@@ -12,7 +12,7 @@ public class ThemeUtils {
 	public static final String THEME_LIVERPOOL = "LIVERPOOL"; 
 	public static final String THEME_MANU = "MANU"; 
 
-	public static void setThemeToActivity(Activity act, String theme){
+	public static void setThemeToActivity(Context act, String theme){
 		if(theme.equalsIgnoreCase(THEME_DEFAULT)){
 			act.setTheme(R.style.Theme_DefaultTheme);
 		}else if(theme.equalsIgnoreCase(THEME_ARSENAL)) {
@@ -26,7 +26,7 @@ public class ThemeUtils {
 	    }
 	}
 	
-	public static void setThemeByTeamId(Activity act, int teamId){
+	public static void setThemeByTeamId(Context act, int teamId){
 		switch (teamId) {
 			case 1:
 				setThemeToActivity(act, THEME_ARSENAL);
