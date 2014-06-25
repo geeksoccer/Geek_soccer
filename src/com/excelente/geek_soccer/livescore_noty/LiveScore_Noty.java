@@ -176,6 +176,7 @@ public class LiveScore_Noty {
 		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore)==null){
 			SessionManager.setSetting(mContext, SessionManager.setting_notify_livescore, "true");
 		}
+		
 		ControllParameter data = ControllParameter.getInstance(mContext);
 		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")
 				&& data.OldTimeH.get(id)!=null){
@@ -195,23 +196,23 @@ public class LiveScore_Noty {
 						if(Time.contains(":")){
 							if(ChkNotyB15B){
 								msg = mContext.getResources().getString(R.string.alert_match_nearby);
-								NotifyLiveEvent(mContext, Home, newScore, Away, msg);
+								NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
 							}
 							if(ChkNotyB180B){
-								NotifyLiveEvent(mContext, Home, newScore, Away, msg);
+								NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
 							}
 						}else{
-							NotifyLiveEvent(mContext, Home, newScore, Away, msg);
+							NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
 						}
 					}
 				}
 			}else{
 				SessionManager.delFavTeam(mContext, id);
 			}
-		}		
+		}	
 	}
 	
-	public static void NotifyLiveEvent(Context mContext, final String Home, final String newScore, final String Away, final String msg){
+	public static void NotifyLiveEvent(Context mContext, String id, final String Home, final String newScore, final String Away, final String msg){
 		Intent nextToMain = new Intent(mContext, Sign_In_Page.class);
 		nextToMain.putExtra("NOTIFY_INTENT", 4600);
 		PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, nextToMain, 0);
@@ -224,7 +225,7 @@ public class LiveScore_Noty {
 				.setContentIntent(pIntent)
 				.setAutoCancel(true)
 				.setDefaults(Notification.DEFAULT_ALL);
-		mNotifyManager.notify(46, mBuilder.build());
+		mNotifyManager.notify(Integer.parseInt(id), mBuilder.build());
 	}
 	
 	public static Boolean ChkNotyB15(String Time, Calendar c){
