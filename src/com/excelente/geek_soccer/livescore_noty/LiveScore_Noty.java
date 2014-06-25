@@ -205,7 +205,8 @@ public class LiveScore_Noty {
 						}
 					}
 				}
-				
+			}else{
+				SessionManager.delFavTeam(mContext, id);
 			}
 		}		
 	}
