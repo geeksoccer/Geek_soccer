@@ -60,12 +60,12 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class LiveScore_Today extends Activity {
-	
+
 	Context mContext;
 	JSONParser jParser = new JSONParser();
 	JSONObject products = null;
-	//private ListView lstView;
-	//private ImageAdapter imageAdapter;
+	// private ListView lstView;
+	// private ImageAdapter imageAdapter;
 	View myView;
 	int dd, yy, mm;
 	// String Date_Select;
@@ -81,61 +81,63 @@ public class LiveScore_Today extends Activity {
 	Boolean chk_ani = true;
 	int last_ItemView = 0;
 	LinearLayout layOutlist;
-	Boolean chk_D_Stat=false;
+	Boolean chk_D_Stat = false;
 	int chk_loaded = 0;
-	
-	//SocketIO socket = null;
-	
-	
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        data = ControllParameter.getInstance(this);
-        
-        setContentView(R.layout.livescore_today);
-        mContext = this;
+	String saveModeGet;
+	// SocketIO socket = null;
+
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		data = ControllParameter.getInstance(this);
+
+		setContentView(R.layout.livescore_today);
+		mContext = this;
+
+		saveModeGet = SessionManager.getSetting(mContext,
+				SessionManager.setting_save_mode);
 		data.lstViewLiveScore = new ListView(mContext);
 		data.lstViewLiveScore.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
-		
+
 		data.lstViewLiveScore.setDividerHeight(0);
 		data.lstViewLiveScore.setClipToPadding(false);
-		data.imageAdapterLiveScore = new ImageAdapter(mContext.getApplicationContext());
+		data.imageAdapterLiveScore = new ImageAdapter(
+				mContext.getApplicationContext());
 		data.lstViewLiveScore.setAdapter(data.imageAdapterLiveScore);
-		
+
 		data.lstViewLiveScore.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				if(!data.Match_list_c_JSON.get(position).isNull("score")){
+				if (!data.Match_list_c_JSON.get(position).isNull("score")) {
 					Intent Detail_Page = new Intent(mContext,
 							Live_Score_Detail.class);
 					Detail_Page.putExtra("URL", position);
 					Detail_Page.putExtra("TYPE", "c");
 					startActivity(Detail_Page);
 				}
-				
+
 			}
 		});
-		
-		
-		if(data.Match_list_c_JSON.size()>0){
+
+		if (data.Match_list_c_JSON.size() > 0) {
 			layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
 			layOutlist.removeAllViews();
 			((LinearLayout) layOutlist).addView(data.lstViewLiveScore);
 			chk_ani = false;
 			data.imageAdapterLiveScore.notifyDataSetChanged();
-			if(data.socket_LiveScore==null){
+			if (data.socket_LiveScore == null) {
 				Live_score_Loader();
 			}
-		}else{
+		} else {
 			new Live_score_1stLoader().execute();
 		}
-    }
+	}
 
-    class ImageAdapter extends BaseAdapter {
+	class ImageAdapter extends BaseAdapter {
 
 		private Context mContext;
 
@@ -162,14 +164,14 @@ public class LiveScore_Today extends Activity {
 			retval.setOrientation(LinearLayout.VERTICAL);
 			retval.setGravity(Gravity.CENTER);
 			retval.setMinimumHeight(50);
-			
+
 			LinearLayout bg = new LinearLayout(mContext);
 			bg.setOrientation(LinearLayout.VERTICAL);
 			bg.setGravity(Gravity.CENTER_VERTICAL);
-			
+
 			JSONObject txt_Item = null;
 			try {
-				if(data.Match_list_c_JSON.size()-1>=position){
+				if (data.Match_list_c_JSON.size() - 1 >= position) {
 					txt_Item = data.Match_list_c_JSON.get(position);
 				}
 
@@ -178,18 +180,21 @@ public class LiveScore_Today extends Activity {
 				txt.setTextColor(colors);
 				txt.setTypeface(Typeface.DEFAULT_BOLD);
 				if (!txt_Item.isNull("score")) {
-					bg.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+					bg.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.MATCH_PARENT,
+							LayoutParams.WRAP_CONTENT));
 					bg.setBackgroundResource(R.drawable.card_background_white);
-					txt.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+					txt.setLayoutParams(new LayoutParams(
+							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
 					txt.setGravity(Gravity.CENTER);
-					//String text_Sprite[] = txt_Item.split("\n");
+					// String text_Sprite[] = txt_Item.split("\n");
 
 					LinearLayout layOut_Detail = new LinearLayout(mContext);
 					layOut_Detail.setOrientation(LinearLayout.HORIZONTAL);
-					
+
 					txt.setTextSize(14);
-					txt.setText(" "+txt_Item.getString("Time").substring(3));
+					txt.setText(" " + txt_Item.getString("Time").substring(3));
 					txt.setPadding(5, 0, 5, 0);
 					txt.setGravity(Gravity.LEFT);
 
@@ -199,16 +204,17 @@ public class LiveScore_Today extends Activity {
 					txt_Home.setTextSize(16);
 					txt_Home.setText(txt_Item.getString("Home"));
 					txt_Home.setTextColor(Color.DKGRAY);
-					
 
 					TextView txt_Score = new TextView(mContext);
 					txt_Score.setLayoutParams(new LayoutParams(70, 40));
 					txt_Score.setTextSize(14);
 					txt_Score.setTypeface(Typeface.DEFAULT_BOLD);
-					txt_Score.setText(txt_Item.getString("score").replaceAll("&nbsp;", " "));
+					txt_Score.setText(txt_Item.getString("score").replaceAll(
+							"&nbsp;", " "));
 					txt_Score.setGravity(Gravity.CENTER);
 					txt_Score.setBackgroundResource(R.drawable.score_bg_layer);
-					if(!txt_Item.getString("score").replaceAll("&nbsp;", " ").equals("vs")){
+					if (!txt_Item.getString("score").replaceAll("&nbsp;", " ")
+							.equals("vs")) {
 						txt_Score.setTextColor(Color.WHITE);
 					}
 
@@ -219,24 +225,26 @@ public class LiveScore_Today extends Activity {
 					txt_Away.setGravity(Gravity.RIGHT);
 					txt_Away.setText(txt_Item.getString("Away"));
 					txt_Away.setTextColor(Color.DKGRAY);
-					
+
 					final ImageView image_Home = new ImageView(mContext);
 					image_Home.setLayoutParams(new LayoutParams(50, 50));
 					final ImageView image_Away = new ImageView(mContext);
 					image_Away.setLayoutParams(new LayoutParams(50, 50));
 					if (data.get_HomeMap(txt_Item.getString("Home_img")) != null) {
-						image_Home.setImageBitmap(data.get_HomeMap(txt_Item.getString("Home_img")));
+						image_Home.setImageBitmap(data.get_HomeMap(txt_Item
+								.getString("Home_img")));
 					} else {
 						image_Home.setImageResource(R.drawable.soccer_icon);
-						startDownload_Home(position, image_Home);
+						startDownload_Home(position, image_Home, saveModeGet);
 					}
 					if (data.get_AwayMap(txt_Item.getString("Away_img")) != null) {
-						image_Away.setImageBitmap(data.get_AwayMap(txt_Item.getString("Away_img")));
+						image_Away.setImageBitmap(data.get_AwayMap(txt_Item
+								.getString("Away_img")));
 					} else {
 						image_Away.setImageResource(R.drawable.soccer_icon);
-						startDownload_Away(position, image_Away);
+						startDownload_Away(position, image_Away, saveModeGet);
 					}
-					
+
 					LinearLayout layOut_1 = new LinearLayout(mContext);
 					layOut_1.setLayoutParams(new LinearLayout.LayoutParams(0,
 							LayoutParams.WRAP_CONTENT, 1f));
@@ -245,7 +253,8 @@ public class LiveScore_Today extends Activity {
 
 					LinearLayout layOut_2 = new LinearLayout(mContext);
 					layOut_2.setLayoutParams(new LinearLayout.LayoutParams(
-							LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT));
 					layOut_2.setGravity(Gravity.CENTER);
 
 					LinearLayout layOut_3 = new LinearLayout(mContext);
@@ -259,34 +268,37 @@ public class LiveScore_Today extends Activity {
 					txt_Home.setPadding(5, 0, 5, 0);
 					layOut_1.addView(image_Home);
 					layOut_1.addView(txt_Home);
-					
+
 					layOut_2.setPadding(5, 0, 5, 0);
 					txt_Score.setPadding(5, 0, 5, 0);
 					layOut_2.addView(txt_Score);
-					
+
 					layOut_3.setPadding(5, 0, 5, 0);
 					txt_Away.setPadding(5, 0, 5, 0);
 					image_Away.setPadding(5, 0, 5, 0);
 					layOut_3.addView(txt_Away);
 					layOut_3.addView(image_Away);
-					
+
 					LinearLayout layOut_time = new LinearLayout(mContext);
 					layOut_time.setOrientation(LinearLayout.HORIZONTAL);
-					layOut_time.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+					layOut_time.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.MATCH_PARENT,
 							LayoutParams.WRAP_CONTENT));
 					layOut_time.addView(txt);
 
-					if(txt_Item.getString("score_ag").length()>4){
+					if (txt_Item.getString("score_ag").length() > 4) {
 						TextView txt_Aggregate = new TextView(mContext);
-						txt_Aggregate.setLayoutParams(new LinearLayout.LayoutParams(0,
-								LayoutParams.WRAP_CONTENT, 1f));
+						txt_Aggregate
+								.setLayoutParams(new LinearLayout.LayoutParams(
+										0, LayoutParams.WRAP_CONTENT, 1f));
 						txt_Aggregate.setTextSize(14);
 						txt_Aggregate.setTextColor(Color.BLACK);
 						txt_Aggregate.setGravity(Gravity.RIGHT);
-						txt_Aggregate.setText("AGGREGATE: "+txt_Item.getString("score_ag")+" ");
+						txt_Aggregate.setText("AGGREGATE: "
+								+ txt_Item.getString("score_ag") + " ");
 						layOut_time.addView(txt_Aggregate);
 					}
-					
+
 					layOut_Detail.addView(layOut_1);
 					layOut_Detail.addView(layOut_2);
 					layOut_Detail.addView(layOut_3);
@@ -295,22 +307,28 @@ public class LiveScore_Today extends Activity {
 					if (chk_ani && last_ItemView - 1 < position) {
 						layOut_time.setAnimation(AnimationUtils.loadAnimation(
 								mContext, R.drawable.listview_anim));
-						layOut_Detail.setAnimation(AnimationUtils.loadAnimation(
-								mContext, R.drawable.listview_anim));
+						layOut_Detail.setAnimation(AnimationUtils
+								.loadAnimation(mContext,
+										R.drawable.listview_anim));
 					}
-					//retval.setBackgroundColor(Color.GRAY);
-					//retval.getBackground().setAlpha(200);
+					// retval.setBackgroundColor(Color.GRAY);
+					// retval.getBackground().setAlpha(200);
 				} else {
 					retval.setPadding(5, 5, 5, 5);
-					bg.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-					txt.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+					bg.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.MATCH_PARENT,
+							LayoutParams.WRAP_CONTENT));
+					txt.setLayoutParams(new LayoutParams(
+							LayoutParams.MATCH_PARENT,
 							LayoutParams.WRAP_CONTENT));
 					txt.setGravity(Gravity.CENTER);
-					
-					
-						txt.setText(txt_Item.getString("League").substring(txt_Item.getString("League").lastIndexOf("]") + 1)
-								.replaceAll("&lrm;", " "));
-					
+
+					txt.setText(txt_Item
+							.getString("League")
+							.substring(
+									txt_Item.getString("League").lastIndexOf(
+											"]") + 1).replaceAll("&lrm;", " "));
+
 					txt.setTextSize(24);
 					bg.addView(txt);
 					if (chk_ani && last_ItemView - 1 < position) {
@@ -327,12 +345,11 @@ public class LiveScore_Today extends Activity {
 				e.printStackTrace();
 			}
 			return retval;
-			
 
 		}
 
 	}
-	
+
 	class Live_score_1stLoader extends AsyncTask<String, String, String> {
 		@Override
 		protected void onPreExecute() {
@@ -350,88 +367,108 @@ public class LiveScore_Today extends Activity {
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("_k",
 						"592ffdb05020001222c7d024479b028d"));
-				params.add(new BasicNameValuePair("_t",
-						"get-livescore"));
-				params.add(new BasicNameValuePair("_u",
-						String.valueOf(SessionManager.getMember(LiveScore_Today.this).getUid())));
-				params.add(new BasicNameValuePair("_d", "c" ));
-				
+				params.add(new BasicNameValuePair("_t", "get-livescore"));
+				params.add(new BasicNameValuePair("_u", String
+						.valueOf(SessionManager.getMember(LiveScore_Today.this)
+								.getUid())));
+				params.add(new BasicNameValuePair("_d", "c"));
+
 				JSONObject json = jParser
-						.makeHttpRequest("http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
+						.makeHttpRequest(
+								"http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
 								"POST", params);
-				
+
 				if (json != null) {
 					data.Match_list_c_JSON.clear();
 					JSONObject json_ob = json;
 
 					JSONArray json_itArr = json_ob.getJSONArray("it");
-					for(int i=0; i<json_itArr.length(); i++){
+					for (int i = 0; i < json_itArr.length(); i++) {
 						JSONObject json_it = json_itArr.getJSONObject(i);
 						String League = json_it.getString("ln");
-						if(League.contains("UEFA Champions League")){
-							League = "[1]"+League;
-						}else if(League.contains("Premier League")){
-							League = "[2]"+League;
-						}else if(League.contains("Primera División")||League.contains("Primera DivisiÃ³n")){
-							League = "[3]"+League;
-						}else if(League.contains("Bundesliga")){
-							League = "[4]"+League;
-						}else if(League.contains("Serie A")){
-							League = "[5]"+League;
-						}else if(League.contains("Ligue 1")){
-							League = "[6]"+League;
+						if (League.contains("UEFA Champions League")) {
+							League = "[1]" + League;
+						} else if (League.contains("Premier League")) {
+							League = "[2]" + League;
+						} else if (League.contains("Primera División")
+								|| League.contains("Primera DivisiÃ³n")) {
+							League = "[3]" + League;
+						} else if (League.contains("Bundesliga")) {
+							League = "[4]" + League;
+						} else if (League.contains("Serie A")) {
+							League = "[5]" + League;
+						} else if (League.contains("Ligue 1")) {
+							League = "[6]" + League;
 						}
-						data.Match_list_c_JSON.add(new JSONObject().put("League", League));
+						data.Match_list_c_JSON.add(new JSONObject().put(
+								"League", League));
 						JSONArray json_dtArr = json_it.getJSONArray("dt");
 
 						int chk_ExistTeam_in = data.Match_list_c_JSON.size();
-						for(int j=0; j<json_dtArr.length(); j++){
+						for (int j = 0; j < json_dtArr.length(); j++) {
 							JSONObject json_dt = json_dtArr.getJSONObject(j);
 							String id = json_dt.getString("id");
-							String Home  = json_dt.getString("ht");
-							String Home_img  = json_dt.getString("hl");
-							String away  = json_dt.getString("at");
-							String away_img  = json_dt.getString("al");
+							String Home = json_dt.getString("ht");
+							String Home_img = json_dt.getString("hl");
+							String away = json_dt.getString("at");
+							String away_img = json_dt.getString("al");
 							String link = json_dt.getString("lk");
-							String Time = "";//json_dt.getString("tp");
-							
-							if(json_dt.getString("ty").equals("playing")){
+							String Time = "";// json_dt.getString("tp");
+
+							if (json_dt.getString("ty").equals("playing")) {
 								Time = json_dt.getString("pr");
-							}else if(json_dt.getString("ty").equals("played")){
+							} else if (json_dt.getString("ty").equals("played")) {
 								Time = "FT";
-							}else if(json_dt.getString("ty").equals("postponed")){
+							} else if (json_dt.getString("ty").equals(
+									"postponed")) {
 								Time = json_dt.getString("ty");
-							}else if(json_dt.getString("ty").equals("fixture")){
+							} else if (json_dt.getString("ty")
+									.equals("fixture")) {
 								Time = json_dt.getString("tp");
-							}else{
+							} else {
 								Time = json_dt.getString("tp");
 							}
-							
+
 							String stat = "[no]";
 							String score = json_dt.getString("sc");
 							String score_ag = json_dt.getString("ag");
-							if(score.equals("")){
+							if (score.equals("")) {
 								score = "vs";
 							}
-							if(score_ag==null || score_ag.length()<5){
-								score_ag="";
-							}else{
-								if(!score.equals("vs")){
-									String AG[] = score_ag.replaceAll(" ", "").split("-");
+							if (score_ag == null || score_ag.length() < 5) {
+								score_ag = "";
+							} else {
+								if (!score.equals("vs")) {
+									String AG[] = score_ag.replaceAll(" ", "")
+											.split("-");
 									int Ag_home = Integer.parseInt(AG[0]);
 									int Ag_away = Integer.parseInt(AG[1]);
-									String SC[] = score.replaceAll(" ", "").split("-");
+									String SC[] = score.replaceAll(" ", "")
+											.split("-");
 									int Sc_home = Integer.parseInt(SC[0]);
 									int SC_away = Integer.parseInt(SC[1]);
-									score_ag = String.valueOf(Ag_home+Sc_home)+ " - " + String.valueOf(Ag_away+SC_away);
+									score_ag = String
+											.valueOf(Ag_home + Sc_home)
+											+ " - "
+											+ String.valueOf(Ag_away + SC_away);
 								}
 							}
 							if (away.contains(ControllParameter.TeamSelect)
 									|| Home.contains(ControllParameter.TeamSelect)) {
-								data.Match_list_c_JSON.add(new JSONObject().put("League"
-										, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
+								data.Match_list_c_JSON
+										.add(new JSONObject().put(
+												"League",
+												"[0]"
+														+ "Your Team in "
+														+ League.substring(League
+																.lastIndexOf("]") + 1)));
 								JSONObject j_data = new JSONObject();
-								j_data.put("League", "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
+								j_data.put(
+										"League",
+										"[0]"
+												+ "Your Team in "
+												+ League.substring(League
+														.lastIndexOf("]") + 1));
 								j_data.put("Time", "[0]" + Time);
 								j_data.put("id", id);
 								j_data.put("stat", stat);
@@ -458,26 +495,33 @@ public class LiveScore_Today extends Activity {
 							j_data.put("score_ag", score_ag);
 							data.Match_list_c_JSON.add(j_data);
 						}
-						if(chk_ExistTeam_in==data.Match_list_c_JSON.size()){
-							data.Match_list_c_JSON.remove(data.Match_list_c_JSON.size()-1);
+						if (chk_ExistTeam_in == data.Match_list_c_JSON.size()) {
+							data.Match_list_c_JSON
+									.remove(data.Match_list_c_JSON.size() - 1);
 						}
 					}
-					
-					Collections.sort(data.Match_list_c_JSON, new Comparator<JSONObject>() {
-						@Override
-						public int compare(JSONObject s1, JSONObject s2) {
-							try {
-								return s1.getString("League").compareToIgnoreCase(s2.getString("League"));
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							return 0;
-						}
-					});
-					if(data.Match_list_c_JSON.size()<=0){
-						data.Match_list_c_JSON.add(new JSONObject().put("League"
-								, "[0]" + getResources().getString(R.string.no_match)));
+
+					Collections.sort(data.Match_list_c_JSON,
+							new Comparator<JSONObject>() {
+								@Override
+								public int compare(JSONObject s1, JSONObject s2) {
+									try {
+										return s1.getString("League")
+												.compareToIgnoreCase(
+														s2.getString("League"));
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									return 0;
+								}
+							});
+					if (data.Match_list_c_JSON.size() <= 0) {
+						data.Match_list_c_JSON.add(new JSONObject().put(
+								"League",
+								"[0]"
+										+ getResources().getString(
+												R.string.no_match)));
 						return "no";
 					}
 				}
@@ -490,162 +534,216 @@ public class LiveScore_Today extends Activity {
 		protected void onPostExecute(final String msg) {
 			((Activity) mContext).runOnUiThread(new Runnable() {
 				public void run() {
-					if(data.Match_list_c_JSON.size()>0){
-						chk_D_Stat=false;
+					if (data.Match_list_c_JSON.size() > 0) {
+						chk_D_Stat = false;
 						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
 						layOutlist.removeAllViews();
-						((LinearLayout) layOutlist).addView(data.lstViewLiveScore);
+						((LinearLayout) layOutlist)
+								.addView(data.lstViewLiveScore);
 						chk_ani = false;
 						data.imageAdapterLiveScore.notifyDataSetChanged();
-						
-						if(data.socket_LiveScore==null && msg==null){
+
+						if (data.socket_LiveScore == null && msg == null) {
 							Live_score_Loader();
 						}
-					}else{
+					} else {
 						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
 						layOutlist.removeAllViews();
 						TextView RefreshTag = new TextView(mContext);
 						RefreshTag.setText("Tap to refresh");
 						RefreshTag.setGravity(Gravity.CENTER);
 						((LinearLayout) layOutlist).addView(RefreshTag);
-						layOutlist.setOnClickListener(new View.OnClickListener() {
-							@Override
-							public void onClick(View arg0) {
-								layOutlist.removeAllViews();
-								ProgressBar progress = new ProgressBar(mContext);
-								((LinearLayout) layOutlist).addView(progress);
-								new Live_score_1stLoader().execute();
-							}
-						});
+						layOutlist
+								.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View arg0) {
+										layOutlist.removeAllViews();
+										ProgressBar progress = new ProgressBar(
+												mContext);
+										((LinearLayout) layOutlist)
+												.addView(progress);
+										new Live_score_1stLoader().execute();
+									}
+								});
 					}
-					
+
 				}
 			});
 		}
 	}
-	
+
 	public void Live_score_Loader() {
 
 		Runnable runnable = new Runnable() {
 			public void run() {
-				
+
 				try {
-					data.socket_LiveScore = new SocketIO("http://183.90.171.209:5070");
+					data.socket_LiveScore = new SocketIO(
+							"http://183.90.171.209:5070");
 				} catch (MalformedURLException e1) {
 					e1.printStackTrace();
 				}
 				data.socket_LiveScore.connect(new IOCallback() {
-		            @Override
-		            public void onMessage(JSONObject json, IOAcknowledge ack) {
-		                try {
-		                	Log.d("TEST","test::Server said:" + json.toString(2));
-		                } catch (JSONException e) {
-		                    e.printStackTrace();
-		                }
-		            }
+					@Override
+					public void onMessage(JSONObject json, IOAcknowledge ack) {
+						try {
+							Log.d("TEST",
+									"test::Server said:" + json.toString(2));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
 
-		            @Override
-		            public void onMessage(String data, IOAcknowledge ack) {
-		            	Log.d("TEST","test::Server said: " + data);
-		            }
+					@Override
+					public void onMessage(String data, IOAcknowledge ack) {
+						Log.d("TEST", "test::Server said: " + data);
+					}
 
-		            @Override
-		            public void onError(SocketIOException socketIOException) {
-		            	Log.d("TEST","test::an Error occured");
-		                socketIOException.printStackTrace();
-		            }
+					@Override
+					public void onError(SocketIOException socketIOException) {
+						Log.d("TEST", "test::an Error occured");
+						socketIOException.printStackTrace();
+					}
 
-		            @Override
-		            public void onDisconnect() {
-		            	
-		            	data.liveScore_on = false;
-		            	Log.d("TEST", "chat_on::"+data.liveScore_on);
-		            }
+					@Override
+					public void onDisconnect() {
 
-		            @Override
-		            public void onConnect() {
-		            	
-		            	data.liveScore_on = true;
-		            	Log.d("TEST", "chat_on::"+data.liveScore_on);
-		            }
+						data.liveScore_on = false;
+						Log.d("TEST", "chat_on::" + data.liveScore_on);
+					}
 
-		            @Override
-		            public void on(String event, IOAcknowledge ack, Object... args) {
-		            	
-		            	if (event.equals("update-score")) {
-		            		data.Match_list_c_JSON.clear();
-		            		
-		            		for (Object object : args) {
-		                		try {
-									JSONObject json_ob = new JSONObject(object.toString());
+					@Override
+					public void onConnect() {
 
-									JSONArray json_itArr = json_ob.getJSONArray("it");
-									for(int i=0; i<json_itArr.length(); i++){
-										JSONObject json_it = json_itArr.getJSONObject(i);
+						data.liveScore_on = true;
+						Log.d("TEST", "chat_on::" + data.liveScore_on);
+					}
+
+					@Override
+					public void on(String event, IOAcknowledge ack,
+							Object... args) {
+
+						if (event.equals("update-score")) {
+							data.Match_list_c_JSON.clear();
+
+							for (Object object : args) {
+								try {
+									JSONObject json_ob = new JSONObject(object
+											.toString());
+
+									JSONArray json_itArr = json_ob
+											.getJSONArray("it");
+									for (int i = 0; i < json_itArr.length(); i++) {
+										JSONObject json_it = json_itArr
+												.getJSONObject(i);
 										String League = json_it.getString("ln");
-										if(League.contains("UEFA Champions League")){
-											League = "[1]"+League;
-										}else if(League.contains("Premier League")){
-											League = "[2]"+League;
-										}else if(League.contains("Primera División")||League.contains("Primera DivisiÃ³n")){
-											League = "[3]"+League;
-										}else if(League.contains("Bundesliga")){
-											League = "[4]"+League;
-										}else if(League.contains("Serie A")){
-											League = "[5]"+League;
-										}else if(League.contains("Ligue 1")){
-											League = "[6]"+League;
+										if (League
+												.contains("UEFA Champions League")) {
+											League = "[1]" + League;
+										} else if (League
+												.contains("Premier League")) {
+											League = "[2]" + League;
+										} else if (League
+												.contains("Primera División")
+												|| League
+														.contains("Primera DivisiÃ³n")) {
+											League = "[3]" + League;
+										} else if (League
+												.contains("Bundesliga")) {
+											League = "[4]" + League;
+										} else if (League.contains("Serie A")) {
+											League = "[5]" + League;
+										} else if (League.contains("Ligue 1")) {
+											League = "[6]" + League;
 										}
-										data.Match_list_c_JSON.add(new JSONObject().put("League", League));
-										JSONArray json_dtArr = json_it.getJSONArray("dt");
-										
-										for(int j=0; j<json_dtArr.length(); j++){
-											JSONObject json_dt = json_dtArr.getJSONObject(j);
+										data.Match_list_c_JSON
+												.add(new JSONObject().put(
+														"League", League));
+										JSONArray json_dtArr = json_it
+												.getJSONArray("dt");
+
+										for (int j = 0; j < json_dtArr.length(); j++) {
+											JSONObject json_dt = json_dtArr
+													.getJSONObject(j);
 											String id = json_dt.getString("id");
-											String Home  = json_dt.getString("ht");
-											String Home_img  = json_dt.getString("hl");
-											String away  = json_dt.getString("at");
-											String away_img  = json_dt.getString("al");
-											String link = json_dt.getString("lk");
-											String Time = "";//json_dt.getString("tp");
-											
-											if(json_dt.getString("ty").equals("playing")){
+											String Home = json_dt
+													.getString("ht");
+											String Home_img = json_dt
+													.getString("hl");
+											String away = json_dt
+													.getString("at");
+											String away_img = json_dt
+													.getString("al");
+											String link = json_dt
+													.getString("lk");
+											String Time = "";// json_dt.getString("tp");
+
+											if (json_dt.getString("ty").equals(
+													"playing")) {
 												Time = json_dt.getString("pr");
-											}else if(json_dt.getString("ty").equals("played")){
+											} else if (json_dt.getString("ty")
+													.equals("played")) {
 												Time = "FT";
-											}else if(json_dt.getString("ty").equals("postponed")){
+											} else if (json_dt.getString("ty")
+													.equals("postponed")) {
 												Time = json_dt.getString("ty");
-											}else if(json_dt.getString("ty").equals("fixture")){
+											} else if (json_dt.getString("ty")
+													.equals("fixture")) {
 												Time = json_dt.getString("tp");
-											}else{
+											} else {
 												Time = json_dt.getString("tp");
 											}
-											
+
 											String stat = "[no]";
-											String score = json_dt.getString("sc");
-											String score_ag = json_dt.getString("ag");
-											if(score.equals("")){
+											String score = json_dt
+													.getString("sc");
+											String score_ag = json_dt
+													.getString("ag");
+											if (score.equals("")) {
 												score = "vs";
 											}
-											if(score_ag==null || score_ag.length()<5){
-												score_ag="";
-											}else{
-												if(!score.equals("vs")){
-													String AG[] = score_ag.replaceAll(" ", "").split("-");
-													int Ag_home = Integer.parseInt(AG[0]);
-													int Ag_away = Integer.parseInt(AG[1]);
-													String SC[] = score.replaceAll(" ", "").split("-");
-													int Sc_home = Integer.parseInt(SC[0]);
-													int SC_away = Integer.parseInt(SC[1]);
-													score_ag = String.valueOf(Ag_home+Sc_home)+ " - " + String.valueOf(Ag_away+SC_away);
+											if (score_ag == null
+													|| score_ag.length() < 5) {
+												score_ag = "";
+											} else {
+												if (!score.equals("vs")) {
+													String AG[] = score_ag
+															.replaceAll(" ", "")
+															.split("-");
+													int Ag_home = Integer
+															.parseInt(AG[0]);
+													int Ag_away = Integer
+															.parseInt(AG[1]);
+													String SC[] = score
+															.replaceAll(" ", "")
+															.split("-");
+													int Sc_home = Integer
+															.parseInt(SC[0]);
+													int SC_away = Integer
+															.parseInt(SC[1]);
+													score_ag = String
+															.valueOf(Ag_home
+																	+ Sc_home)
+															+ " - "
+															+ String.valueOf(Ag_away
+																	+ SC_away);
 												}
 											}
 											if (away.contains(ControllParameter.TeamSelect)
 													|| Home.contains(ControllParameter.TeamSelect)) {
-												data.Match_list_c_JSON.add(new JSONObject().put("League"
-														, "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1)));								
+												data.Match_list_c_JSON.add(new JSONObject()
+														.put("League",
+																"[0]"
+																		+ "Your Team in "
+																		+ League.substring(League
+																				.lastIndexOf("]") + 1)));
 												JSONObject j_data = new JSONObject();
-												j_data.put("League", "[0]" + "Your Team in " +League.substring(League.lastIndexOf("]") + 1));
+												j_data.put(
+														"League",
+														"[0]"
+																+ "Your Team in "
+																+ League.substring(League
+																		.lastIndexOf("]") + 1));
 												j_data.put("Time", "[0]" + Time);
 												j_data.put("id", id);
 												j_data.put("stat", stat);
@@ -656,9 +754,10 @@ public class LiveScore_Today extends Activity {
 												j_data.put("Away_img", away_img);
 												j_data.put("link", link);
 												j_data.put("score_ag", score_ag);
-												data.Match_list_c_JSON.add(j_data);
+												data.Match_list_c_JSON
+														.add(j_data);
 											}
-											if(!Time.contains("FT")){
+											if (!Time.contains("FT")) {
 												data.liveScore_ChkHavePlaying = true;
 											}
 											JSONObject j_data = new JSONObject();
@@ -680,44 +779,52 @@ public class LiveScore_Today extends Activity {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								
-							}
-		            		Collections.sort(data.Match_list_c_JSON, new Comparator<JSONObject>() {
-								@Override
-								public int compare(JSONObject s1, JSONObject s2) {
-									try {
-										return s1.getString("League").compareToIgnoreCase(s2.getString("League"));
-									} catch (JSONException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									return 0;
-								}
-							});
-		            		if(data.liveScore_ChkHavePlaying){
-		            			chk_D_Stat=false;
-	    						chk_ani = false;
-		            			data.liveScore_ChkHavePlaying = false;
-		            			handler.post(new Runnable() {
 
-			    					@Override
-			    					public void run() {
-			    						if (Looper.myLooper() == Looper.getMainLooper()) {
-				    						data.imageAdapterLiveScore.notifyDataSetChanged();
-			    						}		    						
-			    					}
-			    				});	
-		            		}
-		                }
-		            }
-		        });
-				//socket.emit("adduser", Name_Send);
+							}
+							Collections.sort(data.Match_list_c_JSON,
+									new Comparator<JSONObject>() {
+										@Override
+										public int compare(JSONObject s1,
+												JSONObject s2) {
+											try {
+												return s1
+														.getString("League")
+														.compareToIgnoreCase(
+																s2.getString("League"));
+											} catch (JSONException e) {
+												// TODO Auto-generated catch
+												// block
+												e.printStackTrace();
+											}
+											return 0;
+										}
+									});
+							if (data.liveScore_ChkHavePlaying) {
+								chk_D_Stat = false;
+								chk_ani = false;
+								data.liveScore_ChkHavePlaying = false;
+								handler.post(new Runnable() {
+
+									@Override
+									public void run() {
+										if (Looper.myLooper() == Looper
+												.getMainLooper()) {
+											data.imageAdapterLiveScore
+													.notifyDataSetChanged();
+										}
+									}
+								});
+							}
+						}
+					}
+				});
+				// socket.emit("adduser", Name_Send);
 			}
 		};
 
 		new Thread(runnable).start();
 	}
-	
+
 	public static Bitmap loadImageFromUrl(String url) {
 		InputStream i = null;
 		BufferedInputStream bis = null;
@@ -772,8 +879,8 @@ public class LiveScore_Today extends Activity {
 			options.inJustDecodeBounds = true;
 			BitmapFactory.decodeByteArray(data, 0, data.length, options);
 
-			double screenWidth = options.outWidth/2;
-			double screenHeight = options.outHeight/2;
+			double screenWidth = options.outWidth / 2;
+			double screenHeight = options.outHeight / 2;
 
 			options.inPreferredConfig = Bitmap.Config.RGB_565;
 			options.inDither = false; // Disable Dithering mode
@@ -795,95 +902,129 @@ public class LiveScore_Today extends Activity {
 		return bitmap;
 	}
 
-	public void startDownload_Home(final int position, final ImageView img_H) {
+	public void startDownload_Home(final int position, final ImageView img_H, final String saveMode) {
 
 		Runnable runnable = new Runnable() {
 			public void run() {
-				String txt_Item="";
-				try {
-					txt_Item = data.Match_list_c_JSON.get(position).getString("Home_img");
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				if (txt_Item.length()>0) {
-					
-					if (data.get_HomeMap(txt_Item) != null) {
-						handler.post(new Runnable() {
-							@Override
-							public void run() {
-								img_H.setImageBitmap(data.get_HomeMap(String
-										.valueOf(position)));
-							}
-						});
-					} else {
-						if (!txt_Item
-								.contains("/images/placeholder-64x64.png")) {
-							final Bitmap pic;
-							pic = loadImageFromUrl(txt_Item);
-							data.set_HomeMap(txt_Item, pic);
-							handler.post(new Runnable() {
+				if (saveMode.equals("true")) {
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							img_H.setImageResource(R.drawable.ic_menu_view);
+							img_H.setFocusable(false);
+							img_H.setOnClickListener(new View.OnClickListener() {
+								
 								@Override
-								public void run() {
-									if(pic==null){
-										img_H.setImageResource(R.drawable.soccer_icon);
-									}else{
-										img_H.setImageBitmap(pic);
-									}
+								public void onClick(View arg0) {
+									startDownload_Home(position, img_H, "false");
 								}
 							});
 						}
+					});
+				}else if(saveMode.equals("false")||saveMode.equals("null")){
+					String txt_Item = "";
+					try {
+						txt_Item = data.Match_list_c_JSON.get(position).getString(
+								"Home_img");
+					} catch (JSONException e) {
+						e.printStackTrace();
 					}
-			}
+
+					if (txt_Item.length() > 0) {
+
+						if (data.get_HomeMap(txt_Item) != null) {
+							handler.post(new Runnable() {
+								@Override
+								public void run() {
+									img_H.setImageBitmap(data.get_HomeMap(String
+											.valueOf(position)));
+								}
+							});
+						} else {
+							if (!txt_Item.contains("/images/placeholder-64x64.png")) {
+								final Bitmap pic;
+								pic = loadImageFromUrl(txt_Item);
+								data.set_HomeMap(txt_Item, pic);
+								handler.post(new Runnable() {
+									@Override
+									public void run() {
+										if (pic == null) {
+											img_H.setImageResource(R.drawable.soccer_icon);
+										} else {
+											img_H.setImageBitmap(pic);
+										}
+									}
+								});
+							}
+						}
+					}
+				}
+				
 			}
 		};
 
 		new Thread(runnable).start();
 	}
-	
-	public void startDownload_Away(final int position, final ImageView img_A) {
+
+	public void startDownload_Away(final int position, final ImageView img_A, final String saveMode) {
 
 		Runnable runnable = new Runnable() {
 			public void run() {
-				String txt_Item="";
-				try {
-					txt_Item = data.Match_list_c_JSON.get(position).getString("Away_img");
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				if (txt_Item.length()>0) {
-					
-					if (data.get_AwayMap(txt_Item) != null) {
-						handler.post(new Runnable() {
-							@Override
-							public void run() {
-								img_A.setImageBitmap(data.get_AwayMap(String
-										.valueOf(position)));
-							}
-						});
-					} else {
-						if (!txt_Item
-								.contains("/images/placeholder-64x64.png")) {
-							final Bitmap pic;
-							pic = loadImageFromUrl(txt_Item);
-							data.set_AwayMap(txt_Item, pic);
-							
-							handler.post(new Runnable() {
+				if (saveMode.equals("true")) {
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							img_A.setImageResource(R.drawable.ic_menu_view);
+							img_A.setFocusable(false);
+							img_A.setOnClickListener(new View.OnClickListener() {
+								
 								@Override
-								public void run() {
-									if(pic==null){
-										img_A.setImageResource(R.drawable.soccer_icon);
-									}else{
-										img_A.setImageBitmap(pic);
-									}
+								public void onClick(View arg0) {
+									startDownload_Away(position, img_A, "false");
 								}
 							});
 						}
+					});
+				}else if(saveMode.equals("false")||saveMode.equals("null")){
+					String txt_Item = "";
+					try {
+						txt_Item = data.Match_list_c_JSON.get(position).getString(
+								"Away_img");
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 
+					if (txt_Item.length() > 0) {
+
+						if (data.get_AwayMap(txt_Item) != null) {
+							handler.post(new Runnable() {
+								@Override
+								public void run() {
+									img_A.setImageBitmap(data.get_AwayMap(String
+											.valueOf(position)));
+								}
+							});
+						} else {
+							if (!txt_Item.contains("/images/placeholder-64x64.png")) {
+								final Bitmap pic;
+								pic = loadImageFromUrl(txt_Item);
+								data.set_AwayMap(txt_Item, pic);
+
+								handler.post(new Runnable() {
+									@Override
+									public void run() {
+										if (pic == null) {
+											img_A.setImageResource(R.drawable.soccer_icon);
+										} else {
+											img_A.setImageBitmap(pic);
+										}
+									}
+								});
+							}
+						}
+
+					}
 				}
 			}
 		};
@@ -939,7 +1080,7 @@ public class LiveScore_Today extends Activity {
 
 		return inSampleSize;
 	}
-	
+
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			return false;

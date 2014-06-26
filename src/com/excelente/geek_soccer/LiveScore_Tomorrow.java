@@ -67,6 +67,7 @@ public class LiveScore_Tomorrow extends Activity {
 	Boolean chk_D_Stat=false;
 	int chk_loaded = 0;
 	private static ControllParameter data;
+	String saveModeGet;
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +76,8 @@ public class LiveScore_Tomorrow extends Activity {
         
         setContentView(R.layout.livescore_tomorrow);
         mContext = this;
+        saveModeGet = SessionManager.getSetting(mContext,
+				SessionManager.setting_save_mode);
 		lstView = new ListView(mContext);
 		lstView.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -204,13 +207,13 @@ public class LiveScore_Tomorrow extends Activity {
 						image_Home.setImageBitmap(data.get_HomeMap(txt_Item.getString("Home_img")));
 					} else {
 						image_Home.setImageResource(R.drawable.soccer_icon);
-						startDownload_Home(position, image_Home);
+						startDownload_Home(position, image_Home, saveModeGet);
 					}
 					if (data.get_AwayMap(txt_Item.getString("Away_img")) != null) {
 						image_Away.setImageBitmap(data.get_AwayMap(txt_Item.getString("Away_img")));
 					} else {
 						image_Away.setImageResource(R.drawable.soccer_icon);
-						startDownload_Away(position, image_Away);
+						startDownload_Away(position, image_Away, saveModeGet);
 					}
 					
 					LinearLayout layOut_1 = new LinearLayout(mContext);
@@ -575,96 +578,131 @@ public class LiveScore_Tomorrow extends Activity {
 		return bitmap;
 	}
 
-	public void startDownload_Home(final int position, final ImageView img_H) {
+	public void startDownload_Home(final int position, final ImageView img_H, final String saveMode) {
 
 		Runnable runnable = new Runnable() {
 			public void run() {
-				String txt_Item="";
-				try {
-					txt_Item = data.Match_list_t_JSON.get(position).getString("Home_img");
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				if (txt_Item.length()>0) {
-					
-					if (data.get_HomeMap(txt_Item) != null) {
-						handler.post(new Runnable() {
-							@Override
-							public void run() {
-								img_H.setImageBitmap(data.get_HomeMap(String
-										.valueOf(position)));
-							}
-						});
-					} else {
-						if (!txt_Item
-								.contains("/images/placeholder-64x64.png")) {
-							final Bitmap pic;
-							pic = loadImageFromUrl(txt_Item);
-							data.set_HomeMap(txt_Item, pic);
-							handler.post(new Runnable() {
+				if (saveMode.equals("true")) {
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							img_H.setImageResource(R.drawable.ic_menu_view);
+							img_H.setFocusable(false);
+							img_H.setOnClickListener(new View.OnClickListener() {
+								
 								@Override
-								public void run() {
-									if(pic==null){
-										img_H.setImageResource(R.drawable.soccer_icon);
-									}else{
-										img_H.setImageBitmap(pic);
-									}
+								public void onClick(View arg0) {
+									startDownload_Home(position, img_H, "false");
 								}
 							});
 						}
+					});
+				}else if(saveMode.equals("false")||saveMode.equals("null")){
+					String txt_Item = "";
+					try {
+						txt_Item = data.Match_list_t_JSON.get(position).getString(
+								"Home_img");
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-			}
+
+					if (txt_Item.length() > 0) {
+
+						if (data.get_HomeMap(txt_Item) != null) {
+							handler.post(new Runnable() {
+								@Override
+								public void run() {
+									img_H.setImageBitmap(data.get_HomeMap(String
+											.valueOf(position)));
+								}
+							});
+						} else {
+							if (!txt_Item.contains("/images/placeholder-64x64.png")) {
+								final Bitmap pic;
+								pic = loadImageFromUrl(txt_Item);
+								data.set_HomeMap(txt_Item, pic);
+								handler.post(new Runnable() {
+									@Override
+									public void run() {
+										if (pic == null) {
+											img_H.setImageResource(R.drawable.soccer_icon);
+										} else {
+											img_H.setImageBitmap(pic);
+										}
+									}
+								});
+							}
+						}
+					}
+				}
 			}
 		};
 
 		new Thread(runnable).start();
 	}
 	
-	public void startDownload_Away(final int position, final ImageView img_A) {
+	public void startDownload_Away(final int position, final ImageView img_A, final String saveMode) {
 
 		Runnable runnable = new Runnable() {
 			public void run() {
-				String txt_Item="";
-				try {
-					txt_Item = data.Match_list_t_JSON.get(position).getString("Away_img");
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				if (txt_Item.length()>0) {
-					
-					if (data.get_AwayMap(txt_Item) != null) {
-						handler.post(new Runnable() {
-							@Override
-							public void run() {
-								img_A.setImageBitmap(data.get_AwayMap(String
-										.valueOf(position)));
-							}
-						});
-					} else {
-						if (!txt_Item
-								.contains("/images/placeholder-64x64.png")) {
-							final Bitmap pic;
-							pic = loadImageFromUrl(txt_Item);
-							data.set_AwayMap(txt_Item, pic);
-							
-							handler.post(new Runnable() {
+				if (saveMode.equals("true")) {
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							img_A.setImageResource(R.drawable.ic_menu_view);
+							img_A.setFocusable(false);
+							img_A.setOnClickListener(new View.OnClickListener() {
+								
 								@Override
-								public void run() {
-									if(pic==null){
-										img_A.setImageResource(R.drawable.soccer_icon);
-									}else{
-										img_A.setImageBitmap(pic);
-									}
+								public void onClick(View arg0) {
+									startDownload_Away(position, img_A, "false");
 								}
 							});
 						}
+					});
+				}else if(saveMode.equals("false")||saveMode.equals("null")){
+					String txt_Item="";
+					try {
+						txt_Item = data.Match_list_t_JSON.get(position).getString("Away_img");
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+					
+					if (txt_Item.length()>0) {
+						
+						if (data.get_AwayMap(txt_Item) != null) {
+							handler.post(new Runnable() {
+								@Override
+								public void run() {
+									img_A.setImageBitmap(data.get_AwayMap(String
+											.valueOf(position)));
+								}
+							});
+						} else {
+							if (!txt_Item
+									.contains("/images/placeholder-64x64.png")) {
+								final Bitmap pic;
+								pic = loadImageFromUrl(txt_Item);
+								data.set_AwayMap(txt_Item, pic);
+								
+								handler.post(new Runnable() {
+									@Override
+									public void run() {
+										if(pic==null){
+											img_A.setImageResource(R.drawable.soccer_icon);
+										}else{
+											img_A.setImageBitmap(pic);
+										}
+									}
+								});
+							}
+						}
 
+					}
 				}
+				
 			}
 		};
 

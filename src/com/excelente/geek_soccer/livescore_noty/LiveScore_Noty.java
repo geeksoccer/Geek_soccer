@@ -194,7 +194,11 @@ public class LiveScore_Noty {
 				if(data.OldTimeH.get(id)!=null){
 					if(!data.OldTimeH.get(id).equals("FT")){
 						if((!newScore.equals(data.OldScoreH.get(id)))
-								|| (!Time.equals(data.OldTimeH.get(id)) && (Time.equals("HT")) || Time.equals("FT") || data.OldTimeH.get(id).equals("HT"))){
+								|| (!Time.equals(data.OldTimeH.get(id)) 
+										&& (Time.equals("HT")) 
+											|| Time.equals("FT") 
+											|| data.OldTimeH.get(id).equals("HT")
+											|| data.OldTimeH.get(id).contains(":")) ){
 							NotifyLiveEvent(mContext, id, Home, newScore, Away, "Time: "+Time);
 						}
 					}
