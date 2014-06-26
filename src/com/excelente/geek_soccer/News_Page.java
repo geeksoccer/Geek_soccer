@@ -79,8 +79,10 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initView();
-        initSubview();
+        if(getView() != null){
+        	initView();
+        	initSubview();
+        }
 	}
 
 	private void initSubview() {

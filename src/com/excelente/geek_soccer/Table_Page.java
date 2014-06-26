@@ -78,13 +78,17 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initView();
+        if(getView() != null){
+        	initView();
+        }
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		initSubView();
+		if(getView() != null){
+			initSubView();
+		}
 	}
 
 	private void initView() {

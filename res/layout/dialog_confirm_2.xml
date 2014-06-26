@@ -41,14 +41,25 @@
 	    android:layout_below="@+id/main_action_bar"
 	    android:orientation="vertical"
 	    android:layout_margin="5dp">
-
+	
+	    <CheckBox 
+		    android:id="@+id/chk_ask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/save_mode_check_ask"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:padding="5dp"/>
+	    
 		<TextView 
 		    android:id="@+id/dialog_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="16sp"
-            android:padding="20dp"/>
+            android:padding="10dp"/>
 	    
 	</LinearLayout>
 	

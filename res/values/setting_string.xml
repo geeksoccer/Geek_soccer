@@ -18,11 +18,19 @@
     </string-array>
     <string-array name="setting_detail_list">
         <item>Touch For Change Language</item>
-        <item>Touch Check Box For On/Off Notification</item>
-        <item>Touch Check Box For On/Off Notification</item>
-        <item>Touch Check Box For On/Off Notification</item>
-        <item>Touch Check Box For On/Off Notification</item> 
-        <item>Touch Check Box For On/Off Save Mode</item> 
+        <item>Touch Check Box For Off Notification</item>
+        <item>Touch Check Box For Off Notification</item>
+        <item>Touch Check Box For Off Notification</item>
+        <item>Touch Check Box For Off Notification</item> 
+        <item>Touch Check Box For Off Save Mode</item> 
+    </string-array>
+    <string-array name="setting_detail_list_2">
+        <item>Touch For Change Language</item>
+        <item>Touch Check Box For On Notification</item>
+        <item>Touch Check Box For On Notification</item>
+        <item>Touch Check Box For On Notification</item>
+        <item>Touch Check Box For On Notification</item> 
+        <item>Touch Check Box For On Save Mode</item> 
     </string-array>
     <integer-array name="setting_showcb_list">
         <item>0</item>

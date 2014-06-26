@@ -105,8 +105,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		initView();
-		initSubView();
+		if(getView() != null){
+			initView();
+			initSubView();
+		}
 	}
 
 	private void initView() { 
@@ -665,6 +667,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	} 
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onTabChanged(String tag) {
 		if(tag.equals("tag0")){
@@ -762,7 +765,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 				}
 			}
 			
-			int screenWidth = getActivity().getWindowManager().getDefaultDisplay().getWidth();
+			int screenWidth = getActivity().getWindowManager().getDefaultDisplay().getWidth(); 
 			int scrollX = (scrollTab.getRight() - (screenWidth / 2)) + (scrollTab.getWidth() / 2);
 			scrollTab.smoothScrollTo(scrollX, 0);
 			

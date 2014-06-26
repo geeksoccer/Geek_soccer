@@ -179,6 +179,7 @@ public class NewsItemsAdapter extends PagerAdapter{
         	
         	@Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        		view.stopLoading();
         		Log.e("LOG", url);
                 Uri uri = Uri.parse(url);
                 if (uri.getHost().contains("youtube.com")) {
@@ -187,8 +188,7 @@ public class NewsItemsAdapter extends PagerAdapter{
                 }else if (uri.getHost().contains("facebook.com")){
                 	IntentVideoViewUtils.playFacebookVideo(newsItemPage, url);
                 	return true;
-                }else if (url.toLowerCase().endsWith("jpg") || url.toLowerCase().endsWith("png") || url.toLowerCase().endsWith("gif") || url.toLowerCase().endsWith("jpeg")){
-                	view.stopLoading();
+                }else if (isImageType(url)){
                 	/*String upic_me = "http://upic.me/";
             		String image_ohozaa_com = "http://image.ohozaa.com/";
             		if((url.length() > upic_me.length() && url.substring(0, upic_me.length()).equals(upic_me)) || (url.length() > image_ohozaa_com.length() && url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com))){
@@ -201,10 +201,21 @@ public class NewsItemsAdapter extends PagerAdapter{
             		doPushImage(view, url);
                 	return false;
                 }else{
-                	view.stopLoading();
                 	return false;
                 }
             }
+
+			private boolean isImageType(String url) {
+				
+				String[] imgType = new String[]{".jpg", ".png", ".gif", ".jpeg"};
+				for (String type : imgType) {
+					if(url.contains(type)){
+						return true;
+					}
+				}
+				return false;
+				
+			}
 
 			@Override
         	public void onPageStarted(final WebView view, String url, Bitmap favicon) {
@@ -366,13 +377,13 @@ public class NewsItemsAdapter extends PagerAdapter{
 			for (Element image : doc.select("img")) {
 				Attributes attrs = new Attributes();
 				attrs.put("href", image.attr("src"));
+				attrs.put("style", "max-width: 100%;width:300px;margin:10px;padding:5px;border:1px solid #BBB;height: 150px;text-align:center;background-color:#EEE;line-height: 150px;vertical-align:middle;color:#666;display: block;");
 				Element a = new Element(Tag.valueOf("a"), "", attrs);
-				a.append(mContext.getString(R.string.show_photo)); 
-				image.replaceWith(a);
+				a.appendText(mContext.getString(R.string.show_photo));
+				image.replaceWith(a); 
 			}
 			
 			htmlData = doc.toString();
-			Log.e(">>>>>>>>>>>>", htmlData);
 			if(SessionManager.getMember(mContext).getTeamId() == 2)
 				htmlData = "<html><head><style>img{max-width: 100%; width:auto; height: auto;} iframe{max-width: 100%; width:auto; height: auto;} embed{max-width: 100%; width:auto; height: auto;}</style></head><body onload='myFunction()' >"+ htmlData +"<br><br><br><br></body><script> function myFunction(){document.body.style.fontSize ='12px';}</script></html>";
 			else

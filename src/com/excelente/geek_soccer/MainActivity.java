@@ -36,6 +36,9 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -71,10 +74,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			finish();
 		}
 		
-		askMode();
+		//SessionManager.setSetting(this, SessionManager.setting_save_mode_ask, "false");
+		String saveModeAsk = SessionManager.getSetting(this, SessionManager.setting_save_mode_ask);
+		if(saveModeAsk != null && saveModeAsk.equals("true")){
+			doCreate();
+		}else{
+			askMode();
+		}
+
 	}
-	
-	
 	
 	private void doCreate() {
 		mContext = this;
@@ -110,8 +118,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		//new Load_LiveScore_Data().data(mContext, Date_Select);
 	    setPageFromNotification();
 	}
-
-
 
 	private void askMode() {
 		if(NetworkUtils.getConnectivityStatus(this) == NetworkUtils.TYPE_MOBILE){
@@ -542,6 +548,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		RelativeLayout btComfirmOK = (RelativeLayout) view.findViewById(R.id.button_confirm_ok);
 		RelativeLayout btComfirmNO = (RelativeLayout) view.findViewById(R.id.button_confirm_no);
 		
+		CheckBox checkBoxAsk = (CheckBox) view.findViewById(R.id.chk_ask);
+		
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 		confirmDialog.setContentView(view);
@@ -581,6 +589,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				confirmDialog.dismiss();  
 			}
 
+		});
+		
+		checkBoxAsk.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				SessionManager.setSetting(mContext, SessionManager.setting_save_mode_ask, String.valueOf(isChecked));
+			}
+			
 		});
 		 
 		confirmDialog.setCancelable(false);

@@ -11,6 +11,7 @@
     <string name="net_mobile">3G enabled</string>
     
     <string name="button_confirm_no">No</string>
+    <string name="save_mode_check_ask">Don\'t ask me.</string>
     
     <string name="show_photo">View</string>
     <string name="save_mode_title">Save Mode</string>

@@ -59,6 +59,7 @@ public class Setting_Page extends Activity implements OnClickListener, OnItemCli
 		String[] tags = getResources().getStringArray(R.array.setting_tag_list);
 		String[] topics = getResources().getStringArray(R.array.setting_topic_list);
 		String[] details = getResources().getStringArray(R.array.setting_detail_list);
+		String[] details2 = getResources().getStringArray(R.array.setting_detail_list_2);
 		int[] showcbs = getResources().getIntArray(R.array.setting_showcb_list);
 		
 		for (int i = 0; i < topics.length; i++) {
@@ -77,7 +78,7 @@ public class Setting_Page extends Activity implements OnClickListener, OnItemCli
 				}
 			}
 			
-			SettingModel sm = new SettingModel(tags[i], topics[i], details[i], strVal, showcbs[i]);
+			SettingModel sm = new SettingModel(tags[i], topics[i], details[i], strVal, showcbs[i], details2[i]);
 			settingList.add(sm);
 		}
 		

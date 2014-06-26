@@ -7,11 +7,13 @@ public class SettingModel {
 	String detail;
 	int showCheckBox;
 	String val;
+	String detail2;
 
-	public SettingModel(String tag, String topic, String detail, String val, int showCheckBox) {
+	public SettingModel(String tag, String topic, String detail, String val, int showCheckBox, String detail2) {
 		this.tag = tag;
 		this.topic = topic;
 		this.detail = detail;
+		this.detail2 = detail2;
 		this.val = val;
 		this.showCheckBox = showCheckBox;
 	}
@@ -54,5 +56,13 @@ public class SettingModel {
 
 	public void setShowCheckBox(int showCheckBox) {
 		this.showCheckBox = showCheckBox;
+	}
+
+	public String getDetail2() {
+		return detail2;
+	}
+
+	public void setDetail2(String detail2) {
+		this.detail2 = detail2;
 	}
 }

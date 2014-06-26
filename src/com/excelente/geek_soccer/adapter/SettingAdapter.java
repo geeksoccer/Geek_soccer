@@ -48,7 +48,7 @@ public class SettingAdapter extends BaseAdapter{
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		
-		ViewHolder viewSetting;
+		final ViewHolder viewSetting;
 		if(convertView == null){
 			convertView = LayoutInflater.from(activity).inflate(R.layout.setting_page_item, parent, false);
 			
@@ -60,7 +60,7 @@ public class SettingAdapter extends BaseAdapter{
 			convertView.setTag(viewSetting);
 		}else{
 			viewSetting = (ViewHolder) convertView.getTag();
-		}
+		} 
 		
 		final SettingModel sm = (SettingModel) getItem(position);
 		
@@ -75,6 +75,11 @@ public class SettingAdapter extends BaseAdapter{
 		
 		if(position>0){
 			viewSetting.cbCheck.setChecked(Boolean.valueOf(sm.getVal()));
+			if(Boolean.valueOf(sm.getVal())){
+				viewSetting.tvDetail.setText(sm.getDetail());
+			}else{
+				viewSetting.tvDetail.setText(sm.getDetail2());
+			}
 		}
 		
 		viewSetting.cbCheck.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +87,11 @@ public class SettingAdapter extends BaseAdapter{
 			public void onClick(View v) {
 				CheckBox chk = (CheckBox)v;
 				SessionManager.setSetting(activity, sm.getTag(), String.valueOf(chk.isChecked()));
+				if(chk.isChecked()){
+					viewSetting.tvDetail.setText(sm.getDetail());
+				}else{
+					viewSetting.tvDetail.setText(sm.getDetail2());
+				}
 			}
 		});
 		
