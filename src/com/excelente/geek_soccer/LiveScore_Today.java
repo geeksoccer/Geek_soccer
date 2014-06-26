@@ -234,14 +234,22 @@ public class LiveScore_Today extends Activity {
 						image_Home.setImageBitmap(data.get_HomeMap(txt_Item
 								.getString("Home_img")));
 					} else {
-						image_Home.setImageResource(R.drawable.soccer_icon);
+						if(saveModeGet.equals("true")){
+							image_Home.setImageResource(R.drawable.ic_menu_view);
+						}else{
+							image_Home.setImageResource(R.drawable.soccer_icon);
+						}
 						startDownload_Home(position, image_Home, saveModeGet);
 					}
 					if (data.get_AwayMap(txt_Item.getString("Away_img")) != null) {
 						image_Away.setImageBitmap(data.get_AwayMap(txt_Item
 								.getString("Away_img")));
 					} else {
-						image_Away.setImageResource(R.drawable.soccer_icon);
+						if(saveModeGet.equals("true")){
+							image_Away.setImageResource(R.drawable.ic_menu_view);
+						}else{
+							image_Away.setImageResource(R.drawable.soccer_icon);
+						}
 						startDownload_Away(position, image_Away, saveModeGet);
 					}
 
