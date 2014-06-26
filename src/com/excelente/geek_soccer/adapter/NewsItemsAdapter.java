@@ -378,7 +378,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 			for (Element image : doc.select("img")) {
 				Attributes attrs = new Attributes();
 				attrs.put("href", image.attr("src"));
-				attrs.put("style", "max-width: 100%;width:300px;margin:10px;padding:5px;border:1px solid #BBB;height: 150px;text-align:center;background-color:#EEE;line-height: 150px;vertical-align:middle;color:#666;display: block;");
+				attrs.put("style", "max-width: 100%;width:70px;margin:10px;padding:5px;border:1px solid #BBB;height: 50px;text-align:center;background-color:#EEE;line-height: 50px;vertical-align:middle;color:#666;display: block;");
 				Element a = new Element(Tag.valueOf("a"), "", attrs);
 				a.appendText(mContext.getString(R.string.show_photo));
 				image.replaceWith(a); 
