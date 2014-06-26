@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -73,7 +74,7 @@ public class HilightAdapter extends BaseAdapter{
         
         ImageView hilightNew;
         
-        TextView savemodeTextview;
+        LinearLayout savemodeTextview;
 	}
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -123,7 +124,7 @@ public class HilightAdapter extends BaseAdapter{
 	        
 	        hilightHolder.hilightNew = (ImageView) convertView.findViewById(R.id.hilight_new);
 	        
-	        hilightHolder.savemodeTextview = (TextView) convertView.findViewById(R.id.save_mode);
+	        hilightHolder.savemodeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
         
 	        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(hilightModel.getHilightImage().replace(".gif", ".png"));
 	        if(cacheFile.isFile()){

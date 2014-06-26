@@ -33,6 +33,7 @@ import com.excelente.geek_soccer.view.CustomWebView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -198,10 +199,22 @@ public class NewsItemsAdapter extends PagerAdapter{
                 		new PushImageTask(view, html).execute(url);
                 	}*/
             		
-            		doPushImage(view, url);
+            		doPushImage(view, url); 
                 	return false;
                 }else{
-                	return false;
+                	if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                        if(NetworkUtils.isNetworkAvailable(mContext)){
+        					Intent intent = new Intent(Intent.ACTION_VIEW);
+        					intent.setDataAndType(Uri.parse(url), "text/html");
+        					view.getContext().startActivity(intent);
+        					return true;
+        				}else{
+        					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
+        					return false;
+        				}
+                    } else {
+                        return false;
+                    }
                 }
             }
 
@@ -255,7 +268,8 @@ public class NewsItemsAdapter extends PagerAdapter{
         		timeout = false;
         		newsWaitProcessbar.setVisibility(View.GONE);
         		
-        		if(urls!=null && !urls.isEmpty()){
+        		String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
+        		if(urls!=null && !urls.isEmpty() && (saveMode == null || saveMode.equals("null") || saveMode.equals("false"))){
         			new PushImagesTask(view, urls, newsModel.getNewsContent()).execute();
         		}
         		

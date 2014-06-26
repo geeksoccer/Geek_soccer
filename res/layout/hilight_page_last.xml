@@ -25,6 +25,7 @@
 	        android:scaleType="fitXY"
 	        style="?logoTheme" />
 	    
+	    <!--
 	    <TextView
 	        android:id="@+id/save_mode"  
 	        android:layout_width="match_parent"
@@ -33,6 +34,37 @@
 	        android:gravity="center"
 	        android:textColor="@color/gray"
 	        android:text="@string/show_photo" />
+	     -->
+	    
+	     <LinearLayout
+	         android:id="@+id/save_mode"  
+		     android:layout_width="match_parent"
+		     android:layout_height="match_parent"
+		     android:orientation="vertical"
+		     android:layout_centerInParent="true"
+		     android:gravity="center"
+		     android:background="@color/graylittle" >
+		     
+	         <!-- <ImageView
+	            android:id="@+id/Save_Mode_btn"
+	            android:layout_width="35dp"
+	            android:layout_height="35dp"
+	            android:src="@drawable/ic_menu_view"
+	            android:background="@drawable/bg_save_mode" /> -->
+	            
+	         <TextView
+		        android:id="@+id/Save_Mode_btn"  
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:padding="10dp"
+		        android:gravity="center"
+		        android:drawablePadding="-5dp"
+		        android:drawableTop="@drawable/ic_menu_view"
+		        android:textColor="@color/gray"
+		        android:text="@string/show_photo"
+		        android:background="@color/graylittle" />
+	         
+	     </LinearLayout>
     </RelativeLayout>
 
     <TextView
