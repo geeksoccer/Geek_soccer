@@ -181,7 +181,7 @@ public class LiveScore_Noty {
 				Calendar c_t = Calendar.getInstance();
 				Boolean ChkNotyB15B = ChkNotyB15(Time, c_t);
 				Boolean ChkNotyB180B = ChkNotyB180(Time, c_t);
-				String msg = "Time: "+Time;
+				String msg = "at: "+Time;
 				if(ChkNotyB15B){
 					msg = mContext.getResources().getString(R.string.alert_match_nearby);
 					NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
@@ -195,10 +195,10 @@ public class LiveScore_Noty {
 					if(!data.OldTimeH.get(id).equals("FT")){
 						if((!newScore.equals(data.OldScoreH.get(id)))
 								|| (!Time.equals(data.OldTimeH.get(id)) 
-										&& (Time.equals("HT")) 
-											|| Time.equals("FT") 
-											|| data.OldTimeH.get(id).equals("HT")
-											|| data.OldTimeH.get(id).contains(":")) ){
+										&& (Time.equals("HT")
+												|| Time.equals("FT") 
+												|| data.OldTimeH.get(id).equals("HT")
+												|| data.OldTimeH.get(id).contains(":"))) ){
 							NotifyLiveEvent(mContext, id, Home, newScore, Away, "Time: "+Time);
 						}
 					}
