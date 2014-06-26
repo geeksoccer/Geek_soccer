@@ -12,7 +12,7 @@
     <string name="button_confirm_no">ไม่ต้องการ</string>
     <string name="save_mode_check_ask">อย่าถามฉันอีก</string>
     
-    <string name="show_photo">ดู</string>
+    <string name="show_photo">ดูรูป</string>
     <string name="save_mode_title">โหมดประหยัด</string>
     <string name="save_mode_question">ตอนนี้คุณใช้เครือข่ายมือถือ \n เราขอแนะนำให้คุณใช้โหมดประหยัด\n ซึ่งจะช่วยลดการดาวน์โหลดข้อมูล\n คุณต้องการใช้โหมดประหยัด หรือไม่</string>
     
