@@ -35,7 +35,8 @@
 	        android:padding="10dp"
 	        android:gravity="center"
 	        android:textColor="@color/gray"
-	        android:text="@string/show_photo" />
+	        android:text="@string/show_photo"
+	        android:background="@color/graylittle" />
 	    
     </RelativeLayout>
 

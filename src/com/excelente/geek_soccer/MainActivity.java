@@ -115,7 +115,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 	private void askMode() {
 		if(NetworkUtils.getConnectivityStatus(this) == NetworkUtils.TYPE_MOBILE){
-			String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
+			String saveMode = SessionManager.getSetting(this, SessionManager.setting_save_mode);
 			if(saveMode == null || saveMode.equals("null") || saveMode.equals("false")){
 				showSaveModeAppDialog(this);
 			}else{
@@ -124,6 +124,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}else{
 			doCreate();
 		}
+		
+		//showSaveModeAppDialog(this);
 	}
 
 	private void vidateAskRateApp() {
@@ -532,11 +534,13 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
 		final Dialog confirmDialog = new Dialog(mContext); 
 		
-		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
+		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm_2, null);
 		TextView title = (TextView)view.findViewById(R.id.dialog_title);
 		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
-		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		
+		RelativeLayout btComfirmOK = (RelativeLayout) view.findViewById(R.id.button_confirm_ok);
+		RelativeLayout btComfirmNO = (RelativeLayout) view.findViewById(R.id.button_confirm_no);
 		
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -559,7 +563,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 		}); 
 		
-		btComfirm.setOnClickListener(new OnClickListener() {
+		btComfirmOK.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -568,8 +572,18 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			}
 
 		});
+		
+		btComfirmNO.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				doSaveMode(mContext, false);
+				confirmDialog.dismiss();  
+			}
+
+		});
 		 
-		confirmDialog.setCancelable(true);
+		confirmDialog.setCancelable(false);
 		confirmDialog.show();
 	}
 	

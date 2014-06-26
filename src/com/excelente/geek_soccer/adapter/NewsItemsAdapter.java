@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -19,7 +18,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Tag;
 
 import com.excelente.geek_soccer.News_Item_Page;
@@ -178,7 +176,6 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsContentWebview.setWebViewClient(new WebViewClient(){
         	boolean timeout;
         	List<String> urls;
-        	String html = getHtml(newsModel); 
         	
         	@Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -190,12 +187,22 @@ public class NewsItemsAdapter extends PagerAdapter{
                 }else if (uri.getHost().contains("facebook.com")){
                 	IntentVideoViewUtils.playFacebookVideo(newsItemPage, url);
                 	return true;
-                }else if (url.toLowerCase().endsWith("jpg") || url.toLowerCase().endsWith("png") || url.toLowerCase().equals("gif")){
-                	new PushImageTask(view, html).execute(url);
+                }else if (url.toLowerCase().endsWith("jpg") || url.toLowerCase().endsWith("png") || url.toLowerCase().endsWith("gif") || url.toLowerCase().endsWith("jpeg")){
                 	view.stopLoading();
+                	/*String upic_me = "http://upic.me/";
+            		String image_ohozaa_com = "http://image.ohozaa.com/";
+            		if((url.length() > upic_me.length() && url.substring(0, upic_me.length()).equals(upic_me)) || (url.length() > image_ohozaa_com.length() && url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com))){
+                		doPushImage(view, url);
+                		new PushImageTask(view, html).execute(url);
+                	}else{
+                		new PushImageTask(view, html).execute(url);
+                	}*/
+            		
+            		doPushImage(view, url);
                 	return false;
                 }else{
-                	return true;
+                	view.stopLoading();
+                	return false;
                 }
             }
 
@@ -334,6 +341,23 @@ public class NewsItemsAdapter extends PagerAdapter{
 		}
 	}
 	
+	private void doPushImage(WebView view, String url) {
+		String javascripts = "javascript:" +
+	            "var as = document.getElementsByTagName('a');" +
+	            "for (var i = 0; i < as.length; i++) {" +
+	            "   var a = as[i];" +
+	            "   if(a.getAttribute('href') == '"+url+"'){" +
+	            "   	img = document.createElement('img');" +
+	            "   	img.setAttribute('src', '"+url+"');" +
+	            "   	a.parentNode.replaceChild(img, a);" +
+	            "   	break;" +
+	            "   }" +
+	            "}"; 
+		
+		
+		view.loadUrl(javascripts);
+	}
+	
 	private String getHtml(NewsModel newsModel) { 
 		String htmlData = "";
 		String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
@@ -394,7 +418,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();  
 					bm.compress(Bitmap.CompressFormat.PNG, 75, baos); //bm is the bitmap object   
 					byte[] b = baos.toByteArray();
-		    		encodedString = "data:image/png;base64," + Base64.encodeToString(b, Base64.DEFAULT);
+		    		encodedString = "data:image/png;base64," + new String(Base64.encode(b, Base64.NO_WRAP));
 		    		
 		    		reponseInputStream.close();
 				} catch (ClientProtocolException e){
@@ -409,23 +433,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			
-			String javascripts = "javascript:" +
-    	            "var as = document.getElementsByTagName('a');" +
-    	            "for (var i = 0; i < as.length; i++) {" +
-    	            "   var a = as[i];" +
-    	            "   if(a.getAttribute('href') == '"+url+"'){" +
-    	            "   	img = document.createElement('img');" +
-    	            "   	img.setAttribute('src', '"+url+"');" +
-    	            "   	a.parentNode.replaceChild(img, a);" +
-    	            "   	break;" +
-    	            "   }" +
-    	            "}"; 
-			
-			Log.e("...............", result);
-			
-			webview.loadUrl(javascripts);
-			
+			doPushImage(webview, result);
 		} 
 		
 	}

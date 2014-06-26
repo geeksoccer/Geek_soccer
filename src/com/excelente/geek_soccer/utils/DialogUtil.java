@@ -177,7 +177,7 @@ public class DialogUtil {
 
 		});
 		 
-		confirmDialog.setCancelable(true);
+		confirmDialog.setCancelable(false);
 		confirmDialog.show();
 	}
 	

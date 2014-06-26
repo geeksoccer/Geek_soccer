@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
+    
+    <RelativeLayout
+        android:id="@+id/main_action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        style="?backgroundTheme" >
+ 
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:drawablePadding="5dp"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+ 
+        <ImageView
+            android:id="@+id/close_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/bg_press"
+            android:padding="10dp"
+            android:src="@drawable/ic_action_remove" />
+
+    </RelativeLayout>
+    
+	<LinearLayout
+	    android:id="@+id/layout_input"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/main_action_bar"
+	    android:orientation="vertical"
+	    android:layout_margin="5dp">
+
+		<TextView 
+		    android:id="@+id/dialog_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:padding="20dp"/>
+	    
+	</LinearLayout>
+	
+	<LinearLayout  
+	        android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_below="@+id/layout_input"
+        	android:orientation="horizontal">
+	
+		<RelativeLayout
+	        android:id="@+id/button_confirm_ok"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        style="?backgroundTheme" >
+	        
+		    <LinearLayout  
+		        android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:background="@drawable/bg_press"
+	        	android:gravity="center">
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:gravity="center"
+		            android:drawableLeft="@drawable/ic_action_accept"
+		            android:text="@string/button_confirm_ok"
+		            android:textColor="@color/white"
+		            android:textSize="16sp"
+		            android:padding="10dp" />
+	        </LinearLayout>
+	    </RelativeLayout>
+	    
+		<View 
+		    android:layout_width="1dp"
+	        android:layout_height="match_parent"
+	        android:padding="2dp"
+	        android:background="@color/white" />
+	    
+		<RelativeLayout
+	        android:id="@+id/button_confirm_no"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        style="?backgroundTheme"
+	        android:orientation="horizontal" >
+	        
+		    <LinearLayout  
+		        android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:background="@drawable/bg_press"
+	        	android:gravity="center">
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:gravity="center"
+		            android:drawableLeft="@drawable/ic_action_remove"
+		            android:text="@string/button_confirm_no"
+		            android:textColor="@color/white"
+		            android:textSize="16sp"
+		            android:padding="10dp" />
+	        </LinearLayout>
+	    </RelativeLayout>
+    </LinearLayout>
+    
+</RelativeLayout>
