@@ -7,7 +7,7 @@
     <item >
         <shape >
             <corners
-                android:radius="10dp"/>
+                android:radius="40dp"/>
             <gradient 
                 android:startColor="@color/gray"
                 android:endColor="@color/graylittle"

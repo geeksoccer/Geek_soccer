@@ -39,6 +39,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -97,7 +98,7 @@ public class NewsAdapter extends BaseAdapter{
         TextView newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
         final ProgressBar newsImageProgressBar = (ProgressBar) convertView.findViewById(R.id.news_image_processbar);
         ImageView newsNewImageview = (ImageView) convertView.findViewById(R.id.news_new);
-        final TextView saveModeTextview = (TextView) convertView.findViewById(R.id.save_mode);
+        final LinearLayout saveModeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
         
         final File cacheFile = ImageLoader.getInstance().getDiscCache().get(newsModel.getNewsImage().replace(".gif", ".png"));
         if(cacheFile.isFile()){
@@ -154,7 +155,7 @@ public class NewsAdapter extends BaseAdapter{
         
 	}
 	
-	private void doloadImage(NewsModel newsModel, final ImageView newsImageImageview, final ProgressBar newsImageProgressBar, final TextView saveModeTextview) { 
+	private void doloadImage(NewsModel newsModel, final ImageView newsImageImageview, final ProgressBar newsImageProgressBar, final LinearLayout saveModeTextview) { 
 		try{ 
 		    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
 				 

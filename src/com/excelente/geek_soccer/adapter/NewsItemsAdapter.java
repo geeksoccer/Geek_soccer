@@ -99,7 +99,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 
 		//Log.e("ooooooooooooooooo", "instantiateItem " + position);
 		LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View convertView = (View)mInflater.inflate(R.layout.news_item_item_page, null);
+		View convertView = (View) mInflater.inflate(R.layout.news_item_item_page, null);
 		
 		NewsItemView newsItemView = new NewsItemView(); 
 		newsItemView.newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
