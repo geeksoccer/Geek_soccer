@@ -176,40 +176,31 @@ public class LiveScore_Noty {
 		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore)==null){
 			SessionManager.setSetting(mContext, SessionManager.setting_notify_livescore, "true");
 		}
-		
-		ControllParameter data = ControllParameter.getInstance(mContext);
-		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")
-				&& data.OldTimeH.get(id)!=null){
-			if(!data.OldTimeH.get(id).equals("FT")){
-				if(!Time.equals("FT")
-						|| !data.OldTimeH.get(id).equals("")){
-					Calendar c_t = Calendar.getInstance();
-					Boolean ChkNotyB15B = ChkNotyB15(Time, c_t);
-					Boolean ChkNotyB180B = ChkNotyB180(Time, c_t);
-					if((!newScore.equals(data.OldScoreH.get(id)) && !data.OldScoreH.get(id).equals(""))
-							|| (!Time.equals(data.OldTimeH.get(id)) && ((Time.equals("HT")) || Time.equals("FT")))
-							|| data.OldTimeH.get(id).equals("")
-							|| (!Time.equals(data.OldTimeH.get(id)) && ((data.OldTimeH.get(id).equals("HT")))) 
-							|| ChkNotyB15B
-							|| ChkNotyB180B){
-						String msg = "Time: "+Time;
-						if(Time.contains(":")){
-							if(ChkNotyB15B){
-								msg = mContext.getResources().getString(R.string.alert_match_nearby);
-								NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
-							}
-							if(ChkNotyB180B){
-								NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
-							}
-						}else{
-							NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
+		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
+			if(Time.contains(":")){
+				Calendar c_t = Calendar.getInstance();
+				Boolean ChkNotyB15B = ChkNotyB15(Time, c_t);
+				Boolean ChkNotyB180B = ChkNotyB180(Time, c_t);
+				String msg = "Time: "+Time;
+				if(ChkNotyB15B){
+					msg = mContext.getResources().getString(R.string.alert_match_nearby);
+					NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
+				}
+				if(ChkNotyB180B){
+					NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
+				}
+			}else{
+				ControllParameter data = ControllParameter.getInstance(mContext);
+				if(data.OldTimeH.get(id)!=null){
+					if(!data.OldTimeH.get(id).equals("FT")){
+						if((!newScore.equals(data.OldScoreH.get(id)))
+								|| (!Time.equals(data.OldTimeH.get(id)) && (Time.equals("HT")) || Time.equals("FT") || data.OldTimeH.get(id).equals("HT"))){
+							NotifyLiveEvent(mContext, id, Home, newScore, Away, "Time: "+Time);
 						}
 					}
 				}
-			}else{
-				SessionManager.delFavTeam(mContext, id);
 			}
-		}	
+		}
 	}
 	
 	public static void NotifyLiveEvent(Context mContext, String id, final String Home, final String newScore, final String Away, final String msg){
