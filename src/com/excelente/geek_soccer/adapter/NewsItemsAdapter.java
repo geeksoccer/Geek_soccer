@@ -209,7 +209,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 				
 				String[] imgType = new String[]{".jpg", ".png", ".gif", ".jpeg"};
 				for (String type : imgType) {
-					if(url.contains(type)){
+					if(url.toLowerCase().contains(type)){
 						return true;
 					}
 				}
@@ -360,6 +360,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 	            "   if(a.getAttribute('href') == '"+url+"'){" +
 	            "   	img = document.createElement('img');" +
 	            "   	img.setAttribute('src', '"+url+"');" +
+	            "   	img.setAttribute('style', 'padding:5px;');" +
 	            "   	a.parentNode.replaceChild(img, a);" +
 	            "   	break;" +
 	            "   }" +
