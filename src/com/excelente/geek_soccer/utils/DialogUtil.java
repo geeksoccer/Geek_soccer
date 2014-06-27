@@ -183,6 +183,7 @@ public class DialogUtil {
 			@Override
 			public void onClick(View v) {
 				doSaveMode(mContext, false, saveMode_btn);
+				confirmDialog.dismiss();  
 			}
 
 		});
