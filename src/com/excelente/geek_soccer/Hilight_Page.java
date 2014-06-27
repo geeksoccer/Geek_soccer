@@ -347,7 +347,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterAll = new HilightAdapter(getActivity(), Hilight_Page.hilightListAll);
 			hilightListviewAll.setAdapter(hilightAdapterAll);
-			hilightListviewAll.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab())))
+				hilightListviewAll.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewAll, hilightAdapterAll, tag);
 		}else if(tag.equals("tag1")){
@@ -358,7 +360,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterPl = new HilightAdapter(getActivity(), Hilight_Page.hilightListPl);
 			hilightListviewPl.setAdapter(hilightAdapterPl);
-			hilightListviewPl.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+				hilightListviewPl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewPl, hilightAdapterPl, tag);
 		}else if(tag.equals("tag2")){
@@ -369,7 +373,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterBl = new HilightAdapter(getActivity(), Hilight_Page.hilightListBl);
 			hilightListviewBl.setAdapter(hilightAdapterBl);
-			hilightListviewBl.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+				hilightListviewBl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewBl, hilightAdapterBl, tag);
 		}else if(tag.equals("tag3")){
@@ -380,7 +386,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterLl = new HilightAdapter(getActivity(), Hilight_Page.hilightListLl);
 			hilightListviewLl.setAdapter(hilightAdapterLl);
-			hilightListviewLl.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+				hilightListviewLl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewLl, hilightAdapterLl, tag);
 		}else if(tag.equals("tag4")){
@@ -391,7 +399,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterGl = new HilightAdapter(getActivity(), Hilight_Page.hilightListGl);
 			hilightListviewGl.setAdapter(hilightAdapterGl);
-			hilightListviewGl.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+				hilightListviewGl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewGl, hilightAdapterGl, tag);
 		}else if(tag.equals("tag5")){
@@ -402,7 +412,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterFl = new HilightAdapter(getActivity(), Hilight_Page.hilightListFl);
 			hilightListviewFl.setAdapter(hilightAdapterFl);
-			hilightListviewFl.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+				hilightListviewFl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewFl, hilightAdapterFl, tag);
 		}else if(tag.equals("tag6")){
@@ -413,7 +425,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterUcl = new HilightAdapter(getActivity(), Hilight_Page.hilightListUcl);
 			hilightListviewUcl.setAdapter(hilightAdapterUcl);
-			hilightListviewUcl.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+				hilightListviewUcl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewUcl, hilightAdapterUcl, tag);
 		}else if(tag.equals("tag7")){
@@ -424,7 +438,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterUpl = new HilightAdapter(getActivity(), Hilight_Page.hilightListUpl);
 			hilightListviewUpl.setAdapter(hilightAdapterUpl);
-			hilightListviewUpl.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+				hilightListviewUpl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewUpl, hilightAdapterUpl, tag);
 		}else if(tag.equals("tag8")){
@@ -435,7 +451,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterChamp = new HilightAdapter(getActivity(), Hilight_Page.hilightListChamp);
 			hilightListviewChamp.setAdapter(hilightAdapterChamp);
-			hilightListviewChamp.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+				hilightListviewChamp.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewChamp, hilightAdapterChamp, tag);
 		}else if(tag.equals("tag9")){
@@ -446,7 +464,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			hilightAdapterCapital = new HilightAdapter(getActivity(), Hilight_Page.hilightListCapital);
 			hilightListviewCapital.setAdapter(hilightAdapterCapital);
-			hilightListviewCapital.setVisibility(View.VISIBLE);
+			
+			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+				hilightListviewCapital.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewCapital, hilightAdapterCapital, tag);
 		}
@@ -454,7 +474,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 	}
 	
 	private List<HilightModel> getListView(List<HilightModel> hilightlist, String tag, List<HilightModel> hilightModelList) {
-		tabs.setCurrentTabByTag(tag);
+		//tabs.setCurrentTabByTag(tag);
 		
 		if(hilightlist == null || hilightlist.isEmpty()){ 
 			//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show(); 
@@ -670,10 +690,13 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onTabChanged(String tag) {
+		hilightWaitProcessbar.setVisibility(View.GONE);
+		
 		if(tag.equals("tag0")){
 			if(hilightAdapterAll == null){
 				try{ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewAll, hilightAdapterAll, "tag0").execute(getURLbyTag(0, "tag0"));
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
@@ -688,9 +711,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else if(tag.equals("tag1")){
 			if(hilightAdapterPl == null){
 				try{ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewPl, hilightAdapterPl, "tag1").execute(getURLbyTag(0, "tag1"));
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(hilightListPl, hilightAdapterPl, hilightListviewPl, "tag1");
 					}
@@ -703,9 +727,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else if(tag.equals("tag2")){
 			if(hilightAdapterBl == null){
 				try{ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewBl, hilightAdapterBl, "tag2").execute(getURLbyTag(0, "tag2"));
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(hilightListBl, hilightAdapterBl, hilightListviewBl, "tag2");
 					}
@@ -718,9 +743,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else if(tag.equals("tag3")){
 			if(hilightAdapterLl == null){
 				try{ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewLl, hilightAdapterLl, "tag3").execute(getURLbyTag(0, "tag3"));
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(hilightListLl, hilightAdapterLl, hilightListviewLl, "tag3");
 					}
@@ -733,9 +759,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else if(tag.equals("tag4")){
 			if(hilightAdapterGl == null){
 				try{ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewGl, hilightAdapterGl, "tag4").execute(getURLbyTag(0, "tag4"));
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(hilightListGl, hilightAdapterGl, hilightListviewGl, "tag4");
 					}
@@ -753,9 +780,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else if(tag.equals("tag5")){
 			if(hilightAdapterFl == null){
 				try{ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewFl, hilightAdapterFl, "tag5").execute(getURLbyTag(0, "tag5"));
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(hilightListFl, hilightAdapterFl, hilightListviewFl, "tag5");
 					}
@@ -773,9 +801,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else if(tag.equals("tag6")){
 			if(hilightAdapterUcl == null){
 				try{ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewUcl, hilightAdapterUcl, "tag6").execute(getURLbyTag(0, "tag6"));
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(hilightListUcl, hilightAdapterUcl, hilightListviewUcl, "tag6");
 					}
@@ -788,9 +817,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else if(tag.equals("tag7")){
 			if(hilightAdapterUpl == null){
 				try{ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewUpl, hilightAdapterUpl, "tag7").execute(getURLbyTag(0, "tag7"));
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(hilightListUpl, hilightAdapterUpl, hilightListviewUpl, "tag7");
 					}
@@ -803,9 +833,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else if(tag.equals("tag8")){
 			if(hilightAdapterChamp == null){
 				try{ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewChamp, hilightAdapterChamp, "tag8").execute(getURLbyTag(0, "tag8"));
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(hilightListChamp, hilightAdapterChamp, hilightListviewChamp, "tag8");
 					}
@@ -818,9 +849,10 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		}else if(tag.equals("tag9")){
 			if(hilightAdapterCapital == null){
 				try{ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						hilightWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadOldHilightTask(hilightListviewCapital, hilightAdapterCapital, "tag9").execute(getURLbyTag(0, "tag9"));
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(hilightListCapital, hilightAdapterCapital, hilightListviewCapital, "tag9");
 					}

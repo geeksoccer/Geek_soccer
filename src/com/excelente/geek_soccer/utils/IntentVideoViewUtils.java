@@ -1,11 +1,15 @@
 package com.excelente.geek_soccer.utils;
 
+import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.view.Boast;
+
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.widget.Toast;
 
 public class IntentVideoViewUtils {
 	
@@ -35,8 +39,9 @@ public class IntentVideoViewUtils {
 	        intent.setDataAndType(Uri.parse(videoUrl), mimetype);
 	        context.startActivity(intent);
 	    } catch (ActivityNotFoundException e) {
-	        intent.setData(Uri.parse(videoUrl));
-	        context.startActivity(intent);
+	        //intent.setData(Uri.parse(videoUrl));
+	        //context.startActivity(intent);
+	    	Boast.makeText(context, R.string.no_install_youtube, Toast.LENGTH_LONG).show();
 	    }
 
 	}
@@ -49,9 +54,10 @@ public class IntentVideoViewUtils {
                 viewIntent.setPackage(packageName);
             }
             context.startActivity(viewIntent);
-        } catch (Exception e) {
-            Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            context.startActivity(viewIntent);
+        } catch (ActivityNotFoundException e) {
+            //Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            //context.startActivity(viewIntent);
+        	Boast.makeText(context, R.string.no_install_browser, Toast.LENGTH_LONG).show();
         }
     }
 

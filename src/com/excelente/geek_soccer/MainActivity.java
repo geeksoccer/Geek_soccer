@@ -67,6 +67,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	private TextView title_bar;
 	private static Intent serviceIntent; 
 	private static ControllParameter data;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,8 +75,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			finish();
 		}
 		
+		String saveModeAsk = SessionManager.getSetting(this, SessionManager.setting_save_mode);
+		if(saveModeAsk == null || saveModeAsk.equals("null")){
+			SessionManager.setSetting(this, SessionManager.setting_save_mode, "false");
+		}
 		//SessionManager.setSetting(this, SessionManager.setting_save_mode_ask, "false");
-		String saveModeAsk = SessionManager.getSetting(this, SessionManager.setting_save_mode_ask);
 		if(saveModeAsk != null && saveModeAsk.equals("true")){
 			doCreate();
 		}else{

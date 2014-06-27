@@ -143,7 +143,7 @@ public class HilightAdapter extends BaseAdapter{
 						
 					}
 				}).start();
-	        	 
+	        	hilightHolder.savemodeTextview.setVisibility(View.GONE); 
 	        }else{
 	        	String saveMode = SessionManager.getSetting(context, SessionManager.setting_save_mode);
 	        	if(saveMode == null || saveMode.equals("false") || saveMode.equals("null")){
