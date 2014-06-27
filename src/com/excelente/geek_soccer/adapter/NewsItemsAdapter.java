@@ -166,6 +166,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsContentWebview.getSettings().setJavaScriptEnabled(true);
 		newsItemView.newsContentWebview.getSettings().setBuiltInZoomControls(true); 
 		newsItemView.newsContentWebview.getSettings().setPluginState(PluginState.ON);
+		newsItemView.newsContentWebview.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36");
 		//newsItemView.newsContentWebview.getSettings().setUserAgent(0);
         //newsItemView.newsContentWebview.getSettings().setDefaultTextEncodingName("utf-8");
 		newsItemView.newsContentWebview.setWebChromeClient(new WebChromeClient(){
@@ -177,11 +178,12 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsContentWebview.setWebViewClient(new WebViewClient(){
         	boolean timeout;
         	List<String> urls;
+        	String html = getHtml(newsModel);
         	
         	@Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
         		view.stopLoading();
-        		Log.e("LOG", url);
+        		Log.e("shouldOverrideUrlLoading", url);
                 Uri uri = Uri.parse(url);
                 if (uri.getHost().contains("youtube.com")) {
                     IntentVideoViewUtils.playYoutubeVideo(newsItemPage, url);
@@ -193,17 +195,16 @@ public class NewsItemsAdapter extends PagerAdapter{
                 	/*String upic_me = "http://upic.me/";
             		String image_ohozaa_com = "http://image.ohozaa.com/";
             		if((url.length() > upic_me.length() && url.substring(0, upic_me.length()).equals(upic_me)) || (url.length() > image_ohozaa_com.length() && url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com))){
-                		doPushImage(view, url);
-                		new PushImageTask(view, html).execute(url);
+            			new PushImageTask(view, html).execute(url);	
                 	}else{
-                		new PushImageTask(view, html).execute(url);
+                		doPushImage(view, url);
                 	}*/
             		
-            		doPushImage(view, url); 
+            		doPushImage(view, url);
                 	return false;
                 }else{
                 	if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
-                        if(NetworkUtils.isNetworkAvailable(mContext)){
+                        if(NetworkUtils.isNetworkAvailable(mContext)){ 
         					Intent intent = new Intent(Intent.ACTION_VIEW);
         					intent.setDataAndType(Uri.parse(url), "text/html");
         					view.getContext().startActivity(intent);
@@ -220,7 +221,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 
 			private boolean isImageType(String url) {
 				
-				String[] imgType = new String[]{".jpg", ".png", ".gif", ".jpeg"};
+				String[] imgType = new String[]{".jpg", ".png", ".gif", ".jpeg", ".bmp"};
 				for (String type : imgType) {
 					if(url.toLowerCase().contains(type)){
 						return true;
@@ -366,21 +367,20 @@ public class NewsItemsAdapter extends PagerAdapter{
 		}
 	}
 	
-	private void doPushImage(WebView view, String url) {
+	private void doPushImage(WebView view, String urls) {
 		String javascripts = "javascript:" +
 	            "var as = document.getElementsByTagName('a');" +
 	            "for (var i = 0; i < as.length; i++) {" +
 	            "   var a = as[i];" +
-	            "   if(a.getAttribute('href') == '"+url+"'){" +
+	            "   if(a.getAttribute('href') == '"+urls+"'){" +
 	            "   	img = document.createElement('img');" +
-	            "   	img.setAttribute('src', '"+url+"');" +
-	            "   	img.setAttribute('style', 'padding:5px;');" +
+	            "   	img.setAttribute('src', '"+urls+"');" +
+	            "   	img.setAttribute('style', 'margin:5px;');" +
 	            "   	a.parentNode.replaceChild(img, a);" +
 	            "   	break;" +
 	            "   }" +
 	            "}"; 
-		
-		
+        
 		view.loadUrl(javascripts);
 	}
 	
@@ -390,12 +390,18 @@ public class NewsItemsAdapter extends PagerAdapter{
 		if(saveMode != null && saveMode.equals("true")){
 			Document doc = Jsoup.parse(newsModel.getNewsContent());
 			for (Element image : doc.select("img")) {
-				Attributes attrs = new Attributes();
-				attrs.put("href", image.attr("src"));
-				attrs.put("style", "max-width: 100%;width:70px;margin:10px;padding:5px;border:1px solid #BBB;height: 50px;text-align:center;background-color:#EEE;line-height: 50px;vertical-align:middle;color:#666;display: block;");
-				Element a = new Element(Tag.valueOf("a"), "", attrs);
-				a.appendText(mContext.getString(R.string.show_photo));
-				image.replaceWith(a); 
+				if(image.parent().hasAttr("href") && image.parent().attr("href").equals(image.attr("src"))){
+					image.parent().attr("style", "max-width: 100%;width:70px;margin:10px;padding:5px;border:1px solid #BBB;height: 50px;text-align:center;background-color:#EEE;line-height: 50px;vertical-align:middle;color:#666;display: block;");
+					image.parent().appendText(mContext.getString(R.string.show_photo));
+					image.remove();
+				}else{
+					Attributes attrs = new Attributes();
+					attrs.put("href", image.attr("src"));
+					attrs.put("style", "max-width: 100%;width:70px;margin:10px;padding:5px;border:1px solid #BBB;height: 50px;text-align:center;background-color:#EEE;line-height: 50px;vertical-align:middle;color:#666;display: block;");
+					Element a = new Element(Tag.valueOf("a"), "", attrs);
+					a.appendText(mContext.getString(R.string.show_photo));
+					image.replaceWith(a); 
+				}
 			}
 			
 			htmlData = doc.toString();

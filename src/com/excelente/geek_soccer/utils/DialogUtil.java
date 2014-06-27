@@ -136,43 +136,53 @@ public class DialogUtil {
 		}
 	}
 	
-	public static void showSaveModeAppDialog(final Context mContext) {
+	public static void showSaveModeAppDialog(final Context mContext, final View saveMode_btn) {
 		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
-		final Dialog confirmDialog = new Dialog(mContext); 
+		final Dialog confirmDialog = new Dialog(mContext);  
 		
-		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
+		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm_3, null);
 		TextView title = (TextView)view.findViewById(R.id.dialog_title);
 		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
-		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		
+		RelativeLayout btComfirmOK = (RelativeLayout) view.findViewById(R.id.button_confirm_ok);
+		RelativeLayout btComfirmNO = (RelativeLayout) view.findViewById(R.id.button_confirm_no);
 		
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 		confirmDialog.setContentView(view);
 		
 		title.setText(mContext.getResources().getString(R.string.save_mode_title));
-		Drawable img = mContext.getResources().getDrawable(R.drawable.ic_action_network_cell);
+		Drawable img = mContext.getResources().getDrawable(R.drawable.ic_menu_view);
 		img.setBounds( 0, 0, 60, 60 );
 		title.setCompoundDrawables( img, null, null, null );
 		
-		question.setText(mContext.getResources().getString(R.string.save_mode_question));
+		question.setText(mContext.getResources().getString(R.string.select_mode_question));
 		
 		closeBt.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				doSaveMode(mContext, false);
 				confirmDialog.dismiss();
 			}
 
 		}); 
 		
-		btComfirm.setOnClickListener(new OnClickListener() {
+		btComfirmOK.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				doSaveMode(mContext, true);
+				doSaveMode(mContext, true, saveMode_btn);
 				confirmDialog.dismiss();  
+			}
+
+		});
+		
+		btComfirmNO.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				doSaveMode(mContext, false, saveMode_btn);
 			}
 
 		});
@@ -180,9 +190,17 @@ public class DialogUtil {
 		confirmDialog.setCancelable(false);
 		confirmDialog.show();
 	}
-	
-	public static void doSaveMode(Context mContext, boolean b) {
-		SessionManager.setSetting(mContext, SessionManager.setting_save_mode, String.valueOf(b)); 
+	 
+	public static void doSaveMode(Context mContext, boolean b, View saveMode_btn) {
+		String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
+		if(saveMode.equals("true")){
+			saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode);
+			SessionManager.setSetting(mContext, SessionManager.setting_save_mode, "false");
+		}else{
+			saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode_selected);
+			SessionManager.setSetting(mContext, SessionManager.setting_save_mode, "true");
+		}
+		SessionManager.setSetting(mContext, SessionManager.setting_save_mode, String.valueOf(b));
 	}
 	
 }

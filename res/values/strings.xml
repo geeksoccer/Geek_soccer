@@ -10,6 +10,11 @@
     <string name="net_wifi">Wifi enabled</string>
     <string name="net_mobile">3G enabled</string>
     
+    <string name="select_mode_question">This is select download data mode buttom  \n\n Please select mode where want enable.</string>
+    <string name="button_confirm_save_mode">Save Mode</string>
+   	<string name="button_confirm_normal_mode">Normal Mode</string>
+   	<string name="select_mode_title">Select Mode</string>
+    
     <string name="button_confirm_no">No</string>
     <string name="save_mode_check_ask">Don\'t ask me.</string>
     

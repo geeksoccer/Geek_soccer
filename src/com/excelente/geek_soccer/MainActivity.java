@@ -62,6 +62,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	ImageView news_btn;
 	LinearLayout TeamLogo;
 	
+	ImageView saveMode_btn;
+	
 	LinearLayout Content_view;
 	Activity mContext;
 	private TextView title_bar;
@@ -88,6 +90,19 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 	}
 	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(saveMode_btn!=null){ 
+			String saveMode = SessionManager.getSetting(this, SessionManager.setting_save_mode);
+			if(saveMode.equals("true")){
+				saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode_selected);
+			}else{
+				saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode);
+			}
+		}
+	}
+	
 	private void doCreate() {
 		mContext = this;
 		data = ControllParameter.getInstance(this);
@@ -100,6 +115,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		startService(serviceIntent);
 		
 		setContentView(R.layout.main);
+		
 		this.intialiseViewPager();
 		
 		//------------Ched: ทำไว้เพื่อ ทดลองกด ดูข่าวทีมอื่นจากเมนู  (For View News Anyone)-----------------------------
@@ -234,6 +250,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	private void menu_setting() {
 		menu_btn = (ImageView) findViewById(R.id.Menu_btn);
 		
+		
 		if(SessionManager.getMember(MainActivity.this).getRole() == 1){
 			menu_btn.setVisibility(View.VISIBLE);
 		}else{
@@ -294,6 +311,22 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		});
 		 
 		title_bar = (TextView)findViewById(R.id.Title_bar);
+		
+		saveMode_btn = (ImageView) findViewById(R.id.Save_Mode_btn);
+		String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
+		if(saveMode.equals("true")){
+			saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode_selected);
+		}else{
+			saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode);
+		}
+		
+		saveMode_btn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DialogUtil.showSaveModeAppDialog(mContext, v);
+			}
+		});
 	}
 	
 	private void doRefeshPage(int indexPage) {
