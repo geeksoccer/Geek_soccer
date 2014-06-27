@@ -201,6 +201,8 @@ public class LiveScore_Noty {
 												|| data.OldTimeH.get(id).contains(":"))) ){
 							NotifyLiveEvent(mContext, id, Home, newScore, Away, "Time: "+Time);
 						}
+					}else{
+						SessionManager.delFavTeam(mContext, id);
 					}
 				}
 			}
