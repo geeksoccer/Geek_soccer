@@ -69,6 +69,8 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	public static List<NewsModel> newsModelGlobalList;
 	public static String NEWS_TAG = "NEWS_TAG";
 	
+	public static List<String> stackTagLoading;
+	
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (container == null) {
             return null;
@@ -136,6 +138,8 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	private void initView() {
 		newsPage = getView();  
 		
+		stackTagLoading = new ArrayList<String>();
+		
 		tabs = (TabHost)newsPage.findViewById(R.id.tabhost); 
 		tabs.setup();
 		
@@ -202,6 +206,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			if(newsAdapter==null && newsWaitProgressBar!=null){
 				newsWaitProgressBar.setVisibility(View.VISIBLE);
+				stackTagLoading.add(tag);
 			}
 		}
 		
@@ -229,7 +234,14 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 				newsLoadingFooterProcessbar.setVisibility(View.GONE);
 			}else{
 				doLoadNewsToListView(result, tag);
-				newsWaitProgressBar.setVisibility(View.GONE);
+				stackTagLoading.remove(tag);
+				
+				if(stackTagLoading!=null && stackTagLoading.size() > 0 && !tag.equals(tabs.getCurrentTabTag())){
+					newsWaitProgressBar.setVisibility(View.VISIBLE);
+				}else{
+					newsWaitProgressBar.setVisibility(View.GONE);
+				}
+				
 			}
 			
 			if(newsAdapter==null || newsAdapter.getCount() < 100){
@@ -312,7 +324,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			newsAdapterTeam = new NewsAdapter(getActivity(), newsModelTeamList);
 			newsListViewTeam.setAdapter(newsAdapterTeam);
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()))){
+			if(tag.equals(tabs.getCurrentTabTag())){
 				newsListViewTeam.setVisibility(View.VISIBLE);
 			}
 			setListViewEvents(newsListViewTeam, newsAdapterTeam, tag);
@@ -341,7 +353,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			newsAdapterGlobal = new NewsAdapter(getActivity(), newsModelGlobalList);
 			newsListViewGlobal.setAdapter(newsAdapterGlobal);
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()))){
+			if(tag.equals(tabs.getCurrentTabTag())){
 				newsListViewGlobal.setVisibility(View.VISIBLE);
 			}
 			setListViewEvents(newsListViewGlobal, newsAdapterGlobal, tag);

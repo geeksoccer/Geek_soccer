@@ -88,6 +88,8 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 	private HilightAdapter hilightAdapterUpl;
 	private HilightAdapter hilightAdapterChamp;
 	private HilightAdapter hilightAdapterCapital;
+	
+	public static List<String> stackTagLoading;
 
 	private TabHost tabs;
 
@@ -114,6 +116,8 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 	private void initView() { 
 		
 		hilightPage = getView();  
+		
+		stackTagLoading = new ArrayList<String>();
 		
 		tabs = (TabHost)hilightPage.findViewById(R.id.tabhost); 
 		tabs.setup(); 
@@ -226,9 +230,9 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		
 		if(hilightAdapterAll == null){
 			try{ 
-				if(NetworkUtils.isNetworkAvailable(getActivity()))
+				if(NetworkUtils.isNetworkAvailable(getActivity())){
 					new LoadOldHilightTask(hilightListviewAll, hilightAdapterAll, "tag0").execute(getURLbyTag(0, "tag0"));
-				else{
+				}else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 					setMessageEmptyListView(hilightListAll, hilightAdapterAll, hilightListviewAll, "tag0");
 				}
@@ -298,6 +302,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			
 			if(hilightAdapter==null && hilightWaitProcessbar!=null){
 				hilightWaitProcessbar.setVisibility(View.VISIBLE);
+				stackTagLoading.add(tag);
 			}
 		}
 		
@@ -325,7 +330,12 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 				hilightLoadingFooterProcessbar.setVisibility(View.GONE);
 			}else{
 				doLoadHilightToListView(result, tag);
-				hilightWaitProcessbar.setVisibility(View.GONE);
+				stackTagLoading.remove(tag);
+				if(stackTagLoading != null && stackTagLoading.size() > 0 && !tag.equals(tabs.getCurrentTabTag())){ 
+					hilightWaitProcessbar.setVisibility(View.VISIBLE);
+				}else{
+					hilightWaitProcessbar.setVisibility(View.GONE);
+				}
 			}
 			
 			if(hilightAdapter==null || hilightAdapter.getCount() < 100){
@@ -348,7 +358,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterAll = new HilightAdapter(getActivity(), Hilight_Page.hilightListAll);
 			hilightListviewAll.setAdapter(hilightAdapterAll);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab())))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewAll.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewAll, hilightAdapterAll, tag);
@@ -361,7 +371,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterPl = new HilightAdapter(getActivity(), Hilight_Page.hilightListPl);
 			hilightListviewPl.setAdapter(hilightAdapterPl);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewPl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewPl, hilightAdapterPl, tag);
@@ -374,7 +384,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterBl = new HilightAdapter(getActivity(), Hilight_Page.hilightListBl);
 			hilightListviewBl.setAdapter(hilightAdapterBl);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewBl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewBl, hilightAdapterBl, tag);
@@ -387,7 +397,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterLl = new HilightAdapter(getActivity(), Hilight_Page.hilightListLl);
 			hilightListviewLl.setAdapter(hilightAdapterLl);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewLl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewLl, hilightAdapterLl, tag);
@@ -400,7 +410,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterGl = new HilightAdapter(getActivity(), Hilight_Page.hilightListGl);
 			hilightListviewGl.setAdapter(hilightAdapterGl);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewGl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewGl, hilightAdapterGl, tag);
@@ -413,7 +423,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterFl = new HilightAdapter(getActivity(), Hilight_Page.hilightListFl);
 			hilightListviewFl.setAdapter(hilightAdapterFl);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewFl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewFl, hilightAdapterFl, tag);
@@ -426,7 +436,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterUcl = new HilightAdapter(getActivity(), Hilight_Page.hilightListUcl);
 			hilightListviewUcl.setAdapter(hilightAdapterUcl);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewUcl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewUcl, hilightAdapterUcl, tag);
@@ -439,7 +449,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterUpl = new HilightAdapter(getActivity(), Hilight_Page.hilightListUpl);
 			hilightListviewUpl.setAdapter(hilightAdapterUpl);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewUpl.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewUpl, hilightAdapterUpl, tag);
@@ -452,7 +462,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterChamp = new HilightAdapter(getActivity(), Hilight_Page.hilightListChamp);
 			hilightListviewChamp.setAdapter(hilightAdapterChamp);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewChamp.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewChamp, hilightAdapterChamp, tag);
@@ -465,7 +475,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 			hilightAdapterCapital = new HilightAdapter(getActivity(), Hilight_Page.hilightListCapital);
 			hilightListviewCapital.setAdapter(hilightAdapterCapital);
 			
-			if(tag.endsWith(String.valueOf(tabs.getCurrentTab()+1)))
+			if(tag.equals(tabs.getCurrentTabTag()))
 				hilightListviewCapital.setVisibility(View.VISIBLE);
 			
 			setListViewEvents(hilightListviewCapital, hilightAdapterCapital, tag);
