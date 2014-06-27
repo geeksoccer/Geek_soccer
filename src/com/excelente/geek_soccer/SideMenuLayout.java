@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.excelente.geek_soccer.model.MemberModel;
+import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 
@@ -55,6 +56,8 @@ public class SideMenuLayout implements OnClickListener{
 	private Button settingBtn;
 
 	private ImageView menuBtn;
+
+	private ImageView saveMode_btn;
 	
 	private static ControllParameter data;
 	public LinearLayout CreateMenu(LinearLayout MainLayout, final Activity mContext) {
@@ -100,6 +103,15 @@ public class SideMenuLayout implements OnClickListener{
 				hideMenu(mContext);
 			}
 		});
+		
+		saveMode_btn = (ImageView)MenuLayV.findViewById(R.id.Save_Mode_btn);
+		String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
+		if(saveMode.equals("true")){
+			saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode_selected);
+		}else{
+			saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode);
+		}
+		saveMode_btn.setOnClickListener(this);
 		
 		profileBtn = (Button)data.Menu_View.findViewById(R.id.Profile);
 		profileBtn.setOnClickListener(this);
@@ -208,6 +220,11 @@ public class SideMenuLayout implements OnClickListener{
 			case R.id.logINOUT:{
 				hideMenuNoAni();
 				showLogOutAppDialog();
+				break;
+			}
+			case R.id.Save_Mode_btn:{
+				hideMenuNoAni();
+				DialogUtil.showSaveModeAppDialog(mContext, v);
 				break;
 			}
 		}

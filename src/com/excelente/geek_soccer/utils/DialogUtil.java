@@ -152,8 +152,8 @@ public class DialogUtil {
 		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 		confirmDialog.setContentView(view);
 		
-		title.setText(mContext.getResources().getString(R.string.save_mode_title));
-		Drawable img = mContext.getResources().getDrawable(R.drawable.ic_menu_view);
+		title.setText(mContext.getResources().getString(R.string.select_mode_title));
+		Drawable img = mContext.getResources().getDrawable(R.drawable.ic_save_mode);
 		img.setBounds( 0, 0, 60, 60 );
 		title.setCompoundDrawables( img, null, null, null );
 		
@@ -172,7 +172,9 @@ public class DialogUtil {
 			
 			@Override
 			public void onClick(View v) {
-				doSaveMode(mContext, true, saveMode_btn);
+				saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode_selected);
+				SessionManager.setSetting(mContext, SessionManager.setting_save_mode, "true");
+				doSaveMode(mContext, true);
 				confirmDialog.dismiss();  
 			}
 
@@ -182,7 +184,9 @@ public class DialogUtil {
 			
 			@Override
 			public void onClick(View v) {
-				doSaveMode(mContext, false, saveMode_btn);
+				saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode);
+				SessionManager.setSetting(mContext, SessionManager.setting_save_mode, "false");
+				doSaveMode(mContext, false);
 				confirmDialog.dismiss();  
 			}
 
@@ -192,15 +196,7 @@ public class DialogUtil {
 		confirmDialog.show();
 	}
 	 
-	public static void doSaveMode(Context mContext, boolean b, View saveMode_btn) {
-		String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
-		if(saveMode.equals("true")){
-			saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode);
-			SessionManager.setSetting(mContext, SessionManager.setting_save_mode, "false");
-		}else{
-			saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode_selected);
-			SessionManager.setSetting(mContext, SessionManager.setting_save_mode, "true");
-		}
+	public static void doSaveMode(Context mContext, boolean b) {
 		SessionManager.setSetting(mContext, SessionManager.setting_save_mode, String.valueOf(b));
 	}
 	

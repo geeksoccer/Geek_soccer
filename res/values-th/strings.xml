@@ -15,7 +15,7 @@
     <string name="select_mode_question">นี่คือปุ่มเลือกโหมดการดาวน์โหลดข้อมูล \n\n คุณต้องการเปิดใช้งานโหมดไหน</string>
     <string name="button_confirm_save_mode">โหมดประหยัด</string>
    	<string name="button_confirm_normal_mode">โหมดปกติ</string>
-   	<string name="select_mode_title">เลือกโหลด</string>
+   	<string name="select_mode_title">เลือกโหมด</string>
     
     <string name="no_install_youtube">คุณยังไม่ได้ติดตั้งแอปพลิเคชัน Youtube</string>
     <string name="no_install_browser">คุณยังไม่ได้ติดตั้งแอปพลิเคชัน Default Browser</string>

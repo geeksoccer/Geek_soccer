@@ -58,10 +58,11 @@
             android:id="@+id/Save_Mode_btn"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:padding="3dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:src="@drawable/ic_menu_view"
+            android:src="@drawable/ic_save_mode"
             android:background="@drawable/bg_save_mode" />
 
     </RelativeLayout>
