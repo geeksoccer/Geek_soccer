@@ -1,42 +1,25 @@
 package com.excelente.geek_soccer;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FilterInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.pic_download.DownLiveScorePic;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.Boast;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -95,7 +78,6 @@ public class Live_Score_Detail extends Activity {
 	JSONParser jParser = new JSONParser();
 	JSONObject jsonTagMap;
 	List<JSONObject> ListDetail = new ArrayList<JSONObject>();
-	private Handler handler = new Handler(Looper.getMainLooper());
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +100,7 @@ public class Live_Score_Detail extends Activity {
 		Away_name = (TextView) myView.findViewById(R.id.Away_name);
 		Time = (TextView) myView.findViewById(R.id.Time);
 		txt_Aggregate = (TextView) myView.findViewById(R.id.Score_Aggregate);
-		Fav_btn = (ImageButton)myView.findViewById(R.id.Fav_btn);
+		Fav_btn = (ImageButton) myView.findViewById(R.id.Fav_btn);
 		data.detailPageOpenning = true;
 		mContext = this;
 		position = getIntent().getExtras().getInt("URL");
@@ -130,7 +112,7 @@ public class Live_Score_Detail extends Activity {
 		} else if (type.equals("t")) {
 			getValue = data.Match_list_t_JSON.get(position);
 		}
-		
+
 		Up_btn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -159,25 +141,35 @@ public class Live_Score_Detail extends Activity {
 		URL += link_t;
 		String saveModeGet = SessionManager.getSetting(mContext,
 				SessionManager.setting_save_mode);
-		if (data.get_HomeMap(Home_img_t) != null) {
-			Home_Pic.setImageBitmap(data.get_HomeMap(Home_img_t));
-		} else {
-			if(saveModeGet.equals("true")){
-				Home_Pic.setImageResource(R.drawable.ic_menu_view);
-			}else{
-				Home_Pic.setImageResource(R.drawable.soccer_icon);
+
+		try {
+			if (data.get_HomeMap(Home_img_t) != null) {
+				Home_Pic.setImageBitmap(data.get_HomeMap(Home_img_t));
+			} else {
+				if (saveModeGet.equals("true")) {
+					Home_Pic.setImageResource(R.drawable.ic_menu_view);
+				} else {
+					Home_Pic.setImageResource(R.drawable.soccer_icon);
+				}
+				new DownLiveScorePic().startDownload_Home(
+						data.Match_list_c_JSON.get(position).getString(
+								"Home_img"), Home_Pic, saveModeGet, data);
 			}
-			startDownload_Home(Home_img_t, Home_Pic, saveModeGet);
-		}
-		if (data.get_AwayMap(Away_img_t) != null) {
-			Away_Pic.setImageBitmap(data.get_AwayMap(Away_img_t));
-		} else {
-			if(saveModeGet.equals("true")){
-				Away_Pic.setImageResource(R.drawable.ic_menu_view);
-			}else{
-				Away_Pic.setImageResource(R.drawable.soccer_icon);
+			if (data.get_AwayMap(Away_img_t) != null) {
+				Away_Pic.setImageBitmap(data.get_AwayMap(Away_img_t));
+			} else {
+				if (saveModeGet.equals("true")) {
+					Away_Pic.setImageResource(R.drawable.ic_menu_view);
+				} else {
+					Away_Pic.setImageResource(R.drawable.soccer_icon);
+				}
+				new DownLiveScorePic().startDownload_Away(
+						data.Match_list_c_JSON.get(position).getString(
+								"Away_img"), Away_Pic, saveModeGet, data);
 			}
-			startDownload_Away(Away_img_t, Away_Pic, saveModeGet);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		Score.setText(score_t);
@@ -193,20 +185,20 @@ public class Live_Score_Detail extends Activity {
 			checkRefreshDetail();
 		}
 
-		if(SessionManager.chkFavContain(mContext, id_t)
+		if (SessionManager.chkFavContain(mContext, id_t)
 				|| Away_name_t.contains(ControllParameter.TeamSelect)
-				|| Home_name_t.contains(ControllParameter.TeamSelect)){
+				|| Home_name_t.contains(ControllParameter.TeamSelect)) {
 			Fav_btn.setImageResource(R.drawable.favorite_icon_full);
 		}
-		
+
 		Fav_btn.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				if(SessionManager.chkFavContain(mContext, id_t)){
+				if (SessionManager.chkFavContain(mContext, id_t)) {
 					SessionManager.delFavTeam(mContext, id_t);
 					Fav_btn.setImageResource(R.drawable.favorite_icon_hole);
-				}else{
+				} else {
 					SessionManager.addFavTeam(mContext, id_t);
 					Fav_btn.setImageResource(R.drawable.favorite_icon_full);
 				}
@@ -228,62 +220,46 @@ public class Live_Score_Detail extends Activity {
 					int position, long id) {
 				JSONObject txt_Item = ListDetail.get(position);
 				try {
-					Boast.makeText(mContext, txt_Item.getString("eventType"), Toast.LENGTH_LONG)
-							.show();
+					Boast.makeText(mContext, txt_Item.getString("eventType"),
+							Toast.LENGTH_LONG).show();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				/*
-				String txt_Item = player_Detail.get(position);
-				if (!txt_Item.equals("NotFoundData")) {
-					String Split_item[] = txt_Item.replaceAll("&quot;", "\"")
-							.split(":");
-					String eventStr = "";
-					if (Split_item[1].contains("ใบเหลือง")) {
-						eventStr = "ได้รับใบเหลือง";
-					} else if (Split_item[1].contains("Yellow Card")) {
-						eventStr = "Yellow Card";
-					} else if (Split_item[1].contains("ใบแดง")) {
-						eventStr = "ได้รับใบแดง";
-					} else if (Split_item[1].contains("Red Card")) {
-						eventStr = "Red Card";
-					} else if (Split_item[1].contains("Yellow/Red")) {
-						if (link_t.contains("/en/")) {
-							eventStr = "Yellow/Red";
-						} else {
-							eventStr = "ได้รับใบเหลืองใบที่ 2 / ได้รับใบแดง";
-						}
-					} else if (Split_item[1].contains("ยิงจุดโทษได้")
-							|| Split_item[1].contains("Pen SO Goal")
-							|| Split_item[1].contains("Pen SO Miss")) {
-						if (link_t.contains("/en/")) {
-							eventStr = "Pen Goal";
-						} else {
-							eventStr = "ทำประตูได้จากจุดโทษ";
-						}
-					} else if (Split_item[1].contains("ทำเข้าประตูตัวเอง")) {
-						eventStr = "ทำเข้าประตูตัวเอง";
-					} else if (Split_item[1].contains("Own Goal")) {
-						eventStr = "Own Goal";
-					} else if (Split_item[1].contains("ประตู")) {
-						eventStr = "ทำประตูได้";
-					} else if (Split_item[1].contains("Goal")) {
-						eventStr = "Goal";
-					} else if (Split_item[1].contains("แอสซิสต์")) {
-						eventStr = "จ่ายให้เพื่อนทำประตูได้";
-					} else if (Split_item[1].contains("Assist")) {
-						eventStr = "Assist";
-					} else if (Split_item[1].equals("เปลี่ยนตัว")) {
-						eventStr = "เปลี่ยนตัว";
-					} else if (Split_item[1].equals("Substitution")) {
-						eventStr = "Substitution";
-					}
-					JSONObject txt_Item = ListDetail.get(position);
-					Boast.makeText(mContext, eventStr, Toast.LENGTH_LONG)
-							.show();
-				}
-*/
+				 * String txt_Item = player_Detail.get(position); if
+				 * (!txt_Item.equals("NotFoundData")) { String Split_item[] =
+				 * txt_Item.replaceAll("&quot;", "\"") .split(":"); String
+				 * eventStr = ""; if (Split_item[1].contains("ใบเหลือง")) {
+				 * eventStr = "ได้รับใบเหลือง"; } else if
+				 * (Split_item[1].contains("Yellow Card")) { eventStr =
+				 * "Yellow Card"; } else if (Split_item[1].contains("ใบแดง")) {
+				 * eventStr = "ได้รับใบแดง"; } else if
+				 * (Split_item[1].contains("Red Card")) { eventStr = "Red Card";
+				 * } else if (Split_item[1].contains("Yellow/Red")) { if
+				 * (link_t.contains("/en/")) { eventStr = "Yellow/Red"; } else {
+				 * eventStr = "ได้รับใบเหลืองใบที่ 2 / ได้รับใบแดง"; } } else if
+				 * (Split_item[1].contains("ยิงจุดโทษได้") ||
+				 * Split_item[1].contains("Pen SO Goal") ||
+				 * Split_item[1].contains("Pen SO Miss")) { if
+				 * (link_t.contains("/en/")) { eventStr = "Pen Goal"; } else {
+				 * eventStr = "ทำประตูได้จากจุดโทษ"; } } else if
+				 * (Split_item[1].contains("ทำเข้าประตูตัวเอง")) { eventStr =
+				 * "ทำเข้าประตูตัวเอง"; } else if
+				 * (Split_item[1].contains("Own Goal")) { eventStr = "Own Goal";
+				 * } else if (Split_item[1].contains("ประตู")) { eventStr =
+				 * "ทำประตูได้"; } else if (Split_item[1].contains("Goal")) {
+				 * eventStr = "Goal"; } else if
+				 * (Split_item[1].contains("แอสซิสต์")) { eventStr =
+				 * "จ่ายให้เพื่อนทำประตูได้"; } else if
+				 * (Split_item[1].contains("Assist")) { eventStr = "Assist"; }
+				 * else if (Split_item[1].equals("เปลี่ยนตัว")) { eventStr =
+				 * "เปลี่ยนตัว"; } else if
+				 * (Split_item[1].equals("Substitution")) { eventStr =
+				 * "Substitution"; } JSONObject txt_Item =
+				 * ListDetail.get(position); Boast.makeText(mContext, eventStr,
+				 * Toast.LENGTH_LONG) .show(); }
+				 */
 			}
 		});
 		new Live_score_Loader().execute();
@@ -307,7 +283,7 @@ public class Live_Score_Detail extends Activity {
 		}
 
 		public int getCount() {
-			if(ListDetail.size()==0){
+			if (ListDetail.size() == 0) {
 				JSONObject obJdebug = new JSONObject();
 				try {
 					obJdebug.put("NotFound", "NotFound");
@@ -335,7 +311,7 @@ public class Live_Score_Detail extends Activity {
 			retval.setGravity(Gravity.CENTER);
 			retval.setPadding(5, 0, 5, 0);
 			retval.setMinimumHeight(50);
-			
+
 			int colors = Integer.parseInt("000000", 16) + (0xFF000000);
 
 			if (!ListDetail.get(position).isNull("NotFound")) {
@@ -349,84 +325,90 @@ public class Live_Score_Detail extends Activity {
 				retval.addView(txt_T);
 			} else {
 				try {
-				JSONObject txt_Item = ListDetail.get(position);
-				TextView txt_T = new TextView(mContext);
-				txt_T.setLayoutParams(new LinearLayout.LayoutParams(
-						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				// txt.setGravity(Gravity.CENTER);
-				txt_T.setTextColor(colors);
-				txt_T.setPadding(0, 0, 10, 0);
-
-				TextView txt_N = new TextView(mContext);
-				txt_N.setLayoutParams(new LinearLayout.LayoutParams(0,
-						LayoutParams.WRAP_CONTENT, 1));
-				txt_N.setTextColor(colors);
-
-				ImageView img_E = new ImageView(mContext);
-				img_E.setLayoutParams(new LayoutParams(30, 30));
-				
-				txt_T.setText(txt_Item.getString("time"));
-				retval.addView(txt_T);
-				if(txt_Item.getString("eventType").equals("substitution")){
-					TextView txt_Sub = new TextView(mContext);
-					txt_Sub.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 1));
-					txt_Sub.setTextColor(colors);
-					txt_N.setLayoutParams(new LinearLayout.LayoutParams(
+					JSONObject txt_Item = ListDetail.get(position);
+					TextView txt_T = new TextView(mContext);
+					txt_T.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
-					img_E.setImageResource(R.drawable.substitution);
-					txt_N.setText(txt_Item.getString("subOut"));
-					ImageView img_SubIn = new ImageView(mContext);
-					img_SubIn.setLayoutParams(new LayoutParams(30, 30));
-					img_SubIn.setImageResource(R.drawable.substitution_in);
-					
-					txt_Sub.setText(txt_Item.getString("subIn"));
-					
-					retval.addView(img_E);
-					retval.addView(txt_N);
-					retval.addView(img_SubIn);
-					retval.addView(txt_Sub);
-				}else{
-					
-					String Event = "";
-					if (txt_Item.getString("eventType").contains("yellow-card")) {
-						img_E.setImageResource(R.drawable.yellow);
-					} else if (txt_Item.getString("eventType").contains("red-card")) {
-						img_E.setImageResource(R.drawable.red);
-					} else if (txt_Item.getString("eventType").contains("yellow/red-card")) {
-						ImageView img_EY = new ImageView(mContext);
-						img_EY.setLayoutParams(new LayoutParams(30, 30));
-						img_EY.setImageResource(R.drawable.yellow);
-						retval.addView(img_EY);
-						img_E.setImageResource(R.drawable.red);
-					} else if (txt_Item.getString("eventType").contains("penalty-goal")) {
-						Event = "(PG)";
-						img_E.setImageResource(R.drawable.goal);
-					} else if (txt_Item.getString("eventType").contains("own-goal")) {
-						Event = "(OG)";
-						img_E.setImageResource(R.drawable.goal);
-					} else if (txt_Item.getString("eventType").contains("goal")) {
-						Event = "(G)";
-						img_E.setImageResource(R.drawable.goal);
-					} else if (txt_Item.getString("eventType").contains("assist")) {
-						Event = "(A)";
-						img_E.setImageResource(R.drawable.assist);
+					// txt.setGravity(Gravity.CENTER);
+					txt_T.setTextColor(colors);
+					txt_T.setPadding(0, 0, 10, 0);
+
+					TextView txt_N = new TextView(mContext);
+					txt_N.setLayoutParams(new LinearLayout.LayoutParams(0,
+							LayoutParams.WRAP_CONTENT, 1));
+					txt_N.setTextColor(colors);
+
+					ImageView img_E = new ImageView(mContext);
+					img_E.setLayoutParams(new LayoutParams(30, 30));
+
+					txt_T.setText(txt_Item.getString("time"));
+					retval.addView(txt_T);
+					if (txt_Item.getString("eventType").equals("substitution")) {
+						TextView txt_Sub = new TextView(mContext);
+						txt_Sub.setLayoutParams(new LinearLayout.LayoutParams(
+								0, LayoutParams.WRAP_CONTENT, 1));
+						txt_Sub.setTextColor(colors);
+						txt_N.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+						img_E.setImageResource(R.drawable.substitution);
+						txt_N.setText(txt_Item.getString("subOut"));
+						ImageView img_SubIn = new ImageView(mContext);
+						img_SubIn.setLayoutParams(new LayoutParams(30, 30));
+						img_SubIn.setImageResource(R.drawable.substitution_in);
+
+						txt_Sub.setText(txt_Item.getString("subIn"));
+
+						retval.addView(img_E);
+						retval.addView(txt_N);
+						retval.addView(img_SubIn);
+						retval.addView(txt_Sub);
+					} else {
+
+						String Event = "";
+						if (txt_Item.getString("eventType").contains(
+								"yellow-card")) {
+							img_E.setImageResource(R.drawable.yellow);
+						} else if (txt_Item.getString("eventType").contains(
+								"red-card")) {
+							img_E.setImageResource(R.drawable.red);
+						} else if (txt_Item.getString("eventType").contains(
+								"yellow/red-card")) {
+							ImageView img_EY = new ImageView(mContext);
+							img_EY.setLayoutParams(new LayoutParams(30, 30));
+							img_EY.setImageResource(R.drawable.yellow);
+							retval.addView(img_EY);
+							img_E.setImageResource(R.drawable.red);
+						} else if (txt_Item.getString("eventType").contains(
+								"penalty-goal")) {
+							Event = "(PG)";
+							img_E.setImageResource(R.drawable.goal);
+						} else if (txt_Item.getString("eventType").contains(
+								"own-goal")) {
+							Event = "(OG)";
+							img_E.setImageResource(R.drawable.goal);
+						} else if (txt_Item.getString("eventType").contains(
+								"goal")) {
+							Event = "(G)";
+							img_E.setImageResource(R.drawable.goal);
+						} else if (txt_Item.getString("eventType").contains(
+								"assist")) {
+							Event = "(A)";
+							img_E.setImageResource(R.drawable.assist);
+						}
+
+						txt_N.setText(Event + txt_Item.getString("text"));
+						retval.addView(img_E);
+						retval.addView(txt_N);
 					}
-					
-					txt_N.setText(Event + txt_Item.getString("text"));
-					retval.addView(img_E);
-					retval.addView(txt_N);
-				}
-				
-				
-				
+
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-	
+
 			if (position % 2 == 0) {
 				retval.setBackgroundColor(Color.GRAY);
 				retval.getBackground().setAlpha(200);
@@ -558,289 +540,75 @@ public class Live_Score_Detail extends Activity {
 		}
 
 		List<TagNode> getLinksByID(String CSSIDname) throws JSONException {
-			
+
 			List<TagNode> linkList = new ArrayList<TagNode>();
-			
+
 			TagNode mainElement[] = rootNode.getElementsByName("ul", true);
 			for (int i = 0; mainElement != null && i < mainElement.length; i++) {
 				String AttValue = mainElement[i].getAttributeByName("class");
 				if (AttValue != null && AttValue.contains("commentaries")) {
-					TagNode liElement[] = mainElement[i].getElementsByName("li", true);
-					for(int j=0; liElement != null && j < liElement.length; j++){
-						String eAttValue = liElement[j].getAttributeByName("data-event-type");
-						if(eAttValue!=null){
-							if(!eAttValue.equals("action")){
+					TagNode liElement[] = mainElement[i].getElementsByName(
+							"li", true);
+					for (int j = 0; liElement != null && j < liElement.length; j++) {
+						String eAttValue = liElement[j]
+								.getAttributeByName("data-event-type");
+						if (eAttValue != null) {
+							if (!eAttValue.equals("action")) {
 								JSONObject jObOut = new JSONObject();
 								jObOut.put("eventType", eAttValue);
-								
-								TagNode divElement[] = liElement[j].getElementsByName("div", true);
-								for(int k=0; divElement != null && k < divElement.length; k++){
-									AttValue = divElement[k].getAttributeByName("class");
-									if(AttValue!=null){
-										if(AttValue.equals("time")){
-											jObOut.put("time", divElement[k].getText().toString().replace("\n", ""));
-										}else if(AttValue.equals("text")){
-											if(eAttValue.equals("substitution")){
-												TagNode Outtag[] = divElement[k].getElementsByAttValue("class", "sub-out", true, true);
-												TagNode Intag[] = divElement[k].getElementsByAttValue("class", "sub-in", true, true);
-												jObOut.put("subOut", Outtag[0].getText().toString().replace("\n", ""));
-												jObOut.put("subIn", Intag[0].getText().toString().replace("\n", ""));
-											}else{
-												jObOut.put("text", divElement[k].getText().toString().replace("\n", ""));
+
+								TagNode divElement[] = liElement[j]
+										.getElementsByName("div", true);
+								for (int k = 0; divElement != null
+										&& k < divElement.length; k++) {
+									AttValue = divElement[k]
+											.getAttributeByName("class");
+									if (AttValue != null) {
+										if (AttValue.equals("time")) {
+											jObOut.put("time", divElement[k]
+													.getText().toString()
+													.replace("\n", ""));
+										} else if (AttValue.equals("text")) {
+											if (eAttValue
+													.equals("substitution")) {
+												TagNode Outtag[] = divElement[k]
+														.getElementsByAttValue(
+																"class",
+																"sub-out",
+																true, true);
+												TagNode Intag[] = divElement[k]
+														.getElementsByAttValue(
+																"class",
+																"sub-in", true,
+																true);
+												jObOut.put("subOut", Outtag[0]
+														.getText().toString()
+														.replace("\n", ""));
+												jObOut.put("subIn", Intag[0]
+														.getText().toString()
+														.replace("\n", ""));
+											} else {
+												jObOut.put(
+														"text",
+														divElement[k]
+																.getText()
+																.toString()
+																.replace("\n",
+																		""));
 											}
 										}
 									}
 								}
-								Log.d("TEST", "jObOut::"+jObOut);
+								Log.d("TEST", "jObOut::" + jObOut);
 								ListDetail.add(jObOut);
 							}
-							
+
 						}
 					}
 				}
 			}
 			return linkList;
 		}
-	}
-	
-	public static Bitmap loadImageFromUrl(String url) {
-		InputStream i = null;
-		BufferedInputStream bis = null;
-		ByteArrayOutputStream out = null;
-		Bitmap bitmap = null;
-		try {
-			final HttpGet getRequest = new HttpGet(url);
-			HttpParams httpParameters = new BasicHttpParams();
-			int timeoutConnection = 3000;
-			HttpConnectionParams.setConnectionTimeout(httpParameters,
-					timeoutConnection);
-			int timeoutSocket = 5000;
-
-			httpParameters.setParameter(CoreProtocolPNames.USER_AGENT,
-					System.getProperty("http.agent"));
-			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-
-			HttpResponse response = httpClient.execute(getRequest);
-
-			final int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode != HttpStatus.SC_OK) {
-				Log.w("ImageDownloader", "Error " + statusCode
-						+ " while retrieving bitmap from " + url);
-			}
-
-			final HttpEntity entity = response.getEntity();
-
-			i = entity.getContent();// connection.getInputStream();//(InputStream)
-									// m.getContent();//
-
-			bis = new BufferedInputStream(i, 1024 * 8);
-			out = new ByteArrayOutputStream();
-			int len = 0;
-			byte[] buffer = new byte[1024];
-			while ((len = new FlushedInputStream(bis).read(buffer)) != -1) {
-				out.write(buffer, 0, len);
-			}
-			out.close();
-			bis.close();
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (OutOfMemoryError e) {
-			Log.e("err", "Out of memory error :(");
-		}
-		// double image_size = lenghtOfFile;
-		if (out != null) {
-			byte[] data = out.toByteArray();
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inJustDecodeBounds = true;
-			BitmapFactory.decodeByteArray(data, 0, data.length, options);
-
-			double screenWidth = options.outWidth / 2;
-			double screenHeight = options.outHeight / 2;
-
-			options.inPreferredConfig = Bitmap.Config.RGB_565;
-			options.inDither = false; // Disable Dithering mode
-			options.inPurgeable = true; // Tell to gc that whether it needs free
-										// memory, the Bitmap can be cleared
-			options.inInputShareable = true; // Which kind of reference will be
-												// used to recover the Bitmap
-												// data after being clear, when
-												// it will be used in the future
-			options.inTempStorage = new byte[32 * 1024];
-			options.inSampleSize = calculateInSampleSize(options,
-					(int) screenWidth, (int) screenHeight);
-
-			options.inJustDecodeBounds = false;
-
-			bitmap = BitmapFactory.decodeByteArray(data, 0, data.length,
-					options);
-		}
-		return bitmap;
-	}
-
-	public void startDownload_Home(final String imgLink, final ImageView img_H, final String saveMode) {
-
-		Runnable runnable = new Runnable() {
-			public void run() {
-				if (saveMode.equals("true")) {
-					handler.post(new Runnable() {
-						@Override
-						public void run() {
-							img_H.setImageResource(R.drawable.ic_menu_view);
-							img_H.setFocusable(false);
-							img_H.setOnClickListener(new View.OnClickListener() {
-								
-								@Override
-								public void onClick(View arg0) {
-									startDownload_Home(imgLink, img_H, "false");
-								}
-							});
-						}
-					});
-				}else if(saveMode.equals("false")||saveMode.equals("null")){
-					if (imgLink.length() > 0) {
-
-						if (data.get_HomeMap(imgLink) != null) {
-							handler.post(new Runnable() {
-								@Override
-								public void run() {
-									img_H.setImageBitmap(data.get_HomeMap(String
-											.valueOf(position)));
-								}
-							});
-						} else {
-							if (!imgLink.contains("/images/placeholder-64x64.png")) {
-								final Bitmap pic;
-								pic = loadImageFromUrl(imgLink);
-								data.set_HomeMap(imgLink, pic);
-								handler.post(new Runnable() {
-									@Override
-									public void run() {
-										if (pic == null) {
-											img_H.setImageResource(R.drawable.soccer_icon);
-										} else {
-											img_H.setImageBitmap(pic);
-										}
-									}
-								});
-							}
-						}
-					}
-				}
-				
-			}
-		};
-
-		new Thread(runnable).start();
-	}
-
-	public void startDownload_Away(final String imgLink, final ImageView img_A, final String saveMode) {
-
-		Runnable runnable = new Runnable() {
-			public void run() {
-				if (saveMode.equals("true")) {
-					handler.post(new Runnable() {
-						@Override
-						public void run() {
-							img_A.setImageResource(R.drawable.ic_menu_view);
-							img_A.setFocusable(false);
-							img_A.setOnClickListener(new View.OnClickListener() {
-								
-								@Override
-								public void onClick(View arg0) {
-									startDownload_Away(imgLink, img_A, "false");
-								}
-							});
-						}
-					});
-				}else if(saveMode.equals("false")||saveMode.equals("null")){
-
-					if (imgLink.length() > 0) {
-
-						if (data.get_AwayMap(imgLink) != null) {
-							handler.post(new Runnable() {
-								@Override
-								public void run() {
-									img_A.setImageBitmap(data.get_AwayMap(String
-											.valueOf(position)));
-								}
-							});
-						} else {
-							if (!imgLink.contains("/images/placeholder-64x64.png")) {
-								final Bitmap pic;
-								pic = loadImageFromUrl(imgLink);
-								data.set_AwayMap(imgLink, pic);
-
-								handler.post(new Runnable() {
-									@Override
-									public void run() {
-										if (pic == null) {
-											img_A.setImageResource(R.drawable.soccer_icon);
-										} else {
-											img_A.setImageBitmap(pic);
-										}
-									}
-								});
-							}
-						}
-
-					}
-				}
-			}
-		};
-
-		new Thread(runnable).start();
-	}
-
-	static class FlushedInputStream extends FilterInputStream {
-		public FlushedInputStream(InputStream inputStream) {
-			super(inputStream);
-		}
-
-		@Override
-		public long skip(long n) throws IOException {
-			long totalBytesSkipped = 0L;
-			while (totalBytesSkipped < n) {
-				long bytesSkipped = in.skip(n - totalBytesSkipped);
-				if (bytesSkipped == 0L) {
-					int b = read();
-					if (b < 0) {
-						break; // we reached EOF
-					} else {
-						bytesSkipped = 1; // we read one byte
-					}
-				}
-				totalBytesSkipped += bytesSkipped;
-			}
-			return totalBytesSkipped;
-		}
-	}
-
-	public static int calculateInSampleSize(BitmapFactory.Options options,
-			int reqWidth, int reqHeight) {
-		// Raw height and width of image
-		final int height = options.outHeight;
-		final int width = options.outWidth;
-		int inSampleSize = 1;
-
-		if (height > reqHeight || width > reqWidth) {
-
-			// Calculate ratios of height and width to requested height and
-			// width
-			final int heightRatio = Math.round((float) height
-					/ (float) reqHeight);
-			final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-			// Choose the smallest ratio as inSampleSize value, this will
-			// guarantee
-			// a final image with both dimensions larger than or equal to the
-			// requested height and width.
-			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-		}
-
-		return inSampleSize;
 	}
 
 	@Override
