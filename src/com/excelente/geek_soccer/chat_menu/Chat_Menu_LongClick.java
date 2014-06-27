@@ -16,11 +16,12 @@ import com.excelente.geek_soccer.JSONParser;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.R.color;
+import com.excelente.geek_soccer.pic_download.DownChatPic;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.view.Gravity;
 import android.view.View;
@@ -42,7 +43,7 @@ public class Chat_Menu_LongClick {
 	ImageView ProfileImg;
 	View line;
 	
-	public void ChatMenu(final Context mContext, final JSONObject jsonOb, Bitmap ProfileBitmap) {
+	public void ChatMenu(final Context mContext, final JSONObject jsonOb, String ImageUrl, String saveModeGet, ControllParameter data) {
 		this.jsonOb = jsonOb;
 		this.mContext = mContext;
 		
@@ -57,7 +58,19 @@ public class Chat_Menu_LongClick {
 		
 		ProfileImg = new ImageView(mContext);
 		ProfileImg.setLayoutParams(new LinearLayout.LayoutParams(GetdipSize.dip(mContext, 96), GetdipSize.dip(mContext, 96)));
-		ProfileImg.setImageBitmap(ProfileBitmap);
+		if (data.BitMapHash.get(ImageUrl) != null) {
+			ProfileImg.setImageBitmap(data.BitMapHash
+					.get(ImageUrl));
+		} else {
+			if(saveModeGet.equals("true")){
+				ProfileImg.setImageResource(R.drawable.ic_menu_view);
+			}else{
+				ProfileImg.setImageResource(R.drawable.soccer_icon);
+			}
+			new DownChatPic().startDownloadNonCache(
+					mContext, ImageUrl, ProfileImg, saveModeGet, data);
+		}
+		
 		MainLayout.addView(ProfileImg);
 		
 		ListMenuLayout = new LinearLayout(mContext);
