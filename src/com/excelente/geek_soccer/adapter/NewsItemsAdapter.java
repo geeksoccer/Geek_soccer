@@ -68,7 +68,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 	News_Item_Page newsItemPage;
 	
 	Map<Integer, NewsItemView> newsItemViews = new HashMap<Integer, NewsItemsAdapter.NewsItemView>();
-	private AlphaAnimation alpha;
+	private AlphaAnimation alpha; 
 
 	public NewsItemsAdapter(News_Item_Page context, ProgressBar newsWaitProcessbar, List<NewsModel> newsList) {
 		this.newsItemPage = context;
@@ -185,6 +185,11 @@ public class NewsItemsAdapter extends PagerAdapter{
         		view.stopLoading();
         		Log.e("shouldOverrideUrlLoading", url);
                 Uri uri = Uri.parse(url);
+                
+                if(uri==null || uri.getHost() == null){
+                	return false;
+                }
+                
                 if (uri.getHost().contains("youtube.com")) {
                     IntentVideoViewUtils.playYoutubeVideo(newsItemPage, url);
                     return true;
