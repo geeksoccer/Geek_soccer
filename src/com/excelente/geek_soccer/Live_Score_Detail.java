@@ -142,34 +142,27 @@ public class Live_Score_Detail extends Activity {
 		String saveModeGet = SessionManager.getSetting(mContext,
 				SessionManager.setting_save_mode);
 
-		try {
-			if (data.get_HomeMap(Home_img_t) != null) {
-				Home_Pic.setImageBitmap(data.get_HomeMap(Home_img_t));
+		if (data.get_HomeMap(Home_img_t) != null) {
+			Home_Pic.setImageBitmap(data.get_HomeMap(Home_img_t));
+		} else {
+			if (saveModeGet.equals("true")) {
+				Home_Pic.setImageResource(R.drawable.ic_menu_view);
 			} else {
-				if (saveModeGet.equals("true")) {
-					Home_Pic.setImageResource(R.drawable.ic_menu_view);
-				} else {
-					Home_Pic.setImageResource(R.drawable.soccer_icon);
-				}
-				new DownLiveScorePic().startDownload_Home(
-						data.Match_list_c_JSON.get(position).getString(
-								"Home_img"), Home_Pic, saveModeGet, data);
+				Home_Pic.setImageResource(R.drawable.soccer_icon);
 			}
-			if (data.get_AwayMap(Away_img_t) != null) {
-				Away_Pic.setImageBitmap(data.get_AwayMap(Away_img_t));
+			new DownLiveScorePic().startDownload_Home(Home_img_t, Home_Pic,
+					saveModeGet, data);
+		}
+		if (data.get_AwayMap(Away_img_t) != null) {
+			Away_Pic.setImageBitmap(data.get_AwayMap(Away_img_t));
+		} else {
+			if (saveModeGet.equals("true")) {
+				Away_Pic.setImageResource(R.drawable.ic_menu_view);
 			} else {
-				if (saveModeGet.equals("true")) {
-					Away_Pic.setImageResource(R.drawable.ic_menu_view);
-				} else {
-					Away_Pic.setImageResource(R.drawable.soccer_icon);
-				}
-				new DownLiveScorePic().startDownload_Away(
-						data.Match_list_c_JSON.get(position).getString(
-								"Away_img"), Away_Pic, saveModeGet, data);
+				Away_Pic.setImageResource(R.drawable.soccer_icon);
 			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new DownLiveScorePic().startDownload_Away(Away_img_t, Away_Pic,
+					saveModeGet, data);
 		}
 
 		Score.setText(score_t);
