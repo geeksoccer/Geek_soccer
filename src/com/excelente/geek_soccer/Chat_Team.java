@@ -753,13 +753,19 @@ public class Chat_Team extends Activity {
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
 						txt_N.setText(SessionManager.getMember(Chat_Team.this)
 								.getNickname());
-						if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
-							Profile_Pic.setImageBitmap(data.BitMapHash
-									.get(txt_Item.getString("m_photo")));
-						} else {
-							new DownChatPic().startDownload(mContext, txt_Item.getString("m_photo"),
-									Profile_Pic, data);
+						Bitmap bitmapPhoto = SessionManager.getImageSession(Chat_Team.this, SessionManager.getMember(Chat_Team.this).getPhoto());
+						if(bitmapPhoto!=null){
+							Profile_Pic.setImageBitmap(bitmapPhoto);
+						}else{
+							if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
+								Profile_Pic.setImageBitmap(data.BitMapHash
+										.get(txt_Item.getString("m_photo")));
+							} else {
+								new DownChatPic().startDownload(mContext, txt_Item.getString("m_photo"),
+										Profile_Pic, data);
+							}
 						}
+						
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (txt_Item.getString("ch_msg").contains(".gif")) {
 								Ion.with(Sticker)
