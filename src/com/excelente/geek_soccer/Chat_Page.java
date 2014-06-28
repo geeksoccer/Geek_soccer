@@ -136,24 +136,17 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 	        	
 	        }
 	}
-	/*
+	
 	@Override
 	public void onResume() {
 		super.onResume();
-		data.BitMapHash.clear();
-		if(data.Chat_Item_list_Team!=null
-				&&data.lstViewChatTeam!=null
-				&&data.imageAdapterChatTeam!=null){
+		ControllParameter.ProFileCache = SessionManager.getImageSession(mContext, SessionManager.getMember(mContext).getPhoto());
+		if(data.imageAdapterChatTeam!=null){
 			data.imageAdapterChatTeam.notifyDataSetChanged();
-			data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team.size());
 		}
 		
-		if(data.Chat_Item_list_All!=null
-				&&data.lstViewChatAll!=null
-				&&data.imageAdapterChatAll!=null){
+		if(data.imageAdapterChatAll!=null){
 			data.imageAdapterChatAll.notifyDataSetChanged();
-			data.lstViewChatAll.setSelection(data.Chat_Item_list_All.size());
 		}
 	}
-	*/
 }

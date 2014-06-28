@@ -80,6 +80,7 @@ public class ControllParameter {
 	public HashMap<String, String> OldScoreH = new HashMap<String, String>();
 	public HashMap<String, String> OldTimeH = new HashMap<String, String>();
 	public static String TeamSelect = "";
+	public static Bitmap ProFileCache = null;
 	static int Laugage_Select = 0;
 	public static Boolean BanStatus = true;
 	

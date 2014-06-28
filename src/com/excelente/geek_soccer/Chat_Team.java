@@ -107,6 +107,7 @@ public class Chat_Team extends Activity {
 		
 		setContentView(R.layout.chat_layout);
 		mContext = this;
+		ControllParameter.ProFileCache = SessionManager.getImageSession(mContext, SessionManager.getMember(mContext).getPhoto());
 		saveModeGet = SessionManager.getSetting(mContext,
 				SessionManager.setting_save_mode);
 		data.lstViewChatTeam = new ListView(mContext);
@@ -753,9 +754,8 @@ public class Chat_Team extends Activity {
 					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
 						txt_N.setText(SessionManager.getMember(Chat_Team.this)
 								.getNickname());
-						Bitmap bitmapPhoto = SessionManager.getImageSession(Chat_Team.this, SessionManager.getMember(Chat_Team.this).getPhoto());
-						if(bitmapPhoto!=null){
-							Profile_Pic.setImageBitmap(bitmapPhoto);
+						if(ControllParameter.ProFileCache!=null){
+							Profile_Pic.setImageBitmap(ControllParameter.ProFileCache);
 						}else{
 							if (data.BitMapHash.get(txt_Item.getString("m_photo")) != null) {
 								Profile_Pic.setImageBitmap(data.BitMapHash
