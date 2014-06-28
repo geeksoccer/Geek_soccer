@@ -22,7 +22,7 @@
     
     <string name="show_photo">ดูรูป</string>
     <string name="save_mode_title">โหมดประหยัด</string>
-    <string name="save_mode_question">ตอนนี้คุณใช้เครือข่ายมือถือ \n เราขอแนะนำให้คุณใช้โหมดประหยัด\n ซึ่งจะช่วยลดการดาวน์โหลดข้อมูล\n คุณต้องการใช้โหมดประหยัด หรือไม่</string>
+    <string name="save_mode_question">ตอนนี้คุณใช้เครือข่ายมือถือ \n เราขอแนะนำให้คุณใช้โหมดประหยัด\n ซึ่งจะช่วยลดการดาวน์โหลดข้อมูล\n\n คุณต้องการใช้โหมดประหยัด หรือไม่</string>
     
     <string name="video_title_error">วิดีโอนี้ไม่สามารถเล่นได้</string>
     <string name="video_message_error">มีปัญหาขณะเล่น</string>

@@ -49,9 +49,7 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/save_mode_check_ask"
             android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:padding="5dp"/>
+            android:textSize="16sp" />
 	    
 		<TextView 
 		    android:id="@+id/dialog_question"
@@ -59,7 +57,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="16sp"
-            android:padding="10dp"/>
+            android:padding="15dp"/>
 	    
 	</LinearLayout>
 	
