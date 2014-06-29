@@ -324,6 +324,8 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		protected void onPostExecute(List<TableModel> result) {
 			super.onPostExecute(result);
 			if(result != null){
+				listview.setHideHeader();
+				listview.setPosition(0);
 				tableAdaptor = new TableAdapter(getActivity(), result);
 				listview.setAdapter(tableAdaptor);
 				listview.setOnItemClickListener(Table_Page.this);
@@ -341,7 +343,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				}else if(tag.equals("tag6")){
 					flagtplAdapter = false;
 				}
-				
+				 
 				tabs.setCurrentTabByTag(tag);
 			}else{
 				if(getActivity()!=null){

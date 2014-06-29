@@ -55,6 +55,8 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
     private int mLastMotionY;
 
     private boolean mBounceHack;
+    
+    private int position;
 
     public PullToRefreshListView(Context context) {
         super(context);
@@ -72,6 +74,8 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
     }
 
     private void init(Context context) {
+    	position = 1;
+    	
         // Load all of the animations we need in code rather than through XML
         mFlipAnimation = new RotateAnimation(0, -180,
                 RotateAnimation.RELATIVE_TO_SELF, 0.5f,
@@ -89,11 +93,16 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
         mInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
 
-		mRefreshView = (RelativeLayout) mInflater.inflate(R.layout.pull_to_refresh_header, this, false);
-        mRefreshViewText = (TextView) mRefreshView.findViewById(R.id.pull_to_refresh_text);
-        mRefreshViewImage = (ImageView) mRefreshView.findViewById(R.id.pull_to_refresh_image);
-        mRefreshViewProgress = (ProgressBar) mRefreshView.findViewById(R.id.pull_to_refresh_progress);
-        mRefreshViewLastUpdated = (TextView) mRefreshView.findViewById(R.id.pull_to_refresh_updated_at);
+		mRefreshView = (RelativeLayout) mInflater.inflate(
+				R.layout.pull_to_refresh_header, this, false);
+        mRefreshViewText =
+            (TextView) mRefreshView.findViewById(R.id.pull_to_refresh_text);
+        mRefreshViewImage =
+            (ImageView) mRefreshView.findViewById(R.id.pull_to_refresh_image);
+        mRefreshViewProgress =
+            (ProgressBar) mRefreshView.findViewById(R.id.pull_to_refresh_progress);
+        mRefreshViewLastUpdated =
+            (TextView) mRefreshView.findViewById(R.id.pull_to_refresh_updated_at);
 
         mRefreshViewImage.setMinimumHeight(50);
         mRefreshView.setOnClickListener(new OnClickRefreshListener());
@@ -112,14 +121,22 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        setSelection(1);
+        setSelection(position);
     }
 
     @Override
     public void setAdapter(ListAdapter adapter) {
         super.setAdapter(adapter);
-        setSelection(1);
+        setSelection(position);
     }
+     
+    public void setHideHeader() {
+    	removeHeaderView(mRefreshView);
+	}
+    
+    public void setShowHeader() {
+    	addHeaderView(mRefreshView);
+	}
 
     /**
      * Set the listener that will receive notifications every time the list
@@ -150,7 +167,7 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
             mRefreshViewLastUpdated.setVisibility(View.VISIBLE);
             mRefreshViewLastUpdated.setText(lastUpdated);
         } else {
-            mRefreshViewLastUpdated.setVisibility(View.GONE);
+            mRefreshViewLastUpdated.setVisibility(View.VISIBLE);
         }
     }
 
@@ -176,7 +193,7 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
                             || mRefreshView.getTop() <= 0) {
                         // Abort refresh and scroll down below the refresh view
                         resetHeader();
-                        setSelection(1);
+                        setSelection(position);
                     }
                 }
                 break;
@@ -248,7 +265,7 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
         }
     }
 
-	private void measureView(View child) {
+    private void measureView(View child) {
         ViewGroup.LayoutParams p = child.getLayoutParams();
         if (p == null) {
             p = new ViewGroup.LayoutParams(
@@ -300,10 +317,10 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
         } else if (mCurrentScrollState == SCROLL_STATE_FLING
                 && firstVisibleItem == 0
                 && mRefreshState != REFRESHING) {
-            setSelection(1);
+            setSelection(position);
             mBounceHack = true;
         } else if (mBounceHack && mCurrentScrollState == SCROLL_STATE_FLING) {
-            setSelection(1);
+            setSelection(position);
         }
 
         if (mOnScrollListener != null) {
@@ -342,7 +359,7 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
     public void onRefresh() {
         Log.d(TAG, "onRefresh");
 
-        if (mOnRefreshListener != null) {   
+        if (mOnRefreshListener != null) {
             mOnRefreshListener.onRefresh();
         }
     }
@@ -368,7 +385,7 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
         // the next item.
         if (getFirstVisiblePosition() == 0) {
             invalidateViews();
-            setSelection(1);
+            setSelection(position);
         }
     }
 
@@ -384,8 +401,7 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
             if (mRefreshState != REFRESHING) {
                 prepareForRefresh();
                 onRefresh();
-           }
-   
+            }
         }
 
     }
@@ -403,4 +419,12 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
          */
         public void onRefresh();
     }
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
 }
