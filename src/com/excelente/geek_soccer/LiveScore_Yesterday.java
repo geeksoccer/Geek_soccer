@@ -268,7 +268,7 @@ public class LiveScore_Yesterday extends Activity {
 								.setLayoutParams(new LinearLayout.LayoutParams(
 										0, LayoutParams.WRAP_CONTENT, 1f));
 						txt_Aggregate.setTextSize(14);
-						txt_Aggregate.setTextColor(Color.BLACK);
+						txt_Aggregate.setTextColor(Color.GRAY);
 						txt_Aggregate.setGravity(Gravity.RIGHT);
 						txt_Aggregate.setText(txt_Item.getString("details") + " ");
 						layOut_time.addView(txt_Aggregate);
@@ -525,7 +525,9 @@ public class LiveScore_Yesterday extends Activity {
 						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
 						layOutlist.removeAllViews();
 						TextView RefreshTag = new TextView(mContext);
-						RefreshTag.setText("Tap to refresh");
+						RefreshTag.setPadding(0, 30, 0, 30);
+						RefreshTag.setTextColor(Color.GRAY);
+						RefreshTag.setText(mContext.getResources().getString(R.string.pull_to_refresh_tap_label));
 						RefreshTag.setGravity(Gravity.CENTER);
 						((LinearLayout) layOutlist).addView(RefreshTag);
 						layOutlist

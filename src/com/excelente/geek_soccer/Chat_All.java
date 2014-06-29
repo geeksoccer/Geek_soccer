@@ -958,7 +958,7 @@ public class Chat_All extends Activity {
 						if (data.Chat_Item_list_All.size() > 0) {
 							data.socket_All.reconnect();
 						} else {
-							RefreshView("Tap to refresh");
+							RefreshView(mContext.getResources().getString(R.string.pull_to_refresh_tap_label));
 						}
 					}
 
@@ -1084,6 +1084,8 @@ public class Chat_All extends Activity {
 			public void run() {
 				data.Chat_list_LayOut_All.removeAllViews();
 				TextView RefreshTag = new TextView(mContext);
+				RefreshTag.setPadding(0, 30, 0, 30);
+				RefreshTag.setTextColor(Color.GRAY);
 				RefreshTag.setText(txt);
 				RefreshTag.setGravity(Gravity.CENTER);
 				data.Chat_list_LayOut_All.addView(RefreshTag);

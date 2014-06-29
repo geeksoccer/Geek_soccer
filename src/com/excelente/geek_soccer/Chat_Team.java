@@ -949,7 +949,7 @@ public class Chat_Team extends Activity {
 						if (data.Chat_Item_list_Team.size() > 0) {
 							data.socket_Team.reconnect();
 						} else {
-							RefreshView("Tap to refresh");
+							RefreshView(mContext.getResources().getString(R.string.pull_to_refresh_tap_label));
 						}
 					}
 
@@ -1071,6 +1071,8 @@ public class Chat_Team extends Activity {
 			public void run() {
 				data.Chat_list_LayOut_Team.removeAllViews();
 				TextView RefreshTag = new TextView(mContext);
+				RefreshTag.setPadding(0, 30, 0, 30);
+				RefreshTag.setTextColor(Color.GRAY);
 				RefreshTag.setText(txt);
 				RefreshTag.setGravity(Gravity.CENTER);
 				data.Chat_list_LayOut_Team.addView(RefreshTag);
