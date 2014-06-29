@@ -281,7 +281,7 @@ public class LiveScore_Today extends Activity {
 							LayoutParams.WRAP_CONTENT));
 					layOut_time.addView(txt);
 
-					if (txt_Item.getString("score_ag").length() > 4) {
+					if (txt_Item.getString("details").length() > 0) {
 						TextView txt_Aggregate = new TextView(mContext);
 						txt_Aggregate
 								.setLayoutParams(new LinearLayout.LayoutParams(
@@ -289,8 +289,7 @@ public class LiveScore_Today extends Activity {
 						txt_Aggregate.setTextSize(14);
 						txt_Aggregate.setTextColor(Color.BLACK);
 						txt_Aggregate.setGravity(Gravity.RIGHT);
-						txt_Aggregate.setText("AGGREGATE: "
-								+ txt_Item.getString("score_ag") + " ");
+						txt_Aggregate.setText(txt_Item.getString("details") + " ");
 						layOut_time.addView(txt_Aggregate);
 					}
 
