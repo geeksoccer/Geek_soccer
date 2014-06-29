@@ -5,6 +5,7 @@ import com.excelente.geek_soccer.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -116,6 +117,10 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
 
         measureView(mRefreshView);
         mRefreshViewHeight = mRefreshView.getMeasuredHeight();
+        
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        int height = metrics.heightPixels;
+        mRefreshViewText.setHeight(height);
     }
 
     @Override
@@ -128,6 +133,9 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
     public void setAdapter(ListAdapter adapter) {
         super.setAdapter(adapter);
         setSelection(position);
+        if(adapter!=null && adapter.getCount() > 0){
+        	mRefreshViewText.setHeight(50);
+        }
     }
      
     public void setHideHeader() {

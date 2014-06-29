@@ -20,14 +20,14 @@
 	            android:layout_width="fill_parent"
 	            android:layout_height="fill_parent"
 	            android:layout_above="@+id/news_loading_footer_processbar"
-	            android:layout_below="@android:id/tabs" >
+	            android:layout_below="@android:id/tabs"
+	            android:background="@color/news_gray" >
 
 	            <com.excelente.geek_soccer.view.PullToRefreshListView
 	                android:id="@+id/news_listview_team"
 	                android:layout_width="match_parent"
 	                android:layout_height="match_parent"
 	                android:layout_marginTop="0dp"
-	                android:background="@color/news_gray"
 	                android:clipToPadding="false"
 	                android:divider="@null"
 	                android:dividerHeight="5dp"
@@ -40,7 +40,6 @@
 	                android:layout_width="match_parent"
 	                android:layout_height="match_parent"
 	                android:layout_marginTop="0dp"
-	                android:background="@color/news_gray"
 	                android:clipToPadding="false"
 	                android:divider="@null"
 	                android:dividerHeight="5dp"

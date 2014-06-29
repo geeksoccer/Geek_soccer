@@ -615,7 +615,8 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 		
 	}*/
 	
-	private void setListViewEvents(final PullToRefreshListView hilightListview, final HilightAdapter hilightAdapter, final String tag) { 
+	private void setListViewEvents(final PullToRefreshListView hilightListview, final HilightAdapter hilightAdapter, final String tag) {
+		
 		hilightListview.setOnItemClickListener(this); 
 		
 		hilightListview.setOnScrollListener(new OnScrollListener() {
@@ -655,8 +656,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 					hilightListview.onRefreshComplete();
 				}
 			}
-		});
-		
+		}); 
 	}
 
 	@Override

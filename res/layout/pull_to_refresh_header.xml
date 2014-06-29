@@ -49,9 +49,9 @@
     <TextView
         android:id="@+id/pull_to_refresh_text"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_gravity="bottom"
-        android:gravity="center"
+        android:gravity="top|center_horizontal"
         android:paddingTop="5dip"
         android:text="@string/pull_to_refresh_tap_label"
         android:textColor="@color/gray" />
