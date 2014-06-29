@@ -393,13 +393,9 @@ public class LiveScore_Yesterday extends Activity {
 							String Time = "";// json_dt.getString("tp");
 
 							if (json_dt.getString("ty").equals("playing")) {
-								if (json_dt.getString("pr").equals("ht")) {
-									Time = "HT";
-								} else {
-									Time = json_dt.getString("tc") + "'";
-								}
+								Time = json_dt.getString("pr");
 							} else if (json_dt.getString("ty").equals("played")) {
-								Time = "FT";
+								Time = json_dt.getString("pr");
 							} else if (json_dt.getString("ty").equals(
 									"postponed")) {
 								Time = json_dt.getString("ty");
@@ -413,6 +409,7 @@ public class LiveScore_Yesterday extends Activity {
 							String stat = "[no]";
 							String score = json_dt.getString("sc");
 							String score_ag = json_dt.getString("ag");
+							String details = json_dt.getString("details");
 							if (score.equals("")) {
 								score = "vs";
 							}
@@ -460,6 +457,7 @@ public class LiveScore_Yesterday extends Activity {
 								j_data.put("Away_img", away_img);
 								j_data.put("link", link);
 								j_data.put("score_ag", score_ag);
+								j_data.put("details", details);
 								data.Match_list_y_JSON.add(j_data);
 							}
 							JSONObject j_data = new JSONObject();
@@ -474,6 +472,7 @@ public class LiveScore_Yesterday extends Activity {
 							j_data.put("Away_img", away_img);
 							j_data.put("link", link);
 							j_data.put("score_ag", score_ag);
+							j_data.put("details", details);
 							data.Match_list_y_JSON.add(j_data);
 						}
 						if (chk_ExistTeam_in == data.Match_list_y_JSON.size()) {

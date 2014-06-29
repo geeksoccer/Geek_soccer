@@ -413,7 +413,7 @@ public class LiveScore_Today extends Activity {
 							if (json_dt.getString("ty").equals("playing")) {
 								Time = json_dt.getString("pr");
 							} else if (json_dt.getString("ty").equals("played")) {
-								Time = "FT";
+								Time = json_dt.getString("pr");
 							} else if (json_dt.getString("ty").equals(
 									"postponed")) {
 								Time = json_dt.getString("ty");
@@ -427,6 +427,7 @@ public class LiveScore_Today extends Activity {
 							String stat = "[no]";
 							String score = json_dt.getString("sc");
 							String score_ag = json_dt.getString("ag");
+							String details = json_dt.getString("details");
 							if (score.equals("")) {
 								score = "vs";
 							}
@@ -474,6 +475,7 @@ public class LiveScore_Today extends Activity {
 								j_data.put("Away_img", away_img);
 								j_data.put("link", link);
 								j_data.put("score_ag", score_ag);
+								j_data.put("details", details);
 								data.Match_list_c_JSON.add(j_data);
 							}
 							JSONObject j_data = new JSONObject();
@@ -488,6 +490,7 @@ public class LiveScore_Today extends Activity {
 							j_data.put("Away_img", away_img);
 							j_data.put("link", link);
 							j_data.put("score_ag", score_ag);
+							j_data.put("details", details);
 							data.Match_list_c_JSON.add(j_data);
 						}
 						if (chk_ExistTeam_in == data.Match_list_c_JSON.size()) {
@@ -694,6 +697,7 @@ public class LiveScore_Today extends Activity {
 													.getString("sc");
 											String score_ag = json_dt
 													.getString("ag");
+											String details = json_dt.getString("details");
 											if (score.equals("")) {
 												score = "vs";
 											}
@@ -749,6 +753,7 @@ public class LiveScore_Today extends Activity {
 												j_data.put("Away_img", away_img);
 												j_data.put("link", link);
 												j_data.put("score_ag", score_ag);
+												j_data.put("details", details);
 												data.Match_list_c_JSON
 														.add(j_data);
 											}
@@ -767,6 +772,7 @@ public class LiveScore_Today extends Activity {
 											j_data.put("Away_img", away_img);
 											j_data.put("link", link);
 											j_data.put("score_ag", score_ag);
+											j_data.put("details", details);
 											data.Match_list_c_JSON.add(j_data);
 										}
 									}

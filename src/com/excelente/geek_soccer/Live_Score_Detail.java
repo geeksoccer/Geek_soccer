@@ -42,12 +42,8 @@ public class Live_Score_Detail extends Activity {
 	Context mContext;
 	String URL = "http://www.goal.com";
 	int Detail_positon;
-	TextView Time;
-	TextView Score;
-	TextView Home_name;
-	TextView Away_name;
-	ImageView Home_Pic;
-	ImageView Away_Pic;
+	TextView Time, Score, Home_name, Away_name, Detail;
+	ImageView Home_Pic, Away_Pic;
 	LinearLayout Up_btn;
 	ImageButton Fav_btn;
 	JSONObject getValue;
@@ -68,12 +64,8 @@ public class Live_Score_Detail extends Activity {
 	String score_t = "";
 	Boolean loading = false;
 	Boolean FirstLoad = true;
-	String id_t = "";
-	String Home_img_t = "";
-	String Away_img_t = "";
-	String Home_name_t = "";
-	String Away_name_t = "";
-	String score_ag_t = "";
+	String id_t = "", Home_img_t = "", Away_img_t = ""
+			, Home_name_t = "", Away_name_t = "", score_ag_t = "", detail_t = "";
 
 	JSONParser jParser = new JSONParser();
 	JSONObject jsonTagMap;
@@ -99,6 +91,7 @@ public class Live_Score_Detail extends Activity {
 		Home_name = (TextView) myView.findViewById(R.id.Home_name);
 		Away_name = (TextView) myView.findViewById(R.id.Away_name);
 		Time = (TextView) myView.findViewById(R.id.Time);
+		Detail = (TextView) myView.findViewById(R.id.Details);
 		txt_Aggregate = (TextView) myView.findViewById(R.id.Score_Aggregate);
 		Fav_btn = (ImageButton) myView.findViewById(R.id.Fav_btn);
 		data.detailPageOpenning = true;
@@ -132,6 +125,7 @@ public class Live_Score_Detail extends Activity {
 			score_t = getValue.getString("score").replaceAll("&nbsp;", " ");
 			Away_name_t = getValue.getString("Away");
 			score_ag_t = getValue.getString("score_ag");
+			detail_t = getValue.getString("details");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -173,6 +167,12 @@ public class Live_Score_Detail extends Activity {
 			txt_Aggregate.setText("AGGREGATE: " + score_ag_t);
 		} else {
 			txt_Aggregate.setVisibility(RelativeLayout.GONE);
+		}
+		
+		if(detail_t.length() >= 1){
+			Detail.setText(detail_t);
+		}else{
+			Detail.setVisibility(RelativeLayout.GONE);
 		}
 		if (type.equals("c")) {
 			checkRefreshDetail();
