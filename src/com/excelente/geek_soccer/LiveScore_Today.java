@@ -677,12 +677,10 @@ public class LiveScore_Today extends Activity {
 													.getString("lk");
 											String Time = "";// json_dt.getString("tp");
 
-											if (json_dt.getString("ty").equals(
-													"playing")) {
+											if (json_dt.getString("ty").equals("playing")) {
 												Time = json_dt.getString("pr");
-											} else if (json_dt.getString("ty")
-													.equals("played")) {
-												Time = "FT";
+											} else if (json_dt.getString("ty").equals("played")) {
+												Time = json_dt.getString("pr");
 											} else if (json_dt.getString("ty")
 													.equals("postponed")) {
 												Time = json_dt.getString("ty");
