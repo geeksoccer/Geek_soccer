@@ -15,7 +15,6 @@ import com.excelente.geek_soccer.chat_menu.Chat_Menu_LongClick;
 import com.excelente.geek_soccer.date_convert.Date_Covert;
 import com.excelente.geek_soccer.pic_download.DownChatPic;
 import com.excelente.geek_soccer.user_rule.User_Rule;
-import com.koushikdutta.ion.Ion;
 
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
@@ -537,8 +536,9 @@ public class Chat_All extends Activity {
 	}
 
 	public void putBitmap(final ImageView imgV, final String key) {
-		Ion.with(imgV).placeholder(R.drawable.livescore_h).animateGif(true)
-				.load("http://183.90.171.209/chat/stk/" + key);
+		new DownChatPic().startDownloadGIFCache(mContext
+				, "http://183.90.171.209/chat/stk/" + key
+				, imgV);
 	}
 
 	public void Create_Stick_view() {
@@ -763,10 +763,10 @@ public class Chat_All extends Activity {
 						}
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (txt_Item.getString("ch_msg").contains(".gif")) {
-								Ion.with(Sticker)
-										.placeholder(R.drawable.soccer_icon)
-										.load("http://183.90.171.209/chat/stk/"
-												+ txt_Item.getString("ch_msg"));
+								new DownChatPic().startDownloadGIFCache(mContext
+										, "http://183.90.171.209/chat/stk/"
+												+ txt_Item.getString("ch_msg")
+										, Sticker);
 							} else {
 								if (data.BitMapHash.get(txt_Item
 										.getString("ch_msg")) != null) {
@@ -821,10 +821,10 @@ public class Chat_All extends Activity {
 						retval.addView(Profile_layout);
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (txt_Item.getString("ch_msg").contains(".gif")) {
-								Ion.with(Sticker)
-										.placeholder(R.drawable.soccer_icon)
-										.load("http://183.90.171.209/chat/stk/"
-												+ txt_Item.getString("ch_msg"));
+								new DownChatPic().startDownloadGIFCache(mContext
+										, "http://183.90.171.209/chat/stk/"
+												+ txt_Item.getString("ch_msg")
+										, Sticker);
 							} else {
 								if (data.BitMapHash.get(txt_Item
 										.getString("ch_msg")) != null) {

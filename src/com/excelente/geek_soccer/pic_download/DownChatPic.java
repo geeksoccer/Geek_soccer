@@ -2,6 +2,7 @@ package com.excelente.geek_soccer.pic_download;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +21,7 @@ import org.apache.http.params.HttpParams;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -28,6 +30,9 @@ import android.widget.ImageView;
 import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
+import com.excelente.geek_soccer.purchase_pack.MD5;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 public class DownChatPic {
 	private Handler handler = new Handler(Looper.getMainLooper());
@@ -231,6 +236,53 @@ public class DownChatPic {
 		};
 
 		new Thread(runnable).start();
+	}
+	
+	public void startDownloadGIFCache(final Context mContext, final String url, final ImageView img_H){
+		final String fileName = MD5.md5Digest(url+String
+				.valueOf(SessionManager.getMember(mContext)
+						.getUid()));
+		final String root = Environment.getExternalStorageDirectory().toString();
+		File myDir = new File(root + "/GScache/"+fileName);
+		if(myDir.exists()){
+			Ion.with(img_H)
+			.placeholder(R.drawable.soccer_icon)
+			.load(root + "/GScache/"+fileName);
+		}else{
+			myDir = new File(root + "/GScache");
+			if (!myDir.exists()) {
+				myDir.mkdir();
+			}
+			
+			Ion.with(mContext)
+			.load(url)
+			.write(new File(root + "/GScache/"+fileName))
+			.setCallback(new FutureCallback<File>() {
+			   @Override
+			    public void onCompleted(Exception e, File file) {
+				   Ion.with(img_H)
+					.placeholder(R.drawable.soccer_icon)
+					.load(root + "/GScache/"+fileName);
+			    }
+			});
+		}
+	}
+	
+	public void startDownloadGIFNONCache(final Context mContext, final String url, final ImageView img_H){
+		Ion.with(img_H)
+		.placeholder(R.drawable.soccer_icon)
+		.load(url);
+	}
+	
+	public Boolean deleteGIFCache(final Context mContext, final String url){
+		String fileName = MD5.md5Digest(url+String
+				.valueOf(SessionManager.getMember(mContext)
+						.getUid()));
+		final String root = Environment.getExternalStorageDirectory().toString();
+		File myDir = new File(root + "/GScache");
+		File file = new File(myDir, fileName);
+		Boolean deleted = file.delete();
+		return deleted;
 	}
 
 	static class FlushedInputStream extends FilterInputStream {
