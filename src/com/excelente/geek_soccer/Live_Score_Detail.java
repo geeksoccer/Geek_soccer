@@ -360,12 +360,15 @@ public class Live_Score_Detail extends Activity {
 					} else {
 
 						String Event = "";
+						String msgText = txt_Item.getString("text");
 						if (txt_Item.getString("eventType").contains(
 								"yellow-card")) {
 							img_E.setImageResource(R.drawable.yellow);
+							msgText.replace("ใบเหลือง", "");
 						} else if (txt_Item.getString("eventType").contains(
 								"red-card")) {
 							img_E.setImageResource(R.drawable.red);
+							msgText.replace("ใบเแดง", "");
 						} else if (txt_Item.getString("eventType").contains(
 								"yellow/red-card")) {
 							ImageView img_EY = new ImageView(mContext);
@@ -373,25 +376,42 @@ public class Live_Score_Detail extends Activity {
 							img_EY.setImageResource(R.drawable.yellow);
 							retval.addView(img_EY);
 							img_E.setImageResource(R.drawable.red);
+							msgText.replace("Yellow/Red", "");
+						} else if (txt_Item.getString("eventType").contains(
+								"yellow-red")) {
+							ImageView img_EY = new ImageView(mContext);
+							img_EY.setLayoutParams(new LayoutParams(30, 30));
+							img_EY.setImageResource(R.drawable.yellow);
+							retval.addView(img_EY);
+							img_E.setImageResource(R.drawable.red);
+							msgText.replace("Yellow/Red", "");
 						} else if (txt_Item.getString("eventType").contains(
 								"penalty-goal")) {
 							Event = "(PG)";
-							img_E.setImageResource(R.drawable.goal);
+							img_E.setImageResource(R.drawable.p_goal);
+						} else if (txt_Item.getString("eventType").contains(
+								"pen-so-goal")) {
+							Event = "(PG)";
+							img_E.setImageResource(R.drawable.p_goal);
+							msgText.replace("Pen So Goal", "");
 						} else if (txt_Item.getString("eventType").contains(
 								"own-goal")) {
 							Event = "(OG)";
-							img_E.setImageResource(R.drawable.goal);
+							img_E.setImageResource(R.drawable.ow_goal);
+							msgText.replace("Own Goal", "");
 						} else if (txt_Item.getString("eventType").contains(
 								"goal")) {
 							Event = "(G)";
 							img_E.setImageResource(R.drawable.goal);
+							msgText.replace("ประตู", "");
 						} else if (txt_Item.getString("eventType").contains(
 								"assist")) {
 							Event = "(A)";
 							img_E.setImageResource(R.drawable.assist);
+							msgText.replace("แอสซิสต์", "");
 						}
-
-						txt_N.setText(Event + txt_Item.getString("text"));
+						
+						txt_N.setText(Event + msgText);
 						retval.addView(img_E);
 						retval.addView(txt_N);
 					}

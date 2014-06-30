@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:gravity="center"
-            android:textColor="@color/black" />
+            android:textColor="@color/gray" />
         
         <TextView
             android:id="@+id/Score_Aggregate"
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:gravity="center"
-            android:textColor="@color/black" />
+            android:textColor="@color/gray" />
 
         <LinearLayout
             android:id="@+id/LinearLayout1"
