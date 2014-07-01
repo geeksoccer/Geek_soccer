@@ -448,9 +448,11 @@ public class Live_Score_Detail extends Activity {
 				loading = true;
 				player_Detail.clear();
 				ListDetail.clear();
-				HtmlHelper_LiveScore live = new HtmlHelper_LiveScore(new URL(
-						URL));
-				live.getLinksByID("play-by-play");
+				if(!score_t.equals("vs")){
+					HtmlHelper_LiveScore live = new HtmlHelper_LiveScore(new URL(
+							URL));
+					live.getLinksByID("play-by-play");
+				}				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

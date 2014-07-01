@@ -116,8 +116,12 @@ public class STKShop_Page extends Activity{
 		}
 		
 		ProfileImg = (ImageView)myView.findViewById(R.id.ProfileImg);
-		Bitmap bitmapPhoto = SessionManager.getImageSession(STKShop_Page.this, SessionManager.getMember(STKShop_Page.this).getPhoto());
-		ProfileImg.setImageBitmap(resizeBitMap(bitmapPhoto));
+		Bitmap bitmapPhoto = ControllParameter.ProFileCache;
+		if(bitmapPhoto!=null){
+			ProfileImg.setImageBitmap(resizeBitMap(bitmapPhoto));
+		}else{
+			ProfileImg.setImageResource(R.drawable.soccer_icon);
+		}
 		
 		Button CoinChargeBtn = (Button)myView.findViewById(R.id.CoinCharge);
 		CoinChargeBtn.setVisibility(RelativeLayout.GONE);
