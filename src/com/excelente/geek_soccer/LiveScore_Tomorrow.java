@@ -42,7 +42,6 @@ public class LiveScore_Tomorrow extends Activity {
 	JSONParser jParser = new JSONParser();
 	JSONObject products = null;
 	private ListView lstView;
-	private ImageAdapter imageAdapter;
 	Boolean chk_ani = true;
 	int last_ItemView = 0;
 	LinearLayout layOutlist;
@@ -67,8 +66,8 @@ public class LiveScore_Tomorrow extends Activity {
 
 		lstView.setDividerHeight(0);
 		lstView.setClipToPadding(false);
-		imageAdapter = new ImageAdapter(mContext.getApplicationContext());
-		lstView.setAdapter(imageAdapter);
+		data.imageAdapterLiveScoreTomorrow = new ImageAdapter(mContext.getApplicationContext());
+		lstView.setAdapter(data.imageAdapterLiveScoreTomorrow);
 
 		lstView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -90,7 +89,7 @@ public class LiveScore_Tomorrow extends Activity {
 			layOutlist.removeAllViews();
 			((LinearLayout) layOutlist).addView(lstView);
 			chk_ani = false;
-			imageAdapter.notifyDataSetChanged();
+			data.imageAdapterLiveScoreTomorrow.notifyDataSetChanged();
 		} else {
 			new Live_score_1stLoader().execute();
 		}
@@ -151,6 +150,9 @@ public class LiveScore_Tomorrow extends Activity {
 
 					LinearLayout layOut_Detail = new LinearLayout(mContext);
 					layOut_Detail.setOrientation(LinearLayout.HORIZONTAL);
+					layOut_Detail.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.MATCH_PARENT,
+							LayoutParams.WRAP_CONTENT));
 
 					txt.setTextSize(14);
 					txt.setText(" " + txt_Item.getString("Time").substring(3));
@@ -356,7 +358,7 @@ public class LiveScore_Tomorrow extends Activity {
 				if (json != null) {
 					data.Match_list_t_JSON.clear();
 					JSONObject json_ob = json;
-
+					Boolean ContainFav = false;
 					JSONArray json_itArr = json_ob.getJSONArray("it");
 					for (int i = 0; i < json_itArr.length(); i++) {
 						JSONObject json_it = json_itArr.getJSONObject(i);
@@ -456,10 +458,36 @@ public class LiveScore_Tomorrow extends Activity {
 								j_data.put("score_ag", score_ag);
 								j_data.put("details", details);
 								data.Match_list_t_JSON.add(j_data);
+							}else if(SessionManager.chkFavContain(mContext, id)){
+								if(!ContainFav){
+									ContainFav=true;
+									data.Match_list_t_JSON
+									.add(new JSONObject().put(
+											"League",
+											"[1]Match Following"));
+								}
+								
+								JSONObject j_data = new JSONObject();
+								j_data.put(
+										"League",
+										"[1]Match Following");
+								j_data.put("Time", "[1]" + Time);
+								j_data.put("id", id);
+								j_data.put("stat", stat);
+								j_data.put("Home", Home);
+								j_data.put("score", score);
+								j_data.put("Away", away);
+								j_data.put("Home_img", Home_img);
+								j_data.put("Away_img", away_img);
+								j_data.put("link", link);
+								j_data.put("score_ag", score_ag);
+								j_data.put("details", details);
+								data.Match_list_t_JSON
+										.add(j_data);
 							}
 							JSONObject j_data = new JSONObject();
 							j_data.put("League", League);
-							j_data.put("Time", "[1]" + Time);
+							j_data.put("Time", "[2]" + Time);
 							j_data.put("id", id);
 							j_data.put("stat", stat);
 							j_data.put("Home", Home);
@@ -517,7 +545,7 @@ public class LiveScore_Tomorrow extends Activity {
 						layOutlist.removeAllViews();
 						((LinearLayout) layOutlist).addView(lstView);
 						chk_ani = false;
-						imageAdapter.notifyDataSetChanged();
+						data.imageAdapterLiveScoreTomorrow.notifyDataSetChanged();
 					} else {
 						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
 						layOutlist.removeAllViews();

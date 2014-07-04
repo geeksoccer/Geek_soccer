@@ -11,10 +11,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.livescore_noty.LiveScoreReload;
+import com.excelente.geek_soccer.livescore_noty.LiveScoreReload.LiveScoreCallbackClass;
 import com.excelente.geek_soccer.pic_download.DownLiveScorePic;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.Boast;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -70,7 +71,7 @@ public class Live_Score_Detail extends Activity {
 	JSONParser jParser = new JSONParser();
 	JSONObject jsonTagMap;
 	List<JSONObject> ListDetail = new ArrayList<JSONObject>();
-
+	LiveScoreReload LiveScoreReloadCallBack;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -184,10 +185,18 @@ public class Live_Score_Detail extends Activity {
 			Fav_btn.setImageResource(R.drawable.favorite_icon_full);
 		}
 
+		LiveScoreReloadCallBack = new LiveScoreReload();
+		LiveScoreReloadCallBack.registerCallback(new LiveScoreCallbackClass() {
+			@Override
+			public void LiveScorecallbackReturn() {
+				Fav_btn.setEnabled(true);
+			}
+		});
 		Fav_btn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				Fav_btn.setEnabled(false);
 				if (SessionManager.chkFavContain(mContext, id_t)) {
 					SessionManager.delFavTeam(mContext, id_t);
 					Fav_btn.setImageResource(R.drawable.favorite_icon_hole);
@@ -195,6 +204,7 @@ public class Live_Score_Detail extends Activity {
 					SessionManager.addFavTeam(mContext, id_t);
 					Fav_btn.setImageResource(R.drawable.favorite_icon_full);
 				}
+				LiveScoreReloadCallBack.SelectReload(type, mContext);
 			}
 		});
 

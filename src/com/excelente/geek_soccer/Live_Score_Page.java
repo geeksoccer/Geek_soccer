@@ -144,4 +144,17 @@ public class Live_Score_Page extends Fragment implements
 		}
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		if(data.imageAdapterLiveScoreYesterday!=null){
+			data.imageAdapterLiveScoreYesterday.notifyDataSetChanged();
+		}
+		if(data.imageAdapterLiveScoreToday!=null){
+			data.imageAdapterLiveScoreToday.notifyDataSetChanged();
+		}
+		if(data.imageAdapterLiveScoreTomorrow!=null){
+			data.imageAdapterLiveScoreTomorrow.notifyDataSetChanged();
+		}
+	}
 }

@@ -90,9 +90,9 @@ public class LiveScore_Today extends Activity {
 
 		data.lstViewLiveScore.setDividerHeight(0);
 		data.lstViewLiveScore.setClipToPadding(false);
-		data.imageAdapterLiveScore = new ImageAdapter(
+		data.imageAdapterLiveScoreToday = new ImageAdapter(
 				mContext.getApplicationContext());
-		data.lstViewLiveScore.setAdapter(data.imageAdapterLiveScore);
+		data.lstViewLiveScore.setAdapter(data.imageAdapterLiveScoreToday);
 
 		data.lstViewLiveScore.setOnItemClickListener(new OnItemClickListener() {
 
@@ -115,7 +115,7 @@ public class LiveScore_Today extends Activity {
 			layOutlist.removeAllViews();
 			((LinearLayout) layOutlist).addView(data.lstViewLiveScore);
 			chk_ani = false;
-			data.imageAdapterLiveScore.notifyDataSetChanged();
+			data.imageAdapterLiveScoreToday.notifyDataSetChanged();
 			if (data.socket_LiveScore == null) {
 				Live_score_Loader();
 			}
@@ -179,6 +179,9 @@ public class LiveScore_Today extends Activity {
 
 					LinearLayout layOut_Detail = new LinearLayout(mContext);
 					layOut_Detail.setOrientation(LinearLayout.HORIZONTAL);
+					layOut_Detail.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.MATCH_PARENT,
+							LayoutParams.WRAP_CONTENT));
 
 					txt.setTextSize(14);
 					txt.setText(" " + txt_Item.getString("Time").substring(3));
@@ -344,7 +347,7 @@ public class LiveScore_Today extends Activity {
 
 	}
 
-	class Live_score_1stLoader extends AsyncTask<String, String, String> {
+	public class Live_score_1stLoader extends AsyncTask<String, String, String> {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -375,7 +378,7 @@ public class LiveScore_Today extends Activity {
 				if (json != null) {
 					data.Match_list_c_JSON.clear();
 					JSONObject json_ob = json;
-
+					Boolean ContainFav = false;
 					JSONArray json_itArr = json_ob.getJSONArray("it");
 					for (int i = 0; i < json_itArr.length(); i++) {
 						JSONObject json_it = json_itArr.getJSONObject(i);
@@ -476,10 +479,35 @@ public class LiveScore_Today extends Activity {
 								j_data.put("score_ag", score_ag);
 								j_data.put("details", details);
 								data.Match_list_c_JSON.add(j_data);
+							}else if(SessionManager.chkFavContain(mContext, id)){
+								if(!ContainFav){
+									ContainFav=true;
+									data.Match_list_c_JSON
+									.add(new JSONObject().put(
+											"League",
+											"[1]Match Following"));
+								}
+								JSONObject j_data = new JSONObject();
+								j_data.put(
+										"League",
+										"[1]Match Following");
+								j_data.put("Time", "[1]" + Time);
+								j_data.put("id", id);
+								j_data.put("stat", stat);
+								j_data.put("Home", Home);
+								j_data.put("score", score);
+								j_data.put("Away", away);
+								j_data.put("Home_img", Home_img);
+								j_data.put("Away_img", away_img);
+								j_data.put("link", link);
+								j_data.put("score_ag", score_ag);
+								j_data.put("details", details);
+								data.Match_list_c_JSON
+										.add(j_data);
 							}
 							JSONObject j_data = new JSONObject();
 							j_data.put("League", League);
-							j_data.put("Time", "[1]" + Time);
+							j_data.put("Time", "[2]" + Time);
 							j_data.put("id", id);
 							j_data.put("stat", stat);
 							j_data.put("Home", Home);
@@ -538,7 +566,7 @@ public class LiveScore_Today extends Activity {
 						((LinearLayout) layOutlist)
 								.addView(data.lstViewLiveScore);
 						chk_ani = false;
-						data.imageAdapterLiveScore.notifyDataSetChanged();
+						data.imageAdapterLiveScoreToday.notifyDataSetChanged();
 
 						if (data.socket_LiveScore == null && msg == null) {
 							Live_score_Loader();
@@ -624,7 +652,7 @@ public class LiveScore_Today extends Activity {
 
 						if (event.equals("update-score")) {
 							data.Match_list_c_JSON.clear();
-
+							Boolean ContainFav = false;
 							for (Object object : args) {
 								try {
 									JSONObject json_ob = new JSONObject(object
@@ -755,13 +783,39 @@ public class LiveScore_Today extends Activity {
 												j_data.put("details", details);
 												data.Match_list_c_JSON
 														.add(j_data);
+											}else if(SessionManager.chkFavContain(mContext, id)){
+												if(!ContainFav){
+													ContainFav=true;
+													data.Match_list_c_JSON
+													.add(new JSONObject().put(
+															"League",
+															"[1]Match Following"));
+												}
+												
+												JSONObject j_data = new JSONObject();
+												j_data.put(
+														"League",
+														"[1]Match Following");
+												j_data.put("Time", "[1]" + Time);
+												j_data.put("id", id);
+												j_data.put("stat", stat);
+												j_data.put("Home", Home);
+												j_data.put("score", score);
+												j_data.put("Away", away);
+												j_data.put("Home_img", Home_img);
+												j_data.put("Away_img", away_img);
+												j_data.put("link", link);
+												j_data.put("score_ag", score_ag);
+												j_data.put("details", details);
+												data.Match_list_c_JSON
+														.add(j_data);
 											}
 											if (!Time.contains("FT")) {
 												data.liveScore_ChkHavePlaying = true;
 											}
 											JSONObject j_data = new JSONObject();
 											j_data.put("League", League);
-											j_data.put("Time", "[1]" + Time);
+											j_data.put("Time", "[2]" + Time);
 											j_data.put("id", id);
 											j_data.put("stat", stat);
 											j_data.put("Home", Home);
@@ -809,7 +863,7 @@ public class LiveScore_Today extends Activity {
 									public void run() {
 										if (Looper.myLooper() == Looper
 												.getMainLooper()) {
-											data.imageAdapterLiveScore
+											data.imageAdapterLiveScoreToday
 													.notifyDataSetChanged();
 										}
 									}

@@ -56,9 +56,9 @@ public class ControllParameter {
     ArrayList<String> item_Type_list_display = new ArrayList<String>();
 	ArrayList<String> Match_list_Sub_display = new ArrayList<String>();
     ArrayList<String> item_Type_list = new ArrayList<String>();
-    ArrayList<JSONObject> Match_list_y_JSON = new ArrayList<JSONObject>();
+    public ArrayList<JSONObject> Match_list_y_JSON = new ArrayList<JSONObject>();
     public ArrayList<JSONObject> Match_list_c_JSON = new ArrayList<JSONObject>();
-    ArrayList<JSONObject> Match_list_t_JSON = new ArrayList<JSONObject>();
+    public ArrayList<JSONObject> Match_list_t_JSON = new ArrayList<JSONObject>();
 	ArrayList<String> Match_list_Sub = new ArrayList<String>();
 	HashMap<String, String> League_Map = new HashMap<String, String>();
 	HashMap<String, String> League_Map_index = new HashMap<String, String>();
@@ -74,7 +74,7 @@ public class ControllParameter {
 	String Last_League_SET="";
 	String Date_Select="c";
 	String SocketSelect;
-	String ID_Send;
+	public static String ID_Send;
 	String ProFile_pic;
 	String Name_Send;
 	public HashMap<String, String> OldScoreH = new HashMap<String, String>();
@@ -112,7 +112,9 @@ public class ControllParameter {
 	int chatDelay=0;
 	
 	ListView lstViewLiveScore;
-	com.excelente.geek_soccer.LiveScore_Today.ImageAdapter imageAdapterLiveScore;
+	com.excelente.geek_soccer.LiveScore_Yesterday.ImageAdapter imageAdapterLiveScoreYesterday;
+	com.excelente.geek_soccer.LiveScore_Today.ImageAdapter imageAdapterLiveScoreToday;
+	com.excelente.geek_soccer.LiveScore_Tomorrow.ImageAdapter imageAdapterLiveScoreTomorrow;
 	
 	LinearLayout _Menu_Layout;
 	LinearLayout Menu_Layout;
