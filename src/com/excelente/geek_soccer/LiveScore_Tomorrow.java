@@ -21,7 +21,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -350,14 +349,14 @@ public class LiveScore_Tomorrow extends Activity {
 								LiveScore_Tomorrow.this).getUid())));
 				params.add(new BasicNameValuePair("_d", "t"));
 
-				JSONObject json = jParser
+				ControllParameter.jObLiveTomorrow = jParser
 						.makeHttpRequest(
 								"http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
 								"POST", params);
-				Log.d("TEST", "json_dtArr::" + json);
-				if (json != null) {
+
+				if (ControllParameter.jObLiveTomorrow != null) {
 					data.Match_list_t_JSON.clear();
-					JSONObject json_ob = json;
+					JSONObject json_ob = ControllParameter.jObLiveTomorrow;
 					Boolean ContainFav = false;
 					JSONArray json_itArr = json_ob.getJSONArray("it");
 					for (int i = 0; i < json_itArr.length(); i++) {

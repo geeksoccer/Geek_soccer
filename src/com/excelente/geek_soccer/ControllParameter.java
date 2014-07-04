@@ -115,6 +115,9 @@ public class ControllParameter {
 	com.excelente.geek_soccer.LiveScore_Yesterday.ImageAdapter imageAdapterLiveScoreYesterday;
 	com.excelente.geek_soccer.LiveScore_Today.ImageAdapter imageAdapterLiveScoreToday;
 	com.excelente.geek_soccer.LiveScore_Tomorrow.ImageAdapter imageAdapterLiveScoreTomorrow;
+	public static JSONObject jObLiveYesterday;
+	public static JSONObject jObLiveToday;
+	public static JSONObject jObLiveTomorrow;
 	
 	LinearLayout _Menu_Layout;
 	LinearLayout Menu_Layout;

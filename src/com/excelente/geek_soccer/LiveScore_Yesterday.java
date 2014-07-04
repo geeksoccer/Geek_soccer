@@ -357,14 +357,14 @@ public class LiveScore_Yesterday extends Activity {
 						ControllParameter.ID_Send));
 				params.add(new BasicNameValuePair("_d", "y"));
 
-				JSONObject json = jParser
+				ControllParameter.jObLiveYesterday = jParser
 						.makeHttpRequest(
 								"http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
 								"POST", params);
 
-				if (json != null) {
+				if (ControllParameter.jObLiveYesterday != null) {
 					data.Match_list_y_JSON.clear();
-					JSONObject json_ob = json;
+					JSONObject json_ob = ControllParameter.jObLiveYesterday;
 					Boolean ContainFav = false;
 					JSONArray json_itArr = json_ob.getJSONArray("it");
 					for (int i = 0; i < json_itArr.length(); i++) {

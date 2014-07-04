@@ -370,14 +370,14 @@ public class LiveScore_Today extends Activity {
 								.getUid())));
 				params.add(new BasicNameValuePair("_d", "c"));
 
-				JSONObject json = jParser
+				ControllParameter.jObLiveToday = jParser
 						.makeHttpRequest(
 								"http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
 								"POST", params);
 
-				if (json != null) {
+				if (ControllParameter.jObLiveToday != null) {
 					data.Match_list_c_JSON.clear();
-					JSONObject json_ob = json;
+					JSONObject json_ob = ControllParameter.jObLiveToday;
 					Boolean ContainFav = false;
 					JSONArray json_itArr = json_ob.getJSONArray("it");
 					for (int i = 0; i < json_itArr.length(); i++) {
@@ -655,10 +655,10 @@ public class LiveScore_Today extends Activity {
 							Boolean ContainFav = false;
 							for (Object object : args) {
 								try {
-									JSONObject json_ob = new JSONObject(object
+									ControllParameter.jObLiveToday = new JSONObject(object
 											.toString());
 
-									JSONArray json_itArr = json_ob
+									JSONArray json_itArr = ControllParameter.jObLiveToday
 											.getJSONArray("it");
 									for (int i = 0; i < json_itArr.length(); i++) {
 										JSONObject json_it = json_itArr

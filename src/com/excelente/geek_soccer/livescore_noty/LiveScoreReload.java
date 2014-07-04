@@ -55,17 +55,8 @@ public class LiveScoreReload {
 
 		protected String doInBackground(String... args) {
 			try {
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("_k",
-						"592ffdb05020001222c7d024479b028d"));
-				params.add(new BasicNameValuePair("_t", "get-livescore"));
-				params.add(new BasicNameValuePair("_u", ControllParameter.ID_Send));
-				params.add(new BasicNameValuePair("_d", "y"));
 
-				JSONObject json = jParser
-						.makeHttpRequest(
-								"http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
-								"POST", params);
+				JSONObject json = ControllParameter.jObLiveYesterday;
 				Log.d("TEST", "JSON::"+json);
 				if (json != null) {
 					data.Match_list_y_JSON.clear();
@@ -266,17 +257,7 @@ public class LiveScoreReload {
 
 		protected String doInBackground(String... args) {
 			try {
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("_k",
-						"592ffdb05020001222c7d024479b028d"));
-				params.add(new BasicNameValuePair("_t", "get-livescore"));
-				params.add(new BasicNameValuePair("_u", ControllParameter.ID_Send));
-				params.add(new BasicNameValuePair("_d", "c"));
-
-				JSONObject json = jParser
-						.makeHttpRequest(
-								"http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
-								"POST", params);
+				JSONObject json = ControllParameter.jObLiveToday;
 				Log.d("TEST", "JSON::"+json);
 				if (json != null) {
 					data.Match_list_c_JSON.clear();
@@ -476,17 +457,7 @@ public class LiveScoreReload {
 
 		protected String doInBackground(String... args) {
 			try {
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("_k",
-						"592ffdb05020001222c7d024479b028d"));
-				params.add(new BasicNameValuePair("_t", "get-livescore"));
-				params.add(new BasicNameValuePair("_u", ControllParameter.ID_Send));
-				params.add(new BasicNameValuePair("_d", "t"));
-
-				JSONObject json = jParser
-						.makeHttpRequest(
-								"http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
-								"POST", params);
+				JSONObject json = ControllParameter.jObLiveTomorrow;
 				Log.d("TEST", "json_dtArr::" + json);
 				if (json != null) {
 					data.Match_list_t_JSON.clear();
