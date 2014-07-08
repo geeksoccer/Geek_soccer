@@ -22,6 +22,6 @@ public class Game_Page extends Fragment {
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final View myView = getView();
+        //final View myView = getView();
 	}
 }

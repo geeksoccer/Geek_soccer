@@ -164,7 +164,7 @@ public class Live_Score_Detail extends Activity {
 		Home_name.setText(Home_name_t);
 		Away_name.setText(Away_name_t);
 
-		if (score_ag_t.length() >= 5) {
+		if (score_ag_t.length() >= 5 && !detail_t.equals("Aggregate " + score_ag_t)) {
 			txt_Aggregate.setText("AGGREGATE: " + score_ag_t);
 		} else {
 			txt_Aggregate.setVisibility(RelativeLayout.GONE);

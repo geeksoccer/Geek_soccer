@@ -83,6 +83,36 @@ public class LiveScore_Tomorrow extends Activity {
 
 			}
 		});
+		/*
+		final LiveScoreReload LiveScoreReloadCallBack = new LiveScoreReload();
+		LiveScoreReloadCallBack.registerCallback(new LiveScoreCallbackClass() {
+			@Override
+			public void LiveScorecallbackReturn() {
+				data.imageAdapterLiveScoreTomorrow.notifyDataSetChanged();
+			}
+		});
+		lstView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			public boolean onItemLongClick(AdapterView<?> arg0, View v,
+					int position, long arg3) {
+				String idSelect;
+				try {
+					idSelect = data.Match_list_t_JSON.get(position).getString(
+							"id");
+					if (SessionManager.chkFavContain(mContext, idSelect)) {
+						SessionManager.delFavTeam(mContext, idSelect);
+					} else {
+						SessionManager.addFavTeam(mContext, idSelect);
+					}
+					LiveScoreReloadCallBack.SelectReload("t", mContext);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				return false;
+
+			}
+		});
+		*/
 		if (data.Match_list_t_JSON.size() > 0) {
 			layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
 			layOutlist.removeAllViews();

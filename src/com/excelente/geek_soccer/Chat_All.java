@@ -747,7 +747,7 @@ public class Chat_All extends Activity {
 					}
 					name_layout.addView(txt_N);
 
-					if (txt_Item.getString("ch_uid").equals(data.ID_Send)) {
+					if (txt_Item.getString("ch_uid").equals(ControllParameter.ID_Send)) {
 						txt_N.setText(SessionManager.getMember(Chat_All.this)
 								.getNickname());
 						if(ControllParameter.ProFileCache!=null){
@@ -1011,7 +1011,7 @@ public class Chat_All extends Activity {
 							for (String Name_item : Name_list) {
 								Name_item = Name_item.split(":")[0].replaceAll(
 										"\"", "").replaceAll("\\{|\\}", "");
-								if (!Name_item.equals(data.ID_Send)) {
+								if (!Name_item.equals(ControllParameter.ID_Send)) {
 								}
 							}
 
@@ -1070,7 +1070,7 @@ public class Chat_All extends Activity {
 						}
 					}
 				});
-				data.socket_All.emit("adduser", data.ID_Send, data.ProFile_pic,
+				data.socket_All.emit("adduser", ControllParameter.ID_Send, data.ProFile_pic,
 						SessionManager.getMember(Chat_All.this).getNickname());
 			}
 		}).start();
