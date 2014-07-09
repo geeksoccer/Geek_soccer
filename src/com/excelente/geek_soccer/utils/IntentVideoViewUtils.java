@@ -41,7 +41,7 @@ public class IntentVideoViewUtils {
 	    } catch (ActivityNotFoundException e) {
 	        //intent.setData(Uri.parse(videoUrl));
 	        //context.startActivity(intent);
-	    	Boast.makeText(context, R.string.no_install_youtube, Toast.LENGTH_LONG).show();
+	    	Boast.makeText(context, R.string.no_install_browser, Toast.LENGTH_LONG).show();
 	    }
 
 	}
@@ -57,7 +57,7 @@ public class IntentVideoViewUtils {
         } catch (ActivityNotFoundException e) {
             //Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             //context.startActivity(viewIntent);
-        	Boast.makeText(context, R.string.no_install_browser, Toast.LENGTH_LONG).show();
+        	Boast.makeText(context, R.string.no_install_youtube, Toast.LENGTH_LONG).show();
         }
     }
 
