@@ -73,25 +73,14 @@ public class Chat_Team extends Activity {
 	WindowManager wm;
 
 	LinearLayout input_layout;
+	TextView UserCountTXT;
 	View StikerV;
 
-	ImageView allRoom;
-	ImageView TeamRoom;
+	ImageView allRoom, TeamRoom;
 
 	String Stick_Set = "1";
 	LinearLayout StickerSelectorLayout;
-	ImageView Stick_1;
-	ImageView Stick_2;
-	ImageView Stick_3;
-	ImageView Stick_4;
-	ImageView Stick_5;
-	ImageView Stick_6;
-	ImageView Stick_7;
-	ImageView Stick_8;
-	ImageView Stick_9;
-	ImageView Stick_10;
-	ImageView Stick_11;
-	ImageView Stick_12;
+	ImageView Stick_1, Stick_2, Stick_3, Stick_4, Stick_5, Stick_6, Stick_7, Stick_8, Stick_9, Stick_10, Stick_11, Stick_12;
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
 	static HashMap<String, ImageView> Sticker_ButVSet = new HashMap<String, ImageView>();
 	String root = Environment.getExternalStorageDirectory().toString();
@@ -108,6 +97,14 @@ public class Chat_Team extends Activity {
 		ControllParameter.ProFileCache = SessionManager.getImageSession(mContext, SessionManager.getMember(mContext).getPhoto());
 		saveModeGet = SessionManager.getSetting(mContext,
 				SessionManager.setting_save_mode);
+		
+		UserCountTXT = (TextView)findViewById(R.id.ShowUserCount);
+		if(ControllParameter.Role_ID==1){
+			UserCountTXT.setText(getResources().getString(R.string.user_count)+ ": " +ControllParameter.UcountChatTeam);
+		}else{
+			UserCountTXT.setVisibility(RelativeLayout.GONE);
+		}
+		
 		data.lstViewChatTeam = new ListView(mContext);
 		data.lstViewChatTeam.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -990,14 +987,9 @@ public class Chat_Team extends Activity {
 							}
 						} else if (event.equals("updateusers")
 								&& args.length > 0) {
-							String Name_list[] = args[0].toString().split(",");
-							for (String Name_item : Name_list) {
-								Name_item = Name_item.split(":")[0].replaceAll(
-										"\"", "").replaceAll("\\{|\\}", "");
-								if (!Name_item.equals(ControllParameter.ID_Send)) {
-								}
+							if(ControllParameter.Role_ID==1){
+								ShowUserCountHandle(args[0].toString());
 							}
-
 						} else if (event.equals("updateoldchat")) {
 							data.Chat_Item_list_Team.clear();
 							for (Object object : args) {
@@ -1056,6 +1048,16 @@ public class Chat_Team extends Activity {
 						SessionManager.getMember(Chat_Team.this).getNickname());
 			}
 		}).start();
+	}
+	
+	public void ShowUserCountHandle(final String numBer){
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				ControllParameter.UcountChatTeam = numBer;
+				UserCountTXT.setText(getResources().getString(R.string.user_count)+ ": " +ControllParameter.UcountChatTeam);
+			}
+		});
 	}
 
 	public void RefreshView(final String txt) {

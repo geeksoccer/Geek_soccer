@@ -156,6 +156,7 @@
     <string name="alert_match_nearby">The game will begin in 15 minutes.</string>
     <string name="add_fave_team">Add to Match Following</string>
     <string name="del_fave_team">Delete from Match Following</string>
+    <string name="user_count">Online user</string>
     
     <string-array name="team_list">
         <item>Arsenal</item>

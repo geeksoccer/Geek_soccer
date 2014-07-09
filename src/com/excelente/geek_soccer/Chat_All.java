@@ -72,6 +72,7 @@ public class Chat_All extends Activity {
 
 	WindowManager wm;
 	LinearLayout input_layout;
+	TextView UserCountTXT;
 	View StikerV;
 
 	ImageView allRoom;
@@ -106,6 +107,13 @@ public class Chat_All extends Activity {
 		ControllParameter.ProFileCache = SessionManager.getImageSession(mContext, SessionManager.getMember(mContext).getPhoto());
 		saveModeGet = SessionManager.getSetting(mContext,
 				SessionManager.setting_save_mode);
+		
+		UserCountTXT = (TextView)findViewById(R.id.ShowUserCount);
+		if(ControllParameter.Role_ID==1){
+			UserCountTXT.setText(getResources().getString(R.string.user_count)+ ": " +ControllParameter.UcountChatAll);
+		}else{
+			UserCountTXT.setVisibility(RelativeLayout.GONE);
+		}
 		data.lstViewChatAll = new ListView(mContext);
 		data.lstViewChatAll.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -1007,14 +1015,9 @@ public class Chat_All extends Activity {
 							}
 						} else if (event.equals("updateusers")
 								&& args.length > 0) {
-							String Name_list[] = args[0].toString().split(",");
-							for (String Name_item : Name_list) {
-								Name_item = Name_item.split(":")[0].replaceAll(
-										"\"", "").replaceAll("\\{|\\}", "");
-								if (!Name_item.equals(ControllParameter.ID_Send)) {
-								}
+							if(ControllParameter.Role_ID==1){
+								ShowUserCountHandle(args[0].toString());
 							}
-
 						} else if (event.equals("updateoldchat")) {
 							data.Chat_Item_list_All.clear();
 							for (Object object : args) {
@@ -1075,6 +1078,16 @@ public class Chat_All extends Activity {
 			}
 		}).start();
 
+	}
+	
+	public void ShowUserCountHandle(final String numBer){
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				ControllParameter.UcountChatAll = numBer;
+				UserCountTXT.setText(getResources().getString(R.string.user_count)+ ": " +ControllParameter.UcountChatAll);
+			}
+		});
 	}
 
 	public void RefreshView(final String txt) {

@@ -26,6 +26,7 @@ public class ControllParameter {
     	
     	if(SessionManager.hasMember(mContext)){
     		ID_Send = String.valueOf(SessionManager.getMember(mContext).getUid());
+    		Role_ID = SessionManager.getMember(mContext).getRole();
     		ProFile_pic = SessionManager.getMember(mContext).getPhoto();
     		Name_Send = SessionManager.getMember(mContext).getNickname();
     		int teamID = SessionManager.getMember(mContext).getTeamId();
@@ -75,6 +76,7 @@ public class ControllParameter {
 	String Date_Select="c";
 	String SocketSelect;
 	public static String ID_Send;
+	public static int Role_ID;
 	String ProFile_pic;
 	String Name_Send;
 	public HashMap<String, String> OldScoreH = new HashMap<String, String>();
@@ -96,7 +98,8 @@ public class ControllParameter {
 	SocketIO socket_Team = null;
 	public SocketIO socket_LiveScore = null;
 	
-	
+	public static String UcountChatTeam = "";
+	public static String UcountChatAll = "";
 	ArrayList<JSONObject> Chat_Item_list_Team = new ArrayList<JSONObject>();
 	ArrayList<JSONObject> Chat_Item_list_All = new ArrayList<JSONObject>();
 
