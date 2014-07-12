@@ -643,7 +643,6 @@ public class Chat_All extends Activity {
 				try {
 					LinearLayout retval_Main = new LinearLayout(mContext);
 					retval_Main.setOrientation(LinearLayout.VERTICAL);
-					retval_Main.setGravity(Gravity.CENTER);
 
 					LinearLayout retval = new LinearLayout(mContext);
 					retval.setOrientation(LinearLayout.HORIZONTAL);
@@ -660,7 +659,6 @@ public class Chat_All extends Activity {
 					txt_layout.setPadding(10, 0, 10, 0);
 
 					LinearLayout name_layout = new LinearLayout(mContext);
-					txt_layout.setOrientation(LinearLayout.VERTICAL);
 					name_layout.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
@@ -670,14 +668,11 @@ public class Chat_All extends Activity {
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
 					txt_N.setTypeface(Typeface.DEFAULT_BOLD);
-					// txt_layout.addView(txt_N);
 
 					TextView txt_T = new TextView(mContext);
 					txt_T.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
-					// txt_T.setTypeface(Typeface.DEFAULT_BOLD);
-					// txt_layout.addView(txt_T);
 
 					TextView txt_M = new TextView(mContext);
 					txt_M.setLayoutParams(new LinearLayout.LayoutParams(
@@ -689,18 +684,20 @@ public class Chat_All extends Activity {
 					Sticker.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
+					Sticker.setMinimumWidth(GetdipSize.dip(mContext, 50));
+					Sticker.setMinimumHeight(GetdipSize.dip(mContext, 50));
 
 					LinearLayout Profile_layout = new LinearLayout(mContext);
 					Profile_layout
 							.setLayoutParams(new LinearLayout.LayoutParams(
 									LayoutParams.WRAP_CONTENT,
-									LayoutParams.MATCH_PARENT));
+									LayoutParams.WRAP_CONTENT));
 					Profile_layout.setOrientation(LinearLayout.VERTICAL);
 					Profile_layout.setGravity(Gravity.CENTER_HORIZONTAL);
 
 					ImageView Profile_Pic = new ImageView(mContext);
 					Profile_Pic.setLayoutParams(new LinearLayout.LayoutParams(
-							50, 50));
+							GetdipSize.dip(mContext, 35), GetdipSize.dip(mContext, 35)));
 					Profile_Pic.setImageResource(R.drawable.test_profile_pic);
 					Profile_layout.addView(Profile_Pic);
 
@@ -786,20 +783,17 @@ public class Chat_All extends Activity {
 											Sticker, data);
 								}
 							}
-							txt_layout.setGravity(Gravity.RIGHT
-									| Gravity.CENTER_VERTICAL);
+							txt_layout.setGravity(Gravity.RIGHT);
 							txt_layout.addView(Sticker);
 							retval.addView(txt_layout);
 						} else {
 							txt_M.setText(txt_Item.getString("ch_msg") + " ");
 							txt_M.setBackgroundResource(R.drawable.bubble_green_n);
-							txt_layout.setGravity(Gravity.RIGHT
-									| Gravity.CENTER_VERTICAL);
+							txt_layout.setGravity(Gravity.RIGHT);
 							txt_layout.addView(txt_M);
 							retval.addView(txt_layout);
 						}
-						retval.setGravity(Gravity.RIGHT
-								| Gravity.CENTER_VERTICAL);
+						retval.setGravity(Gravity.RIGHT);
 						retval.addView(Profile_layout);
 					} else {
 						txt_N.setText(txt_Item.getString("m_nickname"));
@@ -824,8 +818,7 @@ public class Chat_All extends Activity {
 						txt_TeamMate.setText("");
 						name_layout.addView(txt_TeamMate);
 
-						retval.setGravity(Gravity.LEFT
-								| Gravity.CENTER_VERTICAL);
+						retval.setGravity(Gravity.LEFT);
 						retval.addView(Profile_layout);
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (txt_Item.getString("ch_msg").contains(".gif")) {

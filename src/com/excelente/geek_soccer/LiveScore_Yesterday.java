@@ -155,7 +155,7 @@ public class LiveScore_Yesterday extends Activity {
 			LinearLayout retval = new LinearLayout(mContext);
 			retval.setOrientation(LinearLayout.VERTICAL);
 			retval.setGravity(Gravity.CENTER);
-			retval.setMinimumHeight(50);
+			retval.setMinimumHeight(GetdipSize.dip(mContext, 50));
 
 			LinearLayout bg = new LinearLayout(mContext);
 			bg.setOrientation(LinearLayout.VERTICAL);
@@ -202,7 +202,7 @@ public class LiveScore_Yesterday extends Activity {
 					txt_Home.setTextColor(Color.DKGRAY);
 
 					TextView txt_Score = new TextView(mContext);
-					txt_Score.setLayoutParams(new LayoutParams(70, 40));
+					txt_Score.setLayoutParams(new LayoutParams(GetdipSize.dip(mContext, 50), GetdipSize.dip(mContext, 25)));
 					txt_Score.setTextSize(14);
 					txt_Score.setTypeface(Typeface.DEFAULT_BOLD);
 					txt_Score.setText(txt_Item.getString("score").replaceAll(
@@ -223,9 +223,9 @@ public class LiveScore_Yesterday extends Activity {
 					txt_Away.setTextColor(Color.DKGRAY);
 
 					final ImageView image_Home = new ImageView(mContext);
-					image_Home.setLayoutParams(new LayoutParams(50, 50));
+					image_Home.setLayoutParams(new LayoutParams(GetdipSize.dip(mContext, 35), GetdipSize.dip(mContext, 35)));
 					final ImageView image_Away = new ImageView(mContext);
-					image_Away.setLayoutParams(new LayoutParams(50, 50));
+					image_Away.setLayoutParams(new LayoutParams(GetdipSize.dip(mContext, 35), GetdipSize.dip(mContext, 35)));
 					if (data.get_HomeMap(txt_Item.getString("Home_img")) != null) {
 						image_Home.setImageBitmap(data.get_HomeMap(txt_Item
 								.getString("Home_img")));
