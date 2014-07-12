@@ -789,6 +789,7 @@ public class Chat_All extends Activity {
 						} else {
 							txt_M.setText(txt_Item.getString("ch_msg") + " ");
 							txt_M.setBackgroundResource(R.drawable.bubble_green_n);
+							txt_M.setGravity(Gravity.RIGHT);
 							txt_layout.setGravity(Gravity.RIGHT);
 							txt_layout.addView(txt_M);
 							retval.addView(txt_layout);

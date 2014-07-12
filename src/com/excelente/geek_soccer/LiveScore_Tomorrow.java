@@ -150,7 +150,7 @@ public class LiveScore_Tomorrow extends Activity {
 			LinearLayout retval = new LinearLayout(mContext);
 			retval.setOrientation(LinearLayout.VERTICAL);
 			retval.setGravity(Gravity.CENTER);
-			retval.setMinimumHeight(GetdipSize.dip(mContext, 50));
+			retval.setMinimumHeight(GetdipSize.dip(mContext, 35));
 
 			LinearLayout bg = new LinearLayout(mContext);
 			bg.setOrientation(LinearLayout.VERTICAL);
