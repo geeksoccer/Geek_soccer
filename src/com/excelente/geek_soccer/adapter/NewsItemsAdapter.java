@@ -12,6 +12,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
@@ -50,6 +51,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.PluginState;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -197,13 +199,11 @@ public class NewsItemsAdapter extends PagerAdapter{
                 	IntentVideoViewUtils.playFacebookVideo(newsItemPage, url);
                 	return true;
                 }else if (isImageType(url)){
-                	/*String upic_me = "http://upic.me/";
-            		String image_ohozaa_com = "http://image.ohozaa.com/";
-            		if((url.length() > upic_me.length() && url.substring(0, upic_me.length()).equals(upic_me)) || (url.length() > image_ohozaa_com.length() && url.substring(0, image_ohozaa_com.length()).equals(image_ohozaa_com))){
-            			new PushImageTask(view, html).execute(url);	
-                	}else{
+            		if(uri.getHost().contains("upic.me") || uri.getHost().contains("image.ohozaa.com") ){
+            			doPushImageHaveHeader(view, "http://183.90.171.209/gs_news/image_header.php?url=", url);
+                	}else{ 
                 		doPushImage(view, url);
-                	}*/
+                	}
             		
             		doPushImage(view, url);
                 	return false;
@@ -318,6 +318,7 @@ public class NewsItemsAdapter extends PagerAdapter{
         	            "   iframe.offsetParent.appendChild(a);" +
         	            "}"; 
         	    view.loadUrl(javascripts);
+        
         	}
         });
 		
@@ -384,7 +385,24 @@ public class NewsItemsAdapter extends PagerAdapter{
 	            "   	a.parentNode.replaceChild(img, a);" +
 	            "   	break;" +
 	            "   }" +
-	            "}"; 
+	            "}";
+        
+		view.loadUrl(javascripts);
+	}
+	
+	private void doPushImageHaveHeader(WebView view, String server, String urls) {
+		String javascripts = "javascript:" +
+	            "var as = document.getElementsByTagName('a');" +
+	            "for (var i = 0; i < as.length; i++) {" +
+	            "   var a = as[i];" +
+	            "   if(a.getAttribute('href') == '"+urls+"'){" +
+	            "   	img = document.createElement('img');" +
+	            "   	img.setAttribute('src', '"+ server + urls+"');" +
+	            "   	img.setAttribute('style', 'margin:5px;');" +
+	            "   	a.parentNode.replaceChild(img, a);" +
+	            "   	break;" +
+	            "   }" +
+	            "}";
         
 		view.loadUrl(javascripts);
 	}
@@ -426,53 +444,6 @@ public class NewsItemsAdapter extends PagerAdapter{
 	@Override
 	public int getCount() {
 		return mNewList.size();
-	}
-	
-	public class PushImageTask extends AsyncTask<String, Void, String>{
-		
-		WebView webview;
-		String html;
-		String url;
-		
-		public PushImageTask(WebView wv, String html) {
-			this.webview = wv;
-			this.html = html;
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-				url = params[0];
-				String encodedString = "";
-				
-				HttpGet getRequest = new HttpGet(url); 
-				getRequest.addHeader("Referer", "http://localhost");
-	    		DefaultHttpClient client = new DefaultHttpClient();
-	    		try {
-					HttpResponse httpReponse = client.execute(getRequest);
-					InputStream reponseInputStream = httpReponse.getEntity().getContent();
-					
-					Bitmap bm = BitmapFactory.decodeStream(reponseInputStream);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();  
-					bm.compress(Bitmap.CompressFormat.PNG, 75, baos); //bm is the bitmap object   
-					byte[] b = baos.toByteArray();
-		    		encodedString = "data:image/png;base64," + new String(Base64.encode(b, Base64.NO_WRAP));
-		    		
-		    		reponseInputStream.close();
-				} catch (ClientProtocolException e){
-					return "";
-				} catch (IOException e) {
-					return "";
-				}
-			
-			return encodedString;
-		}
-		
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			doPushImage(webview, result);
-		} 
-		
 	}
 	
 	public class PushImagesTask extends AsyncTask<String, Void, Void>{
