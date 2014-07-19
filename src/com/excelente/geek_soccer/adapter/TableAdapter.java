@@ -71,7 +71,6 @@ public class TableAdapter extends BaseAdapter{
 		final TableModel tableModel = (TableModel) getItem(position); 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
-       
         if(convertView == null){
     		
     		convertView = mInflater.inflate(R.layout.table_item_page, parent, false);

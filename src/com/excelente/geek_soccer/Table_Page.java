@@ -67,6 +67,8 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 
 	private TabHost tabs;
 	
+	public static List<String> stackTagLoading;
+	
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if (container == null) {
             return null;
@@ -93,6 +95,8 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 
 	private void initView() {
 		tableView = getView();
+		
+		stackTagLoading = new ArrayList<String>();
 		
 		tabs = (TabHost)tableView.findViewById(R.id.tabhost); 
 		tabs.setup();  
@@ -199,9 +203,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		try{
 			if(tabId.equals("tag1")){
 				if(flagplAdapter){ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						tableWaitProcessbar.setVisibility(View.VISIBLE); 
 						new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
 					}
@@ -211,9 +216,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				setSelectedTab(0);
 			}else if(tabId.equals("tag2")){
 				if(flagblAdapter){
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableBLLayout, blAdapter, "tag2").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + BUNDESLIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(blAdapter, tableBLLayout, "tag2");
 					}
@@ -224,6 +230,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 			}else if(tabId.equals("tag3")){
 				if(flagllAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableLLLayout, llAdapter, "tag3").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + LALIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
@@ -235,9 +242,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				setSelectedTab(2);
 			}else if(tabId.equals("tag4")){
 				if(flagglAdapter){ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableGLLayout, glAdapter, "tag4").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(CALCAIO_SERIE_A, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(glAdapter, tableGLLayout, "tag4");
 					}
@@ -247,9 +255,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				setSelectedTab(3);
 			}else if(tabId.equals("tag5")){
 				if(flagflAdapter){ 
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableFLLayout, flAdapter, "tag5").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(LEAGUE_DE_LEAGUE1, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(flAdapter, tableFLLayout, "tag5");
 					}
@@ -259,9 +268,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				setSelectedTab(4);
 			}else if(tabId.equals("tag6")){
 				if(flagtplAdapter){
-					if(NetworkUtils.isNetworkAvailable(getActivity()))
+					if(NetworkUtils.isNetworkAvailable(getActivity())){
+						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableTPLLayout, tplAdapter, "tag6").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(THAI_PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
-					else{
+					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(tplAdapter, tableTPLLayout, "tag6");
 					}
@@ -303,8 +313,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		protected void onPreExecute() {
 			super.onPreExecute();
 			
-			if(tableAdaptor==null && tableWaitProcessbar!=null)
+			if(tableAdaptor==null && tableWaitProcessbar!=null){
 				tableWaitProcessbar.setVisibility(View.VISIBLE);
+				stackTagLoading.add(tag);
+			}
 		}
 		
 		@Override
@@ -343,8 +355,15 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				}else if(tag.equals("tag6")){
 					flagtplAdapter = false;
 				}
-				 
-				tabs.setCurrentTabByTag(tag);
+				
+				stackTagLoading.remove(tag);
+				
+				if(stackTagLoading!=null && stackTagLoading.size() > 0 && !tag.equals(tabs.getCurrentTabTag())){
+					tableWaitProcessbar.setVisibility(View.VISIBLE);
+				}else{
+					tableWaitProcessbar.setVisibility(View.GONE);
+				}
+				//tabs.setCurrentTabByTag(tag);
 			}else{
 				if(getActivity()!=null){
 					Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
