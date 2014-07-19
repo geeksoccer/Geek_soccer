@@ -199,12 +199,12 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 
 	@Override
 	public void onTabChanged(String tabId) {
-		
+		tableWaitProcessbar.setVisibility(View.GONE);
 		try{
 			if(tabId.equals("tag1")){
 				if(flagplAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
-						tableWaitProcessbar.setVisibility(View.VISIBLE); 
+						tableWaitProcessbar.setVisibility(View.GONE); 
 						new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
