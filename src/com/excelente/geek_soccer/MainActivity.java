@@ -7,7 +7,6 @@ import java.util.Vector;
 
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.service.UpdateService;
-import com.excelente.geek_soccer.sideMenu.SideMenuLayout;
 import com.excelente.geek_soccer.sideMenu.SideMenuMain;
 import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.NetworkUtils;
@@ -450,15 +449,31 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}
 		
 	}
-
+	int OldState = 0;
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
-		
+		if(OldState==1 
+				&& arg0==0
+				&& mViewPager.getCurrentItem()==0 ){
+			final LinearLayout MainLayout = (LinearLayout)findViewById(R.id.Main_Layout);
+			data._Menu_Layout = new SideMenuMain().CreateMenu(MainLayout, mContext);
+			WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
+					WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+					WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+						| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+						| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+					PixelFormat.TRANSLUCENT);
+
+			params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
+			data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+			data.wm.addView(data._Menu_Layout, params);
+		}
+		OldState = arg0;
 	}
 
 	@Override
 	public void onPageScrolled(int arg0, float arg1, int arg2) {
-		
 	}
 
 	@Override
