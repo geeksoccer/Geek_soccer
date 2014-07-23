@@ -14,7 +14,6 @@
         <LinearLayout
             android:layout_width="170dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -28,6 +27,7 @@
                     android:id="@+id/NewsIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/news_h" />
 
                 <TextView
@@ -58,6 +58,7 @@
                     android:id="@+id/LiveScoreIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/livescore_h" />
 
                 <TextView
@@ -88,6 +89,7 @@
                     android:id="@+id/ChatIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/chat_h" />
 
                 <TextView
@@ -118,6 +120,7 @@
                     android:id="@+id/ScoreBoardIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/board_h" />
 
                 <TextView
@@ -148,6 +151,7 @@
                     android:id="@+id/HilightIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/hilight_icon_select" />
 
                 <TextView
@@ -173,8 +177,9 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="20dp"
+                android:textSize="16sp"
                 android:text="@string/title_bar_config"
-                android:textColor="@color/white"
+                android:textColor="@color/graylittle"
                 android:textStyle="bold" />
 
             <View
@@ -193,6 +198,7 @@
                     android:id="@+id/ProfileIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/ic_action_user" />
 
                 <TextView
@@ -223,6 +229,8 @@
                     android:id="@+id/RateIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:padding="5dp"
                     android:src="@drawable/news_likes_selected" />
 
                 <TextView
@@ -253,6 +261,7 @@
                     android:id="@+id/ShareIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/ic_action_share" />
 
                 <TextView
@@ -284,6 +293,7 @@
                     android:id="@+id/helpIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/ic_action_help" />
 
                 <TextView
@@ -315,6 +325,7 @@
                     android:id="@+id/SettingIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/ic_action_settings" />
 
                 <TextView
@@ -345,6 +356,8 @@
                     android:id="@+id/logINOUTIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:padding="5dp"
                     android:src="@drawable/log_out" />
 
                 <TextView
