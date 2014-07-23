@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.service.UpdateService;
+import com.excelente.geek_soccer.sideMenu.SideMenuMain;
 import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
@@ -48,14 +49,10 @@ import android.widget.TextView;
 public class MainActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
 	
 	boolean customTitleSupported;
-	private CustomViewPager mViewPager;
-	private PagerAdapter mPagerAdapter;
+	public static CustomViewPager mViewPager;
+	public static PagerAdapter mPagerAdapter;
 
-	Button news_tab;
-	Button live_tab;
-	Button chat_tab;
-	Button score_board_tab;
-	Button game_tab;
+	public static Button news_tab, live_tab, chat_tab, score_board_tab, game_tab;
 	
 	ImageView menu_btn;  
 	ImageView logout_btn;
@@ -66,7 +63,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	
 	LinearLayout Content_view;
 	Activity mContext;
-	private TextView title_bar;
+	private static TextView title_bar;
 	private static Intent serviceIntent; 
 	private static ControllParameter data;
 	
@@ -190,11 +187,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 	private void setPageFromNotification() {
 		if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 1000){
-			Page_Select(0, true);
+			Page_Select(0, true, this);
 		}else if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 2000){
-			Page_Select(4, true);
+			Page_Select(4, true, this);
 		}else if(getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000) == 4600){
-			Page_Select(1, true);
+			Page_Select(1, true, this);
 		}
 	}
 
@@ -232,7 +229,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				}
 				*/
 				final LinearLayout MainLayout = (LinearLayout)findViewById(R.id.Main_Layout);
-				data._Menu_Layout = new SideMenuLayout().CreateMenu(MainLayout, mContext);
+				data._Menu_Layout = new SideMenuMain().CreateMenu(MainLayout, mContext);
 				WindowManager.LayoutParams params = new WindowManager.LayoutParams(
 						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
 						WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
@@ -350,11 +347,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		fragments.add(Fragment.instantiate(this, Table_Page.class.getName()));
 		fragments.add(Fragment.instantiate(this, Hilight_Page.class.getName()));
 		
-		this.mPagerAdapter = new PagerAdapter(
+		mPagerAdapter = new PagerAdapter(
 				super.getSupportFragmentManager(), fragments);
-		this.mViewPager = (CustomViewPager) super.findViewById(R.id.viewpager);
-		this.mViewPager.setAdapter(this.mPagerAdapter);
-		this.mViewPager.setOnPageChangeListener(this);
+		mViewPager = (CustomViewPager) super.findViewById(R.id.viewpager);
+		mViewPager.setAdapter(mPagerAdapter);
+		mViewPager.setOnPageChangeListener(this);
 		
 	}
 	
@@ -366,80 +363,80 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		game_tab = (Button)findViewById(R.id.Game);
 		
 		//Content_view = (LinearLayout)findViewById(R.id.Contain_Layout);
-		Page_Select(0, true);
+		Page_Select(0, true, this);
 		news_tab.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Page_Select(0, true);
+				Page_Select(0, true, MainActivity.this);
 			}
 		});
 		live_tab.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Page_Select(1, true);
+				Page_Select(1, true, MainActivity.this);
 			}
 		});
 		chat_tab.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Page_Select(2, true);
+				Page_Select(2, true, MainActivity.this);
 			}
 		});
 		score_board_tab.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Page_Select(3, true);
+				Page_Select(3, true, MainActivity.this);
 			}
 		});
 		game_tab.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Page_Select(4, true);
+				Page_Select(4, true, MainActivity.this);
 			}
 		});
 	}
 	
-	public void Page_Select(int index, boolean by_Selected){
+	public static void Page_Select(int index, boolean by_Selected, Context mContext){
 		//Content_view.removeAllViews();
 		data.fragement_Section_set(index);
-		this.mViewPager.setPagingEnabled(true);
-		this.mViewPager.setOffscreenPageLimit(4);
+		mViewPager.setPagingEnabled(true);
+		mViewPager.setOffscreenPageLimit(4);
 		
 		if(index==0){
-			data.PageNameSelected = getResources().getString(R.string.title_bar_news);
+			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_news);
 			news_tab.setBackgroundResource(R.drawable.news_h);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==1){
-			data.PageNameSelected = getResources().getString(R.string.title_bar_live_score);
+			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_live_score);
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore_h);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==2){
-			data.PageNameSelected = getResources().getString(R.string.title_bar_chat);
+			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_chat);
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat_h);
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==3){
-			data.PageNameSelected = getResources().getString(R.string.title_bar_score_broads);
+			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_score_broads);
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
 			score_board_tab.setBackgroundResource(R.drawable.board_h);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==4){
-			data.PageNameSelected = getResources().getString(R.string.title_bar_hilight);
+			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_hilight);
 			news_tab.setBackgroundResource(R.drawable.news);
 			live_tab.setBackgroundResource(R.drawable.livescore);
 			chat_tab.setBackgroundResource(R.drawable.chat);
@@ -448,24 +445,40 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}
 		title_bar.setText(data.PageNameSelected);
 		if(by_Selected){
-			MainActivity.this.mViewPager.setCurrentItem(index);
+			mViewPager.setCurrentItem(index);
 		}
 		
 	}
-
+	int OldState = 0;
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
-		
+		if(OldState==1 
+				&& arg0==0
+				&& mViewPager.getCurrentItem()==0 ){
+			final LinearLayout MainLayout = (LinearLayout)findViewById(R.id.Main_Layout);
+			data._Menu_Layout = new SideMenuMain().CreateMenu(MainLayout, mContext);
+			WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
+					WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+					WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+						| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+						| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+					PixelFormat.TRANSLUCENT);
+
+			params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
+			data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+			data.wm.addView(data._Menu_Layout, params);
+		}
+		OldState = arg0;
 	}
 
 	@Override
 	public void onPageScrolled(int arg0, float arg1, int arg2) {
-		
 	}
 
 	@Override
 	public void onPageSelected(int arg0) {
-		Page_Select(arg0, false);
+		Page_Select(arg0, false, this);
 	}
 	
 	public String  set_DateMonth_format(int value) {
@@ -480,7 +493,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if(data.Menu_Layout!=null){
 				if(data.Menu_Layout.getVisibility()==0){
-					new SideMenuLayout().hideMenu(mContext);
+					new SideMenuMain().hideMenu(mContext);
 				}else{
 					if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
 						if(data.Sticker_Layout_Stat_team){

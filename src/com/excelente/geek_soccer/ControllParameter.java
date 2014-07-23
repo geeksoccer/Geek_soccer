@@ -71,7 +71,7 @@ public class ControllParameter {
 	HashMap<String, JSONArray> Sticker_Set = new HashMap<String, JSONArray>();
 	HashMap<String, String> Sticker_UrlSet = new HashMap<String, String>();
 	ArrayList<String> URL_list = new ArrayList<String>();
-	String PageNameSelected = "";
+	public String PageNameSelected = "";
 	String Last_League_SET="";
 	String Date_Select="c";
 	String SocketSelect;
@@ -122,11 +122,11 @@ public class ControllParameter {
 	public static JSONObject jObLiveToday;
 	public static JSONObject jObLiveTomorrow;
 	
-	LinearLayout _Menu_Layout;
-	LinearLayout Menu_Layout;
-	View Menu_View;
-	TextView Menu_title;
-	WindowManager wm;
+	public LinearLayout _Menu_Layout;
+	public LinearLayout Menu_Layout;
+	public View Menu_View;
+	public TextView Menu_title;
+	public WindowManager wm;
     
     public void fragement_Section_set(int section) {
         this.fragement_Section = section;

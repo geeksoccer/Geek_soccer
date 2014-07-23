@@ -1,4 +1,4 @@
-package com.excelente.geek_soccer;
+package com.excelente.geek_soccer.sideMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,12 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.excelente.geek_soccer.ControllParameter;
+import com.excelente.geek_soccer.MainActivity;
+import com.excelente.geek_soccer.Profile_Page;
+import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.SessionManager;
+import com.excelente.geek_soccer.Setting_Page;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
@@ -70,7 +76,7 @@ public class SideMenuLayout implements OnClickListener{
 		View MenuLayV = factory.inflate(R.layout.menu_layout, null);
 		data.Menu_Layout = (LinearLayout)MenuLayV.findViewById(R.id.Main_Layout);
 		data.Menu_Layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-		data.Menu_Layout.setGravity(Gravity.LEFT);
+		data.Menu_Layout.setGravity(Gravity.RIGHT);
 		data.Menu_Layout.setBackgroundColor(Color.BLACK);
 		data.Menu_Layout.getBackground().setAlpha(180);
 		data.Menu_View = factory.inflate(R.layout.menu_view, null);
