@@ -37,7 +37,7 @@ public class DialogUtil {
 		confirmDialog.setContentView(view);
 		
 		title.setText(mContext.getResources().getString(R.string.rate_app_title));
-		Drawable img = mContext.getResources().getDrawable( R.drawable.news_likes_selected );
+		Drawable img = mContext.getResources().getDrawable( R.drawable.star_white );
 		img.setBounds( 0, 0, 60, 60 );
 		title.setCompoundDrawables( img, null, null, null );
 		
