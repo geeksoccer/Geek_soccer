@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -49,13 +50,15 @@ public class LiveScore_Yesterday extends Activity {
 	int chk_loaded = 0;
 	private static ControllParameter data;
 	String saveModeGet;
+	
+	ProgressBar progressV;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		data = ControllParameter.getInstance(this);
 
-		setContentView(R.layout.livescore_yesterday);
+		setContentView(R.layout.livescore_today);
 		mContext = this;
 		saveModeGet = SessionManager.getSetting(mContext,
 				SessionManager.setting_save_mode);
@@ -117,9 +120,10 @@ public class LiveScore_Yesterday extends Activity {
 			}
 		});
 		*/
+		progressV = (ProgressBar) findViewById(R.id.progressBar);
 		if (data.Match_list_y_JSON.size() > 0) {
 			layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
-			layOutlist.removeAllViews();
+			progressV.setVisibility(RelativeLayout.GONE);
 			((LinearLayout) layOutlist).addView(lstView);
 			chk_ani = false;
 			data.imageAdapterLiveScoreYesterday.notifyDataSetChanged();
@@ -580,15 +584,15 @@ public class LiveScore_Yesterday extends Activity {
 					if (data.Match_list_y_JSON.size() > 0) {
 						chk_D_Stat = false;
 						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
-						layOutlist.removeAllViews();
+						progressV.setVisibility(RelativeLayout.GONE);
 						((LinearLayout) layOutlist).addView(lstView);
 						chk_ani = false;
 						data.imageAdapterLiveScoreYesterday
 								.notifyDataSetChanged();
 					} else {
 						layOutlist = (LinearLayout) findViewById(R.id.List_Layout);
-						layOutlist.removeAllViews();
-						TextView RefreshTag = new TextView(mContext);
+						progressV.setVisibility(RelativeLayout.GONE);
+						final TextView RefreshTag = new TextView(mContext);
 						RefreshTag.setPadding(0, 30, 0, 30);
 						RefreshTag.setTextColor(Color.GRAY);
 						RefreshTag.setText(mContext.getResources().getString(
@@ -599,11 +603,8 @@ public class LiveScore_Yesterday extends Activity {
 								.setOnClickListener(new View.OnClickListener() {
 									@Override
 									public void onClick(View arg0) {
-										layOutlist.removeAllViews();
-										ProgressBar progress = new ProgressBar(
-												mContext);
-										((LinearLayout) layOutlist)
-												.addView(progress);
+										progressV.setVisibility(RelativeLayout.GONE);
+										((LinearLayout) layOutlist).removeView(RefreshTag);
 										new Live_score_1stLoader().execute();
 									}
 								});

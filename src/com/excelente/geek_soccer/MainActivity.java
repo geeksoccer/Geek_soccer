@@ -84,7 +84,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}else{
 			askMode();
 		}
-
+		SideMenuStandBy();
 	}
 	
 	@Override
@@ -228,22 +228,28 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 					}
 				}
 				*/
-				final LinearLayout MainLayout = (LinearLayout)findViewById(R.id.Main_Layout);
-				data._Menu_Layout = new SideMenuMain().CreateMenu(MainLayout, mContext);
-				WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
-						WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-						WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-							| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-							| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-						PixelFormat.TRANSLUCENT);
-
-				params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
-				data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-				data.wm.addView(data._Menu_Layout, params);
+				new SideMenuMain().showMenu(MainActivity.this);
 			}
 		});
 	}
+	
+	public void SideMenuStandBy(){
+		final LinearLayout MainLayout = (LinearLayout) findViewById(R.id.Main_Layout);
+		data._Menu_Layout = new SideMenuMain().CreateMenu(
+				MainLayout, MainActivity.this);
+		ControllParameter.params = new WindowManager.LayoutParams(
+				LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT,
+				WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+						| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+						| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+				PixelFormat.TRANSLUCENT);
+
+		ControllParameter.params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
+		data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+	}
+	
 	private void menu_setting() {
 		menu_btn = (ImageView) findViewById(R.id.Menu_btn);
 		
@@ -455,19 +461,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		if(OldState==1 
 				&& arg0==0
 				&& mViewPager.getCurrentItem()==0 ){
-			final LinearLayout MainLayout = (LinearLayout)findViewById(R.id.Main_Layout);
-			data._Menu_Layout = new SideMenuMain().CreateMenu(MainLayout, mContext);
-			WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
-					WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-					WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-						| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-						| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-					PixelFormat.TRANSLUCENT);
-
-			params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
-			data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-			data.wm.addView(data._Menu_Layout, params);
+			new SideMenuMain().showMenu(mContext);
 		}
 		OldState = arg0;
 	}

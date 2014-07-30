@@ -174,6 +174,7 @@ public class SideMenuLayout implements OnClickListener{
 	}
 	
 	public void showMenu(Context mContext){
+		data.wm.addView(data._Menu_Layout, ControllParameter.params);
 		data.Menu_Layout.setVisibility(RelativeLayout.ABOVE);
 		data.Menu_title.setText(data.PageNameSelected);
 		Animation in = AnimationUtils.loadAnimation(mContext

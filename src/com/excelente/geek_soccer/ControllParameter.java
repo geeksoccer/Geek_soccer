@@ -127,6 +127,7 @@ public class ControllParameter {
 	public View Menu_View;
 	public TextView Menu_title;
 	public WindowManager wm;
+	public static WindowManager.LayoutParams params;
     
     public void fragement_Section_set(int section) {
         this.fragement_Section = section;
