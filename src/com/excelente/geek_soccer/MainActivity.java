@@ -237,6 +237,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		final LinearLayout MainLayout = (LinearLayout) findViewById(R.id.Main_Layout);
 		data._Menu_Layout = new SideMenuMain().CreateMenu(
 				MainLayout, MainActivity.this);
+		data.Menu_Layout.setVisibility(RelativeLayout.GONE);
 		ControllParameter.params = new WindowManager.LayoutParams(
 				LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT,
