@@ -239,33 +239,33 @@ public class SideMenuMain extends MainActivity implements OnClickListener  {
 		
 		switch (v.getId()) {
 			case R.id.News:{
-				hideMenuNoAni();
+				hideMenu(mContext);
 				MainActivity.Page_Select(0, true, mContext);
 				break;
 	
 			}
 			case R.id.LiveScore:{
-				hideMenuNoAni();
+				hideMenu(mContext);
 				MainActivity.Page_Select(1, true, mContext);
 				break;
 	
 			}
 			case R.id.Chat:{
-				hideMenuNoAni();
+				hideMenu(mContext);
 				MainActivity.Page_Select(2, true, mContext);
 				break;
 			}
 			case R.id.ScoreBoard:{
-				hideMenuNoAni();
+				hideMenu(mContext);
 				MainActivity.Page_Select(3, true, mContext);
 				break;
 			}
 			case R.id.Hilight:{
-				hideMenuNoAni();
+				hideMenu(mContext);
 				MainActivity.Page_Select(4, true, mContext);
 				break;
 			}
-case R.id.Profile:{
+			case R.id.Profile:{
 				
 				Intent gotoProfile = new Intent(mContext, Profile_Page.class);
 				mContext.startActivity(gotoProfile);
