@@ -484,11 +484,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		if(tag.equals("tag0")){
 			view0.setVisibility(View.VISIBLE);
 			view1.setVisibility(View.INVISIBLE);
-			newsWaitProgressBar.setVisibility(View.GONE);
+			if(newsWaitProgressBar!=null)
+				newsWaitProgressBar.setVisibility(View.GONE);
 			
 			if(newsAdapterTeam == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity())){
-					newsWaitProgressBar.setVisibility(View.VISIBLE);
+					if(newsWaitProgressBar!=null) newsWaitProgressBar.setVisibility(View.VISIBLE);
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
 				}else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
@@ -498,11 +499,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		}else if(tag.equals("tag1")){
 			view0.setVisibility(View.INVISIBLE);
 			view1.setVisibility(View.VISIBLE);
-			newsWaitProgressBar.setVisibility(View.GONE);
+			if(newsWaitProgressBar!=null)
+				newsWaitProgressBar.setVisibility(View.GONE);
 			
 			if(newsAdapterGlobal == null) {
 				if (NetworkUtils.isNetworkAvailable(getActivity())){
-					newsWaitProgressBar.setVisibility(View.VISIBLE);
+					if(newsWaitProgressBar!=null) newsWaitProgressBar.setVisibility(View.VISIBLE);
 					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(getActivity(), 0, "tag1"));
 				}else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
