@@ -115,9 +115,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		
 		this.intialiseViewPager();
 		
-		//------------Ched: ·ÓäÇéà¾×èÍ ·´ÅÍ§¡´ ´Ù¢èÒÇ·ÕÁÍ×è¹¨Ò¡àÁ¹Ù  (For View News Anyone)-----------------------------
+		//------------Ched: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í§ï¿½ï¿½ ï¿½Ù¢ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½è¹¨Ò¡ï¿½ï¿½ï¿½ï¿½  (For View News Anyone)-----------------------------
 				menu_setting();
-		//------------Ched: ·ÓäÇéà¾×èÍ ·´ÅÍ§¡´ ´Ù¢èÒÇ·ÕÁÍ×è¹¨Ò¡àÁ¹Ù  (For View News Anyone)-----------------------------
+		//------------Ched: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í§ï¿½ï¿½ ï¿½Ù¢ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½è¹¨Ò¡ï¿½ï¿½ï¿½ï¿½  (For View News Anyone)-----------------------------
 				Team_LogoSetting();
 		tab_setting();
 		
@@ -258,7 +258,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		if(SessionManager.getMember(MainActivity.this).getRole() == 1){
 			menu_btn.setVisibility(View.VISIBLE);
 		}else{
-			menu_btn.setVisibility(View.INVISIBLE);
+			menu_btn.setVisibility(View.GONE);
 		}
 		
 		menu_btn.setOnClickListener(new View.OnClickListener() {

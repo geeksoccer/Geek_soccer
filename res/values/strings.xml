@@ -10,7 +10,7 @@
     <string name="net_wifi">Wifi enabled</string>
     <string name="net_mobile">3G enabled</string>
     
-    <string name="select_mode_question">This is select download data mode buttom  \n\n Please select mode where want enable.</string>
+    <string name="select_mode_question">This is select download image mode buttom  \n\n Please select mode where want enable.</string>
     <string name="button_confirm_save_mode">Save Mode</string>
    	<string name="button_confirm_normal_mode">Normal Mode</string>
    	<string name="select_mode_title">Select Mode</string>
@@ -23,7 +23,7 @@
     
     <string name="show_photo">View</string>
     <string name="save_mode_title">Save Mode</string>
-    <string name="save_mode_question">Now, you use mobile network.\n We are recommend to use save mode.\n for reduce download data\n\n Do you want to enable save mode?</string>
+    <string name="save_mode_question">Now, you use mobile network.\n We are recommend to use save mode.\n for reduce download image\n\n Do you want to enable save mode?</string>
     
     <string name="video_title_error">Sorry, this video can not be played.</string>
     <string name="video_message_error">There are a problem while playing.</string>

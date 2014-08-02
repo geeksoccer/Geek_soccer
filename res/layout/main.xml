@@ -50,7 +50,7 @@
             android:layout_toLeftOf="@+id/Save_Mode_btn"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:src="@drawable/menu_btn"
             android:background="@drawable/bg_press" />
          
