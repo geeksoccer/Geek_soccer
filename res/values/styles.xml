@@ -76,7 +76,7 @@
 	</style>
 	
 	<style name="logo_default">
-      	<item name="android:src">@drawable/ic_launcher</item>
+      	<item name="android:src">@drawable/logo_gs</item>
 	</style>
     <style name="logo_arsenal">
       	<item name="android:src">@drawable/logo_arsenal</item>
