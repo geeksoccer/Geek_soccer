@@ -84,7 +84,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}else{
 			askMode();
 		}
-		SideMenuStandBy();
 	}
 	
 	@Override
@@ -134,6 +133,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		//String Date_Select = String.valueOf(yy)+"-"+set_DateMonth_format(mm+1) +"-"+set_DateMonth_format(dd);
 		//new Load_LiveScore_Data().data(mContext, Date_Select);
 	    setPageFromNotification();
+		SideMenuStandBy();
 	}
 
 	private void askMode() {
@@ -235,20 +235,22 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	
 	public void SideMenuStandBy(){
 		final LinearLayout MainLayout = (LinearLayout) findViewById(R.id.Main_Layout);
-		data._Menu_Layout = new SideMenuMain().CreateMenu(
-				MainLayout, MainActivity.this);
-		data.Menu_Layout.setVisibility(RelativeLayout.GONE);
-		ControllParameter.params = new WindowManager.LayoutParams(
-				LayoutParams.MATCH_PARENT,
-				LayoutParams.MATCH_PARENT,
-				WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-						| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-						| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-				PixelFormat.TRANSLUCENT);
+		if(MainLayout!=null){
+			data._Menu_Layout = new SideMenuMain().CreateMenu(
+					MainLayout, MainActivity.this);
+			data.Menu_Layout.setVisibility(RelativeLayout.GONE);
+			ControllParameter.params = new WindowManager.LayoutParams(
+					LayoutParams.MATCH_PARENT,
+					LayoutParams.MATCH_PARENT,
+					WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+					WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+							| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+							| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+					PixelFormat.TRANSLUCENT);
 
-		ControllParameter.params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
-		data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+			ControllParameter.params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
+			data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+		}
 	}
 	
 	private void menu_setting() {
