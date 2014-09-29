@@ -127,7 +127,7 @@ public class DownChatPic {
 						|| url.contains("/gs_member/member_images/")) {
 					_Url = url;
 				} else {
-					_Url = "http://183.90.171.209/chat/stk/" + url;
+					_Url = ControllParameter.CHAT_STK_URL + url;
 				}
 				Bitmap pic = null;
 				if (SessionManager.getImageSession(mContext, url) == null) {
@@ -198,7 +198,7 @@ public class DownChatPic {
 							|| url.contains("/gs_member/member_images/")) {
 						_Url = url;
 					} else {
-						_Url = "http://183.90.171.209/chat/stk/" + url;
+						_Url = ControllParameter.CHAT_STK_URL + url;
 					}
 					Bitmap pic = null;
 					if(data.BitMapHashMem.get(_Url)==null){

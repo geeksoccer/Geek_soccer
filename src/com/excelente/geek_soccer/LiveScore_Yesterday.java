@@ -395,7 +395,7 @@ public class LiveScore_Yesterday extends Activity {
 
 				ControllParameter.jObLiveYesterday = jParser
 						.makeHttpRequest(
-								"http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
+								ControllParameter.GET_LIVESCORE_URL,
 								"POST", params);
 
 				if (ControllParameter.jObLiveYesterday != null) {

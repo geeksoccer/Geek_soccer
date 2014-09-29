@@ -200,7 +200,7 @@ public class STKShop_Page extends Activity{
 			String ImgTxt = STK_Item.getString("sk_preview");
 			if(ImgTxt.contains(".gif")){
 				new DownChatPic().startDownloadGIFCache(mContext
-						, "http://183.90.171.209/chat/stk/"+ImgTxt
+						, ControllParameter.CHAT_STK_URL+ImgTxt
 						, Preview_img);
 			}else{
 				if (data.BitMapHash.get(ImgTxt) != null) {
@@ -292,7 +292,7 @@ public class STKShop_Page extends Activity{
 				ImgTxt = STK_Item_arr.getJSONObject(i).getString("sk_img") + "." + STK_Item_arr.getJSONObject(i).getString("sk_type");
 				if(ImgTxt.contains(".gif")){
 					new DownChatPic().startDownloadGIFCache(mContext
-							, "http://183.90.171.209/chat/stk/"+ImgTxt
+							, ControllParameter.CHAT_STK_URL+ImgTxt
 							, Sticker_ImgVSet.get(String.valueOf(i+1)));
 				}else{
 					if (data.BitMapHash.get(ImgTxt) != null) {
@@ -358,7 +358,7 @@ public class STKShop_Page extends Activity{
 				
 				if(ImgTxt.contains(".gif")){
 					new DownChatPic().startDownloadGIFCache(mContext
-							, "http://183.90.171.209/chat/stk/"+ImgTxt
+							, ControllParameter.CHAT_STK_URL+ImgTxt
 							, Sticker);
 				}else{
 					if (data.BitMapHash.get(ImgTxt) != null) {
@@ -460,7 +460,7 @@ public class STKShop_Page extends Activity{
 				STK_list.clear();
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				JSONObject json = jParser
-						.makeHttpRequest("http://183.90.171.209/gs_stk_permission/get_stk_list.php",
+						.makeHttpRequest(ControllParameter.GET_STK_PER_LIST,
 								"POST", params);
 				Log.d("TEST", "json_dtArr::"+json);
 				if (json != null) {
@@ -514,7 +514,7 @@ public class STKShop_Page extends Activity{
 				params.add(new BasicNameValuePair("token",
 						md5Digest(String.valueOf(SessionManager.getMember(mContext).getUid())+args[0]+"acpt46") ));
 				JSONObject json_permission = jParser_permission
-						.makeHttpRequest("http://183.90.171.209/gs_stk_permission/stk_permission_set_one.php",
+						.makeHttpRequest(ControllParameter.SET_STK_PERMIT_ONE,
 								"POST", params);
 				if (json_permission != null) {
 					final JSONObject STK_Item = STK_list.get(Integer.parseInt(args[1]));
@@ -601,7 +601,7 @@ public class STKShop_Page extends Activity{
 				params.add(new BasicNameValuePair("token",
 						md5Digest(String.valueOf(SessionManager.getMember(mContext).getUid())+args[0]+"acpt46") ));
 				JSONObject json_permission = jParser_permission
-						.makeHttpRequest("http://183.90.171.209/gs_stk_permission/stk_permission_del_one.php",
+						.makeHttpRequest(ControllParameter.DEL_STK_PERMIT_ONE,
 								"POST", params);
 				Log.d("TEST", "json_permission::"+json_permission);
 				if (json_permission != null) {

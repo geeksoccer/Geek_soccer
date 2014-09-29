@@ -408,7 +408,7 @@ public class LiveScore_Today extends Activity {
 
 				ControllParameter.jObLiveToday = jParser
 						.makeHttpRequest(
-								"http://183.90.171.209//get-livescore/ajax/goal-livescore.php",
+								ControllParameter.GET_LIVESCORE_URL,
 								"POST", params);
 
 				if (ControllParameter.jObLiveToday != null) {
@@ -639,7 +639,7 @@ public class LiveScore_Today extends Activity {
 
 				try {
 					data.socket_LiveScore = new SocketIO(
-							"http://183.90.171.209:5070");
+							"http://"+ControllParameter.SERVER_URL+":5070");
 				} catch (MalformedURLException e1) {
 					e1.printStackTrace();
 				}

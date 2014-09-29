@@ -543,7 +543,7 @@ public class Chat_Team extends Activity {
 
 	public void putBitmap(final ImageView imgV, final String key) {
 		new DownChatPic().startDownloadGIFCache(mContext
-				, "http://183.90.171.209/chat/stk/" + key
+				,  ControllParameter.CHAT_STK_URL + key
 				, imgV);
 	}
 
@@ -760,7 +760,7 @@ public class Chat_Team extends Activity {
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (txt_Item.getString("ch_msg").contains(".gif")) {
 								new DownChatPic().startDownloadGIFCache(mContext
-										, "http://183.90.171.209/chat/stk/"
+										, ControllParameter.CHAT_STK_URL
 												+ txt_Item.getString("ch_msg")
 										, Sticker);
 							} else {
@@ -807,7 +807,7 @@ public class Chat_Team extends Activity {
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (txt_Item.getString("ch_msg").contains(".gif")) {
 								new DownChatPic().startDownloadGIFCache(mContext
-										, "http://183.90.171.209/chat/stk/"
+										, ControllParameter.CHAT_STK_URL
 												+ txt_Item.getString("ch_msg")
 										, Sticker);
 							} else {
@@ -856,7 +856,7 @@ public class Chat_Team extends Activity {
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("id", String.valueOf(SessionManager.getMember(mContext).getUid()) ));
 				JSONObject json = jParser
-						.makeHttpRequest("http://183.90.171.209/gs_member_permission/check_chat_permission.php",
+						.makeHttpRequest(ControllParameter.CHECK_CHAT_MEMBER_PERMIT_URL,
 								"POST", params);
 				if (json != null) {
 					String retCode = json.getString("return_code");
@@ -906,7 +906,7 @@ public class Chat_Team extends Activity {
 			public void run() {
 
 				try {
-					data.socket_Team = new SocketIO("http://183.90.171.209:"
+					data.socket_Team = new SocketIO("http://"+ControllParameter.SERVER_URL+":"
 							+ data.SocketSelect);
 				} catch (MalformedURLException e1) {
 

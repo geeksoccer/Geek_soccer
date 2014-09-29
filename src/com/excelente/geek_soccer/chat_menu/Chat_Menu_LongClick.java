@@ -210,7 +210,7 @@ public class Chat_Menu_LongClick {
 				params.add(new BasicNameValuePair("token",
 						md5Digest(String.valueOf(SessionManager.getMember(mContext).getUid())+args[0]+"acpt46") ));
 				JSONObject json = jParser
-						.makeHttpRequest("http://183.90.171.209/gs_member_permission/chat_permission.php",
+						.makeHttpRequest(ControllParameter.CHAT_MEMBER_PERMIT_URL,
 								"POST", params);
 				if (json != null) {
 					return json.getString("return_code");

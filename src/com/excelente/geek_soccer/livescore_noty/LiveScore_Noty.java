@@ -41,7 +41,7 @@ public class LiveScore_Noty {
 			public void run() {
 				final ControllParameter data = ControllParameter.getInstance(mContext);
 				try {
-					data.socket_LiveScore = new SocketIO("http://183.90.171.209:5070");
+					data.socket_LiveScore = new SocketIO("http://"+ControllParameter.SERVER_URL+":5070");
 				} catch (MalformedURLException e1) {
 					e1.printStackTrace();
 				}

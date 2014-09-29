@@ -546,7 +546,7 @@ public class Chat_All extends Activity {
 
 	public void putBitmap(final ImageView imgV, final String key) {
 		new DownChatPic().startDownloadGIFCache(mContext
-				, "http://183.90.171.209/chat/stk/" + key
+				, ControllParameter.CHAT_STK_URL + key
 				, imgV);
 	}
 
@@ -770,7 +770,7 @@ public class Chat_All extends Activity {
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (txt_Item.getString("ch_msg").contains(".gif")) {
 								new DownChatPic().startDownloadGIFCache(mContext
-										, "http://183.90.171.209/chat/stk/"
+										, ControllParameter.CHAT_STK_URL
 												+ txt_Item.getString("ch_msg")
 										, Sticker);
 							} else {
@@ -825,7 +825,7 @@ public class Chat_All extends Activity {
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (txt_Item.getString("ch_msg").contains(".gif")) {
 								new DownChatPic().startDownloadGIFCache(mContext
-										, "http://183.90.171.209/chat/stk/"
+										, ControllParameter.CHAT_STK_URL
 												+ txt_Item.getString("ch_msg")
 										, Sticker);
 							} else {
@@ -876,7 +876,7 @@ public class Chat_All extends Activity {
 						.valueOf(SessionManager.getMember(mContext).getUid())));
 				JSONObject json = jParser
 						.makeHttpRequest(
-								"http://183.90.171.209/gs_member_permission/check_chat_permission.php",
+								ControllParameter.CHECK_CHAT_MEMBER_PERMIT_URL,
 								"POST", params);
 				
 				if (json != null) {
@@ -933,7 +933,7 @@ public class Chat_All extends Activity {
 							data.socket_All.disconnect();
 						}
 					}
-					data.socket_All = new SocketIO("http://183.90.171.209:5000");
+					data.socket_All = new SocketIO("http://" + ControllParameter.SERVER_URL + ":5000");
 				} catch (MalformedURLException e1) {
 
 					e1.printStackTrace();
