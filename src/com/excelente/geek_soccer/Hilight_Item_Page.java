@@ -47,10 +47,6 @@ import android.widget.Toast;
 
 public class Hilight_Item_Page extends Activity implements View.OnClickListener, AnimationListener{
 	
-	public static final String HILIGHT_POST_COMMENTS_URL = "http://183.90.171.209/gs_hilight_comments/post_hilight_comments.php";
-	public static final String HILIGHT_READS_URL = "http://183.90.171.209/gs_hilight/post_hilight_reads.php";
-	public static final String HILIGHT_GET_COMMENT_URL = "http://183.90.171.209/gs_hilight_comments/get_hilight_comments.php?";
-	
 	final Activity activity = this;
 	
 	private RelativeLayout headerLayout;
@@ -481,7 +477,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("hilight_id", String.valueOf(params[0])));
 			
-			HttpConnectUtils.getStrHttpPostConnect(HILIGHT_READS_URL, paramsPost);
+			HttpConnectUtils.getStrHttpPostConnect(ControllParameter.HILIGHT_READS_URL, paramsPost);
 			
 			return null;
 		}
@@ -512,7 +508,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			paramsPost.add(new BasicNameValuePair(CommentModel.HILIGHT_ID, String.valueOf(params[0].getNewsId())));
 			paramsPost.add(new BasicNameValuePair(CommentModel.COMMENT_CONTENT, params[0].getCommentContent()));
 			
-			String result = HttpConnectUtils.getStrHttpPostConnect(HILIGHT_POST_COMMENTS_URL, paramsPost);
+			String result = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.HILIGHT_POST_COMMENTS_URL, paramsPost);
 			if(result.trim().equals("success")){
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				params[0].setComment_update_time(sdf.format(new Date()));
@@ -556,7 +552,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		@Override
 		protected List<CommentModel> doInBackground(CommentModel... params) {
 			
-			String result = HttpConnectUtils.getStrHttpGetConnect(HILIGHT_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&hilight_id=" + params[0].getNewsId()); 
+			String result = HttpConnectUtils.getStrHttpGetConnect(ControllParameter.HILIGHT_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&hilight_id=" + params[0].getNewsId()); 
 			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
 				return null;
 			}

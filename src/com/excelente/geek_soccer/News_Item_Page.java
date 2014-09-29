@@ -42,10 +42,6 @@ import android.widget.AbsListView.OnScrollListener;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class News_Item_Page extends Activity implements View.OnClickListener, AnimationListener{
-	
-	public static final String NEWS_POST_COMMENTS_URL = "http://183.90.171.209/gs_news_comments/post_news_comments.php";
-	public static final String NEWS_READS_URL = "http://183.90.171.209/gs_news/post_news_reads.php";
-	public static final String NEWS_GET_COMMENT_URL = "http://183.90.171.209/gs_news_comments/get_news_comments.php?"; 
 	 
 	final Activity activity = this;
 
@@ -390,7 +386,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			paramsPost.add(new BasicNameValuePair(CommentModel.NEWS_ID, String.valueOf(params[0].getNewsId())));
 			paramsPost.add(new BasicNameValuePair(CommentModel.COMMENT_CONTENT, params[0].getCommentContent()));
 			
-			String result = HttpConnectUtils.getStrHttpPostConnect(NEWS_POST_COMMENTS_URL, paramsPost);
+			String result = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.NEWS_POST_COMMENTS_URL, paramsPost);
 			if(result.trim().equals("success")){
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				params[0].setComment_update_time(sdf.format(new Date()));
@@ -434,7 +430,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		@Override
 		protected List<CommentModel> doInBackground(CommentModel... params) {
 			
-			String result = HttpConnectUtils.getStrHttpGetConnect(NEWS_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&news_id=" + params[0].getNewsId()); 
+			String result = HttpConnectUtils.getStrHttpGetConnect(ControllParameter.NEWS_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&news_id=" + params[0].getNewsId()); 
 			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
 				return null;
 			}

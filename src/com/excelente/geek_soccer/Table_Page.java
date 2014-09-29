@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 public class Table_Page extends Fragment implements OnTabChangeListener, OnItemClickListener{
 	
-	public static final String TABLE_URL = "http://183.90.171.209/gs_table/get_table.php";
 	
 	public static final String TABLE_TYPE_ALL = "All";
 	
@@ -163,7 +162,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		if(plAdapter == null){
 			try{ 
 				if(NetworkUtils.isNetworkAvailable(getActivity())){
-					new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+					new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 				}else{
 					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 					setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
@@ -205,7 +204,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				if(flagplAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.GONE); 
-						new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+						new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
@@ -218,7 +217,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				if(flagblAdapter){
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						new LoadTableTask(tableBLLayout, blAdapter, "tag2").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + BUNDESLIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+						new LoadTableTask(tableBLLayout, blAdapter, "tag2").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + BUNDESLIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(blAdapter, tableBLLayout, "tag2");
@@ -231,7 +230,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				if(flagllAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						new LoadTableTask(tableLLLayout, llAdapter, "tag3").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + LALIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+						new LoadTableTask(tableLLLayout, llAdapter, "tag3").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + LALIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(llAdapter, tableLLLayout, "tag3");
@@ -244,7 +243,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				if(flagglAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						new LoadTableTask(tableGLLayout, glAdapter, "tag4").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(CALCAIO_SERIE_A, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+						new LoadTableTask(tableGLLayout, glAdapter, "tag4").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(CALCAIO_SERIE_A, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(glAdapter, tableGLLayout, "tag4");
@@ -257,7 +256,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				if(flagflAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						new LoadTableTask(tableFLLayout, flAdapter, "tag5").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(LEAGUE_DE_LEAGUE1, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+						new LoadTableTask(tableFLLayout, flAdapter, "tag5").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(LEAGUE_DE_LEAGUE1, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(flAdapter, tableFLLayout, "tag5");
@@ -270,7 +269,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				if(flagtplAdapter){
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						new LoadTableTask(tableTPLLayout, tplAdapter, "tag6").execute(TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(THAI_PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+						new LoadTableTask(tableTPLLayout, tplAdapter, "tag6").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(THAI_PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 					}else{
 						Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(tplAdapter, tableTPLLayout, "tag6");

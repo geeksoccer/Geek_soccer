@@ -45,8 +45,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	}
 	
 	public static final String ITEM_INDEX = "NEWS_MODEL";
-	public static final String NEWS_LIST_MODEL = "NEWS_LIST_MODEL"; 
-	public static final String GET_NEWS_URL = "http://183.90.171.209/gs_news/get_news.php";
+	public static final String NEWS_LIST_MODEL = "NEWS_LIST_MODEL";
 	
 	View newsPage;
 	
@@ -180,9 +179,9 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		String url = ""; 
 		
 		if(tag.equals("tag0")){
-			url = GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + SessionManager.getMember(context).getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ SessionManager.getMember(context).getUid();
+			url = ControllParameter.GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + SessionManager.getMember(context).getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ SessionManager.getMember(context).getUid();
 		}else if(tag.equals("tag1")){
-			url = GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ SessionManager.getMember(context).getUid();
+			url = ControllParameter.GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ SessionManager.getMember(context).getUid();
 		}
 		
 		return url;
@@ -454,7 +453,6 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	
 	public class PostNewsReads extends AsyncTask<Integer, Void, String>{
 		
-		public static final String NEWS_READS_URL = "http://183.90.171.209/gs_news/post_news_reads.php";
 		
 		@Override
 		protected String doInBackground(Integer... params) {
@@ -463,7 +461,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0])));
 			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(getActivity()).getUid())));
 			
-			return HttpConnectUtils.getStrHttpPostConnect(NEWS_READS_URL, paramsPost);
+			return HttpConnectUtils.getStrHttpPostConnect(ControllParameter.NEWS_READS_URL, paramsPost);
 		}
 		
 		@Override

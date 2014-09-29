@@ -51,9 +51,12 @@ public class NewsAdapter extends BaseAdapter{
     
     boolean showHead; 
 	
-    //HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
+    HashMap<String, Bitmap> urlBitmap;
     
 	public NewsAdapter(Activity context, List<NewsModel> newsList) {
+		if(urlBitmap == null){
+			urlBitmap = new HashMap<String, Bitmap>();
+		}
 		this.context = context;
 		this.newsList = newsList;
 	}
@@ -61,7 +64,8 @@ public class NewsAdapter extends BaseAdapter{
 	@SuppressLint("SimpleDateFormat")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		//Log.e("POSITION+++++++++++++++++", String.valueOf(position));
+		
+		//Log.e("POSITION+++++++++++++++++", ""+urlBitmap.size());
 		final NewsModel newsModel = (NewsModel) getItem(position);
 		 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -101,12 +105,16 @@ public class NewsAdapter extends BaseAdapter{
         final LinearLayout saveModeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
         
         final File cacheFile = ImageLoader.getInstance().getDiscCache().get(newsModel.getNewsImage().replace(".gif", ".png"));
-        if(cacheFile.isFile()){
+        if(urlBitmap.containsKey(newsModel.getNewsImage().replace(".gif", ".png"))){
+        	newsImageImageview.setImageBitmap(urlBitmap.get(newsModel.getNewsImage().replace(".gif", ".png")));
+        	saveModeTextview.setVisibility(View.GONE);
+        }else if(cacheFile.isFile()){
         	new Thread(new Runnable() {
 				
 				@Override
 				public void run() { 
 					final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getPath());
+					cacheMemBitMap(newsModel.getNewsImage().replace(".gif", ".png"), bm);
 					
 					context.runOnUiThread(new Runnable() {
 						
@@ -116,6 +124,7 @@ public class NewsAdapter extends BaseAdapter{
 						}
 					});
 				}
+
 			}).start();
         	saveModeTextview.setVisibility(View.GONE);
         }else{ 
@@ -155,7 +164,17 @@ public class NewsAdapter extends BaseAdapter{
         
 	}
 	
-	private void doloadImage(NewsModel newsModel, final ImageView newsImageImageview, final ProgressBar newsImageProgressBar, final LinearLayout saveModeTextview) { 
+	private void cacheMemBitMap(String replace, Bitmap bm) {
+		if(urlBitmap.size() == 20){
+			for (String key : urlBitmap.keySet()) {
+				urlBitmap.remove(key);
+				break;
+			}
+		}
+		urlBitmap.put(replace, bm);
+	}
+	
+	private void doloadImage(final NewsModel newsModel, final ImageView newsImageImageview, final ProgressBar newsImageProgressBar, final LinearLayout saveModeTextview) { 
 		try{ 
 		    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
 				 
@@ -164,7 +183,7 @@ public class NewsAdapter extends BaseAdapter{
 		    		newsImageImageview.setVisibility(View.GONE);
 	        		newsImageProgressBar.setVisibility(View.VISIBLE);
 	        	};
-	        	
+	        	 
 	        	@Override
 	        	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
 	        		saveModeTextview.setVisibility(View.GONE);
@@ -176,6 +195,7 @@ public class NewsAdapter extends BaseAdapter{
 	        		saveModeTextview.setVisibility(View.GONE);
 	        		newsImageImageview.setVisibility(View.VISIBLE);
 	        		newsImageProgressBar.setVisibility(View.GONE);
+	        		cacheMemBitMap(newsModel.getNewsImage().replace(".gif", ".png"), loadedImage);
 	        	}
 
 				@Override

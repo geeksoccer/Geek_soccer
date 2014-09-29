@@ -51,9 +51,12 @@ public class HilightAdapter extends BaseAdapter{
     
     boolean showHead; 
     
-    //HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
+    HashMap<String, Bitmap> urlBitmap;
 	
 	public HilightAdapter(Activity context, List<HilightModel> hilightList) {
+		if(urlBitmap == null){
+			urlBitmap = new HashMap<String, Bitmap>();
+		}
 		this.context = context;
 		this.hilightList = hilightList; 
 	}
@@ -127,12 +130,16 @@ public class HilightAdapter extends BaseAdapter{
 	        hilightHolder.savemodeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
         
 	        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(hilightModel.getHilightImage().replace(".gif", ".png"));
-	        if(cacheFile.isFile()){
+	        if(urlBitmap.containsKey(hilightModel.getHilightImage().replace(".gif", ".png"))){
+	        	hilightHolder.hilightImageImageview.setImageBitmap(urlBitmap.get(hilightModel.getHilightImage().replace(".gif", ".png")));
+	        	hilightHolder.savemodeTextview.setVisibility(View.GONE);
+	        }else if(cacheFile.isFile()){
 	        	new Thread(new Runnable() {
 					
 					@Override
 					public void run() {
 						final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getPath());
+						cacheMemBitMap(hilightModel.getHilightImage().replace(".gif", ".png"), bm);
 						context.runOnUiThread(new Runnable() {
 							
 							@Override 
@@ -183,7 +190,17 @@ public class HilightAdapter extends BaseAdapter{
         
 	} 
 	
-	private void doLoadImage(HilightModel hilightModel, final HilightHolder hilightHolder) {
+	private void cacheMemBitMap(String replace, Bitmap bm) {
+		if(urlBitmap.size() == 20){
+			for (String key : urlBitmap.keySet()) {
+				urlBitmap.remove(key);
+				break;
+			}
+		}
+		urlBitmap.put(replace, bm);
+	}
+	
+	private void doLoadImage(final HilightModel hilightModel, final HilightHolder hilightHolder) {
 		ImageLoader.getInstance().displayImage(hilightModel.getHilightImage().replace(".gif", ".png"), hilightHolder.hilightImageImageview, getOptionImageLoader(hilightModel.getHilightImage()), new ImageLoadingListener(){
         	
         	public void onLoadingStarted(String imageUri, View view) { 
@@ -203,6 +220,7 @@ public class HilightAdapter extends BaseAdapter{
         		hilightHolder.savemodeTextview.setVisibility(View.GONE);
         		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
         		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
+        		cacheMemBitMap(hilightModel.getHilightImage().replace(".gif", ".png"), loadedImage);
         	}
 
 			@Override

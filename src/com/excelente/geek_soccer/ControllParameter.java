@@ -1,6 +1,7 @@
 package com.excelente.geek_soccer;
 
 import io.socket.SocketIO;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,6 +29,25 @@ public class ControllParameter {
 	public static String SET_STK_PERMIT_ONE = "http://"+ SERVER_URL + "/gs_stk_permission/stk_permission_set_one.php";
 	public static String DEL_STK_PERMIT_ONE = "http://"+ SERVER_URL + "/gs_stk_permission/stk_permission_del_one.php";
 
+	//News Page
+	public static String GET_NEWS_URL = "http://"+ SERVER_URL + "/gs_news/get_news.php";
+	public static String NEWS_READS_URL = "http://"+ SERVER_URL + "/gs_news/post_news_reads.php";
+	
+	//News Item Page
+	public static String NEWS_POST_COMMENTS_URL = "http://"+ SERVER_URL + "/gs_news_comments/post_news_comments.php";
+	public static String NEWS_GET_COMMENT_URL = "http://"+ SERVER_URL + "/gs_news_comments/get_news_comments.php?"; 
+	
+	//Score Board Page
+	public static String TABLE_URL = "http://"+ SERVER_URL + "/gs_table/get_table.php";
+	
+	//Hilight Page
+	public static String GET_HILIGHT_URL = "http://"+ SERVER_URL + "/gs_hilight/get_hilight.php";
+	public static String HILIGHT_READS_URL = "http://"+ SERVER_URL + "/gs_hilight/post_hilight_reads.php";
+	
+	//Hilight Item Page
+	public static String HILIGHT_POST_COMMENTS_URL = "http://"+ SERVER_URL + "/gs_hilight_comments/post_hilight_comments.php";
+	public static String HILIGHT_GET_COMMENT_URL = "http://"+ SERVER_URL + "/gs_hilight_comments/get_hilight_comments.php?";
+	
 	private  ControllParameter(Context context) {
         //randomizeServers();
     	mContext = context;
