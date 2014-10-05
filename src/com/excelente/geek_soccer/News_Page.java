@@ -133,12 +133,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 
 	private void setMessageEmptyListView(List<NewsModel> newslist, NewsAdapter newsAdapter, PullToRefreshListView newsListView, String tag) {
 		newsWaitProgressBar.setVisibility(View.GONE);
-		newslist = new ArrayList<NewsModel>();
-		newsAdapter = new NewsAdapter(getActivity(), newslist);
-		newsListView.setAdapter(newsAdapter); 
-		newsListView.setVisibility(View.VISIBLE);
-		setListViewEvents(newsListView, newsAdapter, tag);
-		textEmpty.setVisibility(View.VISIBLE);
+		newsListView.setVisibility(View.GONE);
+		
+		if(newsAdapter==null || newsAdapter.isEmpty())
+			textEmpty.setVisibility(View.VISIBLE);
+		else
+			textEmpty.setVisibility(View.GONE);
 	}
 
 	private void initView() {
@@ -331,9 +331,14 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			newsAdapterTeam = new NewsAdapter(getActivity(), newsModelTeamList);
 			newsListViewTeam.setAdapter(newsAdapterTeam);
-			if(tag.equals(tabs.getCurrentTabTag())){
+			if(!newsAdapterTeam.isEmpty() && tag.equals(tabs.getCurrentTabTag())){
 				newsListViewTeam.setVisibility(View.VISIBLE);
 			}
+			
+			if(newsAdapterTeam.isEmpty()){
+				textEmpty.setVisibility(View.VISIBLE);
+			}
+			
 			setListViewEvents(newsListViewTeam, newsAdapterTeam, tag);
 		}else if(tag.equals("tag1")){
 			if(newsList == null || newsList.isEmpty()){
@@ -360,9 +365,14 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			newsAdapterGlobal = new NewsAdapter(getActivity(), newsModelGlobalList);
 			newsListViewGlobal.setAdapter(newsAdapterGlobal);
-			if(tag.equals(tabs.getCurrentTabTag())){
+			if(!newsAdapterGlobal.isEmpty() && tag.equals(tabs.getCurrentTabTag())){
 				newsListViewGlobal.setVisibility(View.VISIBLE);
 			}
+			
+			if(newsAdapterGlobal.isEmpty()){
+				textEmpty.setVisibility(View.VISIBLE);
+			}
+			
 			setListViewEvents(newsListViewGlobal, newsAdapterGlobal, tag);
 		}
 		
@@ -483,9 +493,9 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 
 	@Override
 	public void onTabChanged(String tag) {
-		
 		View view0 = tabs.getTabWidget().getChildAt(0).findViewById(R.id.selected);
 		View view1 = tabs.getTabWidget().getChildAt(1).findViewById(R.id.selected);
+		textEmpty.setVisibility(View.GONE);
 		
 		if(tag.equals("tag0")){
 			view0.setVisibility(View.VISIBLE);
@@ -493,7 +503,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			if(newsWaitProgressBar!=null)
 				newsWaitProgressBar.setVisibility(View.GONE);
 			
-			if(newsAdapterTeam == null) {
+			if(newsAdapterTeam == null || newsAdapterTeam.isEmpty()) {
 				if (NetworkUtils.isNetworkAvailable(getActivity())){
 					if(newsWaitProgressBar!=null) newsWaitProgressBar.setVisibility(View.VISIBLE);
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
@@ -508,7 +518,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			if(newsWaitProgressBar!=null)
 				newsWaitProgressBar.setVisibility(View.GONE);
 			
-			if(newsAdapterGlobal == null) {
+			if(newsAdapterGlobal == null || newsAdapterGlobal.isEmpty()) {
 				if (NetworkUtils.isNetworkAvailable(getActivity())){
 					if(newsWaitProgressBar!=null) newsWaitProgressBar.setVisibility(View.VISIBLE);
 					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(getActivity(), 0, "tag1"));

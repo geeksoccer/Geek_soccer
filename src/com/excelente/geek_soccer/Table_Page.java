@@ -193,21 +193,22 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	
 	private void setMessageEmptyListView(TableAdapter tableAdapter, ListView tableListView, String tag) {
 		tableWaitProcessbar.setVisibility(View.GONE);
-		List<TableModel> tableList = new ArrayList<TableModel>();
-		tableAdapter = new TableAdapter(getActivity(), tableList);
-		tableListView.setAdapter(tableAdapter); 
-		tableListView.setVisibility(View.VISIBLE); 
-		//setListViewEvents(tableListView, tag);
-		//tableListView.onRefreshComplete();
-		textEmpty.setVisibility(View.VISIBLE);
+		tableListView.setVisibility(View.GONE); 
+		
+		if(tableAdapter==null || tableAdapter.isEmpty())
+			textEmpty.setVisibility(View.VISIBLE);
+		else
+			textEmpty.setVisibility(View.GONE);
 	} 
 
 	@Override
 	public void onTabChanged(String tabId) {
 		tableWaitProcessbar.setVisibility(View.GONE);
+		textEmpty.setVisibility(View.GONE);
+		
 		try{
 			if(tabId.equals("tag1")){
-				if(flagplAdapter){ 
+				if(flagplAdapter || plAdapter.isEmpty()){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.GONE); 
 						new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
@@ -220,7 +221,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				}
 				setSelectedTab(0);
 			}else if(tabId.equals("tag2")){
-				if(flagblAdapter){
+				if(flagblAdapter || blAdapter.isEmpty()){
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableBLLayout, blAdapter, "tag2").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + BUNDESLIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
@@ -233,7 +234,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				}
 				setSelectedTab(1);
 			}else if(tabId.equals("tag3")){
-				if(flagllAdapter){ 
+				if(flagllAdapter || llAdapter.isEmpty()){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableLLLayout, llAdapter, "tag3").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + LALIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
@@ -246,7 +247,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				}
 				setSelectedTab(2);
 			}else if(tabId.equals("tag4")){
-				if(flagglAdapter){ 
+				if(flagglAdapter || glAdapter.isEmpty()){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableGLLayout, glAdapter, "tag4").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(CALCAIO_SERIE_A, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
@@ -259,7 +260,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				}
 				setSelectedTab(3);
 			}else if(tabId.equals("tag5")){
-				if(flagflAdapter){ 
+				if(flagflAdapter || flAdapter.isEmpty()){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableFLLayout, flAdapter, "tag5").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(LEAGUE_DE_LEAGUE1, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
@@ -272,7 +273,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				}
 				setSelectedTab(4);
 			}else if(tabId.equals("tag6")){
-				if(flagtplAdapter){
+				if(flagtplAdapter || tplAdapter.isEmpty()){
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						new LoadTableTask(tableTPLLayout, tplAdapter, "tag6").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(THAI_PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
@@ -371,6 +372,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 			}else{
 				if(getActivity()!=null){
 					Boast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
+				}
+				
+				if(tableAdaptor == null || tableAdaptor.isEmpty()){
+					textEmpty.setVisibility(View.VISIBLE);
 				}
 			} 
 			
