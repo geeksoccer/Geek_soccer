@@ -340,10 +340,12 @@ public class PullToRefreshListView extends ListView{
     }
 
     private void bounceBackHeader(){
+    	/*
         int yTranslate = state == State.REFRESHING ?
                 header.getHeight() - headerContainer.getHeight() :
                 -headerContainer.getHeight() - headerContainer.getTop() + getPaddingTop();;
 
+        
         TranslateAnimation bounceAnimation = new TranslateAnimation(
                 TranslateAnimation.ABSOLUTE, 0,
                 TranslateAnimation.ABSOLUTE, 0,
@@ -358,6 +360,27 @@ public class PullToRefreshListView extends ListView{
         bounceAnimation.setAnimationListener(new HeaderAnimationListener(yTranslate));
 
         startAnimation(bounceAnimation);
+        */
+        setHeaderPadding(state == State.REFRESHING ? 0 : -measuredHeaderHeight - headerContainer.getTop());
+        setSelection(0);
+
+        if(scrollbarEnabled){
+            setVerticalScrollBarEnabled(true);
+        }
+
+        if(bounceBackHeader){
+            bounceBackHeader = false;
+
+            postDelayed(new Runnable(){
+
+                @Override
+                public void run(){
+                    resetHeader();
+                }
+            }, BOUNCE_ANIMATION_DELAY);
+        }else if(state != State.REFRESHING){
+            setState(State.PULL_TO_REFRESH);
+        }
     }
 
     private void resetHeader(){
