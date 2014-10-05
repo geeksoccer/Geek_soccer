@@ -9,8 +9,6 @@ import com.excelente.geek_soccer.model.TableModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.Boast;
-import com.excelente.geek_soccer.view.PullToRefreshListView;
-import com.excelente.geek_soccer.view.PullToRefreshListView.OnRefreshListener;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -42,12 +41,12 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	public static final String THAI_PREMIER_LEAGUE = "Thai Premier League";
 	
 	View tableView;
-	private PullToRefreshListView tablePLLayout;
-	private PullToRefreshListView tableBLLayout;
-	private PullToRefreshListView tableLLLayout;
-	private PullToRefreshListView tableGLLayout;
-	private PullToRefreshListView tableFLLayout;
-	private PullToRefreshListView tableTPLLayout;
+	private ListView tablePLLayout;
+	private ListView tableBLLayout;
+	private ListView tableLLLayout;
+	private ListView tableGLLayout;
+	private ListView tableFLLayout;
+	private ListView tableTPLLayout;
 
 	private TableAdapter plAdapter;
 	private TableAdapter blAdapter;
@@ -148,12 +147,12 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		tableWaitProcessbar = (ProgressBar) tableView.findViewById(R.id.table_wait_processbar);
 		tableWaitProcessbar.setVisibility(View.VISIBLE);
 		
-		tablePLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_pl);
-		tableBLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_bl);
-		tableLLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_ll);
-		tableGLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_gl);
-		tableFLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_fl);
-		tableTPLLayout = (PullToRefreshListView) tableView.findViewById(R.id.table_tpl); 
+		tablePLLayout = (ListView) tableView.findViewById(R.id.table_pl);
+		tableBLLayout = (ListView) tableView.findViewById(R.id.table_bl);
+		tableLLLayout = (ListView) tableView.findViewById(R.id.table_ll);
+		tableGLLayout = (ListView) tableView.findViewById(R.id.table_gl);
+		tableFLLayout = (ListView) tableView.findViewById(R.id.table_fl);
+		tableTPLLayout = (ListView) tableView.findViewById(R.id.table_tpl); 
 		
 		textEmpty = (TextView) tableView.findViewById(R.id.empty);
 		textEmpty.setOnClickListener(this); 
@@ -180,7 +179,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		}
 	}
 	
-	private void setListViewEvents(final PullToRefreshListView hilightListview, final String tags){
+	/*private void setListViewEvents(final ListView hilightListview, final String tags){
 		hilightListview.setOnRefreshListener(new OnRefreshListener() {
 			
 			String tag = tags;
@@ -190,16 +189,16 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				onTabChanged(tag);
 			}
 		});
-	}
+	}*/
 	
-	private void setMessageEmptyListView(TableAdapter tableAdapter, PullToRefreshListView tableListView, String tag) {
+	private void setMessageEmptyListView(TableAdapter tableAdapter, ListView tableListView, String tag) {
 		tableWaitProcessbar.setVisibility(View.GONE);
 		List<TableModel> tableList = new ArrayList<TableModel>();
 		tableAdapter = new TableAdapter(getActivity(), tableList);
 		tableListView.setAdapter(tableAdapter); 
 		tableListView.setVisibility(View.VISIBLE); 
-		setListViewEvents(tableListView, tag);
-		tableListView.onRefreshComplete();
+		//setListViewEvents(tableListView, tag);
+		//tableListView.onRefreshComplete();
 		textEmpty.setVisibility(View.VISIBLE);
 	} 
 
@@ -217,7 +216,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
 					}
 				}else{
-					tablePLLayout.onRefreshComplete();
+					//tablePLLayout.onRefreshComplete();
 				}
 				setSelectedTab(0);
 			}else if(tabId.equals("tag2")){
@@ -230,7 +229,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						setMessageEmptyListView(blAdapter, tableBLLayout, "tag2");
 					}
 				}else{
-					tableBLLayout.onRefreshComplete();
+					//tableBLLayout.onRefreshComplete();
 				}
 				setSelectedTab(1);
 			}else if(tabId.equals("tag3")){
@@ -243,7 +242,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						setMessageEmptyListView(llAdapter, tableLLLayout, "tag3");
 					}
 				}else{
-					tableLLLayout.onRefreshComplete();
+					//tableLLLayout.onRefreshComplete();
 				}
 				setSelectedTab(2);
 			}else if(tabId.equals("tag4")){
@@ -256,7 +255,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						setMessageEmptyListView(glAdapter, tableGLLayout, "tag4");
 					}
 				}else{
-					tableGLLayout.onRefreshComplete();
+					//tableGLLayout.onRefreshComplete();
 				}
 				setSelectedTab(3);
 			}else if(tabId.equals("tag5")){
@@ -269,7 +268,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						setMessageEmptyListView(flAdapter, tableFLLayout, "tag5");
 					}
 				}else{
-					tableFLLayout.onRefreshComplete();
+					//tableFLLayout.onRefreshComplete();
 				}
 				setSelectedTab(4);
 			}else if(tabId.equals("tag6")){
@@ -282,7 +281,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 						setMessageEmptyListView(tplAdapter, tableTPLLayout, "tag6");
 					}
 				}else{
-					tableTPLLayout.onRefreshComplete();
+					//tableTPLLayout.onRefreshComplete();
 				}
 				setSelectedTab(5);
 			}
@@ -305,11 +304,11 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	
 	public class LoadTableTask extends AsyncTask<String, Void, List<TableModel>>{
 		
-		PullToRefreshListView listview;
+		ListView listview;
 		TableAdapter tableAdaptor;
 		String tag;
 		
-		public LoadTableTask(PullToRefreshListView listview, TableAdapter tableAdaptor, String tag) {
+		public LoadTableTask(ListView listview, TableAdapter tableAdaptor, String tag) {
 			this.listview = listview; 
 			this.tableAdaptor = tableAdaptor;
 			this.tag = tag;
@@ -343,8 +342,6 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		protected void onPostExecute(List<TableModel> result) {
 			super.onPostExecute(result);
 			if(result != null){
-				//listview.setHideHeader();
-				//listview.setPosition(0);
 				tableAdaptor = new TableAdapter(getActivity(), result);
 				listview.setAdapter(tableAdaptor);
 				listview.setOnItemClickListener(Table_Page.this);
@@ -377,8 +374,8 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				}
 			} 
 			
-			setListViewEvents(listview, tag);
-			listview.onRefreshComplete();
+			//setListViewEvents(listview, tag);
+			//listview.onRefreshComplete();
 			tableWaitProcessbar.setVisibility(View.GONE);
 		}
 
@@ -386,7 +383,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 
 	@Override
 	public void onItemClick(AdapterView<?> adap, View view, int pos, long id) {
-		pos++;
+		//pos++;
 		TableModel tm = (TableModel) adap.getAdapter().getItem(pos);
 		setToastSeq(tm);
 	}
