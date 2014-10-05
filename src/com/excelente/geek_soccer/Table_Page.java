@@ -210,7 +210,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 			if(tabId.equals("tag1")){
 				if(flagplAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
-						tableWaitProcessbar.setVisibility(View.GONE); 
+						tableWaitProcessbar.setVisibility(View.VISIBLE); 
 						try {
 							new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
 						} catch (UnsupportedEncodingException e) {
