@@ -446,7 +446,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 
 	@Override
 	public void onItemClick(AdapterView<?> adap, View view, int pos, long id) {
-		
+		pos++;
 		NewsModel news = (NewsModel) adap.getAdapter().getItem(pos);
 		new PostNewsReads().execute(news.getNewsId());
 		

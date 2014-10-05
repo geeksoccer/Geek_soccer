@@ -386,6 +386,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 
 	@Override
 	public void onItemClick(AdapterView<?> adap, View view, int pos, long id) {
+		pos++;
 		TableModel tm = (TableModel) adap.getAdapter().getItem(pos);
 		setToastSeq(tm);
 	}

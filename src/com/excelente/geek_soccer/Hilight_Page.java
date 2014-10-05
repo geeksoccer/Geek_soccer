@@ -667,6 +667,7 @@ public class Hilight_Page extends Fragment implements OnItemClickListener, OnTab
 
 	@Override
 	public void onItemClick(AdapterView<?> adap, View v, int pos, long id) {
+		pos++;
 		HilightModel hilight = (HilightModel) adap.getAdapter().getItem(pos); 
 		
 		if(NetworkUtils.isNetworkAvailable(getActivity())){
