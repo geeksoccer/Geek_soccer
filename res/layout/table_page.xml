@@ -66,6 +66,15 @@
                 android:background="@color/news_gray"
                 android:divider="@null" />
         </FrameLayout>
+        
+        <TextView android:id="@+id/empty"
+			    android:layout_below="@+id/table_header"
+	        	android:paddingTop="15dp"
+	            android:textColor="@color/gray"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:gravity="center_horizontal"
+				android:text="@string/pull_to_refresh_tap_label" />
 
         <ProgressBar
             android:id="@+id/table_wait_processbar"

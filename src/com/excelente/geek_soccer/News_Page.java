@@ -11,6 +11,7 @@ import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.view.Boast;
 import com.excelente.geek_soccer.view.PullToRefreshListView;
 import com.excelente.geek_soccer.view.PullToRefreshListView.OnRefreshListener;
 
@@ -24,6 +25,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -38,7 +40,7 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class News_Page extends Fragment implements OnItemClickListener, OnTabChangeListener{
+public class News_Page extends Fragment implements OnItemClickListener, OnTabChangeListener, OnClickListener{
 	
 	interface OnNewsLoadedListener{
 		public void onNewsLoaded();
@@ -63,6 +65,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	
 	private TabHost tabs;
 	private TabWidget tabWidget;
+	private View textEmpty;
 	
 	public static List<NewsModel> newsModelTeamList;
 	public static List<NewsModel> newsModelGlobalList;
@@ -92,10 +95,13 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		newsWaitProgressBar.setVisibility(View.VISIBLE);
 		
 		newsListViewTeam = (PullToRefreshListView) newsPage.findViewById(R.id.news_listview_team);
-		newsListViewTeam.setVisibility(View.GONE); 
+		newsListViewTeam.setVisibility(View.GONE);
 		
 		newsListViewGlobal = (PullToRefreshListView) newsPage.findViewById(R.id.news_listview_global);
 		newsListViewGlobal.setVisibility(View.GONE);
+		
+		textEmpty = newsPage.findViewById(R.id.empty);
+		textEmpty.setOnClickListener(this);
 		
 		newsLoadingFooterProcessbar = (ProgressBar) newsPage.findViewById(R.id.news_loading_footer_processbar);
 		newsLoadingFooterProcessbar.setVisibility(View.GONE);
@@ -117,7 +123,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 				if (NetworkUtils.isNetworkAvailable(getActivity())){
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
 				}else{
-					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+					Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 					setMessageEmptyListView(newsModelTeamList, newsAdapterTeam, newsListViewTeam, "tag0");
 				}
 			}
@@ -132,6 +138,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		newsListView.setAdapter(newsAdapter); 
 		newsListView.setVisibility(View.VISIBLE);
 		setListViewEvents(newsListView, newsAdapter, tag);
+		textEmpty.setVisibility(View.VISIBLE);
 	}
 
 	private void initView() {
@@ -205,6 +212,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			
 			if(newsAdapter==null && newsWaitProgressBar!=null){
 				newsWaitProgressBar.setVisibility(View.VISIBLE);
+				textEmpty.setVisibility(View.GONE);
 				stackTagLoading.add(tag);
 			}
 		}
@@ -303,7 +311,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 				//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show();
 				if(newsModelTeamList == null && getActivity()!=null){  
 					newsModelTeamList = new ArrayList<NewsModel>(); 
-					Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
+					Boast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
 				}
 			}else{
 				if(newsModelTeamList == null || newsModelTeamList.isEmpty()){
@@ -332,7 +340,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 				//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show();
 				if(newsModelGlobalList == null){  
 					newsModelGlobalList = new ArrayList<NewsModel>(); 
-					Toast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
+					Boast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
 				}
 			}else{
 				if(newsModelGlobalList == null || newsModelGlobalList.isEmpty()){
@@ -410,7 +418,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 							newsLoadingFooterProcessbar.setVisibility(View.VISIBLE);
 							new LoadOldNewsTask(newsListView, newsAdapter, tag).execute(getURLbyTag(getActivity(), nm.getNewsId(), tag));
 						}else
-							Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+							Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						//Toast.makeText(getActivity(), "Toast " + i++, Toast.LENGTH_SHORT).show();
 					}
 					
@@ -429,7 +437,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 					new LoadLastNewsTask(newsListView, tag).execute(getURLbyTag(getActivity(), 0, tag));
 				}else{
 					newsListView.onRefreshComplete();
-					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+					Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -490,7 +498,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 					if(newsWaitProgressBar!=null) newsWaitProgressBar.setVisibility(View.VISIBLE);
 					new LoadOldNewsTask(newsListViewTeam, newsAdapterTeam, "tag0").execute(getURLbyTag(getActivity(), 0, "tag0"));
 				}else{
-					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+					Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 					setMessageEmptyListView(newsModelTeamList, newsAdapterTeam, newsListViewTeam, "tag0");
 				}
 			}
@@ -505,7 +513,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 					if(newsWaitProgressBar!=null) newsWaitProgressBar.setVisibility(View.VISIBLE);
 					new LoadOldNewsTask(newsListViewGlobal, newsAdapterGlobal, "tag1").execute(getURLbyTag(getActivity(), 0, "tag1"));
 				}else{
-					Toast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
+					Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 					setMessageEmptyListView(newsModelGlobalList, newsAdapterGlobal, newsListViewGlobal, "tag1");
 				}
 			}
@@ -545,6 +553,16 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			newsAdapterTeam.notifyDataSetChanged();
 		}if(tabs.getCurrentTabTag().equals("tag1") && newsAdapterGlobal!=null){
 			newsAdapterGlobal.notifyDataSetChanged();
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.empty:
+				v.setVisibility(View.GONE);
+				onTabChanged(tabs.getCurrentTabTag());
+				break;
 		}
 	}
 	

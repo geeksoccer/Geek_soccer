@@ -46,8 +46,18 @@
 	                android:fadingEdge="none"
 	                android:padding="10dp"
 	                android:scrollbarStyle="outsideOverlay" />
+	            
            </FrameLayout>
-
+           
+			<TextView android:id="@+id/empty"
+			    android:layout_below="@android:id/tabs"
+	        	android:paddingTop="15dp"
+	            android:textColor="@color/gray"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:gravity="center_horizontal"
+				android:text="@string/pull_to_refresh_tap_label" />
+			
             <ProgressBar
                 android:id="@+id/news_wait_processbar"
                 style="?android:attr/progressBarStyle"
