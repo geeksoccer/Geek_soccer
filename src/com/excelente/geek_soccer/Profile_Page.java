@@ -214,8 +214,6 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	
 	public class PostMember extends AsyncTask<Void, Void, String>{
 		
-		public static final String MEMBER_UPDATE_URL = "http://183.90.171.209/gs_member/member_update.php";
-		public static final String MEMBER_IMAGES_URL = "http://183.90.171.209/gs_member/member_images/";
 		private ProgressDialog dialog;
 		
 		@Override
@@ -238,10 +236,10 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 				bitmapPhoto.compress(Bitmap.CompressFormat.PNG, 100, baos); 
 				byte[] b = baos.toByteArray();
 				paramsPost.add(new BasicNameValuePair("m_photo_base64", Base64.encodeToString(b, Base64.DEFAULT)));
-				paramsPost.add(new BasicNameValuePair("m_photo", MEMBER_IMAGES_URL + SessionManager.getMember(Profile_Page.this).getUid() + ".png"));
+				paramsPost.add(new BasicNameValuePair("m_photo", ControllParameter.MEMBER_IMAGES_URL + SessionManager.getMember(Profile_Page.this).getUid() + ".png"));
 			}
 			
-			return HttpConnectUtils.getStrHttpPostConnect(MEMBER_UPDATE_URL, paramsPost);
+			return HttpConnectUtils.getStrHttpPostConnect(ControllParameter.MEMBER_UPDATE_URL, paramsPost);
 		}
 		
 		@Override
@@ -254,7 +252,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 				SessionManager.setMember(Profile_Page.this, member);
 				
 				if(bitmapPhoto!=null){
-					member.setPhoto(MEMBER_IMAGES_URL + SessionManager.getMember(Profile_Page.this).getUid() + ".png");
+					member.setPhoto(ControllParameter.MEMBER_IMAGES_URL + SessionManager.getMember(Profile_Page.this).getUid() + ".png");
 					SessionManager.setMember(Profile_Page.this, member);
 					new Thread(new Runnable() {
 						@Override

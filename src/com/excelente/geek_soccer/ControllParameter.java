@@ -48,6 +48,15 @@ public class ControllParameter {
 	public static String HILIGHT_POST_COMMENTS_URL = "http://"+ SERVER_URL + "/gs_hilight_comments/post_hilight_comments.php";
 	public static String HILIGHT_GET_COMMENT_URL = "http://"+ SERVER_URL + "/gs_hilight_comments/get_hilight_comments.php?";
 	
+	//Sing In Page
+	public static String MEMBER_SIGN_IN_URL = "http://"+ SERVER_URL + "/gs_member/member_sign_in.php"; 
+	public static String MEMBER_SIGN_UP_URL = "http://"+ SERVER_URL + "/gs_member/member_sign_up.php";
+	public static String MEMBER_TOKEN_URL = "http://"+ SERVER_URL + "/gs_member/member_token.php";
+	
+	//Profile Page
+	public static String MEMBER_UPDATE_URL = "http://"+ SERVER_URL + "/gs_member/member_update.php";
+	public static String MEMBER_IMAGES_URL = "http://"+ SERVER_URL + "/gs_member/member_images/";
+	
 	private  ControllParameter(Context context) {
         //randomizeServers();
     	mContext = context;

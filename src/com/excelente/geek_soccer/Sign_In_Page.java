@@ -61,9 +61,6 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	private static final String SCOPE = "https://www.googleapis.com/auth/userinfo.profile";
 	
 	private static final int REQUEST_CODE_RESOLVE_ERR = 9000;
-	private static final String MEMBER_SIGN_IN_URL = "http://183.90.171.209/gs_member/member_sign_in.php"; 
-	private static final String MEMBER_SIGN_UP_URL = "http://183.90.171.209/gs_member/member_sign_up.php";
-	private static final String MEMBER_TOKEN_URL = "http://183.90.171.209/gs_member/member_token.php";
 	
     private ProgressDialog mConnectionProgressDialog;
     private PlusClient mPlusClient;
@@ -416,7 +413,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			String dev_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
 			
-			String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_SIGN_IN_URL, memberParam);
+			String memberStr = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.MEMBER_SIGN_IN_URL, memberParam);
 			
 			if(memberStr.trim().equals("member not yet")){  
 				return member;
@@ -501,7 +498,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			String dev_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
 			
-			String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_SIGN_UP_URL, memberParam);
+			String memberStr = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.MEMBER_SIGN_UP_URL, memberParam);
 			if(memberStr.trim().equals("no parameter")){ 
 				return member;
 			}
@@ -555,7 +552,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 				String dev_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
 				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
 				
-				String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_TOKEN_URL, memberParam);
+				String memberStr = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.MEMBER_TOKEN_URL, memberParam);
 				if(memberStr.trim().equals("member not yet")){ 
 					return null;
 				}
