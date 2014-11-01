@@ -100,9 +100,6 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		newsListViewGlobal = (PullToRefreshListView) newsPage.findViewById(R.id.news_listview_global);
 		newsListViewGlobal.setVisibility(View.GONE);
 		
-		textEmpty = newsPage.findViewById(R.id.empty);
-		textEmpty.setOnClickListener(this);
-		
 		newsLoadingFooterProcessbar = (ProgressBar) newsPage.findViewById(R.id.news_loading_footer_processbar);
 		newsLoadingFooterProcessbar.setVisibility(View.GONE);
 		
@@ -115,6 +112,11 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		
 		newsModelTeamList = null;
 		newsModelGlobalList = null;
+		
+		if(SessionManager.getMember(getActivity()).getTeamId()>SessionManager.TOTAL_TEAM){
+			tabWidget.setVisibility(View.GONE);
+			tabs.setCurrentTab(1);
+		}
 		
 		if(getActivity().getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0)==1){
 			tabs.setCurrentTab(1);
@@ -144,6 +146,9 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	private void initView() {
 		newsPage = getView();  
 		
+		textEmpty = newsPage.findViewById(R.id.empty);
+		textEmpty.setOnClickListener(this);
+		
 		stackTagLoading = new ArrayList<String>();
 		
 		tabs = (TabHost)newsPage.findViewById(R.id.tabhost); 
@@ -157,10 +162,6 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		
 		tabWidget = (TabWidget) newsPage.findViewById(android.R.id.tabs); 
 		
-		if(SessionManager.getMember(getActivity()).getTeamId()>4){
-			tabWidget.setVisibility(View.GONE);
-			tabs.setCurrentTab(1);
-		}
 	}
 	
 	private void setupTab(Integer layoutId, String name, String label, Integer iconId, boolean selected) {
@@ -301,12 +302,12 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			return;
 		}
 		
-		if(SessionManager.getMember(getActivity()).getTeamId()>4){
+		if(SessionManager.getMember(getActivity()).getTeamId()>SessionManager.TOTAL_TEAM){
 			tabWidget.setVisibility(View.GONE);
 			tabs.setCurrentTab(1);
 		}
 		
-		if(tag.equals("tag0")){
+		if(tag.equals("tag0") && SessionManager.getMember(getActivity()).getTeamId()<=SessionManager.TOTAL_TEAM){
 			if(newsList == null || newsList.isEmpty()){
 				//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show();
 				if(newsModelTeamList == null && getActivity()!=null){  
@@ -495,7 +496,8 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	public void onTabChanged(String tag) {
 		View view0 = tabs.getTabWidget().getChildAt(0).findViewById(R.id.selected);
 		View view1 = tabs.getTabWidget().getChildAt(1).findViewById(R.id.selected);
-		textEmpty.setVisibility(View.GONE);
+		if(textEmpty!=null)
+			textEmpty.setVisibility(View.GONE);
 		
 		if(tag.equals("tag0")){
 			view0.setVisibility(View.VISIBLE);

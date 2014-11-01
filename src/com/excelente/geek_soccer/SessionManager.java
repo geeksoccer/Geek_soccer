@@ -30,6 +30,8 @@ public class SessionManager {
 	public final static String setting_save_mode = "setting_save_mode";
 	public final static String setting_save_mode_ask = "setting_save_mode_ask";
 	
+	public final static int TOTAL_TEAM = 4;
+	
 	public final static String MEMBER_SHAREPREFERENCE = "MEMBER_SHAREPREFERENCE";
 	public final static String FAV_TEAM_KEY = "FAV_TEAM_KEY";
 	
