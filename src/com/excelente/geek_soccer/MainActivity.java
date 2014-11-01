@@ -344,6 +344,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		Intent re = new Intent(mContext, MainActivity.class);
 		startActivity(re);
 		finish();
+		android.os.Process.killProcess(android.os.Process.myPid());
 	}
 	//----------------------Ched:(For Admin Member) -----------------------------
 
@@ -555,8 +556,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			public void onClick(View v) {
 				confirmDialog.dismiss();
 				//SessionManager.clearMemberOnly(mContext);
-				android.os.Process.killProcess(android.os.Process.myPid());
 				mContext.finish(); 
+				android.os.Process.killProcess(android.os.Process.myPid());
 			}
 
 		});
