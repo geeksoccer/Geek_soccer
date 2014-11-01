@@ -213,10 +213,9 @@ public class SideMenuMain extends MainActivity implements OnClickListener  {
 	
 	public void showMenu(Context mContext){
 		data.wm.addView(data._Menu_Layout, ControllParameter.params);
-		data.Menu_Layout.setVisibility(RelativeLayout.ABOVE);
+		data.Menu_Layout.setVisibility(View.VISIBLE);
 		data.Menu_title.setText(data.PageNameSelected);
-		Animation in = AnimationUtils.loadAnimation(mContext
-	               , R.anim.side_menu_animation_main);
+		Animation in = AnimationUtils.loadAnimation(mContext, R.anim.side_menu_animation_main);
 		in.setAnimationListener(new AnimationListener() {
 			
 			@Override
@@ -227,7 +226,32 @@ public class SideMenuMain extends MainActivity implements OnClickListener  {
 			
 			@Override
 			public void onAnimationEnd(Animation animation) {
-				
+			}
+		});
+		data.Menu_View.startAnimation(in);
+	}
+	
+	public void showMenuFirstTime(final Context mContext){
+		data.wm.addView(data._Menu_Layout, ControllParameter.params);
+		data.Menu_Layout.setVisibility(View.VISIBLE);
+		data.Menu_title.setText(data.PageNameSelected);
+		Animation in = AnimationUtils.loadAnimation(mContext, R.anim.side_menu_animation_main);
+		in.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						hideMenu(mContext);
+					}
+				}, 800);
 			}
 		});
 		data.Menu_View.startAnimation(in);

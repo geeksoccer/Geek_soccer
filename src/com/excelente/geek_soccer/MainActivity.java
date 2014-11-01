@@ -250,6 +250,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 			ControllParameter.params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
 			data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+			
+			new SideMenuMain().showMenuFirstTime(mContext);
 		}
 	}
 	
