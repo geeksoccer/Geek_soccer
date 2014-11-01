@@ -47,8 +47,6 @@ import android.widget.Toast;
 
 public class SideMenuLayout implements OnClickListener{
 	
-	private static final String MEMBER_SIGN_OUT_URL = "http://183.90.171.209/gs_member/member_sign_out.php";
-	
 	Activity mContext;
 
 	private Button profileBtn;
@@ -433,7 +431,7 @@ public class SideMenuLayout implements OnClickListener{
 			String dev_id = Secure.getString(mActivity.getContentResolver(),Secure.ANDROID_ID);
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
 				
-			String memberStr = HttpConnectUtils.getStrHttpPostConnect(MEMBER_SIGN_OUT_URL, memberParam);
+			String memberStr = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.MEMBER_SIGN_OUT_URL, memberParam);
 				
 			if(memberStr.trim().equals("updated token")){ 
 				return true;
