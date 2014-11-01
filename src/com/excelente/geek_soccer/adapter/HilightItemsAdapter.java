@@ -161,9 +161,9 @@ public class HilightItemsAdapter extends BaseAdapter{
 					
 					String url = hilightItem.getHilightItemLink().trim();
 					Uri uri = Uri.parse(url);
-	                if (uri.getHost().contains("youtube.com")) {
+	                if (uri.getHost()!=null && uri.getHost().contains("youtube.com")) {
 	                    IntentVideoViewUtils.playYoutubeVideo(mContext, url);
-	                }else if (uri.getHost().contains("facebook.com")) {
+	                }else if (uri.getHost()!=null && uri.getHost().contains("facebook.com")) {
 	                    IntentVideoViewUtils.playFacebookVideo(mContext, url);
 	                }else{
 	                	Intent intent = new Intent(mContext, VideoPlayer.class);
