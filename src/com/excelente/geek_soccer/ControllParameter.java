@@ -60,6 +60,10 @@ public class ControllParameter {
 	//Sing Out Page
 	public static String MEMBER_SIGN_OUT_URL = "http://"+ SERVER_URL + "/gs_member/member_sign_out.php"; 
 	
+	//Update NEWS and Hilight
+	public static String GET_NEWS_UPDATE_URL = "http://"+ SERVER_URL + "/gs_news/get_news_update.php";
+	public static String GET_HILIGHT_UPDATE_URL = "http://"+ SERVER_URL + "/gs_hilight/get_hilight_update.php";
+	
 	private  ControllParameter(Context context) {
         //randomizeServers();
     	mContext = context;

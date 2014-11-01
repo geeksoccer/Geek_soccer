@@ -2,6 +2,7 @@ package com.excelente.geek_soccer.receiver;
 
 import java.util.List;
 
+import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.Sign_In_Page;
@@ -70,16 +71,16 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 	}
 	
 	private String getURLHilight(Context context, int id) { 
-		return 	UpdateService.GET_HILIGHT_UPDATE_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=All&member_id=" + SessionManager.getMember(context).getUid();
+		return 	ControllParameter.GET_HILIGHT_UPDATE_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=All&member_id=" + SessionManager.getMember(context).getUid();
 	}
 	
 	private String getURLbyTag(MemberModel member, int id, String tag) {
 		String url = ""; 
 		
 		if(tag.equals("tag0")){
-			url = UpdateService.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + member.getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
+			url = ControllParameter.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + member.getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
 		}else if(tag.equals("tag1")){
-			url = UpdateService.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
+			url = ControllParameter.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
 		}
 		
 		return url;

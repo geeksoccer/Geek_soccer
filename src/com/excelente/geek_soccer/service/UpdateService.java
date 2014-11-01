@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.Sign_In_Page;
@@ -32,9 +33,6 @@ import android.support.v4.app.NotificationCompat;
 
 @SuppressLint("CommitPrefEdits")
 public class UpdateService extends Service{
-	
-	public static final String GET_NEWS_UPDATE_URL = "http://183.90.171.209/gs_news/get_news_update.php";
-	public static final String GET_HILIGHT_UPDATE_URL = "http://183.90.171.209/gs_hilight/get_hilight_update.php";
 	
 	public static final String NOTIFY_INTENT = "NOTIFY_INTENT";
 	public static final int NOTIFY_INTENT_CODE_NEWS = 1000;
@@ -94,16 +92,16 @@ public class UpdateService extends Service{
 	}
 	
 	private String getURLHilight(int id) {
-		return 	UpdateService.GET_HILIGHT_UPDATE_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=All&member_id=" + SessionManager.getMember(getApplication()).getUid();
+		return 	ControllParameter.GET_HILIGHT_UPDATE_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=All&member_id=" + SessionManager.getMember(getApplication()).getUid();
 	}
 
 	private String getURLbyTag(MemberModel member, int id, String tag) {
 		String url = ""; 
 		
 		if(tag.equals("tag0")){
-			url = GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + member.getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
+			url = ControllParameter.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + member.getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
 		}else if(tag.equals("tag1")){
-			url = GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
+			url = ControllParameter.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
 		}
 		
 		return url;
