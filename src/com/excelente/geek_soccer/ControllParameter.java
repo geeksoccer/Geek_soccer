@@ -57,6 +57,9 @@ public class ControllParameter {
 	public static String MEMBER_UPDATE_URL = "http://"+ SERVER_URL + "/gs_member/member_update.php";
 	public static String MEMBER_IMAGES_URL = "http://"+ SERVER_URL + "/gs_member/member_images/";
 	
+	//Sing Out Page
+	public static String MEMBER_SIGN_OUT_URL = "http://"+ SERVER_URL + "/gs_member/member_sign_out.php"; 
+	
 	private  ControllParameter(Context context) {
         //randomizeServers();
     	mContext = context;
