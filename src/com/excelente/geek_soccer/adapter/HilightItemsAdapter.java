@@ -60,7 +60,8 @@ public class HilightItemsAdapter extends BaseAdapter{
 		TextView hilightReadsTextview;
 		ImageView hilightCommentImageview; 
 		TextView hilightCommentsTextview; 
-		TextView hilightTypeTextview; 
+		TextView hilightTypeTextview;
+		TextView hilightCreditTextview; 
 	}
 	
 	@Override
@@ -82,6 +83,7 @@ public class HilightItemsAdapter extends BaseAdapter{
 	        hilightItemView.hilightCommentImageview = (ImageView) convertView.findViewById(R.id.hilight_comment_imageView);
 	        hilightItemView.hilightCommentsTextview = (TextView) convertView.findViewById(R.id.hilight_comments_textview);
 	        hilightItemView.hilightTypeTextview = (TextView) convertView.findViewById(R.id.hilight_type_textview);
+	        hilightItemView.hilightCreditTextview = (TextView) convertView.findViewById(R.id.hilight_credit_textview);
 	        
 	        AlphaAnimation alpha = new AlphaAnimation(0.8f, 0.8f);
 			alpha.setDuration(0);
@@ -106,7 +108,35 @@ public class HilightItemsAdapter extends BaseAdapter{
 		
 		hilightItemView.hilightTopicTextview.setText(hilightModel.getHilightTopic().trim());
 		hilightItemView.hilightCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(mContext, DateNewsUtils.convertStrDateTimeDate(hilightModel.getHilightCreateTime()))); 
+		
+		Uri uri = Uri.parse(hilightModel.getHilightLink());
         
+        if(uri!=null && uri.getHost() != null){
+        	hilightItemView.hilightCreditTextview.setText(mContext.getString(R.string.label_credit) + " " + uri.getHost());
+    		hilightItemView.hilightCreditTextview.setOnClickListener(new View.OnClickListener() {
+    			
+    			@Override
+    			public void onClick(View v) {
+    				String url = hilightModel.getHilightLink();
+    				Uri uri = Uri.parse(url);
+                    
+                    if(uri==null || uri.getHost() == null){
+                    	return;
+                    }
+                    
+                    if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                        if(NetworkUtils.isNetworkAvailable(mContext)){ 
+        					Intent intent = new Intent(Intent.ACTION_VIEW);
+        					intent.setDataAndType(Uri.parse(url), "text/html");
+        					v.getContext().startActivity(intent);
+        				}else{
+        					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
+        				}
+                    }
+    			}
+    		});
+        }
+		
         hilightItemView.hilightLikeImageview.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

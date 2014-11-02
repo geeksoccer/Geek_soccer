@@ -161,6 +161,28 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsTopicTextview.setSelected(true);
 		newsItemView.newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(mContext, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime()))); 
 		newsItemView.newsCreditTextview.setText(mContext.getString(R.string.label_credit) + " " + newsModel.getNewsCredit());
+		newsItemView.newsCreditTextview.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				String url = newsModel.getNewsLink();
+				Uri uri = Uri.parse(url);
+                
+                if(uri==null || uri.getHost() == null){
+                	return;
+                }
+                
+                if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                    if(NetworkUtils.isNetworkAvailable(mContext)){ 
+    					Intent intent = new Intent(Intent.ACTION_VIEW);
+    					intent.setDataAndType(Uri.parse(url), "text/html");
+    					v.getContext().startActivity(intent);
+    				}else{
+    					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
+    				}
+                }
+			}
+		});
 
 		//newsItemView.newsContentWebview.clearCache(true);
 		newsItemView.newsContentWebview.loadUrl("about:blank");
