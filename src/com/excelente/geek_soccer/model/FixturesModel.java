@@ -9,7 +9,7 @@ public class FixturesModel {
 	public static final String FIXTURES_HOME_NAME = "ht";
 	public static final String FIXTURES_AWAY_IMG = "al";
 	public static final String FIXTURES_AWAY_NAME = "at";
-	public static final String FIXTURES_SCPORE = "sc";
+	public static final String FIXTURES_SCORE = "sc"; 
 	public static final String FIXTURES_LINK = "lk";
 	public static final String FIXTURES_MATCH_DATE = "dt";
 	public static final String FIXTURES_CREDIT = "mlk";

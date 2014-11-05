@@ -1,29 +1,42 @@
 package com.excelente.geek_soccer;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONObject;
+
 import com.excelente.geek_soccer.adapter.FixturesAdapter;
-import com.excelente.geek_soccer.model.FixturesGroupList;
-import com.excelente.geek_soccer.model.FixturesModel;
+import com.excelente.geek_soccer.model.FixturesGroupLists;
+import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.excelente.geek_soccer.view.Boast;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.ResponseHandlerInterface;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.SparseArray;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Fixtures_Page extends Activity implements OnClickListener{
-
-	SparseArray<FixturesGroupList> groups = new SparseArray<FixturesGroupList>();
 	
 	private LinearLayout upBtn;
 	private ExpandableListView groupListview;
 	private TextView titleBar;
 
 	private ImageView refeshBtn;
+	private ProgressBar fixturesProgressbar;
+	private TextView fixturesEmpty;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,35 +55,72 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 		titleBar = (TextView) findViewById(R.id.Title_bar);
 		refeshBtn = (ImageView) findViewById(R.id.refesh_fixtures);
 		groupListview = (ExpandableListView) findViewById(R.id.group_listView);
+		fixturesProgressbar = (ProgressBar) findViewById(R.id.fixtures_progressbar);
+		fixturesEmpty = (TextView) findViewById(R.id.fixtures_empty); 
 		
 		upBtn.setOnClickListener(this);
 		refeshBtn.setOnClickListener(this);
-		 
+		fixturesEmpty.setOnClickListener(this);
+		fixturesEmpty.setVisibility(View.GONE); 
 		createData();
-		FixturesAdapter fixturesAdapter = new FixturesAdapter(this, groups);
-		groupListview.setAdapter(fixturesAdapter);
+		 
 	}
 	
-	public void createData() {
-	    for (int j = 0; j < 5; j++) {
-	      FixturesGroupList group = new FixturesGroupList("Test " + j);
-	      for (int i = 0; i < 5; i++) {
-	    	  FixturesModel fixtures = new FixturesModel();
-	    	  fixtures.setAwayImg("http://secure.cache.images.core.optasports.com/soccer/teams/150x150/702.png");
-	    	  fixtures.setAwayName("Queens Park Rangers");
-	    	  fixtures.setCredit("http://www.goal.com");
-	    	  fixtures.setHomeImg("http://secure.cache.images.core.optasports.com/soccer/teams/150x150/661.png");
-	    	  fixtures.setHomeName("Chelsea");
-	    	  fixtures.setId("1703679"); 
-	    	  fixtures.setLink("/en/match/chelsea-vs-queens-park-rangers/1703679");
-	    	  fixtures.setMatchDate("2014-11-01");
-	    	  fixtures.setMatchTime("22:00:00");
-	    	  fixtures.setMatchType("Premier League");
-	    	  fixtures.setScore(" 2 - 1 ");
-	    	  group.children.add(fixtures);
-	      }
-	      groups.append(j, group);
-	    }
+	public void createData() { 
+		
+		if (!NetworkUtils.isNetworkAvailable(this)){
+			Boast.makeText(this, NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		String teamName = SessionManager.getTeamName(this);
+		if(teamName == null || teamName.equals("")){
+			return;
+		}
+		
+		AsyncHttpClient client = new AsyncHttpClient();
+		
+		RequestParams params = new RequestParams("_t", teamName);
+	
+		client.get(ControllParameter.GET_FIXTURES_URL, params, new JsonHttpResponseHandler() {
+			
+			@Override
+			public void onProgress(int bytesWritten, int totalSize) {
+				fixturesProgressbar.setVisibility(View.VISIBLE);
+				groupListview.setVisibility(View.GONE);
+				fixturesEmpty.setVisibility(View.GONE);
+				refeshBtn.setVisibility(View.GONE);
+			}
+			
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+				if(statusCode == 200){
+					FixturesGroupLists groups = new FixturesGroupLists(Fixtures_Page.this, response);
+					FixturesAdapter fixturesAdapter = new FixturesAdapter(Fixtures_Page.this, groups.build().getFixturesGroupLists());
+					groupListview.setAdapter(fixturesAdapter);
+					
+					fixturesProgressbar.setVisibility(View.GONE);
+					groupListview.setVisibility(View.VISIBLE);
+					fixturesEmpty.setVisibility(View.GONE);
+				}
+				
+				refeshBtn.setVisibility(View.VISIBLE);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+				Log.e("GET_FIXTURES_URL", "onFailure");
+				fixturesProgressbar.setVisibility(View.GONE);
+				groupListview.setVisibility(View.GONE);
+				fixturesEmpty.setVisibility(View.VISIBLE);
+				
+				refeshBtn.setVisibility(View.VISIBLE);
+				
+				Boast.makeText(Fixtures_Page.this, NetworkUtils.getConnectivityStatusString(Fixtures_Page.this), Toast.LENGTH_SHORT).show();
+			}
+		});
+		
+		
 	}
 
 	@Override
@@ -83,6 +133,12 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 			}
 			
 			case R.id.refesh_fixtures:{
+				createData();
+				break;
+			}
+			
+			case R.id.fixtures_empty:{
+				createData();
 				break;
 			}
 

@@ -196,6 +196,7 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/Fixtures_Line"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="5dp"

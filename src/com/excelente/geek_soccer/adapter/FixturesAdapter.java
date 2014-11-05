@@ -2,6 +2,7 @@ package com.excelente.geek_soccer.adapter;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.excelente.geek_soccer.R;
@@ -29,7 +30,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Handler;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,11 +41,11 @@ import android.widget.TextView;
 @SuppressLint("InflateParams")
 public class FixturesAdapter extends BaseExpandableListAdapter {
 
-	private final SparseArray<FixturesGroupList> groups;
+	private final List<FixturesGroupList> groups;
 	public Activity activity;
 	HashMap<String, Bitmap> urlBitmap;
 
-	public FixturesAdapter(Activity act, SparseArray<FixturesGroupList> groups) {
+	public FixturesAdapter(Activity act, List<FixturesGroupList> groups) {
 		this.activity = act;
 		this.groups = groups;
 		this.urlBitmap = new HashMap<String, Bitmap>();
@@ -112,10 +112,10 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 	}
 	
 	private void loadImageViewUrl(final String url, final ImageView imgView) {
-		final File cacheFile = ImageLoader.getInstance().getDiscCache().get(url);
+		//final File cacheFile = ImageLoader.getInstance().getDiscCache().get(url);
 		if(urlBitmap.containsKey(url)){
 			imgView.setImageBitmap(urlBitmap.get(url));
-        }else if(SessionManager.hasKey(activity, url)){
+        /*}else if(SessionManager.hasKey(activity, url)){
         	imgView.setImageBitmap(SessionManager.getImageSession(activity, url));
         }else if(cacheFile.isFile()){
         	new Thread(new Runnable() {
@@ -134,7 +134,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 					});
 				}
 
-			}).start();
+			}).start();*/
         }else{ 
         	ImageLoader.getInstance().displayImage(url, imgView, getOptionImageLoader(url), new ImageLoadingListener() {
 				 
@@ -146,11 +146,11 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 	        	}
 	        	
 	        	public void onLoadingComplete(String imageUri, View view, final Bitmap loadedImage) {
-	        		cacheMemBitMap(url, loadedImage);
 	        		new Thread(new Runnable() {
 						@Override
 						public void run() {
 							SessionManager.createNewImageSession(activity, url, loadedImage);
+							cacheMemBitMap(url, SessionManager.getImageSession(activity, url));
 						}
 					}).start();
 	        	}
@@ -203,7 +203,7 @@ private void doConfigImageLoader(int w, int h) {
 		
 		DisplayImageOptions options = new DisplayImageOptions.Builder()
 	        .showImageOnLoading(R.drawable.soccer_icon) // resource or drawable
-	        //.resetViewBeforeLoading(true)  // default
+	        .resetViewBeforeLoading(true)  // default
 	        //.delayBeforeLoading(500)
 	        .cacheInMemory(false)
 	        .cacheOnDisc(false)

@@ -52,7 +52,7 @@ public class SideMenuMain extends MainActivity implements OnClickListener  {
 	LinearLayout profileBtn, rateBtn, shareBtn, settingBtn, logoutBtn;
 	ImageView newsBtnIcon, LivscoreBtnIcon, ChatBtnIcon, scoreBoardBtnIcon, HilightBtnIcon, saveMode_btn;
 	private LinearLayout FixturesBtn;
-	private ImageView FixturesBtnIcon;
+	private View FixturesLine;
 	
 	private static ControllParameter data;
 	public LinearLayout CreateMenu(LinearLayout MainLayout, final Activity mContext) {
@@ -114,13 +114,13 @@ public class SideMenuMain extends MainActivity implements OnClickListener  {
 		scoreBoardBtn = (LinearLayout)MenuLayV.findViewById(R.id.ScoreBoard);
 		HilightBtn = (LinearLayout)MenuLayV.findViewById(R.id.Hilight);
 		FixturesBtn = (LinearLayout)MenuLayV.findViewById(R.id.Fixtures);
+		FixturesLine = MenuLayV.findViewById(R.id.Fixtures_Line);
 		
 		newsBtnIcon = (ImageView)MenuLayV.findViewById(R.id.NewsIcon);
 		LivscoreBtnIcon = (ImageView)MenuLayV.findViewById(R.id.LiveScoreIcon);
 		ChatBtnIcon = (ImageView)MenuLayV.findViewById(R.id.ChatIcon);
 		scoreBoardBtnIcon = (ImageView)MenuLayV.findViewById(R.id.ScoreBoardIcon);
 		HilightBtnIcon = (ImageView)MenuLayV.findViewById(R.id.HilightIcon);
-		FixturesBtnIcon = (ImageView)MenuLayV.findViewById(R.id.FixturesIcon);
 		
 		newsBtn.setOnClickListener(this);
 		LivscoreBtn.setOnClickListener(this);
@@ -140,6 +140,11 @@ public class SideMenuMain extends MainActivity implements OnClickListener  {
 		shareBtn.setOnClickListener(this);
 		settingBtn.setOnClickListener(this);
 		logoutBtn.setOnClickListener(this);
+		
+		if(SessionManager.getMember(mContext).getTeamId() > SessionManager.TOTAL_TEAM){
+			FixturesBtn.setVisibility(View.GONE);
+			FixturesLine.setVisibility(View.GONE);
+		}
 		
 		SetCurTab();
 		
