@@ -64,6 +64,9 @@ public class ControllParameter {
 	public static String GET_NEWS_UPDATE_URL = "http://"+ SERVER_URL + "/gs_news/get_news_update.php";
 	public static String GET_HILIGHT_UPDATE_URL = "http://"+ SERVER_URL + "/gs_hilight/get_hilight_update.php";
 	
+	//Fixtures Page
+	public static String GET_FIXTURES_URL = "http://"+ SERVER_URL + "/gs_fixtures/get_fixtures_to_device.php";
+	
 	private  ControllParameter(Context context) {
         //randomizeServers();
     	mContext = context;

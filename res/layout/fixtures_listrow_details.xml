@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/card_background_white"
+    android:padding="10dp" >
+    
+    <ImageView 
+        android:id="@+id/home_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/missing_embed"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/match_date"/>
+    
+    <ImageView 
+        android:id="@+id/away_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/missing_embed"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/match_type"/>
+    
+    <TextView 
+        android:id="@+id/home_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/home_img"
+        android:layout_toLeftOf="@+id/score"
+        android:layout_below="@+id/match_date"
+        android:padding="5dp"
+        android:text="@string/table_head_team"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold"/>
+    
+    <TextView 
+        android:id="@+id/match_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:padding="5dp"
+        android:text="@string/table_head_team"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+    <TextView 
+        android:id="@+id/match_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:padding="5dp"
+        android:text="@string/table_head_team"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+    <TextView
+        android:id="@+id/score"
+        android:padding="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/match_type"
+        android:text="@string/table_head_team"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:background="@drawable/score_bg_layer"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textStyle="bold"/>
+    
+    <TextView
+        android:id="@+id/away_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/away_img"
+        android:layout_toLeftOf="@+id/away_img"
+        android:layout_toRightOf="@+id/score"
+        android:padding="5dp"
+        android:text="@string/table_head_team"
+        android:gravity="right"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold" />
+    
+</RelativeLayout>

@@ -43,6 +43,7 @@
     <string name="title_bar_match_detail">รายละเอียดการแข่งขัน</string>
     <string name="title_bar_sticker_shop">ร้านค้าสติ๊กเกอร์</string>
     <string name="title_bar_config">ปรับแต่ง</string>
+    <string name="title_bar_fixtures">ตารางแข่งขัน</string>
     
     <string name="table_ucl">ได้สิทธิ์ไปเล่นฟุตบอล ยูฟ่า แชมเปี้ยนส์ ลีก (รอบแบ่งกลุ่ม รอบสุดท้าย)</string>
     <string name="table_acl">ได้สิทธิ์แข่งขันฟุตบอลเอเอฟซีแชมเปี้ยนส์ลีก</string>

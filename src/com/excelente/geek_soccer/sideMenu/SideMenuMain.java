@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.excelente.geek_soccer.ControllParameter;
+import com.excelente.geek_soccer.Fixtures_Page;
 import com.excelente.geek_soccer.MainActivity;
 import com.excelente.geek_soccer.Profile_Page;
 import com.excelente.geek_soccer.R;
@@ -50,6 +51,8 @@ public class SideMenuMain extends MainActivity implements OnClickListener  {
 	LinearLayout newsBtn, LivscoreBtn, ChatBtn, scoreBoardBtn, HilightBtn;
 	LinearLayout profileBtn, rateBtn, shareBtn, settingBtn, logoutBtn;
 	ImageView newsBtnIcon, LivscoreBtnIcon, ChatBtnIcon, scoreBoardBtnIcon, HilightBtnIcon, saveMode_btn;
+	private LinearLayout FixturesBtn;
+	private ImageView FixturesBtnIcon;
 	
 	private static ControllParameter data;
 	public LinearLayout CreateMenu(LinearLayout MainLayout, final Activity mContext) {
@@ -110,18 +113,21 @@ public class SideMenuMain extends MainActivity implements OnClickListener  {
 		ChatBtn = (LinearLayout)MenuLayV.findViewById(R.id.Chat);
 		scoreBoardBtn = (LinearLayout)MenuLayV.findViewById(R.id.ScoreBoard);
 		HilightBtn = (LinearLayout)MenuLayV.findViewById(R.id.Hilight);
+		FixturesBtn = (LinearLayout)MenuLayV.findViewById(R.id.Fixtures);
 		
 		newsBtnIcon = (ImageView)MenuLayV.findViewById(R.id.NewsIcon);
 		LivscoreBtnIcon = (ImageView)MenuLayV.findViewById(R.id.LiveScoreIcon);
 		ChatBtnIcon = (ImageView)MenuLayV.findViewById(R.id.ChatIcon);
 		scoreBoardBtnIcon = (ImageView)MenuLayV.findViewById(R.id.ScoreBoardIcon);
 		HilightBtnIcon = (ImageView)MenuLayV.findViewById(R.id.HilightIcon);
+		FixturesBtnIcon = (ImageView)MenuLayV.findViewById(R.id.FixturesIcon);
 		
 		newsBtn.setOnClickListener(this);
 		LivscoreBtn.setOnClickListener(this);
 		ChatBtn.setOnClickListener(this);
 		scoreBoardBtn.setOnClickListener(this);
 		HilightBtn.setOnClickListener(this);
+		FixturesBtn.setOnClickListener(this);
 		
 		profileBtn = (LinearLayout)MenuLayV.findViewById(R.id.Profile);
 		rateBtn = (LinearLayout)MenuLayV.findViewById(R.id.Rate);
@@ -286,6 +292,12 @@ public class SideMenuMain extends MainActivity implements OnClickListener  {
 			case R.id.Hilight:{
 				hideMenu(mContext);
 				MainActivity.Page_Select(4, true, mContext);
+				break;
+			}
+			case R.id.Fixtures:{
+				Intent gotoFixtures = new Intent(mContext, Fixtures_Page.class);
+				mContext.startActivity(gotoFixtures);
+				hideMenuNoAni();
 				break;
 			}
 			case R.id.Profile:{
