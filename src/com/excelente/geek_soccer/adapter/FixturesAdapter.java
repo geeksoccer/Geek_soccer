@@ -1,16 +1,14 @@
 package com.excelente.geek_soccer.adapter;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.FixturesGroupList;
+import com.excelente.geek_soccer.model.FixturesGroupLists;
 import com.excelente.geek_soccer.model.FixturesModel;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -46,13 +44,29 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 	private final List<FixturesGroupList> groups;
 	public Activity activity;
 	HashMap<String, Bitmap> urlBitmap;
-	private boolean hasNextMatch; 
+	private static final int TYPE_ITEM = 0;
+    private static final int TYPE_NEXTMATCH = 1;
+    private static final int TYPE_MAX_COUNT = TYPE_NEXTMATCH + 1;
+    FixturesGroupLists groupsList;
 
-	public FixturesAdapter(Activity act, List<FixturesGroupList> groups) {
+	public FixturesAdapter(Activity act, List<FixturesGroupList> groups, FixturesGroupLists groupsList) {
 		this.activity = act;
 		this.groups = groups;
 		this.urlBitmap = new HashMap<String, Bitmap>();
-		this.hasNextMatch = false;
+		this.groupsList = groupsList;
+	}
+	
+	@Override
+	public int getChildType(int groupPosition, int childPosition) {
+		if(groupsList.getIndexNextMatch() == childPosition && groupsList.getIndexNextMatchGroup() == groupPosition){
+			return TYPE_NEXTMATCH;
+		}
+		return TYPE_ITEM;
+	}
+	
+	@Override
+	public int getChildTypeCount() {
+		return TYPE_MAX_COUNT;
 	}
 
 	@Override
@@ -80,10 +94,19 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		
 		FixturesModel fixtures = (FixturesModel) getChild(groupPosition, childPosition);
 		ViewHoleder fixturesView = null;
-		if (convertView == null || hasNextMatch) {
+		int type = getChildType(groupPosition, childPosition);
+		if (convertView == null) {
+			Log.e("getChildView", "groupPosition: " + groupPosition + " childPosition: " + childPosition + " isNextMatch: " + fixtures.isNextMatch());
 			doConfigImageLoader(200,200);
 			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(R.layout.fixtures_listrow_details, parent, false);
+			switch (type) {
+	            case TYPE_ITEM:
+	            	convertView = inflater.inflate(R.layout.fixtures_listrow_details, parent, false);
+	                break;
+	            case TYPE_NEXTMATCH:
+	            	convertView = inflater.inflate(R.layout.fixtures_listrow_nextmatch, parent, false);
+	                break;
+	        }
 			
 			fixturesView = new ViewHoleder();
 			fixturesView.awayImg = (ImageView) convertView.findViewById(R.id.away_img);
@@ -96,44 +119,11 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 			
 			convertView.setTag(fixturesView);
 			
-			hasNextMatch = false;
 		}else{
-			
-			if(fixtures.isNextMatch()){
-				LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = inflater.inflate(R.layout.fixtures_listrow_details, parent, false);
-			}
 			fixturesView = (ViewHoleder) convertView.getTag();
 		}
 		
-		if(fixtures.isNextMatch()){
-			
-			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(R.layout.fixtures_listrow_nextmatch, parent, false);
-			
-			fixturesView = new ViewHoleder();
-			fixturesView.awayImg = (ImageView) convertView.findViewById(R.id.away_img);
-			fixturesView.awayName = (TextView) convertView.findViewById(R.id.away_name);
-			fixturesView.homeImg = (ImageView) convertView.findViewById(R.id.home_img);
-			fixturesView.homeName = (TextView) convertView.findViewById(R.id.home_name);
-			fixturesView.matchDate = (TextView) convertView.findViewById(R.id.match_date);
-			fixturesView.matchType = (TextView) convertView.findViewById(R.id.match_type);
-			fixturesView.score = (TextView) convertView.findViewById(R.id.score);
-			
-			String lang = SessionManager.getLang(activity);
-			SimpleDateFormat sdf = new SimpleDateFormat("EEE dd MMMMM yyyy  HH:mm", new Locale(lang));
-			SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", new Locale(lang));
-			
-			try {
-				fixtures.setMatchDateDisplay(sdf.format(sdfDate.parse(fixtures.getMatchDate())));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			
-			hasNextMatch = true;
-		}
-		
-		Log.e("getChildView", "groupPosition: " + groupPosition + " childPosition: " + childPosition + " isNextMatch: " + fixtures.isNextMatch());
+		//Log.e("getChildView", "groupPosition: " + groupPosition + " childPosition: " + childPosition + " isNextMatch: " + fixtures.isNextMatch());
 	
 		setFixturesView(fixturesView, fixtures);
 		
@@ -210,7 +200,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		urlBitmap.put(replace, bm);
 	}
 	
-private void doConfigImageLoader(int w, int h) {
+	private void doConfigImageLoader(int w, int h) {
 		
 		File cacheDir = StorageUtils.getCacheDirectory(activity);
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(activity)

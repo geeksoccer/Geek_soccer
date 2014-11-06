@@ -1,7 +1,7 @@
 package com.excelente.geek_soccer;
 
 import org.apache.http.Header;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import com.excelente.geek_soccer.adapter.FixturesAdapter;
 import com.excelente.geek_soccer.model.FixturesGroupLists;
@@ -83,9 +83,11 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 		}
 		
 		AsyncHttpClient client = new AsyncHttpClient();
+		client.setTimeout(10000);
 		
 		RequestParams params = new RequestParams("_t", teamName);
 	
+		
 		client.get(ControllParameter.GET_FIXTURES_URL, params, new JsonHttpResponseHandler() {
 			
 			@Override
@@ -97,17 +99,17 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 			}
 			
 			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+			public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
 				if(statusCode == 200){
-					
 					fixturesProgressbar.setVisibility(View.GONE);
 					groupListview.setVisibility(View.VISIBLE);
 					fixturesEmpty.setVisibility(View.GONE);
 					
 					FixturesGroupLists groups = new FixturesGroupLists(Fixtures_Page.this, response);
-					FixturesAdapter fixturesAdapter = new FixturesAdapter(Fixtures_Page.this, groups.build().getFixturesGroupLists());
+					FixturesAdapter fixturesAdapter = new FixturesAdapter(Fixtures_Page.this, groups.build().getFixturesGroupLists(), groups);
 					Parcelable state = groupListview.onSaveInstanceState();
 					groupListview.setAdapter(fixturesAdapter);
+					expandAll(groupListview, groups.getFixturesGroupLists().size());
 					groupListview.onRestoreInstanceState(state);
 					
 					if(groups.getIndexNextMatch() > -1){
@@ -115,12 +117,17 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 						groupListview.setSelectedGroup(groups.getIndexNextMatchGroup());
 					}
 					
-					Log.e("getFixturesSeason", groups.getFixturesSeason());
 					fixturesSeason.setText(groups.getFixturesSeason());
 					
 				}
 				
 				refeshBtn.setVisibility(View.VISIBLE);
+			}
+
+			private void expandAll(ExpandableListView groupListview, int lenght) {
+				for (int i = 0; i < lenght; i++) {
+					groupListview.expandGroup(i);
+				}
 			}
 
 			@Override
@@ -135,7 +142,6 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 				Boast.makeText(Fixtures_Page.this, NetworkUtils.getConnectivityStatusString(Fixtures_Page.this), Toast.LENGTH_SHORT).show();
 			}
 		});
-		
 		
 	}
 

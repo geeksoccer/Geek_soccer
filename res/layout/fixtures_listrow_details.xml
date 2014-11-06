@@ -43,8 +43,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
         android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
+        android:paddingLeft="5dp"
         android:text="@string/table_head_team"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textStyle="bold" />
@@ -55,9 +56,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
         android:paddingBottom="5dp"
-        android:paddingRight="10dp"
-        android:textColor="@color/graylittle"
+        android:paddingRight="5dp"
+        android:textColor="@color/gray"
         android:text="@string/table_head_team"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textStyle="bold"  />

@@ -20,15 +20,15 @@ public class FixturesGroupLists {
 	
 	private List<FixturesGroupList> fixturesGroupLists;
 	Activity act; 
-	JSONObject dataJson;
+	JSONArray dataJson;
 	private List<FixturesModel> fixturesList;
 	private int indexNextMatch;
 	private int indexNextMatchGroup;
 	private String fixturesSeason;
 	
-	public FixturesGroupLists(Activity act, JSONObject dataJson) {
+	public FixturesGroupLists(Activity act, JSONArray response) {
 		this.act = act;
-		this.dataJson = dataJson;
+		this.dataJson = response;
 		this.fixturesGroupLists = new ArrayList<FixturesGroupList>();
 		this.fixturesList = new ArrayList<FixturesModel>();
 		this.indexNextMatch = -1;
@@ -37,12 +37,18 @@ public class FixturesGroupLists {
 	
 	@SuppressWarnings("deprecation")
 	public FixturesGroupLists build() {
+		
+		if(dataJson == null || dataJson.length() == 0){
+			return this;
+		}
+		
 		try {
 			
 			String lang = SessionManager.getLang(act);
 			SimpleDateFormat sdfSeason = new SimpleDateFormat("yyyy", new Locale(lang));
 			SimpleDateFormat sdfMatchDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale(lang));
-			SimpleDateFormat sdfMatchDisplay = new SimpleDateFormat("EEE dd, HH:mm", new Locale(lang));
+			SimpleDateFormat sdfMatchDisplay = new SimpleDateFormat("EEE dd MMM yy, HH:mm", new Locale(lang));
+			SimpleDateFormat sdfMatchDisplayFull = new SimpleDateFormat("EEEEE dd MMMMM yy, HH:mm", new Locale(lang));
 			SimpleDateFormat sdfMatchTimeDisplay = new SimpleDateFormat("HH:mm", new Locale(lang));
 			SimpleDateFormat sdfHead = new SimpleDateFormat("MMMMM yyyy", new Locale(lang));
 			
@@ -84,6 +90,7 @@ public class FixturesGroupLists {
 				if(!hasNextMatch && i < fixturesList.size()-1 && fixturesList.get(i).getScore().contains("v") && !fixturesList.get(i+1).getScore().contains("v")){
 		    		setIndexNextMatch(fixturesGroupLists.get(indexGroup).children.size());
 		    		fixtures.setNextMatch(true);
+		    		fixtures.setMatchDateDisplay(sdfMatchDisplayFull.format(matchDateTime));
 		    		hasNextMatch = true;
 		    	}
 				
@@ -102,17 +109,13 @@ public class FixturesGroupLists {
 	}
 	
 	private void sortFixtures(String lang, SimpleDateFormat sdfMatchDateTime) throws JSONException, ParseException {
-		String credit = dataJson.getString(FixturesModel.FIXTURES_CREDIT);
-		JSONArray its = dataJson.getJSONArray("it");
-		JSONArray dts = its.getJSONObject(0).getJSONArray("dt");
 
-		for (int i = 0; i < dts.length(); i++){
-			JSONObject dt = dts.getJSONObject(i);
+		for (int i = 0; i < dataJson.length(); i++){
+			JSONObject dt = dataJson.getJSONObject(i);
 
 			FixturesModel fixtures = new FixturesModel();
 	    	fixtures.setAwayImg(dt.getString(FixturesModel.FIXTURES_AWAY_IMG));
 	    	fixtures.setAwayName(dt.getString(FixturesModel.FIXTURES_AWAY_NAME));
-	    	fixtures.setCredit(credit);
 	    	fixtures.setHomeImg(dt.getString(FixturesModel.FIXTURES_HOME_IMG));
 	    	fixtures.setHomeName(dt.getString(FixturesModel.FIXTURES_HOME_NAME));
 	    	fixtures.setId(dt.getString(FixturesModel.FIXTURES_ID)); 
@@ -121,7 +124,6 @@ public class FixturesGroupLists {
 	    	fixtures.setMatchDate(dt.getString(FixturesModel.FIXTURES_MATCH_DATE));
 	    	fixtures.setMatchType(dt.getString(FixturesModel.FIXTURES_MATCH_TYPE));
 	    	fixtures.setScore(dt.getString(FixturesModel.FIXTURES_SCORE));
-	    	
 	    	fixturesList.add(fixtures);
 		}
 		
