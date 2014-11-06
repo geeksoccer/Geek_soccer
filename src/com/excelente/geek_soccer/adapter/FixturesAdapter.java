@@ -1,8 +1,11 @@
 package com.excelente.geek_soccer.adapter;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.excelente.geek_soccer.R;
@@ -27,14 +30,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,11 +46,13 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 	private final List<FixturesGroupList> groups;
 	public Activity activity;
 	HashMap<String, Bitmap> urlBitmap;
+	private boolean hasNextMatch; 
 
 	public FixturesAdapter(Activity act, List<FixturesGroupList> groups) {
 		this.activity = act;
 		this.groups = groups;
 		this.urlBitmap = new HashMap<String, Bitmap>();
+		this.hasNextMatch = false;
 	}
 
 	@Override
@@ -61,7 +65,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		return 0;
 	}
 	
-	class ViewHoleder{
+	class ViewHoleder {
 		TextView matchType;
 		TextView matchDate;
 		TextView homeName;
@@ -76,7 +80,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		
 		FixturesModel fixtures = (FixturesModel) getChild(groupPosition, childPosition);
 		ViewHoleder fixturesView = null;
-		if (convertView == null) {
+		if (convertView == null || hasNextMatch) {
 			doConfigImageLoader(200,200);
 			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.fixtures_listrow_details, parent, false);
@@ -91,9 +95,45 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 			fixturesView.score = (TextView) convertView.findViewById(R.id.score);
 			
 			convertView.setTag(fixturesView);
+			
+			hasNextMatch = false;
 		}else{
+			
+			if(fixtures.isNextMatch()){
+				LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				convertView = inflater.inflate(R.layout.fixtures_listrow_details, parent, false);
+			}
 			fixturesView = (ViewHoleder) convertView.getTag();
 		}
+		
+		if(fixtures.isNextMatch()){
+			
+			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			convertView = inflater.inflate(R.layout.fixtures_listrow_nextmatch, parent, false);
+			
+			fixturesView = new ViewHoleder();
+			fixturesView.awayImg = (ImageView) convertView.findViewById(R.id.away_img);
+			fixturesView.awayName = (TextView) convertView.findViewById(R.id.away_name);
+			fixturesView.homeImg = (ImageView) convertView.findViewById(R.id.home_img);
+			fixturesView.homeName = (TextView) convertView.findViewById(R.id.home_name);
+			fixturesView.matchDate = (TextView) convertView.findViewById(R.id.match_date);
+			fixturesView.matchType = (TextView) convertView.findViewById(R.id.match_type);
+			fixturesView.score = (TextView) convertView.findViewById(R.id.score);
+			
+			String lang = SessionManager.getLang(activity);
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE dd MMMMM yyyy  HH:mm", new Locale(lang));
+			SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", new Locale(lang));
+			
+			try {
+				fixtures.setMatchDateDisplay(sdf.format(sdfDate.parse(fixtures.getMatchDate())));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			hasNextMatch = true;
+		}
+		
+		Log.e("getChildView", "groupPosition: " + groupPosition + " childPosition: " + childPosition + " isNextMatch: " + fixtures.isNextMatch());
 	
 		setFixturesView(fixturesView, fixtures);
 		
@@ -103,7 +143,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 	private void setFixturesView(ViewHoleder fixturesView, final FixturesModel fixtures) {
 		fixturesView.awayName.setText(fixtures.getAwayName());
 		fixturesView.homeName.setText(fixtures.getHomeName());
-		fixturesView.matchDate.setText(fixtures.getMatchDate());
+		fixturesView.matchDate.setText(fixtures.getMatchDateDisplay());
 		fixturesView.matchType.setText(fixtures.getMatchType());
 		fixturesView.score.setText(fixtures.getScore());
 		
@@ -115,14 +155,12 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		//final File cacheFile = ImageLoader.getInstance().getDiscCache().get(url);
 		if(urlBitmap.containsKey(url)){
 			imgView.setImageBitmap(urlBitmap.get(url));
-        /*}else if(SessionManager.hasKey(activity, url)){
-        	imgView.setImageBitmap(SessionManager.getImageSession(activity, url));
-        }else if(cacheFile.isFile()){
+        }else if(SessionManager.hasKey(activity, url)){
         	new Thread(new Runnable() {
 				
 				@Override
 				public void run() { 
-					final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getPath());
+					final Bitmap bm = SessionManager.getImageSession(activity, url);
 					cacheMemBitMap(url, bm);
 					
 					activity.runOnUiThread(new Runnable() {
@@ -134,7 +172,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 					});
 				}
 
-			}).start();*/
+			}).start();
         }else{ 
         	ImageLoader.getInstance().displayImage(url, imgView, getOptionImageLoader(url), new ImageLoadingListener() {
 				 
@@ -177,7 +215,7 @@ private void doConfigImageLoader(int w, int h) {
 		File cacheDir = StorageUtils.getCacheDirectory(activity);
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(activity)
 		        .memoryCacheExtraOptions(w, h) // default = device screen dimensions
-		        .discCacheExtraOptions(w, h, CompressFormat.PNG, 75, null)
+		        .discCacheExtraOptions(w, h, CompressFormat.PNG, 100, null)
 		        .threadPoolSize(3) // default
 		        .threadPriority(Thread.NORM_PRIORITY - 1) // default
 		        .tasksProcessingOrder(QueueProcessingType.FIFO) // default
@@ -225,8 +263,8 @@ private void doConfigImageLoader(int w, int h) {
 	
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-		ExpandableListView mExpandableListView = (ExpandableListView) parent;
-	    mExpandableListView.expandGroup(groupPosition);
+		//ExpandableListView mExpandableListView = (ExpandableListView) parent;
+	    //mExpandableListView.expandGroup(groupPosition);
 	    ViewGroupHoleder viewGroupHoleder = null;
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

@@ -1,9 +1,6 @@
 package com.excelente.geek_soccer;
 
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
 import com.excelente.geek_soccer.adapter.FixturesAdapter;
@@ -14,10 +11,10 @@ import com.excelente.geek_soccer.view.Boast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.ResponseHandlerInterface;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,7 +29,7 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 	
 	private LinearLayout upBtn;
 	private ExpandableListView groupListview;
-	private TextView titleBar;
+	private TextView fixturesSeason; 
 
 	private ImageView refeshBtn;
 	private ProgressBar fixturesProgressbar;
@@ -52,7 +49,7 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 		setContentView(R.layout.fixtures_page);
 		
 		upBtn = (LinearLayout) findViewById(R.id.Up_btn);
-		titleBar = (TextView) findViewById(R.id.Title_bar);
+		fixturesSeason = (TextView) findViewById(R.id.fixtures_season);
 		refeshBtn = (ImageView) findViewById(R.id.refesh_fixtures);
 		groupListview = (ExpandableListView) findViewById(R.id.group_listView);
 		fixturesProgressbar = (ProgressBar) findViewById(R.id.fixtures_progressbar);
@@ -61,20 +58,27 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 		upBtn.setOnClickListener(this);
 		refeshBtn.setOnClickListener(this);
 		fixturesEmpty.setOnClickListener(this);
-		fixturesEmpty.setVisibility(View.GONE); 
+		
+		groupListview.setSmoothScrollbarEnabled(true);
+		
 		createData();
 		 
 	}
 	
 	public void createData() { 
 		
+		refeshBtn.setVisibility(View.GONE);
+		fixturesEmpty.setVisibility(View.GONE);
+		
 		if (!NetworkUtils.isNetworkAvailable(this)){
 			Boast.makeText(this, NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
+			refeshBtn.setVisibility(View.VISIBLE);
 			return;
 		}
 		
 		String teamName = SessionManager.getTeamName(this);
 		if(teamName == null || teamName.equals("")){
+			refeshBtn.setVisibility(View.VISIBLE);
 			return;
 		}
 		
@@ -87,7 +91,7 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 			@Override
 			public void onProgress(int bytesWritten, int totalSize) {
 				fixturesProgressbar.setVisibility(View.VISIBLE);
-				groupListview.setVisibility(View.GONE);
+				groupListview.setVisibility(View.INVISIBLE);
 				fixturesEmpty.setVisibility(View.GONE);
 				refeshBtn.setVisibility(View.GONE);
 			}
@@ -95,13 +99,25 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				if(statusCode == 200){
-					FixturesGroupLists groups = new FixturesGroupLists(Fixtures_Page.this, response);
-					FixturesAdapter fixturesAdapter = new FixturesAdapter(Fixtures_Page.this, groups.build().getFixturesGroupLists());
-					groupListview.setAdapter(fixturesAdapter);
 					
 					fixturesProgressbar.setVisibility(View.GONE);
 					groupListview.setVisibility(View.VISIBLE);
 					fixturesEmpty.setVisibility(View.GONE);
+					
+					FixturesGroupLists groups = new FixturesGroupLists(Fixtures_Page.this, response);
+					FixturesAdapter fixturesAdapter = new FixturesAdapter(Fixtures_Page.this, groups.build().getFixturesGroupLists());
+					Parcelable state = groupListview.onSaveInstanceState();
+					groupListview.setAdapter(fixturesAdapter);
+					groupListview.onRestoreInstanceState(state);
+					
+					if(groups.getIndexNextMatch() > -1){
+						groupListview.expandGroup(groups.getIndexNextMatchGroup());
+						groupListview.setSelectedGroup(groups.getIndexNextMatchGroup());
+					}
+					
+					Log.e("getFixturesSeason", groups.getFixturesSeason());
+					fixturesSeason.setText(groups.getFixturesSeason());
+					
 				}
 				
 				refeshBtn.setVisibility(View.VISIBLE);
@@ -111,7 +127,7 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 				Log.e("GET_FIXTURES_URL", "onFailure");
 				fixturesProgressbar.setVisibility(View.GONE);
-				groupListview.setVisibility(View.GONE);
+				groupListview.setVisibility(View.INVISIBLE);
 				fixturesEmpty.setVisibility(View.VISIBLE);
 				
 				refeshBtn.setVisibility(View.VISIBLE);

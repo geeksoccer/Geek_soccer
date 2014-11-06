@@ -17,6 +17,7 @@ public class FixturesModel {
 	private String id;
 	private String matchType;
 	private String matchDate;
+	private String matchDateDisplay;
 	private String matchTime;
 	private String homeImg;
 	private String homeName;
@@ -25,6 +26,11 @@ public class FixturesModel {
 	private String score;
 	private String link;
 	private String credit;
+	private boolean isNextMatch;
+	
+	public FixturesModel() {
+		this.isNextMatch = false;
+	}
 	
 	public String getId() {
 		return id;
@@ -91,6 +97,18 @@ public class FixturesModel {
 	}
 	public void setCredit(String credit) {
 		this.credit = credit;
+	}
+	public String getMatchDateDisplay() {
+		return matchDateDisplay;
+	}
+	public void setMatchDateDisplay(String matchDateDisplay) {
+		this.matchDateDisplay = matchDateDisplay;
+	}
+	public boolean isNextMatch() {
+		return isNextMatch;
+	}
+	public void setNextMatch(boolean isNextMatch) {
+		this.isNextMatch = isNextMatch;
 	}
 
 }

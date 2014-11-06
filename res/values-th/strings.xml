@@ -148,6 +148,9 @@
     <string name="del_fave_team">ลบออกจากรายการที่ติดตาม</string>
     <string name="user_count">จำนวนคนในระบบ</string>
     
+    <string name="fixtures_nextmatch">นัดต่อไป</string>
+    <string name="fixtures_season">Season</string>
+    
     <string-array name="team_list">
         <item>อาเซน่อล</item>
         <item>เชลซี</item>

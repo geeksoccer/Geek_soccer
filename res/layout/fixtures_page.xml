@@ -16,7 +16,7 @@
             android:gravity="center"
             android:text="@string/title_bar_fixtures"
             android:textColor="@color/white"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -36,11 +36,11 @@
 
             <ImageView
                 android:id="@+id/Team_Logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="-7dp"
-                android:src="@drawable/ic_action_user" />
+                android:src="@drawable/fixtures_icon" />
         </LinearLayout>
         
         <ImageView
@@ -55,11 +55,23 @@
 
     </RelativeLayout>
     
+    <TextView
+        android:id="@+id/fixtures_season"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Header_Layout"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:padding="5dp"
+        android:text="@string/fixtures_season"
+        android:background="@color/graylittle"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
     <ExpandableListView
         android:id="@+id/group_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Header_Layout" >
+        android:layout_below="@+id/fixtures_season" >
     </ExpandableListView>
     
     <ProgressBar
@@ -77,7 +89,7 @@
         android:paddingTop="15dp"
         android:text="@string/pull_to_refresh_tap_label"
         android:textColor="@color/graylittle"
-        android:layout_below="@+id/Header_Layout"
+        android:layout_below="@+id/fixtures_season"
         android:background="@drawable/bg_press" />
 
 </RelativeLayout>

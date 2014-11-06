@@ -160,6 +160,9 @@
     <string name="del_fave_team">Delete from Match Following</string>
     <string name="user_count">Online user</string>
     
+    <string name="fixtures_nextmatch">Next Match</string>
+    <string name="fixtures_season">Season</string>
+    
     <string-array name="team_list">
         <item>Arsenal</item>
         <item>Chelsea</item>
