@@ -69,7 +69,7 @@ public class FixturesGroupLists {
 		    		FixturesModel fixturesLst = fixturesList.get(lenght-1);
 		    		Date dLastMatch = sdfMatchDateTime.parse(fixturesLst.getMatchDate() + " " + fixturesLst.getMatchTime());
 		    		String seasonResource = act.getResources().getString(R.string.fixtures_season);
-		    		setFixturesSeason(seasonResource + " " + sdfSeason.format(dLastMatch) + "-" + sdfSeason.format(matchDateTime));
+		    		setFixturesSeason(seasonResource + " " + sdfSeason.format(matchDateTime) + "-" + sdfSeason.format(dLastMatch));
 		    	}
 		    	
 		    	int indexGroup = hasFixturesGroup(headTitle, fixturesGroupLists);
