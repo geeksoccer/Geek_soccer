@@ -87,7 +87,7 @@ public class FixturesGroupLists {
 		    	
 		    	FixturesGroupList fixturesGroupList = fixturesGroupLists.get(indexGroup);
 				
-				if(!hasNextMatch && i < fixturesList.size()-1 && fixturesList.get(i).getScore().contains("v") && !fixturesList.get(i+1).getScore().contains("v")){
+				if(!hasNextMatch && i < fixturesList.size()-1 && fixturesList.get(i).getScore().contains("v") && !fixturesList.get(i-1).getScore().contains("v")){
 		    		setIndexNextMatch(fixturesGroupLists.get(indexGroup).children.size());
 		    		fixtures.setNextMatch(true);
 		    		fixtures.setMatchDateDisplay(sdfMatchDisplayFull.format(matchDateTime));
@@ -139,7 +139,7 @@ public class FixturesGroupLists {
 				Date matchDateTimeI = sdfMatchDateTime.parse(fixturesI.getMatchDate() + " " + fixturesI.getMatchTime());
 				Date matchDateTimeJ = sdfMatchDateTime.parse(fixturesJ.getMatchDate() + " " + fixturesJ.getMatchTime());
 				
-				if(matchDateTimeI.after(matchDateTimeJ)){
+				if(matchDateTimeI.before(matchDateTimeJ)){
 					fixturesList.set(j+1, fixturesJ);
 					fixturesList.set(j, fixturesI);
 				}
