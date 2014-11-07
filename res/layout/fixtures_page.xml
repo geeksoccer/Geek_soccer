@@ -55,23 +55,30 @@
 
     </RelativeLayout>
     
-    <TextView
-        android:id="@+id/fixtures_season"
+    <RelativeLayout 
+        android:id="@+id/fixtures_season_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/Header_Layout"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:padding="5dp"
-        android:text="@string/fixtures_season"
-        android:background="@color/news_gray"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:background="@drawable/card_background_white">
+        
+        <TextView
+	        android:id="@+id/fixtures_season"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:layout_centerHorizontal="true"
+	        android:padding="5dp"
+	        android:text="@string/fixtures_season"
+	        android:background="#aaa"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
     
     <ExpandableListView
         android:id="@+id/group_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/fixtures_season" >
+        android:layout_below="@+id/fixtures_season_layout" >
     </ExpandableListView>
     
     <ProgressBar
@@ -89,7 +96,7 @@
         android:paddingTop="15dp"
         android:text="@string/pull_to_refresh_tap_label"
         android:textColor="@color/graylittle"
-        android:layout_below="@+id/fixtures_season"
+        android:layout_below="@+id/fixtures_season_layout"
         android:background="@drawable/bg_press" />
 
 </RelativeLayout>

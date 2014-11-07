@@ -82,7 +82,7 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 		}
 		
 		AsyncHttpClient client = new AsyncHttpClient();
-		client.setTimeout(10000);
+		client.setMaxRetriesAndTimeout(2, 10000);
 		
 		RequestParams params = new RequestParams("_t", teamName);
 	
