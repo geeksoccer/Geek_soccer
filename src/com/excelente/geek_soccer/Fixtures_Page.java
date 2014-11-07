@@ -114,6 +114,7 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 					if(groups.getIndexNextMatch() > -1){
 						groupListview.expandGroup(groups.getIndexNextMatchGroup());
 						groupListview.setSelectedGroup(groups.getIndexNextMatchGroup());
+						groupListview.setSelectedChild(groups.getIndexNextMatchGroup(), groups.getIndexNextMatch(), true);
 					}
 					
 					fixturesSeason.setText(groups.getFixturesSeason());
