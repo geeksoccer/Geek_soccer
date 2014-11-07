@@ -14,7 +14,6 @@ import com.loopj.android.http.RequestParams;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -107,10 +106,10 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 					
 					FixturesGroupLists groups = new FixturesGroupLists(Fixtures_Page.this, response);
 					FixturesAdapter fixturesAdapter = new FixturesAdapter(Fixtures_Page.this, groups.build().getFixturesGroupLists(), groups);
-					Parcelable state = groupListview.onSaveInstanceState();
+					//Parcelable state = groupListview.onSaveInstanceState();
 					groupListview.setAdapter(fixturesAdapter);
 					expandAll(groupListview, groups.getFixturesGroupLists().size());
-					groupListview.onRestoreInstanceState(state);
+					//groupListview.onRestoreInstanceState(state);
 					
 					if(groups.getIndexNextMatch() > -1){
 						groupListview.expandGroup(groups.getIndexNextMatchGroup());

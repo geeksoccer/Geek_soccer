@@ -87,12 +87,19 @@ public class FixturesGroupLists {
 		    	
 		    	FixturesGroupList fixturesGroupList = fixturesGroupLists.get(indexGroup);
 				
-				if(!hasNextMatch && i < fixturesList.size()-1 && fixturesList.get(i).getScore().contains("v") && !fixturesList.get(i-1).getScore().contains("v")){
+		    	if(!hasNextMatch && matchDateTime.compareTo(now) >= 0){
 		    		setIndexNextMatch(fixturesGroupLists.get(indexGroup).children.size());
 		    		fixtures.setNextMatch(true);
 		    		fixtures.setMatchDateDisplay(sdfMatchDisplayFull.format(matchDateTime));
 		    		hasNextMatch = true;
 		    	}
+		    	
+				/*if(!hasNextMatch && i < fixturesList.size()-1 && fixturesList.get(i).getScore().contains("v") && !fixturesList.get(i-1).getScore().contains("v")){
+		    		setIndexNextMatch(fixturesGroupLists.get(indexGroup).children.size());
+		    		fixtures.setNextMatch(true);
+		    		fixtures.setMatchDateDisplay(sdfMatchDisplayFull.format(matchDateTime));
+		    		hasNextMatch = true;
+		    	}*/
 				
 				fixturesGroupList.children.add(fixtures);
 

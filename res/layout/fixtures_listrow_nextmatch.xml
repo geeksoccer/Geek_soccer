@@ -21,7 +21,8 @@
             android:layout_centerHorizontal="true"
             android:padding="3dp"
             android:text="@string/fixtures_nextmatch"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/match_date"
@@ -42,18 +43,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/fixtures_nextmatch_title"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="15dp">
 
         <ImageView
             android:id="@+id/home_img"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/missing_embed"
             android:layout_centerHorizontal="true" />
 
         <TextView
             android:id="@+id/home_name"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/home_img"
             android:layout_centerHorizontal="true"
@@ -69,18 +70,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/fixtures_nextmatch_title"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="15dp">
 
         <ImageView
             android:id="@+id/away_img"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/missing_embed"
             android:layout_centerHorizontal="true" />
 
         <TextView
             android:id="@+id/away_name"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/away_img"
             android:layout_centerHorizontal="true"
@@ -99,7 +100,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="@string/table_head_team"
+        android:text="@string/HILIGHT_TYPE_UCL"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/gray"
         android:textStyle="bold" />
@@ -113,7 +114,6 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/score_bg_layer"
         android:gravity="center"
-        android:padding="5dp"
         android:text="@string/table_head_team"
         android:textColor="@color/white"
         android:textStyle="bold" />

@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/card_background_white"
     android:paddingTop="5dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
     android:paddingBottom="10dp"
     android:layout_margin="3dp" >
     
@@ -14,6 +14,7 @@
         android:id="@+id/home_img"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:layout_marginTop="3dp"
         android:src="@drawable/missing_embed"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/match_date"/>
@@ -22,6 +23,7 @@
         android:id="@+id/away_img"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:layout_marginTop="3dp"
         android:src="@drawable/missing_embed"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/match_type"/>
@@ -30,11 +32,12 @@
         android:id="@+id/home_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/home_img"
         android:layout_toRightOf="@+id/home_img"
         android:layout_toLeftOf="@+id/score"
         android:layout_below="@+id/match_date"
         android:padding="5dp"
-        android:text="@string/table_head_team"
+        android:text="@string/app_name"
         android:textSize="14sp" />
     
     <TextView 
@@ -60,18 +63,18 @@
         android:paddingBottom="5dp"
         android:paddingRight="5dp"
         android:textColor="@color/gray"
-        android:text="@string/table_head_team"
+        android:text="@string/HILIGHT_TYPE_UCL"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textStyle="bold"  />
     
     <TextView
         android:id="@+id/score"
-        android:padding="5dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/match_type"
         android:text="@string/table_head_team"
         android:layout_width="50dp"
         android:layout_height="25dp"
+        android:layout_marginTop="3dp"
         android:background="@drawable/score_bg_layer"
         android:gravity="center"
         android:textColor="@color/white"
@@ -85,7 +88,7 @@
         android:layout_toLeftOf="@+id/away_img"
         android:layout_toRightOf="@+id/score"
         android:padding="5dp"
-        android:text="@string/table_head_team"
+        android:text="@string/app_name"
         android:gravity="right"
         android:textSize="14sp"/>
     
