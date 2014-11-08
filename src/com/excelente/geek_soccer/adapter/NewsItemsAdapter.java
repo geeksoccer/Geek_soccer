@@ -172,10 +172,10 @@ public class NewsItemsAdapter extends PagerAdapter{
                 	return;
                 }
                 
-                if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                if (url != null && (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("market://"))) {
                     if(NetworkUtils.isNetworkAvailable(mContext)){ 
     					Intent intent = new Intent(Intent.ACTION_VIEW);
-    					intent.setDataAndType(Uri.parse(url), "text/html");
+    					intent.setData(Uri.parse(url));
     					v.getContext().startActivity(intent);
     				}else{
     					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
@@ -222,7 +222,7 @@ public class NewsItemsAdapter extends PagerAdapter{
                 	return true;
                 }else if (isImageType(url)){
             		if(uri.getHost().contains("upic.me") || uri.getHost().contains("image.ohozaa.com") ){
-            			doPushImageHaveHeader(view, "http://183.90.171.209/gs_news/image_header.php?url=", url);
+            			doPushImageHaveHeader(view, "http://geeksoccer.com/gs_news/image_header.php?url=", url);
                 	}else{ 
                 		doPushImage(view, url);
                 	}
@@ -230,10 +230,10 @@ public class NewsItemsAdapter extends PagerAdapter{
             		doPushImage(view, url);
                 	return false;
                 }else{
-                	if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                	if (url != null && (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("market://"))) {
                         if(NetworkUtils.isNetworkAvailable(mContext)){ 
         					Intent intent = new Intent(Intent.ACTION_VIEW);
-        					intent.setDataAndType(Uri.parse(url), "text/html");
+        					intent.setData(Uri.parse(url));
         					view.getContext().startActivity(intent);
         					return true;
         				}else{
@@ -538,7 +538,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 	
 	public class PostNewsLikes extends AsyncTask<NewsModel, Void, String>{
 		
-		private static final String NEWS_LIKES_URL = "http://183.90.171.209/gs_news/post_news_like.php"; 
+		private static final String NEWS_LIKES_URL = "http://geeksoccer.com/gs_news/post_news_like.php"; 
 
 		@Override
 		protected String doInBackground(NewsModel... params) {

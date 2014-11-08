@@ -127,7 +127,7 @@ public class HilightItemsAdapter extends BaseAdapter{
                     if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
                         if(NetworkUtils.isNetworkAvailable(mContext)){ 
         					Intent intent = new Intent(Intent.ACTION_VIEW);
-        					intent.setDataAndType(Uri.parse(url), "text/html");
+        					intent.setData(Uri.parse(url));
         					v.getContext().startActivity(intent);
         				}else{
         					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
@@ -244,7 +244,7 @@ public class HilightItemsAdapter extends BaseAdapter{
 	 
 	public class PostHilightLikes extends AsyncTask<HilightModel, Void, Void>{
 		
-		private static final String HILIGHT_LIKES_URL = "http://183.90.171.209/gs_hilight/post_hilight_like.php"; 
+		private static final String HILIGHT_LIKES_URL = "http://geeksoccer.com/gs_hilight/post_hilight_like.php"; 
 
 		@Override 
 		protected Void doInBackground(HilightModel... params) {
