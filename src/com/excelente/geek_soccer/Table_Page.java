@@ -146,7 +146,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	private void initSubView() {
 		
 		tableWaitProcessbar = (ProgressBar) tableView.findViewById(R.id.table_wait_processbar);
-		tableWaitProcessbar.setVisibility(View.VISIBLE);
+		tableWaitProcessbar.setVisibility(View.GONE);
 		
 		tablePLLayout = (ListView) tableView.findViewById(R.id.table_pl);
 		tableBLLayout = (ListView) tableView.findViewById(R.id.table_bl);

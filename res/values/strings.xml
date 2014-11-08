@@ -171,6 +171,13 @@
         <item>Other</item>
     </string-array>
     
+    <string-array name="team_list_th">
+        <item>อาร์เซนอล</item>
+        <item>เชลซี</item>
+        <item>ลิเวอร์พูล</item>
+        <item>แมนยู</item>
+    </string-array>
+    
     <string-array name="lang_list">
         <item>English</item>
         <item>Thai</item>

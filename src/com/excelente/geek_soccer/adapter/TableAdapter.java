@@ -29,6 +29,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,14 +42,34 @@ public class TableAdapter extends BaseAdapter{
 	Activity activity;
 	Context context;
 	List<TableModel> tableList;
+	private static final int TYPE_ITEM = 0;
+    private static final int TYPE_ITEM_TEAM = 1;
+    private static final int TYPE_MAX_COUNT = TYPE_ITEM_TEAM + 1;
 	private int count_ani = -1;
+	private String teamNameTH;
 	
-	HashMap<String, Bitmap> urlBitmap = new HashMap<String, Bitmap>();
+	HashMap<String, Bitmap> urlBitmap;
 	
 	public TableAdapter(Activity context, List<TableModel> tableList) {
-		activity = context;
+		this.activity = context;
 		this.context = context;
 		this.tableList = tableList;
+		this.teamNameTH = SessionManager.getTeamNameTH(context);
+		this.urlBitmap = new HashMap<String, Bitmap>();
+	}
+	
+	@Override
+	public int getItemViewType(int position) {
+		TableModel tableModel = (TableModel) getItem(position);
+		if(tableModel!=null && !tableModel.getTableTeam().trim().equals("") && tableModel.getTableTeam().trim().equals(teamNameTH)){
+			return TYPE_ITEM_TEAM;
+		}
+		return TYPE_ITEM;
+	}
+	
+	@Override
+	public int getViewTypeCount() {
+		return TYPE_MAX_COUNT;
 	}
 	
 	public class TableHolder{
@@ -69,11 +90,18 @@ public class TableAdapter extends BaseAdapter{
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final TableHolder tableHolder; 
 		final TableModel tableModel = (TableModel) getItem(position); 
-        LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
+        int type = getItemViewType(position);
         if(convertView == null){
-    		
-    		convertView = mInflater.inflate(R.layout.table_item_page, parent, false);
+        	LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        	switch (type) {
+				case TYPE_ITEM:
+					convertView = mInflater.inflate(R.layout.table_item_page, parent, false);
+					break;
+				case TYPE_ITEM_TEAM:
+					convertView = mInflater.inflate(R.layout.table_item_team_page, parent, false);
+					break;
+			}
     		
     		tableHolder = new TableHolder();
     		tableHolder.tableSeq = (TextView) convertView.findViewById(R.id.table_seq);
@@ -98,7 +126,23 @@ public class TableAdapter extends BaseAdapter{
         if(urlBitmap.containsKey(tableModel.getTableTeamImage().replace(".gif", ".png"))){
         	tableHolder.tableTeamImage.setImageBitmap(urlBitmap.get(tableModel.getTableTeamImage().replace(".gif", ".png"))); 
         }else if(SessionManager.hasKey(context, tableModel.getTableTeamImage().replace(".gif", ".png"))){
-        	tableHolder.tableTeamImage.setImageBitmap(SessionManager.getImageSession(context, tableModel.getTableTeamImage().replace(".gif", ".png")));
+        	new Thread(new Runnable() {
+				
+				@Override
+				public void run() { 
+					final Bitmap bm = SessionManager.getImageSession(activity, tableModel.getTableTeamImage().replace(".gif", ".png"));
+					urlBitmap.put(tableModel.getTableTeamImage().replace(".gif", ".png"), bm);
+					
+					activity.runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							tableHolder.tableTeamImage.setImageBitmap(bm);  
+						}
+					});
+				}
+
+			}).start();
         }else{
 		    doConfigImageLoader(10, 10);
 		    ImageLoader.getInstance().displayImage(tableModel.getTableTeamImage().replace(".gif", ".png"), tableHolder.tableTeamImage, getOptionImageLoader(tableModel.getTableTeamImage().replace(".gif", ".png")), new ImageLoadingListener() {
@@ -143,7 +187,8 @@ public class TableAdapter extends BaseAdapter{
     		tableHolder.tableResultGoal.setText(String.valueOf(tableModel.getTableResultGoal()));
     		tableHolder.tableMark.setText(String.valueOf(tableModel.getTableMark()));
     		
-    		setSeqColor(convertView, tableModel);
+    		if(TYPE_ITEM == type)
+    			setSeqColor(convertView, tableModel);
     		
     		if(count_ani < position){
             	//convertView.setAnimation(AnimationUtils.loadAnimation(context, R.drawable.listview_anim));
@@ -152,7 +197,7 @@ public class TableAdapter extends BaseAdapter{
 		
 		return convertView;
 	}
-	
+
 	private int getColorSeq(String status, int seq){
 		if(status.trim().equals("ucl") || status.trim().equals("afc")){
 			return R.drawable.bg_press_table_green;

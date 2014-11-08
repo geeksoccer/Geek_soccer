@@ -96,7 +96,6 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		ViewHoleder fixturesView = null;
 		int type = getChildType(groupPosition, childPosition);
 		if (convertView == null) {
-			Log.e("getChildView", "groupPosition: " + groupPosition + " childPosition: " + childPosition + " isNextMatch: " + fixtures.isNextMatch());
 			doConfigImageLoader(200,200);
 			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			switch (type) {

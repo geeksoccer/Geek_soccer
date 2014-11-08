@@ -37,7 +37,7 @@ public class SessionManager {
 	
 	static MemberModel member;
 	static boolean globalNews = false;
-	
+	private static String[] teamsNameTH;
 	private static String[] teamName = {"Arsenal", "Chelsea", "Liverpool", "Manchester United"};
 	
 	public static MemberModel getMember(Context context) {
@@ -189,7 +189,6 @@ public class SessionManager {
 	    	editMember.putString(FAV_TEAM_KEY, FavJArr.toString());
 	    	editMember.commit();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -287,6 +286,18 @@ public class SessionManager {
     	
     	if(hasMember(context)){
 			return teamName[getMember(context).getTeamId() - 1];
+    	}
+    	
+    	return "";
+	}
+    
+    public static String getTeamNameTH(Context context) {
+    	if(teamsNameTH == null){
+    		teamsNameTH = context.getResources().getStringArray(R.array.team_list_th);
+    	}
+    	
+    	if(hasMember(context) && getMember(context).getTeamId() <= SessionManager.TOTAL_TEAM){
+			return teamsNameTH[getMember(context).getTeamId() - 1];
     	}
     	
     	return "";
