@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:background="@color/graylittle" >
+        style="?attr/backgroundTheme" >
 
         <TextView
             android:id="@+id/fixtures_nextmatch_layout"
@@ -22,6 +22,7 @@
             android:padding="3dp"
             android:text="@string/fixtures_nextmatch"
             android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
         <TextView
@@ -33,6 +34,7 @@
             android:text="@string/table_head_team"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
+            android:textColor="@color/white"
             android:padding="3dp" />
 
     </RelativeLayout>
