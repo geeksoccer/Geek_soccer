@@ -1,124 +1,202 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/Main_Layout"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
-
-    <RelativeLayout
-        android:id="@+id/Header_Layout"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        style="?backgroundTheme" >
-	
-        <LinearLayout 
-	            android:id="@+id/Up_btn"
-	            android:layout_width="wrap_content"
-	            android:layout_height="match_parent"
-	            android:background="@drawable/bg_press"
-	            android:layout_centerVertical="true">
-	            <ImageView 
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:background="@drawable/ic_drawer"
-		            android:layout_gravity="center_vertical|right"
-		            android:cropToPadding="true"/>
-	            <ImageView
-	                android:id="@+id/Team_Logo"
-	                style="?logoTheme"
-		            android:layout_width="40dp"
-            		android:layout_height="40dp"
-		            android:layout_gravity="center_vertical" />
-	    </LinearLayout>
-        
-        <TextView
-            android:id="@+id/Title_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/Menu_btn"
-            android:layout_toRightOf="@+id/Up_btn"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:text="@string/title_bar_news" />
-         
-        <ImageView
-            android:id="@+id/Menu_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_toLeftOf="@+id/Save_Mode_btn"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:visibility="gone"
-            android:src="@drawable/menu_btn"
-            android:background="@drawable/bg_press" />
-         
-        <ImageView
-            android:id="@+id/Save_Mode_btn"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:padding="3dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_save_mode"
-            android:background="@drawable/bg_save_mode" />
-
-    </RelativeLayout>
-
-    <com.excelente.geek_soccer.CustomViewPager 
-    		android:id="@+id/viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-        	android:layout_weight="1"
-             />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <LinearLayout
-        android:id="@+id/Tab_Layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center"
-        style="?backgroundTheme" >
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/News"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/news" />
+        <RelativeLayout
+            android:id="@+id/Header_Layout"
+            style="?backgroundTheme"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" >
 
-        <Button
-            android:id="@+id/Live_Score"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/livescore" />
+            <LinearLayout
+                android:id="@+id/Up_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_press" >
 
-        <Button
-            android:id="@+id/Chats"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/chat" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:background="@drawable/ic_drawer"
+                    android:cropToPadding="true" />
 
-        <Button
-            android:id="@+id/Score_Board"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/board" />
-        <Button
-            android:id="@+id/Game"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/hilight_icon" />
+                <ImageView
+                    android:id="@+id/Team_Logo"
+                    style="?logoTheme"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/Title_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/Menu_btn"
+                android:layout_toRightOf="@+id/Up_btn"
+                android:gravity="center"
+                android:text="@string/title_bar_news"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/Menu_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/Save_Mode_btn"
+                android:background="@drawable/bg_press"
+                android:src="@drawable/menu_btn"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/Save_Mode_btn"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/bg_save_mode"
+                android:padding="3dp"
+                android:src="@drawable/ic_save_mode" />
+        </RelativeLayout>
+
+        <com.excelente.geek_soccer.CustomViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/Tab_Layout"
+            style="?backgroundTheme"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center" >
+
+            <Button
+                android:id="@+id/News"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/news" />
+
+            <Button
+                android:id="@+id/Live_Score"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/livescore" />
+
+            <Button
+                android:id="@+id/Chats"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/chat" />
+
+            <Button
+                android:id="@+id/Score_Board"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/board" />
+
+            <Button
+                android:id="@+id/Game"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/hilight_icon" />
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/MainMenu_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/Header_Layout"
+            style="?backgroundTheme"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" >
+
+            <LinearLayout
+                android:id="@+id/Up_btnMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_press" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginLeft="-7dp"
+                    android:background="@drawable/ic_action_previous_item"
+                    android:cropToPadding="true" />
+
+                <ImageView
+                    android:id="@+id/Team_LogoMenu"
+                    style="?logoTheme"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="-7dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/Title_barMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/Menu_btnMenu"
+                android:layout_toRightOf="@+id/Up_btnMenu"
+                android:gravity="center"
+                android:text="@string/title_bar_news"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/Menu_btnMenu"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/Save_Mode_btnMenu"
+                android:background="@drawable/bg_press"
+                android:src="@drawable/menu_btn"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/Save_Mode_btnMenu"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/bg_save_mode"
+                android:padding="3dp"
+                android:src="@drawable/ic_save_mode" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

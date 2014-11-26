@@ -21,21 +21,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
-import android.view.Gravity;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -66,6 +63,13 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	private static TextView title_bar;
 	private static Intent serviceIntent; 
 	private static ControllParameter data;
+
+	Boolean Moved = false;
+	float MenuWidth;
+	float TenPerScreenWidth;
+	float originSideMenuX = 0;
+	float startTouchX = 0;
+	float startTouchY = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -203,55 +207,23 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			
 			@Override
 			public void onClick(View v) {
-				/*
-				if(data.Menu_Layout==null){
-					final LinearLayout MainLayout = (LinearLayout)findViewById(R.id.Main_Layout);
-					data._Menu_Layout = new SideMenuLayout().CreateMenu(MainLayout, mContext);
-					WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-							LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
-							WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-							WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-									| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-									| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-							PixelFormat.TRANSLUCENT);
-
-					params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
-					data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-					data.wm.addView(data._Menu_Layout, params);
-				}else{
-					
-					if(data.Menu_Layout.getVisibility()==0){
-						new SideMenuLayout().hideMenu(mContext);
-						//data.wm.removeView(data._Menu_Layout);
-					}else if(data.Menu_Layout.getVisibility()==8){
-						new SideMenuLayout().showMenu(mContext);
-					}
-				}
-				*/
 				new SideMenuMain().showMenu(MainActivity.this);
 			}
 		});
 	}
 	
 	public void SideMenuStandBy(){
-		final LinearLayout MainLayout = (LinearLayout) findViewById(R.id.Main_Layout);
+		final RelativeLayout MainLayout = (RelativeLayout) findViewById(R.id.Main_Layout);
 		if(MainLayout!=null){
-			data._Menu_Layout = new SideMenuMain().CreateMenu(
-					MainLayout, MainActivity.this);
+			data._Menu_Layout = new SideMenuMain().CreateMenu(MainActivity.this);
 			data.Menu_Layout.setVisibility(RelativeLayout.GONE);
-			ControllParameter.params = new WindowManager.LayoutParams(
-					LayoutParams.MATCH_PARENT,
-					LayoutParams.MATCH_PARENT,
-					WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-					WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-							| WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-							| WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-					PixelFormat.TRANSLUCENT);
-
-			ControllParameter.params.gravity = Gravity.LEFT | Gravity.CENTER_HORIZONTAL;
-			data.wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+			MenuWidth = GetdipSize.dip(mContext, 170);
+			data.Menu_View.setX(-MenuWidth);
 			
-			//new SideMenuMain().showMenuFirstTime(mContext);
+			DisplayMetrics metrics = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			float screenWidth = metrics.widthPixels;
+			TenPerScreenWidth = (float) (screenWidth*(5.0f/100.0f));
 		}
 	}
 	

@@ -8,7 +8,17 @@ import android.view.MotionEvent;
 public class CustomViewPager extends ViewPager {
 
     private boolean enabled;
+    
+    public interface onTouchCallbackClass {
+		boolean onTouchcallbackReturn(int action, float posX, float posY);
+	}
 
+	public static onTouchCallbackClass onTouchCallbackClass;
+
+	public void registerCallback(onTouchCallbackClass callbackClass) {
+		onTouchCallbackClass = callbackClass;
+	}
+    
     public CustomViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.enabled = true;
@@ -16,17 +26,18 @@ public class CustomViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+    	
         if (this.enabled) {
+        	//onTouchCallbackClass.onTouchcallbackReturn(event.getAction(), event.getX(), event.getY());//
             return super.onTouchEvent(event);
         }
-  
         return false;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         if (this.enabled) {
-            return super.onInterceptTouchEvent(event);
+        	return super.onInterceptTouchEvent(event);//onTouchCallbackClass.onTouchcallbackReturn(event.getAction(), event.getX(), event.getY());        
         }
  
         return false;
