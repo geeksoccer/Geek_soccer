@@ -76,18 +76,13 @@ public class FixturesGroupLists {
 		    	if(indexGroup == -1){
 		    		FixturesGroupList fixturesGroupList = new FixturesGroupList(headTitle);
 		    		fixturesGroupLists.add(fixturesGroupList);
-		    		
 		    		indexGroup = fixturesGroupLists.size()-1;
-		    		
-		    		if(now.getMonth() == matchDateTime.getMonth()){
-		    			setIndexNextMatchGroup(indexGroup);
-		    		}
-		    		
 				}
 		    	
 		    	FixturesGroupList fixturesGroupList = fixturesGroupLists.get(indexGroup);
 				
 		    	if(!hasNextMatch && matchDateTime.compareTo(now) >= 0){
+		    		setIndexNextMatchGroup(indexGroup);
 		    		setIndexNextMatch(fixturesGroupLists.get(indexGroup).children.size());
 		    		fixtures.setNextMatch(true);
 		    		fixtures.setMatchDateDisplay(sdfMatchDisplayFull.format(matchDateTime));
