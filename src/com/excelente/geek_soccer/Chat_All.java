@@ -33,6 +33,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -121,8 +122,7 @@ public class Chat_All extends Activity {
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 
 		data.lstViewChatAll.setClipToPadding(false);
-		data.imageAdapterChatAll = new ImageAdapter(
-				mContext.getApplicationContext());
+		data.imageAdapterChatAll = new ImageAdapter(this);
 		data.lstViewChatAll.setAdapter(data.imageAdapterChatAll);
 		data.lstViewChatAll.setDividerHeight(0);
 		data.Chat_list_LayOut_All = (LinearLayout) findViewById(R.id.Chat_list_Layout);
@@ -679,6 +679,7 @@ public class Chat_All extends Activity {
 					txt_M.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
+					txt_M.setAutoLinkMask(Linkify.ALL);
 					txt_M.setTextColor(colors);
 
 					ImageView Sticker = new ImageView(mContext);
@@ -695,29 +696,20 @@ public class Chat_All extends Activity {
 									LayoutParams.WRAP_CONTENT));
 					Profile_layout.setOrientation(LinearLayout.VERTICAL);
 					Profile_layout.setGravity(Gravity.CENTER_HORIZONTAL);
-
 					ImageView Profile_Pic = new ImageView(mContext);
 					Profile_Pic.setLayoutParams(new LinearLayout.LayoutParams(
 							GetdipSize.dip(mContext, 35), GetdipSize.dip(mContext, 35)));
+
 					Profile_Pic.setImageResource(R.drawable.test_profile_pic);
 					Profile_layout.addView(Profile_Pic);
 
-					LinearLayout Logo_layout = new LinearLayout(mContext);
-					Logo_layout.setLayoutParams(new LinearLayout.LayoutParams(
-							LayoutParams.WRAP_CONTENT,
-							LayoutParams.MATCH_PARENT));
-					Logo_layout.setOrientation(LinearLayout.HORIZONTAL);
-					Logo_layout.setGravity(Gravity.CENTER_HORIZONTAL);
-					Profile_layout.addView(Logo_layout);
-
 					txt_T.setPadding(5, 0, 5, 0);
 					txt_T.setText("(" + txt_Item.getString("ch_time") + ")");
-					Logo_layout.addView(txt_T);
+					Profile_layout.addView(txt_T);
 
 					txt_layout.addView(name_layout);
-
 					if (position > 0) {
-						if (!txt_Item.getString("ch_date").equals(
+						if (!txt_Item.getString("ch_date").contains(
 								data.Chat_Item_list_All.get(position - 1)
 										.getString("ch_date"))) {
 							TextView txt_D = new TextView(mContext);
@@ -726,14 +718,19 @@ public class Chat_All extends Activity {
 									LayoutParams.WRAP_CONTENT));
 							txt_D.setGravity(Gravity.CENTER);
 							String Date = txt_Item.getString("ch_date");
-							if (ControllParameter.Laugage_Select == 1) {
-								Date = Date_Covert.Mont_ConV(Date_Covert
-										.Day_ConV(Date));
+							if(ControllParameter.Laugage_Select==1){
+								Date = Date_Covert.Mont_ConV(Date_Covert.Day_ConV(Date));
 							}
 							txt_D.setText(Date);
 							txt_D.setTextColor(Color.BLACK);
 							txt_D.setTypeface(Typeface.DEFAULT_BOLD);
 							retval_Main.addView(txt_D);
+						}
+						if (txt_Item.getString("ch_uid").equals(
+								data.Chat_Item_list_All.get(position - 1)
+								.getString("ch_uid"))) {
+							txt_N.setVisibility(View.GONE);
+							Profile_Pic.setVisibility(View.GONE);
 						}
 					} else {
 						TextView txt_D = new TextView(mContext);
@@ -742,15 +739,15 @@ public class Chat_All extends Activity {
 								LayoutParams.WRAP_CONTENT));
 						txt_D.setGravity(Gravity.CENTER);
 						String Date = txt_Item.getString("ch_date");
-						if (ControllParameter.Laugage_Select == 1) {
-							Date = Date_Covert.Mont_ConV(Date_Covert
-									.Day_ConV(Date));
+						if(ControllParameter.Laugage_Select==1){
+							Date = Date_Covert.Mont_ConV(Date_Covert.Day_ConV(Date));
 						}
 						txt_D.setText(Date);
 						txt_D.setTextColor(Color.BLACK);
 						txt_D.setTypeface(Typeface.DEFAULT_BOLD);
 						retval_Main.addView(txt_D);
 					}
+
 					name_layout.addView(txt_N);
 
 					if (txt_Item.getString("ch_uid").equals(ControllParameter.ID_Send)) {
@@ -767,6 +764,7 @@ public class Chat_All extends Activity {
 										Profile_Pic, data);
 							}
 						}
+						
 						if (txt_Item.getString("ch_type").contains("S")) {
 							if (txt_Item.getString("ch_msg").contains(".gif")) {
 								new DownChatPic().startDownloadGIFCache(mContext
@@ -784,6 +782,7 @@ public class Chat_All extends Activity {
 											Sticker, data);
 								}
 							}
+
 							txt_layout.setGravity(Gravity.RIGHT);
 							txt_layout.addView(Sticker);
 							retval.addView(txt_layout);
@@ -811,15 +810,6 @@ public class Chat_All extends Activity {
 							new DownChatPic().startDownloadNonCache(
 									mContext, txt_Item.getString("m_photo"), Profile_Pic, saveModeGet, data);
 						}
-						TextView txt_TeamMate = new TextView(mContext);
-						txt_TeamMate
-								.setLayoutParams(new LinearLayout.LayoutParams(
-										LayoutParams.WRAP_CONTENT,
-										LayoutParams.WRAP_CONTENT));
-						txt_TeamMate.setTypeface(Typeface.DEFAULT_BOLD);
-						txt_TeamMate.setText("");
-						name_layout.addView(txt_TeamMate);
-
 						retval.setGravity(Gravity.LEFT);
 						retval.addView(Profile_layout);
 						if (txt_Item.getString("ch_type").contains("S")) {
@@ -839,6 +829,7 @@ public class Chat_All extends Activity {
 											Sticker, data);
 								}
 							}
+
 							txt_layout.addView(Sticker);
 							retval.addView(txt_layout);
 						} else {

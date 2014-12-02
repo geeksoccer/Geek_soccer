@@ -33,6 +33,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -112,8 +113,7 @@ public class Chat_Team extends Activity {
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 
 		data.lstViewChatTeam.setClipToPadding(false);
-		data.imageAdapterChatTeam = new ImageAdapter(
-				mContext.getApplicationContext());
+		data.imageAdapterChatTeam = new ImageAdapter(this);
 		data.lstViewChatTeam.setAdapter(data.imageAdapterChatTeam);
 		data.lstViewChatTeam.setDividerHeight(0);
 		data.Chat_list_LayOut_Team = (LinearLayout) findViewById(R.id.Chat_list_Layout);
@@ -672,12 +672,12 @@ public class Chat_Team extends Activity {
 					txt_T.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
-					txt_T.setTypeface(Typeface.DEFAULT_BOLD);
 
 					TextView txt_M = new TextView(mContext);
 					txt_M.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
+					txt_M.setAutoLinkMask(Linkify.ALL);
 					txt_M.setTextColor(colors);
 
 					ImageView Sticker = new ImageView(mContext);
@@ -723,6 +723,12 @@ public class Chat_Team extends Activity {
 							txt_D.setTextColor(Color.BLACK);
 							txt_D.setTypeface(Typeface.DEFAULT_BOLD);
 							retval_Main.addView(txt_D);
+						}
+						if (txt_Item.getString("ch_uid").equals(
+								data.Chat_Item_list_Team.get(position - 1)
+								.getString("ch_uid"))) {
+							txt_N.setVisibility(View.GONE);
+							Profile_Pic.setVisibility(View.GONE);
 						}
 					} else {
 						TextView txt_D = new TextView(mContext);
