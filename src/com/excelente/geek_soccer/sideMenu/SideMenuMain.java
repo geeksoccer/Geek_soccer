@@ -17,6 +17,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings.Secure;
 import android.view.LayoutInflater;
@@ -226,8 +227,29 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 	}
 
 	public void hideMenuNoAni() {
-		data.Menu_Layout.setVisibility(RelativeLayout.GONE);
-		data.Menu_View.setX(-data.Menu_View.getWidth());
+		ObjectAnimator anim = ObjectAnimator.ofFloat(data.Menu_View,
+				"translationX", -data.Menu_View.getWidth());
+		anim.setDuration(0);
+		anim.addListener(new AnimatorListener() {
+
+			@Override
+			public void onAnimationStart(Animator arg0) {
+			}
+
+			@Override
+			public void onAnimationRepeat(Animator arg0) {
+			}
+
+			@Override
+			public void onAnimationEnd(Animator arg0) {
+				data.Menu_Layout.setVisibility(RelativeLayout.GONE);
+			}
+
+			@Override
+			public void onAnimationCancel(Animator arg0) {
+			}
+		});
+		anim.start();
 	}
 
 	public void showMenu(Context mContext) {
@@ -273,15 +295,22 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 	}
 	
 	public void showMenuWithPosition(Context mContext, float posX){
-		if(data.Menu_Layout.getVisibility()==RelativeLayout.GONE){
-			data.Menu_Layout.setVisibility(RelativeLayout.ABOVE);
-		}
-		
-		float MenuPosX = posX-data.Menu_View.getWidth();
-		if(MenuPosX<=0){
-			data.Menu_View.setX(MenuPosX);
-		}else {
-			data.Menu_View.setX(0);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+			if(data.Menu_Layout.getVisibility()==RelativeLayout.GONE){
+				data.Menu_Layout.setVisibility(RelativeLayout.ABOVE);
+			}
+			float MenuPosX = posX-data.Menu_View.getWidth();
+			if (MenuPosX <= 0) {
+				ObjectAnimator anim = ObjectAnimator.ofFloat(data.Menu_View,
+						"translationX", MenuPosX);
+				anim.setDuration(0);
+				anim.start();
+			} else {
+				ObjectAnimator anim = ObjectAnimator.ofFloat(data.Menu_View,
+						"translationX", 0);
+				anim.setDuration(0);
+				anim.start();
+			}
 		}
 	}
 	

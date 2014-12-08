@@ -218,7 +218,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			data._Menu_Layout = new SideMenuMain().CreateMenu(MainActivity.this);
 			data.Menu_Layout.setVisibility(RelativeLayout.GONE);
 			MenuWidth = GetdipSize.dip(mContext, 170);
-			data.Menu_View.setX(-MenuWidth);
+			new SideMenuMain().hideMenuNoAni();
 			
 			DisplayMetrics metrics = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(metrics);

@@ -1123,7 +1123,7 @@ public class Chat_Team extends Activity {
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
+				Msg_Send = Msg_Send.replaceAll("'|\"|<|>", "");
 				if(ControllParameter.BanStatus!=null){
 					if(ControllParameter.BanStatus){
 						if (!Msg_Send.equals("")) {
@@ -1145,7 +1145,7 @@ public class Chat_Team extends Activity {
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				Msg_Send = Msg_Send.replaceAll("'|/|\"|<|>", "");
+				Msg_Send = Msg_Send.replaceAll("'|\"|<|>", "");
 				if(ControllParameter.BanStatus!=null){
 					if (ControllParameter.BanStatus) {
 						if (!Msg_Send.equals("")) {

@@ -20,7 +20,7 @@ public class ControllParameter {
 	private  static ControllParameter instance = null;
 
 	Context mContext;
-	public static String SERVER_URL = "www.geeksoccer.com";
+	public static String SERVER_URL = "www.geeksoccer.com";//183.90.171.209
 	public static String CHAT_STK_URL = "http://"+ SERVER_URL + "/chat/stk/";
 	public static String CHECK_CHAT_MEMBER_PERMIT_URL = "http://"+ SERVER_URL + "/gs_member_permission/check_chat_permission.php";
 	public static String CHAT_MEMBER_PERMIT_URL = "http://"+ SERVER_URL + "/gs_member_permission/chat_permission.php";
