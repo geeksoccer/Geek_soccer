@@ -202,11 +202,12 @@ public class LiveScore_Noty {
 		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore).equals("true")){
 			if(Time.contains(":")){
 				Calendar c_t = Calendar.getInstance();
-				Boolean ChkNotyB15B = ChkNotyB15(Time, c_t);
+				int ChkNotyB15B = ChkNotyB15(Time, c_t);
 				Boolean ChkNotyB180B = ChkNotyB180(Time, c_t);
 				String msg = "at: "+Time;
-				if(ChkNotyB15B){
+				if(ChkNotyB15B>0){
 					msg = mContext.getResources().getString(R.string.alert_match_nearby);
+					msg = msg + ChkNotyB15B + mContext.getResources().getString(R.string.alert_match_nearby_minute);
 					NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
 				}
 				if(ChkNotyB180B){
@@ -247,7 +248,7 @@ public class LiveScore_Noty {
 		mNotifyManager.notify(Integer.parseInt(id), mBuilder.build());
 	}
 	
-	public static Boolean ChkNotyB15(String Time, Calendar c){
+	public static int ChkNotyB15(String Time, Calendar c){
 		if(Time.contains(":")){
 			int hour = c.get(Calendar.HOUR_OF_DAY);
 			int minute = c.get(Calendar.MINUTE);
@@ -256,13 +257,14 @@ public class LiveScore_Noty {
 			int hourMatch = Integer.parseInt(timeArr[0]);
 			int minuteMatch = Integer.parseInt(timeArr[1]);
 			int minuteConcludeMatch = (hourMatch*60)+minuteMatch;
-			if(minuteConcludeMatch-minuteConclude==15){
-				return true;
+			int minuteConcludeMatchS = minuteConcludeMatch-15;
+			if(Math.abs(minuteConcludeMatchS-minuteConclude)<=5){
+				return minuteConcludeMatch-minuteConclude;
 			}else{
-				return false;
+				return -1;
 			}
 		}
-		return false;
+		return -1;
 	}
 	
 	public static Boolean ChkNotyB180(String Time, Calendar c){
@@ -274,7 +276,8 @@ public class LiveScore_Noty {
 			int hourMatch = Integer.parseInt(timeArr[0]);
 			int minuteMatch = Integer.parseInt(timeArr[1]);
 			int minuteConcludeMatch = (hourMatch*60)+minuteMatch;
-			if(minuteConcludeMatch-minuteConclude==180){
+			minuteConcludeMatch -= 180;
+			if(Math.abs(minuteConcludeMatch-minuteConclude)<=5){
 				return true;
 			}else{
 				return false;
