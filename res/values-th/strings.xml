@@ -57,6 +57,7 @@
     <string name="pull_to_refresh_release_label">ปล่อยเพื่อรีเฟช...</string>
     <string name="pull_to_refresh_refreshing_label">กำลังโหลด...</string>
     <string name="pull_to_refresh_tap_label">แตะเพื่อรีเฟช...</string>
+    <string name="pull_to_refresh_tap_join_label">แตะเพื่อเข้าร่วมการสนทนา...</string>
     
     <string name="HILIGHT_TYPE_PREMIER_LEAGUE">พรีเมียร์ลีก</string>
     <string name="HILIGHT_TYPE_LALIGA">ลาลีกา</string>

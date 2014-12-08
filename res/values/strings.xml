@@ -69,6 +69,7 @@
     <string name="pull_to_refresh_release_label">Release to refresh...</string>
     <string name="pull_to_refresh_refreshing_label">Loading...</string>
     <string name="pull_to_refresh_tap_label">Tap to refresh...</string>
+    <string name="pull_to_refresh_tap_join_label">Tap to join chat room...</string>
     
     <string name="HILIGHT_TYPE_PREMIER_LEAGUE">พรีเมียร์ลีก</string>
     <string name="HILIGHT_TYPE_LALIGA">ลาลีกา</string>

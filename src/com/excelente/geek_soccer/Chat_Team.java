@@ -156,7 +156,7 @@ public class Chat_Team extends Activity {
 		}
 		
 		if (data.socket_Team == null) {
-			Chat_Loader();
+			RefreshView(mContext.getResources().getString(R.string.pull_to_refresh_tap_join_label));
 		}else if (!data.socket_Team.isConnected()) {
 			Chat_Loader();
 		}
