@@ -156,7 +156,7 @@ public class Chat_All extends Activity {
 		}
 
 		if (data.socket_All == null) {
-			RefreshView(mContext.getResources().getString(R.string.pull_to_refresh_tap_join_label));
+			Chat_Loader();//RefreshView(mContext.getResources().getString(R.string.pull_to_refresh_tap_join_label));
 		} else if (!data.socket_All.isConnected()) {
 			Chat_Loader();
 		}

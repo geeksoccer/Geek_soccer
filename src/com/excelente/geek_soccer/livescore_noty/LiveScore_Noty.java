@@ -7,6 +7,8 @@ import io.socket.SocketIOException;
 
 import java.net.MalformedURLException;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,12 +28,23 @@ import com.excelente.geek_soccer.Sign_In_Page;
 
 public class LiveScore_Noty {
 	
-	
-	
-	public static void StartLiveScoreChk(Context mContext){
-		ControllParameter data = ControllParameter.getInstance(mContext);
+	public static void StartLiveScoreChk(final Context mContext){
+		final ControllParameter data = ControllParameter.getInstance(mContext);
 		if(data.socket_LiveScore==null){
-			Live_score_Loader(mContext);
+			//Live_score_Loader(mContext);
+			TimerTask newsTask = new TimerTask() {
+				
+				@Override 
+				public void run() {
+					if(data.socket_LiveScore==null){
+						Live_score_Loader(mContext);
+					}
+				}
+
+			};
+			Calendar c_t = Calendar.getInstance();
+			Timer timer = new Timer();
+			timer.schedule(newsTask, c_t.getTime(), 5*60*1000);
 		}
 	}
 	
@@ -89,7 +102,7 @@ public class LiveScore_Noty {
 		            		for (Object object : args) {
 		                		try {
 									JSONObject json_ob = new JSONObject(object.toString());
-
+									Boolean continueUpdate = false;
 									JSONArray json_itArr = json_ob.getJSONArray("it");
 									for(int i=0; i<json_itArr.length(); i++){
 										JSONObject json_it = json_itArr.getJSONObject(i);
@@ -118,6 +131,7 @@ public class LiveScore_Noty {
 											String Time = "";//json_dt.getString("tp");
 											
 											if(json_dt.getString("ty").equals("playing")){
+												continueUpdate = true;
 												Time = json_dt.getString("pr");
 											}else if(json_dt.getString("ty").equals("played")){
 												Time = "FT";
@@ -150,11 +164,19 @@ public class LiveScore_Noty {
 											if (SessionManager.chkFavContain(mContext, id)
 													||away.contains(ControllParameter.TeamSelect)
 													|| Home.contains(ControllParameter.TeamSelect)) {
-												NotifyLiveScore(mContext, id, Home, score, away, Time);
+												NotifyLiveScore(mContext, id, Home, score, away, Time, data);
 												data.OldScoreH.put(id, score);
 												data.OldTimeH.put(id, Time);
 											}
 										}
+									}
+									
+									if(!continueUpdate){
+										Log.d("TEST", "continueUpdate::NO");
+										data.socket_LiveScore.disconnect();
+										data.socket_LiveScore = null;
+									}else{
+										Log.d("TEST", "continueUpdate::YES");
 									}
 								} catch (JSONException e) {
 									// TODO Auto-generated catch block
@@ -172,7 +194,8 @@ public class LiveScore_Noty {
 		new Thread(runnable).start();
 	}
 	
-	public static void NotifyLiveScore(Context mContext, String id, final String Home, final String newScore, final String Away, final String Time) {
+	public static void NotifyLiveScore(Context mContext, String id, final String Home
+			, final String newScore, final String Away, final String Time, ControllParameter data) {
 		if(SessionManager.getSetting( mContext, SessionManager.setting_notify_livescore)==null){
 			SessionManager.setSetting(mContext, SessionManager.setting_notify_livescore, "true");
 		}
@@ -190,7 +213,6 @@ public class LiveScore_Noty {
 					NotifyLiveEvent(mContext, id, Home, newScore, Away, msg);
 				}
 			}else{
-				ControllParameter data = ControllParameter.getInstance(mContext);
 				if(data.OldTimeH.get(id)!=null){
 					if(!data.OldTimeH.get(id).equals("FT")){
 						if((!newScore.equals(data.OldScoreH.get(id)))
