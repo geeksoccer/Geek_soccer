@@ -125,7 +125,7 @@ public class TableAdapter extends BaseAdapter{
         final File cacheFile = ImageLoader.getInstance().getDiscCache().get(tableModel.getTableTeamImage().replace(".gif", ".png"));
         if(urlBitmap.containsKey(tableModel.getTableTeamImage().replace(".gif", ".png"))){
         	tableHolder.tableTeamImage.setImageBitmap(urlBitmap.get(tableModel.getTableTeamImage().replace(".gif", ".png"))); 
-        }else if(cacheFile.isFile()){
+        }else if(cacheFile.exists()){
         	new Thread(new Runnable() {
 				
 				@Override

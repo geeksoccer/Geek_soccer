@@ -133,7 +133,7 @@ public class HilightAdapter extends BaseAdapter{
 	        if(urlBitmap.containsKey(hilightModel.getHilightImage().replace(".gif", ".png"))){
 	        	hilightHolder.hilightImageImageview.setImageBitmap(urlBitmap.get(hilightModel.getHilightImage().replace(".gif", ".png")));
 	        	hilightHolder.savemodeTextview.setVisibility(View.GONE);
-	        }else if(cacheFile.isFile()){
+	        }else if(cacheFile.exists()){
 	        	new Thread(new Runnable() {
 					
 					@Override

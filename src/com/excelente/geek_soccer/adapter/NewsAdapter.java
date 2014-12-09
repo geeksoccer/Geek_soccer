@@ -108,7 +108,7 @@ public class NewsAdapter extends BaseAdapter{
         if(urlBitmap.containsKey(newsModel.getNewsImage().replace(".gif", ".png"))){
         	newsImageImageview.setImageBitmap(urlBitmap.get(newsModel.getNewsImage().replace(".gif", ".png")));
         	saveModeTextview.setVisibility(View.GONE);
-        }else if(cacheFile.isFile()){
+        }else if(cacheFile.exists()){
         	new Thread(new Runnable() {
 				
 				@Override

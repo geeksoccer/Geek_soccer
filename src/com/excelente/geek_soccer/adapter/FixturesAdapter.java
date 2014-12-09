@@ -144,7 +144,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		final File cacheFile = ImageLoader.getInstance().getDiscCache().get(url);
 		if(urlBitmap.containsKey(url)){
 			imgView.setImageBitmap(urlBitmap.get(url));
-        }else if(cacheFile.isFile()){
+        }else if(cacheFile.exists()){
         	new Thread(new Runnable() {
 				
 				@Override
