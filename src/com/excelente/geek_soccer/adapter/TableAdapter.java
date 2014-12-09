@@ -28,8 +28,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,15 +122,15 @@ public class TableAdapter extends BaseAdapter{
         	tableHolder = (TableHolder) convertView.getTag();
         }
       
-        
+        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(tableModel.getTableTeamImage().replace(".gif", ".png"));
         if(urlBitmap.containsKey(tableModel.getTableTeamImage().replace(".gif", ".png"))){
         	tableHolder.tableTeamImage.setImageBitmap(urlBitmap.get(tableModel.getTableTeamImage().replace(".gif", ".png"))); 
-        }else if(SessionManager.hasKey(context, tableModel.getTableTeamImage().replace(".gif", ".png"))){
+        }else if(cacheFile.isFile()){
         	new Thread(new Runnable() {
 				
 				@Override
 				public void run() { 
-					final Bitmap bm = SessionManager.getImageSession(activity, tableModel.getTableTeamImage().replace(".gif", ".png"));
+					final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getAbsolutePath());
 					urlBitmap.put(tableModel.getTableTeamImage().replace(".gif", ".png"), bm);
 					
 					activity.runOnUiThread(new Runnable() {

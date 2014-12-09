@@ -29,8 +29,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,15 +141,15 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 	}
 	
 	private void loadImageViewUrl(final String url, final ImageView imgView) {
-		//final File cacheFile = ImageLoader.getInstance().getDiscCache().get(url);
+		final File cacheFile = ImageLoader.getInstance().getDiscCache().get(url);
 		if(urlBitmap.containsKey(url)){
 			imgView.setImageBitmap(urlBitmap.get(url));
-        }else if(SessionManager.hasKey(activity, url)){
+        }else if(cacheFile.isFile()){
         	new Thread(new Runnable() {
 				
 				@Override
 				public void run() { 
-					final Bitmap bm = SessionManager.getImageSession(activity, url);
+					final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getAbsolutePath());
 					cacheMemBitMap(url, bm);
 					
 					activity.runOnUiThread(new Runnable() {
@@ -190,12 +190,6 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 	}
 
 	private void cacheMemBitMap(String replace, Bitmap bm) {
-		if(urlBitmap.size() == 40){
-			for (String key : urlBitmap.keySet()) {
-				urlBitmap.remove(key);
-				break;
-			}
-		}
 		urlBitmap.put(replace, bm);
 	}
 	
