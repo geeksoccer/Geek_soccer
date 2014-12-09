@@ -141,10 +141,10 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 	}
 	
 	private void loadImageViewUrl(final String url, final ImageView imgView) {
-		final File cacheFile = ImageLoader.getInstance().getDiscCache().get(url);
+		//final File cacheFile = ImageLoader.getInstance().getDiscCache().get(url);
 		if(urlBitmap.containsKey(url)){
 			imgView.setImageBitmap(urlBitmap.get(url));
-        }else if(cacheFile.exists()){
+        }/*else if(cacheFile.exists()){
         	new Thread(new Runnable() {
 				
 				@Override
@@ -162,7 +162,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 				}
 
 			}).start();
-        }else{ 
+        }*/else{ 
         	ImageLoader.getInstance().displayImage(url, imgView, getOptionImageLoader(url), new ImageLoadingListener() {
 				 
 		    	public void onLoadingStarted(String imageUri, View view) {

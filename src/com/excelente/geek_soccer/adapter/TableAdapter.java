@@ -122,10 +122,10 @@ public class TableAdapter extends BaseAdapter{
         	tableHolder = (TableHolder) convertView.getTag();
         }
       
-        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(tableModel.getTableTeamImage().replace(".gif", ".png"));
+        //final File cacheFile = ImageLoader.getInstance().getDiscCache().get(tableModel.getTableTeamImage().replace(".gif", ".png"));
         if(urlBitmap.containsKey(tableModel.getTableTeamImage().replace(".gif", ".png"))){
         	tableHolder.tableTeamImage.setImageBitmap(urlBitmap.get(tableModel.getTableTeamImage().replace(".gif", ".png"))); 
-        }else if(cacheFile.exists()){
+        }/*else if(cacheFile.exists()){
         	new Thread(new Runnable() {
 				
 				@Override
@@ -143,7 +143,7 @@ public class TableAdapter extends BaseAdapter{
 				}
 
 			}).start();
-        }else{
+        }*/else{
 		    doConfigImageLoader(10, 10);
 		    ImageLoader.getInstance().displayImage(tableModel.getTableTeamImage().replace(".gif", ".png"), tableHolder.tableTeamImage, getOptionImageLoader(tableModel.getTableTeamImage().replace(".gif", ".png")), new ImageLoadingListener() {
 				
