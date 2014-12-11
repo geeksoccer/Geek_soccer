@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
+import com.excelente.geek_soccer.chat_page.Chat_PageByView;
+import com.excelente.geek_soccer.live_score_page.Live_Score_PageByView;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.sideMenu.SideMenuMain;
@@ -326,8 +328,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		List<Fragment> fragments = new Vector<Fragment>();
 		
 		fragments.add(Fragment.instantiate(this, News_Page.class.getName()));
-		fragments.add(Fragment.instantiate(this, Live_Score_Page.class.getName()));
-		fragments.add(Fragment.instantiate(this, Chat_Page.class.getName()));
+		fragments.add(Fragment.instantiate(this, Live_Score_PageByView.class.getName()));
+		fragments.add(Fragment.instantiate(this, Chat_PageByView.class.getName()));
 		fragments.add(Fragment.instantiate(this, Table_Page.class.getName()));
 		fragments.add(Fragment.instantiate(this, Hilight_Page.class.getName()));
 		
@@ -336,7 +338,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		mViewPager = (CustomViewPager) super.findViewById(R.id.viewpager);
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOnPageChangeListener(this);
-		
 	}
 	
 	public void tab_setting(){
@@ -346,8 +347,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		score_board_tab = (Button)findViewById(R.id.Score_Board);
 		game_tab = (Button)findViewById(R.id.Game);
 		
+		chatAlertV = (RelativeLayout)findViewById(R.id.chatAlertV);
+		chatAlertTextCount = (TextView)findViewById(R.id.chatAlertTextCount);
+		
 		//Content_view = (LinearLayout)findViewById(R.id.Contain_Layout);
 		Page_Select(0, true, this);
+		ChatAlertSetting();
 		news_tab.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -383,6 +388,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				Page_Select(4, true, MainActivity.this);
 			}
 		});
+		
+		chatAlertV.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Page_Select(2, true, MainActivity.this);
+			}
+		});
+		
 	}
 	
 	public static void Page_Select(int index, boolean by_Selected, Context mContext){
@@ -427,12 +441,43 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			score_board_tab.setBackgroundResource(R.drawable.board);
 			game_tab.setBackgroundResource(R.drawable.hilight_icon_select);
 		}
+		curPage = index;
+		if(index==2){
+			countNumChat=0;
+		}
+		ChatAlertSetting();
+
 		title_bar.setText(data.PageNameSelected);
 		if(by_Selected){
 			mViewPager.setCurrentItem(index);
 		}
 		
 	}
+	
+	public static RelativeLayout chatAlertV;
+	public static TextView chatAlertTextCount;
+	public static int curPage=0;
+	public static int countNumChat=0;
+	
+	public static void ChatAlertSetting(){
+		chatAlertTextCount.setText(""+countNumChat);
+		if(curPage==2 || countNumChat==0){
+			chatAlertV.setVisibility(View.INVISIBLE);
+		}else{
+			chatAlertV.setVisibility(View.VISIBLE);
+		}
+		
+		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)chatAlertV.getLayoutParams();
+		if(curPage<2){
+			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+		}else if(curPage>2){
+			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+		}
+		chatAlertV.setLayoutParams(params);
+	}
+	
 	int OldState = 0;
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
