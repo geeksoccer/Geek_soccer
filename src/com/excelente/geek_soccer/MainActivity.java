@@ -5,7 +5,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
+import com.excelente.geek_soccer.chat_page.Chat_AllView;
 import com.excelente.geek_soccer.chat_page.Chat_PageByView;
+import com.excelente.geek_soccer.chat_page.Chat_TeamView;
 import com.excelente.geek_soccer.live_score_page.Live_Score_PageByView;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.service.UpdateService;
@@ -460,7 +462,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	public static int countNumChat=0;
 	
 	public static void ChatAlertSetting(){
-		chatAlertTextCount.setText(""+countNumChat);
+		if(countNumChat<10){
+			chatAlertTextCount.setText(""+countNumChat);
+		}else{
+			chatAlertTextCount.setText("10+");
+		}
+		
 		if(curPage==2 || countNumChat==0){
 			chatAlertV.setVisibility(View.INVISIBLE);
 		}else{
@@ -468,13 +475,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}
 		
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)chatAlertV.getLayoutParams();
-		if(curPage<2){
-			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-		}else if(curPage>2){
-			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
-		}
+
 		chatAlertV.setLayoutParams(params);
 	}
 	
@@ -514,8 +515,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				}else{
 					if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
 						if(data.Sticker_Layout_Stat_team){
+							Chat_TeamView.StikerV.setVisibility(RelativeLayout.GONE);
 							data.Sticker_Layout_Stat_team = false;
 						}else if(data.Sticker_Layout_Stat_All){
+							Chat_AllView.StikerV.setVisibility(RelativeLayout.GONE);
 							data.Sticker_Layout_Stat_All = false;
 						}
 					}else{

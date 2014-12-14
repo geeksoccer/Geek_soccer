@@ -205,19 +205,20 @@
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/chat_h" >
+        android:background="@drawable/chat_h_flip" >
 
         <TextView
             android:id="@+id/chatAlertTextCount"
-            android:layout_width="wrap_content"
-            android:layout_height="15dp"
-            android:layout_marginLeft="5dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:text="99+"
-             />
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_circle_selected"
+            android:gravity="center"
+            android:text="10+"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="10sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </RelativeLayout>
