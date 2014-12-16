@@ -103,7 +103,7 @@ public class LiveScore_TodayView {
 					int position, long id) {
 				if (!data.Match_list_c_JSON.get(position).isNull("score")) {
 					Intent Detail_Page = new Intent(mActivity,
-							Live_Score_Detail.class);
+							Live_score_Detail_Json.class);
 					Detail_Page.putExtra("URL", position);
 					Detail_Page.putExtra("TYPE", "c");
 					mActivity.startActivity(Detail_Page);
