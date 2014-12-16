@@ -98,6 +98,7 @@ public class NewsAdapter extends BaseAdapter{
     	}
         
         final ImageView newsImageImageview = (ImageView) convertView.findViewById(R.id.news_image_imageview);
+        newsImageImageview.setImageResource(R.drawable.logo_gs);
         TextView newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
         TextView newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
         final ProgressBar newsImageProgressBar = (ProgressBar) convertView.findViewById(R.id.news_image_processbar);

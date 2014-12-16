@@ -3,6 +3,9 @@
 
     <string name="app_name">Geek_soccer</string>
     <string name="action_team">ทีม</string>
+    
+    <string name="restarting_app">กำลังรีสตาร์ทแอปฯ...</string>
+    <string name="no_permission">คุณไม่ได้สิทธิ์ในการเปลี่ยนทีม</string>
 
     <string name="sign_in_gmail">เข้าสู่ระบบด้วย Gmail</string>
     
@@ -122,6 +125,7 @@
     
     <string name="dailog_select_team">เลือกดูมุมมองของทีม</string>
     <string name="dailog_favorite_team">เลือกทีมที่ชื่นชอบ</string>
+    <string name="no_favorite_team">ยังไม่มีทีมที่ชื่นชอบ</string>
     
     <string name="profile_pick_image">กรุณาเลือกชนิดรูปภาพเป็น png, jpg หรือ jpeg เท่านั้น</string>
     <string name="profile_pick_less_image">กรุณาเลือกรูปที่มีขนาดเล็กกว่านี้.</string>

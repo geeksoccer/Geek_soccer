@@ -3,6 +3,8 @@ package com.excelente.geek_soccer.chat_page;
 import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
+import com.excelente.geek_soccer.utils.ThemeUtils;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -82,7 +84,7 @@ public class Chat_PageByView extends Fragment {
 
 		ChatContainV.addView(chatTeamV, childParam);
 		ChatContainV.addView(chatAllV, childParam);
-
+		// chatAllV.setVisibility(RelativeLayout.GONE);
 		setCurrentTab(data.chat_Cur);
 	}
 
@@ -93,6 +95,10 @@ public class Chat_PageByView extends Fragment {
 				R.layout.custom_tab, null);
 		ImageView image = (ImageView) tab.findViewById(R.id.icon);
 		TextView text = (TextView) tab.findViewById(R.id.text);
+		View viewLine = tab.findViewById(R.id.view_line);
+		View viewSelected = tab.findViewById(R.id.selected);
+	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);
+	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
 		text.setTypeface(null, Typeface.BOLD);
 		if (label.equals("")) {
 			text.setVisibility(View.GONE);
@@ -113,7 +119,6 @@ public class Chat_PageByView extends Fragment {
 			text.getLayoutParams().height = pixels;
 		}
 
-		View viewSelected = tab.findViewById(R.id.selected);
 		if (selected)
 			viewSelected.setVisibility(View.VISIBLE);
 
@@ -135,7 +140,7 @@ public class Chat_PageByView extends Fragment {
 				}
 			}
 		});
-		
+
 		chatMenu.addView(tab, childParam);
 	}
 

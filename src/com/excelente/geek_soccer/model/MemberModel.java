@@ -6,6 +6,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.excelente.geek_soccer.SessionManager;
+import com.excelente.geek_soccer.pic_download.DownLiveScorePic;
+
+import android.util.Log;
+
 public class MemberModel implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -25,6 +30,7 @@ public class MemberModel implements Serializable{
 	public static final String MEMBER_ROLE = "m_role";
 	public static final String MEMBER_TOKEN = "m_token";
 	public static final String MEMBER_DEVID = "m_devid";
+	public static final String MEMBER_THEME_ID = "m_theme_id";
 	
 	public static final String MEMBER_GLOBAL_NEWS = "m_global_news";
 	
@@ -40,6 +46,9 @@ public class MemberModel implements Serializable{
     String typeLogin;
     int role;
     String token;
+    int themeId;
+    ThemeModel theme;
+    TeamModel team;
     
 	public long getUid() {
 		return uid;
@@ -114,7 +123,26 @@ public class MemberModel implements Serializable{
 		this.token = token;
 	}
 	
-	public static MemberModel convertMemberJSONToList(String result) { 
+	public int getThemeId() {
+		return themeId;
+	}
+	public void setThemeId(int themeId) {
+		this.themeId = themeId;
+	}
+	public ThemeModel getTheme() {
+		return theme;
+	}
+	public void setTheme(ThemeModel theme) {
+		this.theme = theme;
+	}
+	public TeamModel getTeam() {
+		return team;
+	}
+	public void setTeam(TeamModel team) {
+		this.team = team;
+	}
+	
+	public static MemberModel convertMemberJSONToList(String result) {
 		MemberModel member = new MemberModel();
 		
 		try {
@@ -133,6 +161,28 @@ public class MemberModel implements Serializable{
 			member.setTypeLogin(memberObj.getString(MemberModel.MEMBER_TYPE_LOGIN));
 			member.setRole(memberObj.getInt(MemberModel.MEMBER_ROLE));
 			member.setToken(memberObj.getString(MemberModel.MEMBER_TOKEN));
+			member.setThemeId(memberObj.getInt(MemberModel.MEMBER_THEME_ID));
+			
+			JSONObject themeObj = memberObj.getJSONObject("m_theme"); 
+			ThemeModel theme = new ThemeModel();
+			theme.setThemeId(themeObj.getInt(ThemeModel.THEME_ID));
+			theme.setThemeName(themeObj.getString(ThemeModel.THEME_NAME));
+			theme.setThemeNameTH(themeObj.getString(ThemeModel.THEME_NAME_TH));
+			theme.setThemeColor(themeObj.getString(ThemeModel.THEME_COLOR));
+			theme.setThemeLogo(themeObj.getString(ThemeModel.THEME_LOGO));
+			theme.setThemeTextColor(themeObj.getString(ThemeModel.THEME_TEXT_COLOR));
+			theme.setThemeCreate(themeObj.getString(ThemeModel.THEME_CREATE));
+			member.setTheme(theme);
+			
+			JSONObject teamObj = memberObj.getJSONObject("m_team"); 
+			TeamModel team = new TeamModel();
+			team.setTeamId(teamObj.getInt(TeamModel.TEAM_ID));
+			team.setTeamName(teamObj.getString(TeamModel.TEAM_NAME));
+			team.setTeamNameTH(teamObj.getString(TeamModel.TEAM_NAME_TH));
+			team.setTeamLeague(teamObj.getString(TeamModel.TEAM_LEAGUE));
+			team.setTeamNameFind(teamObj.getString(TeamModel.TEAM_NAME_FIND));
+			team.setTeamShortName(teamObj.getString(TeamModel.TEAM_SHORT_NAME));
+			member.setTeam(team);
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

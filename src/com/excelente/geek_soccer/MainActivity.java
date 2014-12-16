@@ -2,27 +2,33 @@ package com.excelente.geek_soccer;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
-import com.excelente.geek_soccer.chat_page.Chat_AllView;
+import org.apache.http.Header;
+
 import com.excelente.geek_soccer.chat_page.Chat_PageByView;
-import com.excelente.geek_soccer.chat_page.Chat_TeamView;
 import com.excelente.geek_soccer.live_score_page.Live_Score_PageByView;
 import com.excelente.geek_soccer.model.MemberModel;
+import com.excelente.geek_soccer.model.TeamModel;
 import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.sideMenu.SideMenuMain;
 import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.excelente.geek_soccer.view.Boast;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.ColorDrawable;
@@ -45,6 +51,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 @SuppressLint("SimpleDateFormat")
 public class MainActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
@@ -74,6 +81,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	float originSideMenuX = 0;
 	float startTouchX = 0;
 	float startTouchY = 0;
+	private RelativeLayout Header_LayoutMenu;
+	private ImageView Team_LogoMenu;
+	private TextView Title_barMenu;
+	private RelativeLayout Header_Layout;
+	private ImageView Team_Logo;
+	private LinearLayout Tab_Layout;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +123,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	private void doCreate() {
 		mContext = this;
 		data = ControllParameter.getInstance(this);
-		vidateAskRateApp(); 
-		
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(MainActivity.this).getTeamId());
+		vidateAskRateApp();
 		
 		serviceIntent = new Intent(this, UpdateService.class);
 		serviceIntent.putExtra(MemberModel.MEMBER_KEY, (Serializable)SessionManager.getMember(MainActivity.this)); 
@@ -142,6 +153,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		//new Load_LiveScore_Data().data(mContext, Date_Select);
 	    setPageFromNotification();
 		SideMenuStandBy();
+		
+		setThemeToView();
 	}
 
 	private void askMode() {
@@ -205,7 +218,18 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 	//----------------------Ched: (For Admin Member)-----------------------------
 
+	private void setThemeToView() {
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, Header_Layout);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, Header_LayoutMenu);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, Tab_Layout);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_LOGO, Team_Logo);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_LOGO, Team_LogoMenu);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, Title_barMenu);
+	}
+	
 	private void Team_LogoSetting(){
+		Team_Logo = (ImageView) findViewById(R.id.Team_Logo);
 		TeamLogo = (LinearLayout)findViewById(R.id.Up_btn);
 		TeamLogo.setOnClickListener(new View.OnClickListener() {
 			
@@ -229,13 +253,18 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			float screenWidth = metrics.widthPixels;
 			TenPerScreenWidth = (float) (screenWidth*(5.0f/100.0f));
 		}
+		
+		Header_LayoutMenu = (RelativeLayout) findViewById(R.id.Header_LayoutMenu);
+		Team_LogoMenu = (ImageView) findViewById(R.id.Team_LogoMenu);
+		Title_barMenu = (TextView) findViewById(R.id.Title_barMenu);
 	}
 	
 	private void menu_setting() {
+		Header_Layout = (RelativeLayout) findViewById(R.id.Header_Layout);
 		menu_btn = (ImageView) findViewById(R.id.Menu_btn);
 		
 		
-		if(SessionManager.getMember(MainActivity.this).getRole() == 1){
+		if(SessionManager.getMember(MainActivity.this).getRole() == 1 || SessionManager.getMember(MainActivity.this).getTeamId() == 0){
 			menu_btn.setVisibility(View.VISIBLE);
 		}else{
 			menu_btn.setVisibility(View.GONE);
@@ -246,50 +275,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			@Override
 			public void onClick(View v) {
 				if(SessionManager.getMember(MainActivity.this).getRole() == 1){
-					AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-					dialog.setTitle(getResources().getString(R.string.dailog_select_team)); 
-					dialog.setSingleChoiceItems(getResources().getStringArray(R.array.team_list), SessionManager.getMember(MainActivity.this).getTeamId()-1, new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							MemberModel member;
-							switch (which) {
-								case 0:
-									member = SessionManager.getMember(MainActivity.this);
-									member.setTeamId(1);
-									SessionManager.setMember(MainActivity.this, member);
-									break;
-								case 1:
-									member = SessionManager.getMember(MainActivity.this);
-									member.setTeamId(2);
-									SessionManager.setMember(MainActivity.this, member);
-									break;
-								case 2:
-									member = SessionManager.getMember(MainActivity.this);
-									member.setTeamId(3);
-									SessionManager.setMember(MainActivity.this, member);
-									break;
-								case 3:
-									member = SessionManager.getMember(MainActivity.this);
-									member.setTeamId(4);
-									SessionManager.setMember(MainActivity.this, member);
-									break;
-								case 4:
-									member = SessionManager.getMember(MainActivity.this);
-									member.setTeamId(5);
-									SessionManager.setMember(MainActivity.this, member);
-									break;
-							}
-							 
-							ThemeUtils.setThemeByTeamId(MainActivity.this, SessionManager.getMember(MainActivity.this).getTeamId());
-							doRefeshPage(0);
-							dialog.dismiss();
-						}
-						
-					});
-					
-					dialog.create();
-					dialog.show();
+					Intent selectTeamIntent = new Intent(MainActivity.this, SelectTeamPage.class);
+					startActivityForResult(selectTeamIntent, Sign_In_Page.REQUEST_CODE_SELECT_TEAM);
 				}
 			}
 		});
@@ -319,7 +306,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	    fragTransaction.detach(currentFragment);
 	    fragTransaction.attach(currentFragment);
 	    fragTransaction.commit();*/
-		Intent re = new Intent(mContext, MainActivity.class);
+		Intent re = new Intent(mContext, Sign_In_Page.class);
 		startActivity(re);
 		finish();
 		android.os.Process.killProcess(android.os.Process.myPid());
@@ -343,6 +330,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	}
 	
 	public void tab_setting(){
+		Tab_Layout = (LinearLayout) findViewById(R.id.Tab_Layout);
 		news_tab = (Button)findViewById(R.id.News);
 		live_tab = (Button)findViewById(R.id.Live_Score);
 		chat_tab = (Button)findViewById(R.id.Chats);
@@ -462,12 +450,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	public static int countNumChat=0;
 	
 	public static void ChatAlertSetting(){
-		if(countNumChat<10){
-			chatAlertTextCount.setText(""+countNumChat);
-		}else{
-			chatAlertTextCount.setText("10+");
-		}
-		
+		chatAlertTextCount.setText(""+countNumChat);
 		if(curPage==2 || countNumChat==0){
 			chatAlertV.setVisibility(View.INVISIBLE);
 		}else{
@@ -475,7 +458,13 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}
 		
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)chatAlertV.getLayoutParams();
-
+		if(curPage<2){
+			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+		}else if(curPage>2){
+			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+		}
 		chatAlertV.setLayoutParams(params);
 	}
 	
@@ -515,10 +504,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				}else{
 					if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
 						if(data.Sticker_Layout_Stat_team){
-							Chat_TeamView.StikerV.setVisibility(RelativeLayout.GONE);
 							data.Sticker_Layout_Stat_team = false;
 						}else if(data.Sticker_Layout_Stat_All){
-							Chat_AllView.StikerV.setVisibility(RelativeLayout.GONE);
 							data.Sticker_Layout_Stat_All = false;
 						}
 					}else{
@@ -547,10 +534,18 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		final Dialog confirmDialog = new Dialog(mContext); 
 		
 		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
+		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
 		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title);
 		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
 		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirm);
+		
+		TextView button_confirm_ok = (TextView) view.findViewById(R.id.button_confirm_ok);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, button_confirm_ok);
 		
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -603,20 +598,79 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
    			   finish();
    			   android.os.Process.killProcess(android.os.Process.myPid());
            }
-        }  
+        }else if(requestCode == Sign_In_Page.REQUEST_CODE_SELECT_TEAM && data!=null){
+        	TeamModel team = (TeamModel) data.getSerializableExtra("SELECT_TEAM");
+        	if(SessionManager.getMember(mContext).getTeamId() != team.getTeamId()){
+        		if (NetworkUtils.isNetworkAvailable(this)){
+        			doChangeTeam(team);
+        		}else{
+        			Boast.makeText(this, NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
+        		}
+        		
+        	}
+        }
 	}
 	
+	private void doChangeTeam(final TeamModel team) {
+		
+		final ProgressDialog mConnectionProgressDialog = new ProgressDialog(this);
+        mConnectionProgressDialog.setCancelable(false);
+        mConnectionProgressDialog.setMessage(getResources().getString(R.string.restarting_app));
+        mConnectionProgressDialog.show();
+        
+		final MemberModel member = SessionManager.getMember(mContext);
+		Map<String, String> paramsMap = new HashMap<String, String>();
+		paramsMap.put(MemberModel.MEMBER_UID, String.valueOf(member.getUid()));
+		paramsMap.put(MemberModel.MEMBER_TOKEN, member.getToken());
+		paramsMap.put(MemberModel.MEMBER_TEAM_ID, String.valueOf(team.getTeamId()));
+		RequestParams params = new RequestParams(paramsMap);
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.post(mContext, ControllParameter.SELECT_TEAM_UPDATE_URL, params, new AsyncHttpResponseHandler() {
+			
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
+				String response = new String(arg2);
+				//Toast.makeText(mContext, response, Toast.LENGTH_SHORT).show();
+				if(response.equals("OK Success")){
+					member.setTeamId(team.getTeamId());
+					SessionManager.setMember(mContext, member);
+					doRefeshPage(0);
+				}
+				
+				mConnectionProgressDialog.dismiss();
+			}
+			
+			@Override
+			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
+				Boast.makeText(MainActivity.this, NetworkUtils.getConnectivityStatusString(MainActivity.this), Toast.LENGTH_SHORT).show();
+				mConnectionProgressDialog.dismiss();
+			}
+			
+		});
+		
+	}
+
 	public void showSaveModeAppDialog(final Context mContext) {
-		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
 		final Dialog confirmDialog = new Dialog(mContext); 
 		
 		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm_2, null);
+		
+		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
 		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title);
 		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
 		
 		RelativeLayout btComfirmOK = (RelativeLayout) view.findViewById(R.id.button_confirm_ok);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirmOK);
+		TextView btComfirmOKTxt = (TextView) view.findViewById(R.id.button_confirm_ok_txt);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, btComfirmOKTxt);
 		RelativeLayout btComfirmNO = (RelativeLayout) view.findViewById(R.id.button_confirm_no);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirmNO);
+		TextView btComfirmNoTxt = (TextView) view.findViewById(R.id.button_confirm_no_txt);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, btComfirmNoTxt);
 		
 		CheckBox checkBoxAsk = (CheckBox) view.findViewById(R.id.chk_ask);
 		

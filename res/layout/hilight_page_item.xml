@@ -23,7 +23,6 @@
 	        android:layout_width="100dp"
 	        android:layout_height="130dp"
 	        android:layout_centerInParent="true"
-	        style="?logoTheme"
 	        android:scaleType="fitXY" />
 	    
 	    <!-- 

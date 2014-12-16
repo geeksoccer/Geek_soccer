@@ -45,7 +45,6 @@ public static String getStrHttpGetConnect(String url){
 		String result = "";
 
 	    HttpGet httpget = new HttpGet(url);
-	    
 	    HttpParams httpParameters = new BasicHttpParams();
 	    HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
 	    HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
@@ -86,7 +85,6 @@ public static String getStrHttpGetConnect(String url){
 		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 		    
 		HttpClient httpclient = new DefaultHttpClient(httpParameters);
-		    
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 			HttpResponse response = httpclient.execute(httpPost);

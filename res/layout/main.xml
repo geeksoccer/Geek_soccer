@@ -11,7 +11,6 @@
 
         <RelativeLayout
             android:id="@+id/Header_Layout"
-            style="?backgroundTheme"
             android:layout_width="match_parent"
             android:layout_height="50dp" >
 
@@ -31,7 +30,6 @@
 
                 <ImageView
                     android:id="@+id/Team_Logo"
-                    style="?logoTheme"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical" />
@@ -80,7 +78,6 @@
 
         <LinearLayout
             android:id="@+id/Tab_Layout"
-            style="?backgroundTheme"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:gravity="center" >
@@ -134,8 +131,7 @@
         android:orientation="vertical" >
 
         <RelativeLayout
-            android:id="@+id/Header_Layout"
-            style="?backgroundTheme"
+            android:id="@+id/Header_LayoutMenu"
             android:layout_width="match_parent"
             android:layout_height="50dp" >
 
@@ -156,7 +152,6 @@
 
                 <ImageView
                     android:id="@+id/Team_LogoMenu"
-                    style="?logoTheme"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
@@ -205,20 +200,19 @@
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/chat_h_flip" >
+        android:background="@drawable/chat_h" >
 
         <TextView
             android:id="@+id/chatAlertTextCount"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:layout_marginLeft="5dp"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/btn_circle_selected"
-            android:gravity="center"
-            android:text="10+"
-            android:textColor="@android:color/holo_red_light"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:layout_alignParentLeft="true"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:text="99+"
+             />
     </RelativeLayout>
 
 </RelativeLayout>

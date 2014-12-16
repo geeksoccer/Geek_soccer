@@ -10,8 +10,7 @@
         android:id="@+id/fixtures_nextmatch_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        style="?attr/backgroundTheme" >
+        android:layout_alignParentLeft="true" >
 
         <TextView
             android:id="@+id/fixtures_nextmatch_layout"

@@ -4,7 +4,9 @@
     <string name="app_name">Geek_soccer</string>
     <string name="action_team">Team</string>
     
-
+    <string name="restarting_app">Restarting App...</string>
+    <string name="no_permission">You do not permission in change team.</string>
+    
     <string name="sign_in_gmail">Sign In with Gmail</string>
     
     <string name="net_wifi">Wifi enabled</string>
@@ -134,6 +136,7 @@
     
     <string name="dailog_select_team">Select View Team</string>
     <string name="dailog_favorite_team">Select Favorite Team</string>
+    <string name="no_favorite_team">No Favorite Team</string>
     
     <string name="profile_pick_image">Please pick image type png, jpg or jpeg only</string>
     <string name="profile_pick_less_image">Please Pick Image Less Size.</string>

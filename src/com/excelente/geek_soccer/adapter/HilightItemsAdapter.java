@@ -21,9 +21,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.Hilight_Item_Page;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
@@ -35,6 +37,7 @@ import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.IntentVideoViewUtils;
+import com.excelente.geek_soccer.utils.ThemeUtils;
 
 public class HilightItemsAdapter extends BaseAdapter{
 	
@@ -62,6 +65,7 @@ public class HilightItemsAdapter extends BaseAdapter{
 		TextView hilightCommentsTextview; 
 		TextView hilightTypeTextview;
 		TextView hilightCreditTextview; 
+		RelativeLayout hilight_head;
 	}
 	
 	@Override
@@ -74,6 +78,7 @@ public class HilightItemsAdapter extends BaseAdapter{
         	convertView = mInflater.inflate(R.layout.hilight_item_item_page, parent, false);
         	
         	hilightItemView = new HilightItemView(); 
+        	hilightItemView.hilight_head = (RelativeLayout) convertView.findViewById(R.id.hilight_head);
 	        hilightItemView.hilightTopicTextview = (TextView) convertView.findViewById(R.id.hilight_topic_textview);
 	        hilightItemView.hilightCreateTimeTextview = (TextView) convertView.findViewById(R.id.hilight_create_time_textview);
 	        hilightItemView.hilightContentListview = (ListView) convertView.findViewById(R.id.hilight_content_listview);
@@ -105,6 +110,11 @@ public class HilightItemsAdapter extends BaseAdapter{
 	}
 	
 	private void doLoadHilightToViews(final HilightModel hilightModel, final HilightItemView hilightItemView) {  
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, hilightItemView.hilight_head);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, hilightItemView.hilightTypeTextview);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, hilightItemView.hilightTopicTextview);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, hilightItemView.hilightTypeTextview);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, hilightItemView.hilightTopicTextview);
 		
 		hilightItemView.hilightTopicTextview.setText(hilightModel.getHilightTopic().trim());
 		hilightItemView.hilightCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(mContext, DateNewsUtils.convertStrDateTimeDate(hilightModel.getHilightCreateTime()))); 
@@ -243,8 +253,6 @@ public class HilightItemsAdapter extends BaseAdapter{
 	}
 	 
 	public class PostHilightLikes extends AsyncTask<HilightModel, Void, Void>{
-		
-		private static final String HILIGHT_LIKES_URL = "http://geeksoccer.com/gs_hilight/post_hilight_like.php"; 
 
 		@Override 
 		protected Void doInBackground(HilightModel... params) {
@@ -253,8 +261,9 @@ public class HilightItemsAdapter extends BaseAdapter{
 			paramsPost.add(new BasicNameValuePair("hilight_id", String.valueOf(params[0].getHilightId())));
 			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(mContext).getUid())));
 			paramsPost.add(new BasicNameValuePair("status_like", String.valueOf(params[0].getStatusLike())));
+			paramsPost.add(new BasicNameValuePair("m_token", String.valueOf(SessionManager.getMember(mContext).getToken())));
 				
-			HttpConnectUtils.getStrHttpPostConnect(HILIGHT_LIKES_URL, paramsPost);
+			HttpConnectUtils.getStrHttpPostConnect(ControllParameter.HILIGHT_LIKES_URL, paramsPost);
 			
 			return null;
 		}

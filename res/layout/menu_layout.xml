@@ -7,8 +7,7 @@
     <RelativeLayout
         android:id="@+id/Header_Layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        style="?backgroundTheme" >
+        android:layout_height="50dp" >
         
         <LinearLayout 
 	    	android:id="@+id/Up_btn"
@@ -25,7 +24,6 @@
 		        android:layout_marginLeft="-7dp"/>
 	        <ImageView
 	            android:id="@+id/Team_Logo"
-	            style="?logoTheme"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_gravity="center_vertical"

@@ -63,6 +63,12 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	private ProgressBar progressbar;
 
 	private LinearLayout layoutPhoto;
+
+	private RelativeLayout Header_Layout;
+
+	private TextView Title_bar;
+
+	private TextView saveBtnTxt;
 	
 
 	@Override
@@ -90,7 +96,6 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	}
 	
 	private void createLayout() {
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(Profile_Page.this).getTeamId());
 		setContentView(R.layout.profile_page);
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
 		initView();
@@ -99,6 +104,9 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	private void initView() {
 		
 		bitmapPhoto = null;
+		
+		Header_Layout = (RelativeLayout) findViewById(R.id.Header_Layout);
+		Title_bar = (TextView) findViewById(R.id.Title_bar); 
 		
 		layoutProfile = (SoftKeyboardHandledLinearLayout) findViewById(R.id.Layout_PROFILE);
 		layoutProfile.setOnSoftKeyboardListener(this);
@@ -135,6 +143,17 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		
 		saveBtn = (RelativeLayout) findViewById(R.id.Footer_Layout); 
 		saveBtn.setOnClickListener(this);
+		
+		saveBtnTxt = (TextView) findViewById(R.id.save_btn_txt);
+		
+		setThemeToView();
+	}
+
+	private void setThemeToView() {
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, Header_Layout);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, Title_bar);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, saveBtn);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, saveBtnTxt);
 	}
 
 	private Bitmap resizeBitMap(Bitmap bitmapPhoto) {

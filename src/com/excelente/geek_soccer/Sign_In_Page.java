@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.excelente.geek_soccer.adapter.TeamAdapter;
 import com.excelente.geek_soccer.authen.AuthenGoogleAccount;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.NewsModel;
@@ -15,7 +14,6 @@ import com.excelente.geek_soccer.model.TeamModel;
 import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
-import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -28,32 +26,20 @@ import com.google.android.gms.plus.PlusClient;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.IntentSender.SendIntentException;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class Sign_In_Page extends Activity implements View.OnClickListener, ConnectionCallbacks, OnConnectionFailedListener, AuthenGoogleAccount.OnConnectGoogleAccount{
@@ -61,6 +47,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	private static final String SCOPE = "https://www.googleapis.com/auth/userinfo.profile";
 	
 	private static final int REQUEST_CODE_RESOLVE_ERR = 9000;
+	public static final int REQUEST_CODE_SELECT_TEAM = 8000;
 	
     private ProgressDialog mConnectionProgressDialog;
     private PlusClient mPlusClient;
@@ -76,47 +63,22 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 
 	private AuthenGoogleAccount authenGoogleAccount;
 	
-	String[] teamsName;
-	int[] teamsColor;
-	int[] teamsLogo;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		SessionManager.setLangApp(getApplicationContext());
-		ThemeUtils.setThemeByTeamId(this, 0);
-		setResourceTeamModel();
 		
 		cancelNotify();
 		
-		if(SessionManager.hasMember(this)){
-			gotoMainPage(SessionManager.getMember(this));
+		if(SessionManager.hasMember(this) && SessionManager.hasThemeMember(this) && SessionManager.hasTeamMember(this)){
+			checkVersionAppAndDB(SessionManager.getMember(this));
 		}else{
 			setContentView(R.layout.sign_in_page);
 			initView();
-			doCheckToken(); 
+			doSignIn(); 
 		}
-	}
-	
-	private void setResourceTeamModel() {
 		
-		teamsName = getResources().getStringArray(R.array.team_list);
-		
-		teamsColor = new int[]{
-								R.color.news_arsenal, 
-								R.color.news_chelsea, 
-								R.color.news_liverpool, 
-								R.color.news_manu, 
-								R.color.news_default
-							  };
-		
-		teamsLogo = new int[]{
-								R.drawable.logo_arsenal, 
-								R.drawable.logo_chelsea, 
-								R.drawable.logo_liverpool,
-								R.drawable.logo_manchester_united, 
-								R.drawable.ic_action_overflow
-							};
+		//doSelectTeam();
 	}
 
 	@Override
@@ -149,9 +111,11 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
         mConnectionProgressDialog.setCancelable(false);
 	}
 	
-	private void doCheckToken() {
-		if(NetworkUtils.isNetworkAvailable(this)){ 
-			new doSignTokenTask().execute();
+	private void doSignIn() { 
+		if(NetworkUtils.isNetworkAvailable(this)){
+			signInGoogleAccountButton.setVisibility(View.GONE);
+			signProgressbar.setVisibility(View.VISIBLE);
+			syncInGoogleAccount();
 		}else{
 			Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
 		}
@@ -166,7 +130,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	@Override
 	protected void onStop() {
 		super.onStop();
-		mPlusClient.disconnect();
+		//mPlusClient.disconnect();
 	}
 	
 	@Override
@@ -188,9 +152,13 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 
 	@Override
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+	
         if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
             mConnectionResult = null;
             mPlusClient.connect();
+        }else if(requestCode == REQUEST_CODE_SELECT_TEAM){
+        	TeamModel team = (TeamModel) intent.getSerializableExtra("SELECT_TEAM");
+        	doRegister(team.getTeamId());
         }
     }
 
@@ -266,41 +234,25 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
         startActivity(intent);
         finish();
 	}
-	
-	private void doSelectTeam() {
+	  
+	private void checkVersionAppAndDB(MemberModel memberSignedIn) {
+		try {
+			PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			String versionName = pInfo.versionName;
+			int versionCode = pInfo.versionCode;
+			Log.e("versionName", versionName); 
+			Log.e("versionCode", String.valueOf(versionCode));
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
 		
-		ArrayList<TeamModel> teamList = getTeamList();
-		View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.dialog_select_team, null);
-		
-		final Dialog selectTeamDialog = new Dialog(this); 
-		selectTeamDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		selectTeamDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-		selectTeamDialog.setContentView(view);
-		selectTeamDialog.setCancelable(false);
-		
-		ListView lvTeam = (ListView) view.findViewById(R.id.lv_team);
-		
-		TeamAdapter teamAdap = new TeamAdapter(this, teamList);
-		lvTeam.setAdapter(teamAdap); 
-		lvTeam.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-				showConfirmDialog(selectTeamDialog, position);
-			}
-		});
-		
-		selectTeamDialog.show();
+		gotoMainPage(memberSignedIn);
 	}
 
-	private ArrayList<TeamModel> getTeamList() {
-		ArrayList<TeamModel> teamList = new ArrayList<TeamModel>();
-		
-    	for (int i = 0; i < teamsName.length; i++) {
-			TeamModel team = new TeamModel(teamsName[i], teamsLogo[i], teamsColor[i]);
-			teamList.add(team);
-		}
-		return teamList;
+	private void doSelectTeam() {
+		Intent selectTeamIntent = new Intent(this, SelectTeamPage.class);
+		startActivityForResult(selectTeamIntent, REQUEST_CODE_SELECT_TEAM);
+		//showConfirmDialog(selectTeamDialog, position);
 	}
 
 	private void doRegister(int teamId) {
@@ -314,66 +266,13 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
     	member.setNickname(authenGoogleAccount.getProfileData().getNickname());
     	member.setPhoto(authenGoogleAccount.getProfileData().getPhoto());
     	member.setEmail(authenGoogleAccount.getProfileData().getEmail());
-    	member.setRole(2);
-    	member.setTeamId(teamId+1);
+    	member.setTeamId(teamId);
     	
     	if(NetworkUtils.isNetworkAvailable(this)){ 
     		new doSignUpTask().execute(member);
 		}else{
 			Toast.makeText(getApplicationContext(), NetworkUtils.getConnectivityStatusString(this), Toast.LENGTH_SHORT).show();
 		}
-	}
-	 
-	protected void showConfirmDialog(final Dialog selectTeamDialog, final int teamId) {
-		
-		ThemeUtils.setThemeByTeamId(this, teamId+1); 
-		
-		final Dialog confirmDialog = new Dialog(this);  
-		
-		View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirm, null);
-		TextView title = (TextView)view.findViewById(R.id.dialog_title);
-		TextView question = (TextView)view.findViewById(R.id.dialog_question);
-		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
-		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
-		
-		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-		confirmDialog.setContentView(view);
-	
-		title.setText(getResources().getString(R.string.title_select_team));
-		Drawable img = this.getResources().getDrawable( teamsLogo[teamId]);
-		img.setBounds( 0, 0, 60, 60 );
-		title.setCompoundDrawables( img, null, null, null );
-		
-		if(teamId == 4){
-			question.setText(getResources().getString(R.string.question_select_team_other));
-		}else{
-			question.setText(getResources().getString(R.string.question_select_team));
-		}
-		
-		closeBt.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				confirmDialog.dismiss();
-				ThemeUtils.setThemeByTeamId(Sign_In_Page.this, 0); 
-			}
-
-		}); 
-		
-		btComfirm.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				doRegister(teamId);
-				confirmDialog.dismiss();
-				selectTeamDialog.dismiss();
-			}
-
-		});
-		
-		confirmDialog.setCancelable(true);
-		confirmDialog.show();
 	}
 
 	public class doSignInTask extends AsyncTask<MemberModel, Void, MemberModel>{ 
@@ -414,14 +313,13 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
 			
 			String memberStr = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.MEMBER_SIGN_IN_URL, memberParam);
-			
+			//Log.e("result", memberStr);
 			if(memberStr.trim().equals("member not yet")){  
 				return member;
 			}else if(memberStr.trim().equals("this member using on any device")){	 
 				return null;
 			}
 			
-			Log.e("UID", memberStr);
 			MemberModel memberSignedIn = MemberModel.convertMemberJSONToList(memberStr);
 			
 			return memberSignedIn;
@@ -444,7 +342,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			}else{
 				SessionManager.setMember(Sign_In_Page.this, memberSignedIn); 
 				if(SessionManager.hasMember(Sign_In_Page.this))
-					gotoMainPage(memberSignedIn);
+					checkVersionAppAndDB(memberSignedIn);
 				else{
 					signProgressbar.setVisibility(View.GONE);
 					signInGoogleAccountButton.setVisibility(View.VISIBLE);
@@ -481,7 +379,6 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_EMAIL, member.getEmail()));
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TEAM_ID, String.valueOf(member.getTeamId())));
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TYPE_LOGIN, member.getTypeLogin()));
-			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_ROLE, String.valueOf(member.getRole())));
 			
 			try {
 				String scope = "oauth2:" + SCOPE;
@@ -515,63 +412,13 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			mConnectionProgressDialog.dismiss();
 			
 			if(memberSignedUp!=null && memberSignedUp.getUid() > 0){
-				gotoMainPage(memberSignedUp);
+				checkVersionAppAndDB(memberSignedUp);
 				SessionManager.setMember(Sign_In_Page.this, memberSignedUp); 
 			}else{
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
 				mPlusClient.disconnect(); 
 				signProgressbar.setVisibility(View.GONE);
 				signInGoogleAccountButton.setVisibility(View.VISIBLE);
-			}
-		}
-		
-	}
-	
-	public class doSignTokenTask extends AsyncTask<Void, Void, MemberModel>{
-		
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			signProgressbar.setVisibility(View.VISIBLE);
-			signInGoogleAccountButton.setVisibility(View.GONE);
-		}
-		
-		@Override
-		protected MemberModel doInBackground(Void... params) {
-			
-			SharedPreferences memberFile = getSharedPreferences(SessionManager.MEMBER_SHAREPREFERENCE, Context.MODE_PRIVATE);
-			
-			if(!memberFile.getString(MemberModel.MEMBER_TOKEN, "").equals("")){
-	
-				List<NameValuePair> memberParam = new ArrayList<NameValuePair>();
-				
-				String token = memberFile.getString(MemberModel.MEMBER_TOKEN, "");
-	
-				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TOKEN, token));
-				
-				String dev_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
-				memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
-				
-				String memberStr = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.MEMBER_TOKEN_URL, memberParam);
-				if(memberStr.trim().equals("member not yet")){ 
-					return null;
-				}
-				MemberModel memberSignedIn = MemberModel.convertMemberJSONToList(memberStr);
-				return memberSignedIn;
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(MemberModel memberToken) {
-			super.onPostExecute(memberToken);
-			
-			SessionManager.setMember(Sign_In_Page.this, memberToken);
-			
-			if(SessionManager.hasMember(Sign_In_Page.this)){
-				gotoMainPage(memberToken);
-			}else{
-		    	syncInGoogleAccount();
 			}
 		}
 		

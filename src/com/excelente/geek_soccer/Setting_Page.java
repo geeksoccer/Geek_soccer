@@ -32,12 +32,13 @@ public class Setting_Page extends Activity implements OnClickListener, OnItemCli
 	private LinearLayout backBtn;
 	private ListView lvSetting;
 	private SettingAdapter settingAdapter;
+	private RelativeLayout Header_Layout;
+	private TextView Title_bar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
 		setContentView(R.layout.setting_page);
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
 		initView();
@@ -51,6 +52,16 @@ public class Setting_Page extends Activity implements OnClickListener, OnItemCli
 		settingAdapter = new SettingAdapter(this, getListSettingModel());
 		lvSetting.setAdapter(settingAdapter);
 		lvSetting.setOnItemClickListener(this);
+		
+		Header_Layout = (RelativeLayout) findViewById(R.id.Header_Layout);
+		Title_bar = (TextView) findViewById(R.id.Title_bar);
+		
+		setThemeToView();
+	}
+
+	private void setThemeToView() {
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, Header_Layout);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, Title_bar);
 	}
 
 	private List<SettingModel> getListSettingModel() {
@@ -118,10 +129,17 @@ public class Setting_Page extends Activity implements OnClickListener, OnItemCli
 		final Dialog confirmDialog = new Dialog(this); 
 		
 		View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirm, null);
+		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
 		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, title);
 		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
 		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirm);
+		TextView button_confirm_ok = (TextView) view.findViewById(R.id.button_confirm_ok);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, button_confirm_ok);
 		 
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

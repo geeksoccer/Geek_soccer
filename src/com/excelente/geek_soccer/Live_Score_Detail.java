@@ -72,14 +72,15 @@ public class Live_Score_Detail extends Activity {
 	JSONObject jsonTagMap;
 	List<JSONObject> ListDetail = new ArrayList<JSONObject>();
 	LiveScoreReload LiveScoreReloadCallBack;
+	private RelativeLayout Header_Layout;
+	private TextView Title_bar;
+	private ImageView Team_Logo;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		data = ControllParameter.getInstance(this);
 
 		data.fragement_Section_set(0);
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this)
-				.getTeamId());
 		LayoutInflater factory = LayoutInflater.from(this);
 		View myView = factory.inflate(R.layout.live_score_detail, null);
 		setContentView(myView);
@@ -267,6 +268,16 @@ public class Live_Score_Detail extends Activity {
 		});
 		new Live_score_Loader().execute();
 
+		Header_Layout = (RelativeLayout) myView.findViewById(R.id.Header_Layout);
+		Title_bar = (TextView) myView.findViewById(R.id.Title_bar);
+		Team_Logo = (ImageView) myView.findViewById(R.id.Team_Logo);
+		setThemeToview();
+	}
+
+	private void setThemeToview() {
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, Header_Layout);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, Title_bar);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_LOGO, Team_Logo);
 	}
 
 	@Override

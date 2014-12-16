@@ -80,8 +80,6 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		  
 		doLoadSavedInstanceState(savedInstanceState);
 		
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
-		
 		initAnimation();
 		initView(getIntent());
 		//doToggleBar();
@@ -327,8 +325,16 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		commentHilightEdittext = (EditText) findViewById(R.id.Hilight_Comments);
 		commentSendButton = (Button) findViewById(R.id.Hilight_Comments_Send); 
 		commentSendButton.setOnClickListener(this);
+		
+		setThemetoView();
 	}
 	
+	private void setThemetoView() {
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, headerLayout);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, footerLayout);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, headeTitleTextview);
+	}
+
 	public void onRefesh(final int position) {
 		
 		final Handler hd = new Handler();
@@ -476,6 +482,8 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("hilight_id", String.valueOf(params[0])));
+			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(activity).getUid())));
+			paramsPost.add(new BasicNameValuePair("m_token", String.valueOf(SessionManager.getMember(activity).getToken())));
 			
 			HttpConnectUtils.getStrHttpPostConnect(ControllParameter.HILIGHT_READS_URL, paramsPost);
 			
@@ -507,6 +515,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 			paramsPost.add(new BasicNameValuePair(CommentModel.MEMBER_UID, String.valueOf(params[0].getMemberUid())));
 			paramsPost.add(new BasicNameValuePair(CommentModel.HILIGHT_ID, String.valueOf(params[0].getNewsId())));
 			paramsPost.add(new BasicNameValuePair(CommentModel.COMMENT_CONTENT, params[0].getCommentContent()));
+			paramsPost.add(new BasicNameValuePair("m_token", String.valueOf(SessionManager.getMember(activity).getToken())));
 			
 			String result = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.HILIGHT_POST_COMMENTS_URL, paramsPost);
 			if(result.trim().equals("success")){
@@ -552,7 +561,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		@Override
 		protected List<CommentModel> doInBackground(CommentModel... params) {
 			
-			String result = HttpConnectUtils.getStrHttpGetConnect(ControllParameter.HILIGHT_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&hilight_id=" + params[0].getNewsId()); 
+			String result = HttpConnectUtils.getStrHttpGetConnect(ControllParameter.HILIGHT_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&hilight_id=" + params[0].getNewsId() + "&m_uid=" + SessionManager.getMember(activity).getUid() + "&m_token=" + SessionManager.getMember(activity).getToken()); 
 			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
 				return null;
 			}

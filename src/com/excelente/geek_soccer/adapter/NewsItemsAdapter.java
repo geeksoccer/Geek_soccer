@@ -12,7 +12,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
@@ -21,6 +20,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
+import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.News_Item_Page;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
@@ -30,6 +30,7 @@ import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.IntentVideoViewUtils;
+import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.CustomWebView;
 
 import android.annotation.SuppressLint;
@@ -57,6 +58,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,6 +97,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		ImageView newsCommentImageview;
 		TextView newsCommentsTextview;
 		LinearLayout newsHead;
+		RelativeLayout news_head;
 	}
 
 	@Override
@@ -105,7 +108,12 @@ public class NewsItemsAdapter extends PagerAdapter{
 		View convertView = (View) mInflater.inflate(R.layout.news_item_item_page, null);
 		
 		NewsItemView newsItemView = new NewsItemView(); 
+		newsItemView.news_head = (RelativeLayout) convertView.findViewById(R.id.news_head);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, newsItemView.news_head);
+		
 		newsItemView.newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, newsItemView.newsTopicTextview);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, newsItemView.newsTopicTextview);
 	    newsItemView.newsTopicTextview.startAnimation(alpha);
 		
 		newsItemView.newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
@@ -132,6 +140,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 	
 	@Override
     public void destroyItem(ViewGroup collection, int position, Object view) {
+		RelativeLayout news_head = (RelativeLayout) ((View) view).findViewById(R.id.news_head);
 		TextView newsTopicTextview = (TextView) ((View) view).findViewById(R.id.news_topic_textview);
 		TextView newsCreateTimeTextview = (TextView) ((View) view).findViewById(R.id.news_create_time_textview);
 		CustomWebView newsContentWebview = (CustomWebView) ((View) view).findViewById(R.id.news_content_webview);
@@ -142,6 +151,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		ImageView newsCommentImageview = (ImageView) ((View) view).findViewById(R.id.news_comment_imageView);
 		TextView newsCommentsTextview = (TextView) ((View) view).findViewById(R.id.news_comments_textview);
 		
+		((ViewPager) collection).removeView(news_head); 
 		((ViewPager) collection).removeView(newsTopicTextview); 
 		((ViewPager) collection).removeView(newsCreateTimeTextview);
 		((ViewPager) collection).removeView(newsContentWebview);
@@ -537,8 +547,6 @@ public class NewsItemsAdapter extends PagerAdapter{
 	}
 	
 	public class PostNewsLikes extends AsyncTask<NewsModel, Void, String>{
-		
-		private static final String NEWS_LIKES_URL = "http://geeksoccer.com/gs_news/post_news_like.php"; 
 
 		@Override
 		protected String doInBackground(NewsModel... params) {
@@ -547,8 +555,9 @@ public class NewsItemsAdapter extends PagerAdapter{
 			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0].getNewsId())));
 			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(mContext).getUid())));
 			paramsPost.add(new BasicNameValuePair("status_like", String.valueOf(params[0].getStatusLike())));
+			paramsPost.add(new BasicNameValuePair("m_token", String.valueOf(SessionManager.getMember(mContext).getToken())));
 			
-			return HttpConnectUtils.getStrHttpPostConnect(NEWS_LIKES_URL, paramsPost);
+			return HttpConnectUtils.getStrHttpPostConnect(ControllParameter.NEWS_LIKES_URL, paramsPost);
 		}
 		
 		@Override

@@ -71,16 +71,16 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 	}
 	
 	private String getURLHilight(Context context, int id) { 
-		return 	ControllParameter.GET_HILIGHT_UPDATE_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=All&member_id=" + SessionManager.getMember(context).getUid();
+		return 	ControllParameter.GET_HILIGHT_UPDATE_URL + "?" + HilightModel.HILIGHT_ID + "=" + id + "&" + HilightModel.HILIGHT_TYPE + "=All&member_id=" + SessionManager.getMember(context).getUid() + "&m_token=" + SessionManager.getMember(context).getToken();
 	}
 	
 	private String getURLbyTag(MemberModel member, int id, String tag) {
 		String url = ""; 
 		
 		if(tag.equals("tag0")){
-			url = ControllParameter.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + member.getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
+			url = ControllParameter.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + member.getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&member_id="+ member.getUid() + "&m_token="+member.getToken();
 		}else if(tag.equals("tag1")){
-			url = ControllParameter.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ member.getUid();
+			url = ControllParameter.GET_NEWS_UPDATE_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&member_id="+ member.getUid() + "&m_token="+member.getToken();
 		}
 		
 		return url;

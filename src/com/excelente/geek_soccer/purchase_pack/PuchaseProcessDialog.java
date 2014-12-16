@@ -6,6 +6,7 @@ import com.excelente.geek_soccer.inapp_util.IabResult;
 import com.excelente.geek_soccer.inapp_util.Inventory;
 import com.excelente.geek_soccer.inapp_util.Purchase;
 import com.excelente.geek_soccer.inapp_util.SkuDetails;
+import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -18,6 +19,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -38,6 +41,12 @@ public class PuchaseProcessDialog {
 		
 		LayoutInflater factory = LayoutInflater.from(contxt);
 		View DialogV = factory.inflate(R.layout.buy_coins_dialog, null);
+		RelativeLayout main_action_bar = (RelativeLayout) DialogV.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(contxt, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
+		TextView dialog_title = (TextView) DialogV.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(contxt, ThemeUtils.TYPE_TEXT_COLOR, dialog_title);
+		
 		dialog.setContentView(DialogV);
 		dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		

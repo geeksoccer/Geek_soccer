@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excelente.geek_soccer.adapter.TableAdapter;
+import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.TableModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.Boast;
 
 import android.os.AsyncTask;
@@ -120,6 +122,11 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	    View tab = LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
 	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
 	    TextView text = (TextView) tab.findViewById(R.id.text);
+	    View viewSelected = tab.findViewById(R.id.selected);
+	    View viewLine = tab.findViewById(R.id.view_line);
+	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);
+	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
+	    
 	    if(label.equals("")){
 	    	text.setVisibility(View.GONE);
 	    	
@@ -129,7 +136,6 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	    	image.getLayoutParams().height=pixels;
 	    }
 	    
-	    View viewSelected = tab.findViewById(R.id.selected);
 	    if(selected)
 	    	viewSelected.setVisibility(View.VISIBLE);
 	    
@@ -168,7 +174,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		if(plAdapter == null){
 			try{ 
 				if(NetworkUtils.isNetworkAvailable(getActivity())){
-					new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+					new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(getTableUrl(PREMIER_LEAGUE, TABLE_TYPE_ALL));
 				}else{
 					Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 					setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
@@ -178,8 +184,14 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
 			}
 		}
-	}
+	} 
 	
+	private String getTableUrl(String league, String type) throws UnsupportedEncodingException {
+		MemberModel member = SessionManager.getMember(getActivity());
+		String url = ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(league, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + type + "&m_uid=" + member.getUid() + "&m_token=" + member.getToken();
+		return url;
+	}
+
 	/*private void setListViewEvents(final ListView hilightListview, final String tags){
 		hilightListview.setOnRefreshListener(new OnRefreshListener() {
 			
@@ -212,7 +224,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE); 
 						try {
-							new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+							new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(getTableUrl(PREMIER_LEAGUE, TABLE_TYPE_ALL));
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}
@@ -227,7 +239,11 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				if(flagblAdapter){
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						new LoadTableTask(tableBLLayout, blAdapter, "tag2").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + BUNDESLIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+						try {
+							new LoadTableTask(tableBLLayout, blAdapter, "tag2").execute(getTableUrl(BUNDESLIGA, TABLE_TYPE_ALL));
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
 					}else{
 						Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(blAdapter, tableBLLayout, "tag2");
@@ -239,7 +255,11 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 				if(flagllAdapter){ 
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						new LoadTableTask(tableLLLayout, llAdapter, "tag3").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + LALIGA + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+						try {
+							new LoadTableTask(tableLLLayout, llAdapter, "tag3").execute(getTableUrl(LALIGA, TABLE_TYPE_ALL));
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
 					}else{
 						Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(llAdapter, tableLLLayout, "tag3");
@@ -252,7 +272,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						try {
-							new LoadTableTask(tableGLLayout, glAdapter, "tag4").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(CALCAIO_SERIE_A, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+							new LoadTableTask(tableGLLayout, glAdapter, "tag4").execute(getTableUrl(CALCAIO_SERIE_A, TABLE_TYPE_ALL));
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}
@@ -268,7 +288,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						try {
-							new LoadTableTask(tableFLLayout, flAdapter, "tag5").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(LEAGUE_DE_LEAGUE1, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+							new LoadTableTask(tableFLLayout, flAdapter, "tag5").execute(getTableUrl(LEAGUE_DE_LEAGUE1, TABLE_TYPE_ALL));
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}
@@ -284,7 +304,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 					if(NetworkUtils.isNetworkAvailable(getActivity())){
 						tableWaitProcessbar.setVisibility(View.VISIBLE);
 						try {
-							new LoadTableTask(tableTPLLayout, tplAdapter, "tag6").execute(ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(THAI_PREMIER_LEAGUE, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + TABLE_TYPE_ALL);
+							new LoadTableTask(tableTPLLayout, tplAdapter, "tag6").execute(getTableUrl(THAI_PREMIER_LEAGUE, TABLE_TYPE_ALL));
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}

@@ -7,7 +7,6 @@
 
     <RelativeLayout
         android:id="@+id/Header_Layout"
-        style="?backgroundTheme"
         android:layout_width="match_parent"
         android:layout_height="50dp" >
 

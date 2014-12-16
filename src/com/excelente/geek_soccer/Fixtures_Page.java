@@ -1,5 +1,7 @@
 package com.excelente.geek_soccer;
 
+import java.util.Date;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 
@@ -14,13 +16,13 @@ import com.loopj.android.http.RequestParams;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,12 +35,12 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 	private ImageView refeshBtn;
 	private ProgressBar fixturesProgressbar;
 	private TextView fixturesEmpty;
+	private RelativeLayout Header_Layout;
+	private TextView Title_bar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
 		
 		initView();
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
@@ -46,6 +48,9 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 
 	private void initView() {
 		setContentView(R.layout.fixtures_page);
+		
+		Header_Layout = (RelativeLayout) findViewById(R.id.Header_Layout);
+		Title_bar = (TextView) findViewById(R.id.Title_bar);
 		
 		upBtn = (LinearLayout) findViewById(R.id.Up_btn);
 		fixturesSeason = (TextView) findViewById(R.id.fixtures_season);
@@ -61,9 +66,15 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 		groupListview.setSmoothScrollbarEnabled(true);
 		
 		createData();
-		 
+		
+		setThemeToview();
 	}
 	
+	private void setThemeToview() {
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, Header_Layout);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, Title_bar);
+	}
+
 	public void createData() { 
 		
 		refeshBtn.setVisibility(View.GONE);
@@ -75,7 +86,7 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 			return;
 		}
 		
-		String teamName = SessionManager.getTeamName(this);
+		String teamName = SessionManager.getMember(getApplicationContext()).getTeam().getTeamName();
 		if(teamName == null || teamName.equals("")){
 			refeshBtn.setVisibility(View.VISIBLE);
 			return;
@@ -85,6 +96,9 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 		client.setMaxRetriesAndTimeout(2, 10000);
 		
 		RequestParams params = new RequestParams("_t", teamName);
+		params.put("time", new Date().getTime());
+		params.put("m_uid", SessionManager.getMember(getApplicationContext()).getUid());
+		params.put("m_token", SessionManager.getMember(getApplicationContext()).getToken());
 	
 		
 		client.get(ControllParameter.GET_FIXTURES_URL, params, new JsonHttpResponseHandler() {
@@ -132,7 +146,6 @@ public class Fixtures_Page extends Activity implements OnClickListener{
 
 			@Override
 			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-				Log.e("GET_FIXTURES_URL", "onFailure");
 				fixturesProgressbar.setVisibility(View.GONE);
 				groupListview.setVisibility(View.INVISIBLE);
 				fixturesEmpty.setVisibility(View.VISIBLE);

@@ -10,6 +10,7 @@ import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.FixturesGroupList;
 import com.excelente.geek_soccer.model.FixturesGroupLists;
 import com.excelente.geek_soccer.model.FixturesModel;
+import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -36,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 @SuppressLint("InflateParams")
@@ -87,6 +89,8 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		TextView score;
 		ImageView homeImg;
 		ImageView awayImg;
+		RelativeLayout fixtures_nextmatch_title;
+		TextView fixtures_nextmatch_layout;
 	}
 
 	@Override
@@ -98,16 +102,18 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		if (convertView == null) {
 			doConfigImageLoader(200,200);
 			LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			fixturesView = new ViewHoleder();
 			switch (type) {
 	            case TYPE_ITEM:
 	            	convertView = inflater.inflate(R.layout.fixtures_listrow_details, parent, false);
 	                break;
 	            case TYPE_NEXTMATCH:
 	            	convertView = inflater.inflate(R.layout.fixtures_listrow_nextmatch, parent, false);
+	            	fixturesView.fixtures_nextmatch_title = (RelativeLayout) convertView.findViewById(R.id.fixtures_nextmatch_title);
+	            	fixturesView.fixtures_nextmatch_layout = (TextView) convertView.findViewById(R.id.fixtures_nextmatch_layout);
 	                break;
 	        }
 			
-			fixturesView = new ViewHoleder();
 			fixturesView.awayImg = (ImageView) convertView.findViewById(R.id.away_img);
 			fixturesView.awayName = (TextView) convertView.findViewById(R.id.away_name);
 			fixturesView.homeImg = (ImageView) convertView.findViewById(R.id.home_img);
@@ -123,10 +129,20 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		}
 		
 		//Log.e("getChildView", "groupPosition: " + groupPosition + " childPosition: " + childPosition + " isNextMatch: " + fixtures.isNextMatch());
-	
+		setThemeToView(fixturesView, type);
 		setFixturesView(fixturesView, fixtures);
 		
 		return convertView;
+	}
+
+	private void setThemeToView(ViewHoleder fixturesView, int type) {
+		switch (type) {
+	        case TYPE_NEXTMATCH:
+	        	ThemeUtils.setThemeToView(activity, ThemeUtils.TYPE_BACKGROUND_COLOR, fixturesView.fixtures_nextmatch_title);
+	        	ThemeUtils.setThemeToView(activity, ThemeUtils.TYPE_TEXT_COLOR, fixturesView.fixtures_nextmatch_layout);
+	        	ThemeUtils.setThemeToView(activity, ThemeUtils.TYPE_TEXT_COLOR, fixturesView.matchDate);
+	            break;
+		}
 	}
 
 	private void setFixturesView(ViewHoleder fixturesView, final FixturesModel fixtures) {

@@ -84,7 +84,7 @@ public class Chat_TeamView{
 
 	LinearLayout input_layout;
 	TextView UserCountTXT;
-	public static View StikerV;
+	View StikerV;
 
 	ImageView allRoom, TeamRoom;
 
@@ -992,7 +992,7 @@ public class Chat_TeamView{
 								json_ob.remove("us");
 								json_ob.remove("fd");
 								data.Chat_Item_list_Team.add(json_ob);
-								chatHandle(!json_ob.getString("ch_uid").equals(ControllParameter.ID_Send));
+								chatHandle();
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
@@ -1027,7 +1027,7 @@ public class Chat_TeamView{
 									e.printStackTrace();
 								}
 							}
-							chatHandle(false);
+							chatHandle();
 						} else if (event.equals("getsticker")) {
 							for (Object object : args) {
 								try {
@@ -1104,7 +1104,7 @@ public class Chat_TeamView{
 		}, data.chatDelay);
 	}
 
-	public void chatHandle(final Boolean updateCountAlert) {
+	public void chatHandle() {
 		data.chatDelay = 0;
 		handler.postDelayed(new Runnable() {
 			@Override
@@ -1114,10 +1114,8 @@ public class Chat_TeamView{
 				}
 				data.lstViewChatTeam.setSelection(data.Chat_Item_list_Team
 						.size());
-				if(updateCountAlert && MainActivity.curPage!=2){
-					MainActivity.countNumChat++;
-					MainActivity.ChatAlertSetting();
-				}
+				MainActivity.countNumChat++;
+				MainActivity.ChatAlertSetting();
 			}
 		}, data.chatDelay);
 	}

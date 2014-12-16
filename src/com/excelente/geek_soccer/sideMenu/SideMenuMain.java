@@ -43,6 +43,7 @@ import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
@@ -154,7 +155,7 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 		settingBtn.setOnClickListener(this);
 		logoutBtn.setOnClickListener(this);
 
-		if (SessionManager.getMember(mContext).getTeamId() > SessionManager.TOTAL_TEAM) {
+		if (SessionManager.getMember(mContext).getTeamId() == 0) {
 			FixturesBtn.setVisibility(View.GONE);
 			FixturesLine.setVisibility(View.GONE);
 		}
@@ -432,11 +433,18 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 
 		View view = LayoutInflater.from(mContext).inflate(
 				R.layout.dialog_confirm, null);
-		TextView title = (TextView) view.findViewById(R.id.dialog_title);
-		TextView question = (TextView) view.findViewById(R.id.dialog_question);
+		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
+		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title);
+		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
-		RelativeLayout btComfirm = (RelativeLayout) view
-				.findViewById(R.id.button_confirm);
+		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirm);
+		
+		TextView button_confirm_ok = (TextView) view.findViewById(R.id.button_confirm_ok);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, button_confirm_ok);
 
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(
@@ -504,11 +512,18 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 
 		View view = LayoutInflater.from(mContext).inflate(
 				R.layout.dialog_confirm, null);
-		TextView title = (TextView) view.findViewById(R.id.dialog_title);
-		TextView question = (TextView) view.findViewById(R.id.dialog_question);
+		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
+		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title);
+		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
-		RelativeLayout btComfirm = (RelativeLayout) view
-				.findViewById(R.id.button_confirm);
+		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirm);
+		
+		TextView button_confirm_ok = (TextView) view.findViewById(R.id.button_confirm_ok);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, button_confirm_ok);
 
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(
@@ -573,11 +588,18 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 
 		View view = LayoutInflater.from(mContext).inflate(
 				R.layout.dialog_confirm, null);
-		TextView title = (TextView) view.findViewById(R.id.dialog_title);
-		TextView question = (TextView) view.findViewById(R.id.dialog_question);
+		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
+		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title);
+		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
-		RelativeLayout btComfirm = (RelativeLayout) view
-				.findViewById(R.id.button_confirm);
+		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirm);
+		
+		TextView button_confirm_ok = (TextView) view.findViewById(R.id.button_confirm_ok);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, button_confirm_ok);
 
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(

@@ -21,16 +21,23 @@ import com.excelente.geek_soccer.SessionManager;
 
 public class DialogUtil {
 
-	public static void showRateAppDialog(final Context mContext) { 
-		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
+	public static void showRateAppDialog(final Context mContext) {
 		
 		final Dialog confirmDialog = new Dialog(mContext); 
 		
 		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
+		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
 		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title);
 		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
 		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirm);
+		
+		TextView button_confirm_ok = (TextView) view.findViewById(R.id.button_confirm_ok);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, button_confirm_ok);
 		
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -81,14 +88,21 @@ public class DialogUtil {
 	}
 	
 	public static void showShareAppDialog(final Context mContext) {
-		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
 		final Dialog confirmDialog = new Dialog(mContext); 
 		
 		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm, null);
+		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
 		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title);
 		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
 		RelativeLayout btComfirm = (RelativeLayout) view.findViewById(R.id.button_confirm);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirm);
+		
+		TextView button_confirm_ok = (TextView) view.findViewById(R.id.button_confirm_ok);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, button_confirm_ok);
 		
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -137,16 +151,26 @@ public class DialogUtil {
 	}
 	
 	public static void showSaveModeAppDialog(final Context mContext, final View saveMode_btn) {
-		ThemeUtils.setThemeByTeamId(mContext, SessionManager.getMember(mContext).getTeamId());
 		final Dialog confirmDialog = new Dialog(mContext);  
 		
 		View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_confirm_3, null);
+		
+		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
 		TextView title = (TextView)view.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title);
 		TextView question = (TextView)view.findViewById(R.id.dialog_question);
 		ImageView closeBt = (ImageView) view.findViewById(R.id.close_icon);
 		
 		RelativeLayout btComfirmOK = (RelativeLayout) view.findViewById(R.id.button_confirm_ok);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirmOK);
+		TextView button_confirm_ok_txt = (TextView)view.findViewById(R.id.button_confirm_ok_txt);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, button_confirm_ok_txt);
 		RelativeLayout btComfirmNO = (RelativeLayout) view.findViewById(R.id.button_confirm_no);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, btComfirmNO);
+		TextView button_confirm_no_txt = (TextView)view.findViewById(R.id.button_confirm_no_txt);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, button_confirm_no_txt);
 		
 		confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

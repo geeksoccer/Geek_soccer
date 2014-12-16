@@ -11,6 +11,7 @@ import org.apache.http.message.BasicNameValuePair;
 import com.excelente.geek_soccer.adapter.CommentAdapter;
 import com.excelente.geek_soccer.adapter.NewsItemsAdapter;
 import com.excelente.geek_soccer.model.CommentModel;
+import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
@@ -100,8 +101,6 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			
 			newsItemPosition = savedInstanceState.getInt("positionNewItemPage");
 		}
-		
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(News_Item_Page.this).getTeamId());
 		
 		initAnimation();
 		initView(getIntent());
@@ -231,8 +230,16 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		commentNewsEdittext = (EditText) findViewById(R.id.News_Comments);
 		commentSendButton = (Button) findViewById(R.id.News_Comments_Send); 
 		commentSendButton.setOnClickListener(this);
+		
+		setThemeToView();
 	}
 	
+	private void setThemeToView() {
+		ThemeUtils.setThemeToView(activity, ThemeUtils.TYPE_BACKGROUND_COLOR, headerLayout);
+		ThemeUtils.setThemeToView(activity, ThemeUtils.TYPE_BACKGROUND_COLOR, footerLayout);
+		ThemeUtils.setThemeToView(activity, ThemeUtils.TYPE_TEXT_COLOR, headeTitleTextview);
+	}
+
 	public void doToggleBar() {
 		if(headerLayout.getVisibility() == View.GONE){
 			headerLayout.setVisibility(View.VISIBLE);
@@ -341,16 +348,15 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	
 	public class PostNewsReads extends AsyncTask<Integer, Void, String>{
 		
-		public static final String NEWS_READS_URL = "http://183.90.171.209/gs_news/post_news_reads.php";
-		
 		@Override
 		protected String doInBackground(Integer... params) {
 			
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0])));
 			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(News_Item_Page.this).getUid())));
+			paramsPost.add(new BasicNameValuePair("m_token", String.valueOf(SessionManager.getMember(News_Item_Page.this).getToken())));
 			
-			return HttpConnectUtils.getStrHttpPostConnect(NEWS_READS_URL, paramsPost);
+			return HttpConnectUtils.getStrHttpPostConnect(ControllParameter.NEWS_READS_URL, paramsPost);
 		}
 		
 		@Override
@@ -385,6 +391,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			paramsPost.add(new BasicNameValuePair(CommentModel.MEMBER_UID, String.valueOf(params[0].getMemberUid())));
 			paramsPost.add(new BasicNameValuePair(CommentModel.NEWS_ID, String.valueOf(params[0].getNewsId())));
 			paramsPost.add(new BasicNameValuePair(CommentModel.COMMENT_CONTENT, params[0].getCommentContent()));
+			paramsPost.add(new BasicNameValuePair(MemberModel.MEMBER_UID, String.valueOf(SessionManager.getMember(activity).getUid())));
 			
 			String result = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.NEWS_POST_COMMENTS_URL, paramsPost);
 			if(result.trim().equals("success")){
@@ -430,7 +437,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		@Override
 		protected List<CommentModel> doInBackground(CommentModel... params) {
 			
-			String result = HttpConnectUtils.getStrHttpGetConnect(ControllParameter.NEWS_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&news_id=" + params[0].getNewsId()); 
+			String result = HttpConnectUtils.getStrHttpGetConnect(ControllParameter.NEWS_GET_COMMENT_URL + "comment_id=" + params[0].getCommentId() + "&news_id=" + params[0].getNewsId() + "&m_uid=" + SessionManager.getMember(activity).getUid() + "&m_token=" + SessionManager.getMember(activity).getToken()); 
 			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
 				return null;
 			}

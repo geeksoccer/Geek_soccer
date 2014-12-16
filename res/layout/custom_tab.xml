@@ -26,14 +26,13 @@
         android:id="@+id/selected" 
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        style="?backgroundTheme"
         android:layout_gravity="bottom"
         android:visibility="invisible" />
-    
+     
     <View
+        android:id="@+id/view_line" 
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        style="?backgroundTheme"
         android:layout_gravity="bottom" />
 
 </LinearLayout>

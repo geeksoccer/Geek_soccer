@@ -10,6 +10,7 @@ import java.util.Map;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.TableModel;
+import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -28,13 +29,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class TableAdapter extends BaseAdapter{
@@ -54,7 +55,7 @@ public class TableAdapter extends BaseAdapter{
 		this.activity = context;
 		this.context = context;
 		this.tableList = tableList;
-		this.teamNameTH = SessionManager.getTeamNameTH(context);
+		this.teamNameTH = SessionManager.getMember(context).getTeam().getTeamNameTH();
 		this.urlBitmap = new HashMap<String, Bitmap>();
 	}
 	
@@ -84,6 +85,7 @@ public class TableAdapter extends BaseAdapter{
 		TextView tableLoseGoal;
 		TextView tableResultGoal;
 		TextView tableMark;
+		LinearLayout table_layout;
 	}
 	
 	@Override
@@ -104,6 +106,7 @@ public class TableAdapter extends BaseAdapter{
 			}
     		
     		tableHolder = new TableHolder();
+    		tableHolder.table_layout = (LinearLayout) convertView.findViewById(R.id.table_layout);
     		tableHolder.tableSeq = (TextView) convertView.findViewById(R.id.table_seq);
     		tableHolder.tableTeamImage = (ImageView) convertView.findViewById(R.id.table_team_image);
     		tableHolder.tableTeam = (TextView) convertView.findViewById(R.id.table_team);
@@ -122,6 +125,7 @@ public class TableAdapter extends BaseAdapter{
         	tableHolder = (TableHolder) convertView.getTag();
         }
       
+        setThemeToView(tableHolder, type);
         //final File cacheFile = ImageLoader.getInstance().getDiscCache().get(tableModel.getTableTeamImage().replace(".gif", ".png"));
         if(urlBitmap.containsKey(tableModel.getTableTeamImage().replace(".gif", ".png"))){
         	tableHolder.tableTeamImage.setImageBitmap(urlBitmap.get(tableModel.getTableTeamImage().replace(".gif", ".png"))); 
@@ -196,6 +200,14 @@ public class TableAdapter extends BaseAdapter{
     		count_ani = position;
 		
 		return convertView;
+	}
+
+	private void setThemeToView(TableHolder tableHolder, int type) {
+		switch (type) { 
+			case TYPE_ITEM_TEAM:
+				ThemeUtils.setThemeToView(activity, ThemeUtils.TYPE_BACKGROUND_COLOR, tableHolder.table_layout);
+				break;
+		}
 	}
 
 	private int getColorSeq(String status, int seq){

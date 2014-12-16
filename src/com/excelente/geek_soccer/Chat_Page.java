@@ -1,5 +1,7 @@
 package com.excelente.geek_soccer;
 
+import com.excelente.geek_soccer.utils.ThemeUtils;
+
 import android.app.Activity;
 import android.app.LocalActivityManager;
 import android.content.Context;
@@ -90,6 +92,11 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 	    View tab = LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
 	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
 	    TextView text = (TextView) tab.findViewById(R.id.text);
+	    View viewLine = tab.findViewById(R.id.view_line);
+	    View viewSelected = tab.findViewById(R.id.selected);
+	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);
+	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
+	    
 	    text.setTypeface(null,Typeface.BOLD);
 	    if(label.equals("")){
 	    	text.setVisibility(View.GONE);
@@ -108,7 +115,6 @@ public class Chat_Page extends Fragment implements TabHost.OnTabChangeListener {
 	    	text.getLayoutParams().height=pixels;
 	    }
 	    
-	    View viewSelected = tab.findViewById(R.id.selected);
 	    if(selected)
 	    	viewSelected.setVisibility(View.VISIBLE);
 	    

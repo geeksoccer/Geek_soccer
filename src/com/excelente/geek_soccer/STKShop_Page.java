@@ -71,12 +71,13 @@ public class STKShop_Page extends Activity{
 	ImageView coinImgDialog;
 	ProgressBar down_progress;
 	String saveModeGet;
+	private RelativeLayout Header_Layout;
+	private TextView titleBar;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this).getTeamId());
 		PuchaseProcessDialog.StartSetup(this);
 		
 		LayoutInflater factory = LayoutInflater.from(this);
@@ -151,8 +152,17 @@ public class STKShop_Page extends Activity{
 			}
 		});
 		
+		Header_Layout = (RelativeLayout) myView.findViewById(R.id.Header_Layout);
+		titleBar = (TextView) myView.findViewById(R.id.textView1);
+		setThemetoView();
 		new stk_list_Loader().execute();
 	}
+	
+	private void setThemetoView() {
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, Header_Layout);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, titleBar);
+	}
+	
 	private Bitmap resizeBitMap(Bitmap bitmapPhoto) {
 		
 		float scale = (bitmapPhoto.getWidth()*1.0f)/(1.0f*bitmapPhoto.getHeight());
@@ -175,6 +185,13 @@ public class STKShop_Page extends Activity{
 		View DialogV = factory.inflate(R.layout.stk_detail_layout, null);
 		dialog.setContentView(DialogV);
 		dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		
+		RelativeLayout main_action_bar = (RelativeLayout) DialogV.findViewById(R.id.main_action_bar);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
+		
+		TextView dialog_title = (TextView) DialogV.findViewById(R.id.dialog_title);
+		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, dialog_title);
+		
 		ImageView Preview_img = (ImageView)DialogV.findViewById(R.id.Preview_Image);
 		TextView Stk_name = (TextView)DialogV.findViewById(R.id.stk_name);
 		TextView Stk_by = (TextView)DialogV.findViewById(R.id.stk_by);

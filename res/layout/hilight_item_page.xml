@@ -29,7 +29,6 @@
         android:id="@+id/Header_Layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        style="?backgroundTheme"
         android:layout_alignParentTop="true" >
 		
         <LinearLayout 
@@ -75,7 +74,6 @@
         android:id="@+id/Footer_Layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?backgroundTheme"
         android:layout_alignParentBottom="true" >
 
         <EditText

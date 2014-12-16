@@ -11,6 +11,7 @@ import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.service.UpdateService;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.Boast;
 import com.excelente.geek_soccer.view.PullToRefreshListView;
 import com.excelente.geek_soccer.view.PullToRefreshListView.OnRefreshListener;
@@ -113,7 +114,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		newsModelTeamList = null;
 		newsModelGlobalList = null;
 		
-		if(SessionManager.getMember(getActivity()).getTeamId()>SessionManager.TOTAL_TEAM){
+		if(SessionManager.getMember(getActivity()).getTeamId() == 0){
 			tabWidget.setVisibility(View.GONE);
 			tabs.setCurrentTab(1);
 		}
@@ -170,6 +171,10 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
 	    TextView text = (TextView) tab.findViewById(R.id.text);
 	    View viewSelected = tab.findViewById(R.id.selected);
+	    View viewLine = tab.findViewById(R.id.view_line);
+	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);
+	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
+	    
 	    if(selected)
 	    	viewSelected.setVisibility(View.VISIBLE);
 	    
@@ -187,9 +192,9 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 		String url = ""; 
 		
 		if(tag.equals("tag0")){
-			url = ControllParameter.GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + SessionManager.getMember(context).getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ SessionManager.getMember(context).getUid();
+			url = ControllParameter.GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=" + SessionManager.getMember(context).getTeamId() + "&" + NewsModel.NEWS_ID + "=" + id + "&member_id="+ SessionManager.getMember(context).getUid() + "&m_token="+SessionManager.getMember(context).getToken();
 		}else if(tag.equals("tag1")){
-			url = ControllParameter.GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&" + NewsModel.NEWS_LANGUAGE + "=TH&member_id="+ SessionManager.getMember(context).getUid();
+			url = ControllParameter.GET_NEWS_URL + "?" + NewsModel.NEWS_TEAM_ID + "=0&" + NewsModel.NEWS_ID + "=" + id + "&member_id="+ SessionManager.getMember(context).getUid() + "&m_token="+SessionManager.getMember(context).getToken();
 		}
 		
 		return url;
@@ -479,6 +484,7 @@ public class News_Page extends Fragment implements OnItemClickListener, OnTabCha
 			List<NameValuePair> paramsPost = new ArrayList<NameValuePair>();
 			paramsPost.add(new BasicNameValuePair("news_id", String.valueOf(params[0])));
 			paramsPost.add(new BasicNameValuePair("member_id", String.valueOf(SessionManager.getMember(getActivity()).getUid())));
+			paramsPost.add(new BasicNameValuePair("m_token", String.valueOf(SessionManager.getMember(getActivity()).getToken())));
 			
 			return HttpConnectUtils.getStrHttpPostConnect(ControllParameter.NEWS_READS_URL, paramsPost);
 		}
