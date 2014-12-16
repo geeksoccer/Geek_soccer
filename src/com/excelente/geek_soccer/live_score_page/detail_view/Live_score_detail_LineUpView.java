@@ -121,9 +121,7 @@ public class Live_score_detail_LineUpView {
 			TextView A_No = (TextView)myView.findViewById(R.id.A_No);
 			TextView A_Name = (TextView)myView.findViewById(R.id.A_Name);
 			TextView A_Position = (TextView)myView.findViewById(R.id.A_Position);
- 
-			
-			
+
 			try {
 				JSONObject Player_ob = Player_Arr_H.getJSONObject(position);
 				JSONObject PersonName_ob = Player_ob.getJSONObject("PersonName");

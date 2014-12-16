@@ -148,7 +148,7 @@ public class ControllParameter {
 	public Boolean chat_on_Team = false;
 	public Boolean liveScore_on = null;
 	public Boolean liveScore_ChkHavePlaying = false;
-	Boolean detailPageOpenning = false;
+	public Boolean detailPageOpenning = false;
 	public int liveScore_Cur = 1;
 	public int chat_Cur = 0;
 	public SocketIO socket_All = null;

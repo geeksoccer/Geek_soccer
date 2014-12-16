@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.live_score_page.Live_score_Detail_Json;
 
 import android.app.Activity;
 import android.content.Context;
@@ -69,8 +70,13 @@ public class Live_score_Detail_LiveView {
 	public void prepareData() {
 		try {
 			JSONArray TeamData_Arr = MatchData_ob.getJSONArray("TeamData");
+			String TeamID = "H";
 			for (int i = 0; i < TeamData_Arr.length(); i++) {
-				// LiveDetail_Map
+				if(i==0){
+					TeamID="H";
+				}else{
+					TeamID="A";
+				}
 				JSONObject TeamData_ob = TeamData_Arr.getJSONObject(i);
 
 				JSONArray Booking_Arr = TeamData_ob.optJSONArray("Booking");
@@ -97,6 +103,7 @@ public class Live_score_Detail_LiveView {
 					JSONObject attributes = Booking_ob
 							.getJSONObject("@attributes");
 					attributes.put("eventType", attributes.getString("CardType"));
+					attributes.put("TeamID", TeamID);
 					LiveDetail_List.add(attributes);
 				}
 				for (int j = 0; j < Goal_Arr.length(); j++) {
@@ -110,9 +117,10 @@ public class Live_score_Detail_LiveView {
 						Assist_ob.put("Time", attributes.getString("Time"));
 						Assist_ob.put("PlayerRef", Assist_ob_attributes.getString("PlayerRef"));
 						Assist_ob.put("eventType", "Assist");
+						Assist_ob.put("TeamID", TeamID);
 						LiveDetail_List.add(Assist_ob);
 					}
-
+					attributes.put("TeamID", TeamID);
 					attributes.put("eventType", attributes.getString("Type"));
 					LiveDetail_List.add(attributes);
 				}
@@ -122,6 +130,7 @@ public class Live_score_Detail_LiveView {
 					JSONObject attributes = Substitution_ob
 							.getJSONObject("@attributes");
 					attributes.put("eventType", "substitution");
+					attributes.put("TeamID", TeamID);
 					LiveDetail_List.add(attributes);
 				}
 			}
@@ -216,13 +225,27 @@ public class Live_score_Detail_LiveView {
 			} else {
 				try {
 					JSONObject txt_Item = LiveDetail_List.get(position);
+					
+					ImageView img_Team = new ImageView(mContext);
+					img_Team.setLayoutParams(new LayoutParams(30, 30));
+					String TeamID = txt_Item.getString("TeamID");
+					if(TeamID.equals("H")){
+						if (Live_score_Detail_Json.data.get_HomeMap(Live_score_Detail_Json.Home_img_t) != null) {
+							img_Team.setImageBitmap(Live_score_Detail_Json.data.get_HomeMap(Live_score_Detail_Json.Home_img_t));
+						}
+					}else if(TeamID.equals("A")){
+						if (Live_score_Detail_Json.data.get_AwayMap(Live_score_Detail_Json.Away_img_t) != null) {
+							img_Team.setImageBitmap(Live_score_Detail_Json.data.get_AwayMap(Live_score_Detail_Json.Away_img_t));
+						}
+					}
+					
 					TextView txt_T = new TextView(mContext);
 					txt_T.setLayoutParams(new LinearLayout.LayoutParams(
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT));
 					// txt.setGravity(Gravity.CENTER);
 					txt_T.setTextColor(colors);
-					txt_T.setPadding(0, 0, 10, 0);
+					txt_T.setPadding(10, 0, 10, 0);
 
 					TextView txt_N = new TextView(mContext);
 					txt_N.setLayoutParams(new LinearLayout.LayoutParams(0,
@@ -235,6 +258,8 @@ public class Live_score_Detail_LiveView {
 					String Time = txt_Item.getString("Time");
 
 					txt_T.setText(Time+"'");
+					
+					retval.addView(img_Team);
 					retval.addView(txt_T);
 					if (txt_Item.getString("eventType").equals("substitution")) {
 						TextView txt_Sub = new TextView(mContext);

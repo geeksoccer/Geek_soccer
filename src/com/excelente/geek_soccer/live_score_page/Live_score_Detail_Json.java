@@ -20,10 +20,12 @@ import com.excelente.geek_soccer.pic_download.DownLiveScorePic;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,7 +47,7 @@ public class Live_score_Detail_Json extends Activity {
 	String get_Score = "";
 	String get_Home_name = "";
 	String get_Away_name = "";
-	private static ControllParameter data;
+	public static ControllParameter data;
 	// String player_Detail[];
 	ArrayList<String> player_Detail = new ArrayList<String>();
 	int position;
@@ -56,14 +58,19 @@ public class Live_score_Detail_Json extends Activity {
 	String score_t = "";
 	Boolean loading = false;
 	Boolean FirstLoad = true;
-	String id_t = "", Home_img_t = "", Away_img_t = ""
-			, Home_name_t = "", Away_name_t = "", score_ag_t = "", detail_t = "";
-
+	String id_t = "", Home_name_t = "", Away_name_t = "", score_ag_t = "", detail_t = "";
+	public static String Home_img_t = "", Away_img_t = "";
+	
+	LinearLayout MenuLayout;
 	LinearLayout list_layout;
 	LiveScoreReload LiveScoreReloadCallBack;
 	
 	JSONObject MatchData_ob;
 	JSONArray Team_Arr;
+	
+	View LineUpView;
+	View LiveDetailView;
+	android.widget.LinearLayout.LayoutParams childParam;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +88,7 @@ public class Live_score_Detail_Json extends Activity {
 		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this)
 				.getTeamId());
 		LayoutInflater factory = LayoutInflater.from(this);
-		View myView = factory.inflate(R.layout.live_score_detail, null);
+		View myView = factory.inflate(R.layout.live_score_detail_json, null);
 		setContentView(myView);
 		overridePendingTransition(R.anim.in_trans_left_right,
 				R.anim.out_trans_right_left);
@@ -95,9 +102,11 @@ public class Live_score_Detail_Json extends Activity {
 		Detail = (TextView) myView.findViewById(R.id.Details);
 		txt_Aggregate = (TextView) myView.findViewById(R.id.Score_Aggregate);
 		Fav_btn = (ImageButton) myView.findViewById(R.id.Fav_btn);
+		
+		MenuLayout = (LinearLayout) myView.findViewById(R.id.MenuLayout);
 		list_layout = (LinearLayout) myView.findViewById(R.id.list_player_Detail);
-		//data.detailPageOpenning = true;
-
+		data.detailPageOpenning = true;
+		
 		position = getIntent().getExtras().getInt("URL");
 		type = getIntent().getExtras().getString("TYPE");
 		if (type.equals("y")) {
@@ -208,6 +217,87 @@ public class Live_score_Detail_Json extends Activity {
 			}
 		});
 	}
+	
+	private void setupTab(final String name, String label, Integer iconId,
+			boolean selected) {
+
+		View tab = LayoutInflater.from(this).inflate(
+				R.layout.custom_tab, null);
+		ImageView image = (ImageView) tab.findViewById(R.id.icon);
+		TextView text = (TextView) tab.findViewById(R.id.text);
+		text.setTypeface(null, Typeface.BOLD);
+		if (label.equals("")) {
+			text.setVisibility(View.GONE);
+
+			final float scale = this.getResources()
+					.getDisplayMetrics().density;
+			int pixels = (int) (40 * scale + 0.5f);
+			image.getLayoutParams().width = pixels;
+			image.getLayoutParams().height = pixels;
+		}
+
+		if (iconId == 0) {
+			image.setVisibility(View.GONE);
+
+			final float scale = this.getResources()
+					.getDisplayMetrics().density;
+			int pixels = (int) (40 * scale + 0.5f);
+			text.getLayoutParams().height = pixels;
+		}
+
+		View viewSelected = tab.findViewById(R.id.selected);
+		if (selected)
+			viewSelected.setVisibility(View.VISIBLE);
+
+		if (iconId != null) {
+			image.setImageResource(iconId);
+		}
+		text.setText(label);
+
+		LayoutParams childParam = new LinearLayout.LayoutParams(0,
+				LinearLayout.LayoutParams.MATCH_PARENT, 1);
+
+		tab.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (name.equals("d")) {
+					setCurrentTab(0);
+				} else if (name.equals("l")) {
+					setCurrentTab(1);
+				}
+			}
+		});
+
+		MenuLayout.addView(tab, childParam);
+	}
+
+	public void setCurrentTab(int index) {
+		for (int i = 0; i < MenuLayout.getChildCount(); i++) {
+			if (i == index) {
+				MenuLayout.getChildAt(i).findViewById(R.id.selected)
+				.setVisibility(View.VISIBLE);
+			} else {
+				MenuLayout.getChildAt(i).findViewById(R.id.selected)
+				.setVisibility(View.INVISIBLE);
+			}
+		}
+		if (index == 0) {
+			if(LiveDetailView!=null){
+				LiveDetailView.setVisibility(RelativeLayout.ABOVE);
+			}
+			if(LineUpView!=null){
+				LineUpView.setVisibility(RelativeLayout.GONE);
+			}
+		} else if (index == 1) {
+			if(LiveDetailView!=null){
+				LiveDetailView.setVisibility(RelativeLayout.GONE);
+			}
+			if(LineUpView!=null){
+				LineUpView.setVisibility(RelativeLayout.ABOVE);
+			}
+		}
+		
+	}
 
 	class Live_score_Loader extends AsyncTask<String, String, String> {
 
@@ -248,8 +338,19 @@ public class Live_score_Detail_Json extends Activity {
 			Live_score_Detail_Json.this.runOnUiThread(new Runnable() {
 				public void run() {
 					list_layout.removeAllViews();
-					//list_layout.addView(new Live_score_detail_LineUpView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob));
-					list_layout.addView(new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob));
+					LineUpView = new Live_score_detail_LineUpView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
+					LiveDetailView = new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
+					
+					setupTab("d", "Match Detail", 0, false);
+					setupTab("l", "Line Up", 0, false);
+					
+					childParam = new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.MATCH_PARENT,
+							LinearLayout.LayoutParams.MATCH_PARENT);
+					list_layout.addView(LiveDetailView, childParam);
+					list_layout.addView(LineUpView, childParam);
+					LineUpView.setVisibility(RelativeLayout.GONE);
+					setCurrentTab(0);
 				}
 			});
 		}
