@@ -84,7 +84,6 @@ public class Chat_PageByView extends Fragment {
 
 		ChatContainV.addView(chatTeamV, childParam);
 		ChatContainV.addView(chatAllV, childParam);
-		// chatAllV.setVisibility(RelativeLayout.GONE);
 		setCurrentTab(data.chat_Cur);
 	}
 

@@ -258,7 +258,7 @@ public class LiveScore_Noty {
 			int minuteMatch = Integer.parseInt(timeArr[1]);
 			int minuteConcludeMatch = (hourMatch*60)+minuteMatch;
 			int minuteConcludeMatchS = minuteConcludeMatch-15;
-			if(Math.abs(minuteConcludeMatchS-minuteConclude)<=5){
+			if(Math.abs(minuteConcludeMatchS-minuteConclude)<=3){
 				return minuteConcludeMatch-minuteConclude;
 			}else{
 				return -1;
