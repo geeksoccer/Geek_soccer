@@ -14,15 +14,18 @@ import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.live_score_page.detail_view.Live_score_Detail_LiveView;
 import com.excelente.geek_soccer.live_score_page.detail_view.Live_score_detail_LineUpView;
+import com.excelente.geek_soccer.live_score_page.detail_view.Live_score_detail_statistic;
 import com.excelente.geek_soccer.livescore_noty.LiveScoreReload;
 import com.excelente.geek_soccer.livescore_noty.LiveScoreReload.LiveScoreCallbackClass;
 import com.excelente.geek_soccer.pic_download.DownLiveScorePic;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -68,9 +71,11 @@ public class Live_score_Detail_Json extends Activity {
 	JSONObject MatchData_ob;
 	JSONArray Team_Arr;
 	
+	View StatisticDetailView;
 	View LineUpView;
 	View LiveDetailView;
 	android.widget.LinearLayout.LayoutParams childParam;
+	String optaID="";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +83,19 @@ public class Live_score_Detail_Json extends Activity {
 		
 		setUpHeaderView();
 
-		new Live_score_Loader().execute();
+		if(!score_t.equals("vs")){
+			new OptaID_Loader().execute();
+		}else{
+			list_layout.removeAllViews();
+			TextView txt_T = new TextView(this);
+			txt_T.setLayoutParams(new LinearLayout.LayoutParams(
+					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+			txt_T.setGravity(Gravity.CENTER);
+			txt_T.setTextColor(Color.BLACK);
+			txt_T.setPadding(0, 0, 10, 0);
+			txt_T.setText("ยังไม่มีข้อมูลอัพเดทในขณะนี้");
+			list_layout.addView(txt_T);
+		}
 	}
 	
 	public void setUpHeaderView(){
@@ -260,10 +277,12 @@ public class Live_score_Detail_Json extends Activity {
 		tab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (name.equals("d")) {
+				if (name.equals("s")) {
 					setCurrentTab(0);
-				} else if (name.equals("l")) {
+				} else if (name.equals("d")) {
 					setCurrentTab(1);
+				} else if (name.equals("l")) {
+					setCurrentTab(2);
 				}
 			}
 		});
@@ -282,13 +301,29 @@ public class Live_score_Detail_Json extends Activity {
 			}
 		}
 		if (index == 0) {
+			if(StatisticDetailView!=null){
+				StatisticDetailView.setVisibility(RelativeLayout.ABOVE);
+			}
+			if(LiveDetailView!=null){
+				LiveDetailView.setVisibility(RelativeLayout.GONE);
+			}
+			if(LineUpView!=null){
+				LineUpView.setVisibility(RelativeLayout.GONE);
+			}
+		} else if (index == 1) {
+			if(StatisticDetailView!=null){
+				StatisticDetailView.setVisibility(RelativeLayout.GONE);
+			}
 			if(LiveDetailView!=null){
 				LiveDetailView.setVisibility(RelativeLayout.ABOVE);
 			}
 			if(LineUpView!=null){
 				LineUpView.setVisibility(RelativeLayout.GONE);
 			}
-		} else if (index == 1) {
+		} else if (index == 2) {
+			if(StatisticDetailView!=null){
+				StatisticDetailView.setVisibility(RelativeLayout.GONE);
+			}
 			if(LiveDetailView!=null){
 				LiveDetailView.setVisibility(RelativeLayout.GONE);
 			}
@@ -298,12 +333,9 @@ public class Live_score_Detail_Json extends Activity {
 		}
 		
 	}
+	
+	class OptaID_Loader extends AsyncTask<String, String, String> {
 
-	class Live_score_Loader extends AsyncTask<String, String, String> {
-
-		/**
-		 * Before starting background thread Show Progress Dialog
-		 * */
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -314,7 +346,44 @@ public class Live_score_Detail_Json extends Activity {
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				products = jParser
 						.makeHttpRequest(
-								"http://www.goal.com/feed/matches/statistics?optaMatchId=755457",
+								ControllParameter.GET_OPTA_ID_URL+"?matchID="+id_t,
+								"POST", params);
+				
+				if (products!=null) {
+					optaID = products.optString("optaMatchId");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		protected void onProgressUpdate(String... progress) {
+
+		}
+
+		protected void onPostExecute(String file_url) {
+			Live_score_Detail_Json.this.runOnUiThread(new Runnable() {
+				public void run() {
+					new Live_score_Loader().execute();
+				}
+			});
+		}
+	}
+
+	class Live_score_Loader extends AsyncTask<String, String, String> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		protected String doInBackground(String... args) {
+			try {
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				products = jParser
+						.makeHttpRequest(
+								"http://www.goal.com/feed/matches/statistics?optaMatchId="+optaID,
 								"POST", params);
 				
 				if (products!=null) {
@@ -338,21 +407,36 @@ public class Live_score_Detail_Json extends Activity {
 			Live_score_Detail_Json.this.runOnUiThread(new Runnable() {
 				public void run() {
 					list_layout.removeAllViews();
+					StatisticDetailView = new Live_score_detail_statistic().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
 					LineUpView = new Live_score_detail_LineUpView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
 					LiveDetailView = new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
 					
-					setupTab("d", "Match Detail", 0, false);
-					setupTab("l", "Line Up", 0, false);
+					setupTab("s", "Statistics", 0, false);
+					setupTab("d", "Events", 0, false);
+					setupTab("l", "Lineups", 0, false);
 					
 					childParam = new LinearLayout.LayoutParams(
 							LinearLayout.LayoutParams.MATCH_PARENT,
 							LinearLayout.LayoutParams.MATCH_PARENT);
+					
+					list_layout.addView(StatisticDetailView, childParam);
 					list_layout.addView(LiveDetailView, childParam);
 					list_layout.addView(LineUpView, childParam);
+					LiveDetailView.setVisibility(RelativeLayout.GONE);
 					LineUpView.setVisibility(RelativeLayout.GONE);
 					setCurrentTab(0);
 				}
 			});
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		data.detailPageOpenning = false;
+		data.fragement_Section_set(1);
+		overridePendingTransition(R.anim.in_trans_right_left,
+				R.anim.out_trans_left_right);
+		finish();
 	}
 }
