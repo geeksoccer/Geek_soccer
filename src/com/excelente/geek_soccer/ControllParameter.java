@@ -30,42 +30,48 @@ public class ControllParameter {
 	public static String DEL_STK_PERMIT_ONE = "http://"+ SERVER_URL + "/gs_stk_permission/stk_permission_del_one.php";
 
 	//News Page
-	public static String GET_NEWS_URL = "http://"+ SERVER_URL + "/gs_news/get_news.php";
-	public static String NEWS_READS_URL = "http://"+ SERVER_URL + "/gs_news/post_news_reads.php";
+	public static String GET_NEWS_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news/get_news.php";
+	public static String NEWS_READS_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news/post_news_reads.php";
+	public static String NEWS_LIKES_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news/post_news_like.php"; 
 	
 	//News Item Page
-	public static String NEWS_POST_COMMENTS_URL = "http://"+ SERVER_URL + "/gs_news_comments/post_news_comments.php";
-	public static String NEWS_GET_COMMENT_URL = "http://"+ SERVER_URL + "/gs_news_comments/get_news_comments.php?"; 
+	public static String NEWS_POST_COMMENTS_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news_comments/post_news_comments.php";
+	public static String NEWS_GET_COMMENT_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news_comments/get_news_comments.php?"; 
 	
 	//Score Board Page
-	public static String TABLE_URL = "http://"+ SERVER_URL + "/gs_table/get_table.php";
+	public static String TABLE_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_table/get_table.php";
 	
 	//Hilight Page
-	public static String GET_HILIGHT_URL = "http://"+ SERVER_URL + "/gs_hilight/get_hilight.php";
-	public static String HILIGHT_READS_URL = "http://"+ SERVER_URL + "/gs_hilight/post_hilight_reads.php";
+	public static String GET_HILIGHT_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_hilight/get_hilight.php";
+	public static String HILIGHT_READS_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_hilight/post_hilight_reads.php";
+	public static String HILIGHT_LIKES_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_hilight/post_hilight_like.php"; 
 	
 	//Hilight Item Page
-	public static String HILIGHT_POST_COMMENTS_URL = "http://"+ SERVER_URL + "/gs_hilight_comments/post_hilight_comments.php";
-	public static String HILIGHT_GET_COMMENT_URL = "http://"+ SERVER_URL + "/gs_hilight_comments/get_hilight_comments.php?";
+	public static String HILIGHT_POST_COMMENTS_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_hilight_comments/post_hilight_comments.php";
+	public static String HILIGHT_GET_COMMENT_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_hilight_comments/get_hilight_comments.php?";
 	
 	//Sing In Page
-	public static String MEMBER_SIGN_IN_URL = "http://"+ SERVER_URL + "/gs_member/member_sign_in.php"; 
-	public static String MEMBER_SIGN_UP_URL = "http://"+ SERVER_URL + "/gs_member/member_sign_up.php";
-	public static String MEMBER_TOKEN_URL = "http://"+ SERVER_URL + "/gs_member/member_token.php";
+	public static String MEMBER_SIGN_IN_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_sign_in.php"; 
+	public static String MEMBER_SIGN_UP_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_sign_up.php";
+	public static String MEMBER_TOKEN_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_token.php";
+	
+	//Select Team Page
+	public static String GET_SELECT_TEAM_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_select_team/get_select_team.php";
+	public static String SELECT_TEAM_UPDATE_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_update_team.php";
 	
 	//Profile Page
-	public static String MEMBER_UPDATE_URL = "http://"+ SERVER_URL + "/gs_member/member_update.php";
-	public static String MEMBER_IMAGES_URL = "http://"+ SERVER_URL + "/gs_member/member_images/";
+	public static String MEMBER_UPDATE_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_update.php";
+	public static String MEMBER_IMAGES_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_images/";
 	
 	//Sing Out Page
-	public static String MEMBER_SIGN_OUT_URL = "http://"+ SERVER_URL + "/gs_member/member_sign_out.php"; 
+	public static String MEMBER_SIGN_OUT_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_sign_out.php"; 
 	
 	//Update NEWS and Hilight
-	public static String GET_NEWS_UPDATE_URL = "http://"+ SERVER_URL + "/gs_news/get_news_update.php";
-	public static String GET_HILIGHT_UPDATE_URL = "http://"+ SERVER_URL + "/gs_hilight/get_hilight_update.php";
+	public static String GET_NEWS_UPDATE_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news/get_news_update.php";
+	public static String GET_HILIGHT_UPDATE_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_hilight/get_hilight_update.php";
 	
 	//Fixtures Page
-	public static String GET_FIXTURES_URL = "http://"+ SERVER_URL + "/gs_fixtures/get_fixtures_to_device.php";
+	public static String GET_FIXTURES_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_fixtures/get_fixtures_to_device.php";
 	
 	private  ControllParameter(Context context) {
         //randomizeServers();
