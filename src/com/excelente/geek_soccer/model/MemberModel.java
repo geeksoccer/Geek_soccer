@@ -6,11 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.excelente.geek_soccer.SessionManager;
-import com.excelente.geek_soccer.pic_download.DownLiveScorePic;
-
-import android.util.Log;
-
 public class MemberModel implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -31,6 +26,7 @@ public class MemberModel implements Serializable{
 	public static final String MEMBER_TOKEN = "m_token";
 	public static final String MEMBER_DEVID = "m_devid";
 	public static final String MEMBER_THEME_ID = "m_theme_id";
+	public static final String MEMBER_VERSION_DB = "m_version_db";
 	
 	public static final String MEMBER_GLOBAL_NEWS = "m_global_news";
 	
@@ -49,6 +45,7 @@ public class MemberModel implements Serializable{
     int themeId;
     ThemeModel theme;
     TeamModel team;
+    int versionDB;
     
 	public long getUid() {
 		return uid;
@@ -142,6 +139,12 @@ public class MemberModel implements Serializable{
 		this.team = team;
 	}
 	
+	public int getVersionDB() {
+		return versionDB;
+	}
+	public void setVersionDB(int versionDB) {
+		this.versionDB = versionDB;
+	}
 	public static MemberModel convertMemberJSONToList(String result) {
 		MemberModel member = new MemberModel();
 		
@@ -162,6 +165,7 @@ public class MemberModel implements Serializable{
 			member.setRole(memberObj.getInt(MemberModel.MEMBER_ROLE));
 			member.setToken(memberObj.getString(MemberModel.MEMBER_TOKEN));
 			member.setThemeId(memberObj.getInt(MemberModel.MEMBER_THEME_ID));
+			member.setVersionDB(memberObj.getInt(MemberModel.MEMBER_VERSION_DB));
 			
 			JSONObject themeObj = memberObj.getJSONObject("m_theme"); 
 			ThemeModel theme = new ThemeModel();
@@ -182,6 +186,7 @@ public class MemberModel implements Serializable{
 			team.setTeamLeague(teamObj.getString(TeamModel.TEAM_LEAGUE));
 			team.setTeamNameFind(teamObj.getString(TeamModel.TEAM_NAME_FIND));
 			team.setTeamShortName(teamObj.getString(TeamModel.TEAM_SHORT_NAME));
+			team.setTeamPort(teamObj.getString(TeamModel.TEAM_PORT));
 			member.setTeam(team);
 			
 		} catch (JSONException e) {

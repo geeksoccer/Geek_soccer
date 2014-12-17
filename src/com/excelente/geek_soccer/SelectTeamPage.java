@@ -116,6 +116,7 @@ public class SelectTeamPage extends Activity implements OnChildClickListener, On
 						team.setTeamTextColor(teamList.getJSONObject(j).getString("team_text_color"));
 						team.setTeamNameFind(teamList.getJSONObject(j).getString("team_name_find"));
 						team.setTeamLeague(teamList.getJSONObject(j).getString("team_league"));
+						team.setTeamPort(teamList.getJSONObject(j).getString("team_port"));
 						teams.add(team);
 					}
 					

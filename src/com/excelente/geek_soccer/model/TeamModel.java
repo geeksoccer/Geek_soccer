@@ -15,6 +15,7 @@ public class TeamModel implements Serializable{
 	public static final String TEAM_TEXT_COLOR = "team_text_color";
 	public static final String TEAM_NAME_FIND = "team_name_find"; 
 	public static final String TEAM_SHORT_NAME = "team_short_name"; 
+	public static final String TEAM_PORT = "team_port"; 
 	
 	private int teamId;
 	private String teamName;
@@ -25,6 +26,7 @@ public class TeamModel implements Serializable{
 	private String teamImage;
 	private String teamTextColor;
 	private String teamColor;
+	private String teamPort;
 	
 	public TeamModel(int teamId, String teamName, String teamImage, String teamColor) {
 		this.teamId = teamId;
@@ -106,5 +108,13 @@ public class TeamModel implements Serializable{
 
 	public void setTeamTextColor(String teamTextColor) {
 		this.teamTextColor = teamTextColor;
+	}
+
+	public String getTeamPort() {
+		return teamPort;
+	}
+
+	public void setTeamPort(String teamPort) {
+		this.teamPort = teamPort;
 	}
 }

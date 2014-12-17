@@ -55,6 +55,7 @@ public class ControllParameter {
 	public static String MEMBER_SIGN_IN_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_sign_in.php"; 
 	public static String MEMBER_SIGN_UP_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_sign_up.php";
 	public static String MEMBER_TOKEN_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_token.php";
+	public static String MEMBER_CHECK_AND_UPDATE_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_member/member_check_and_update.php";
 	
 	//Select Team Page
 	public static String GET_SELECT_TEAM_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_select_team/get_select_team.php";

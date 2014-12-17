@@ -31,8 +31,6 @@ import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
@@ -68,15 +66,15 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 		super.onCreate(savedInstanceState);
 		SessionManager.setLangApp(getApplicationContext());
 		
-		cancelNotify();
+		cancelNotify(); 
 		
-		if(SessionManager.hasMember(this) && SessionManager.hasThemeMember(this) && SessionManager.hasTeamMember(this)){
-			checkVersionAppAndDB(SessionManager.getMember(this));
-		}else{
+		//if(SessionManager.hasMember(this) && SessionManager.hasThemeMember(this) && SessionManager.hasTeamMember(this) && SessionManager.hasNewMemberVersionDB(this)){
+		//	checkVersionAppAndDB(SessionManager.getMember(this)); 
+		//}else{
 			setContentView(R.layout.sign_in_page);
 			initView();
 			doSignIn(); 
-		}
+		//}
 		
 		//doSelectTeam();
 	}
@@ -228,6 +226,8 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	}
 	 
 	private void gotoMainPage(MemberModel memberSignedIn) {
+		Log.e("VersionDB",  ""+SessionManager.getMember(getApplicationContext()).getVersionDB());
+		Log.e("Port",  SessionManager.getMember(getApplicationContext()).getTeam().getTeamPort());
         Intent intent = new Intent(Sign_In_Page.this, MainActivity.class);
         intent.putExtra(NewsModel.NEWS_ID+"tag", getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0));
         intent.putExtra(UpdateService.NOTIFY_INTENT, getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000));
@@ -236,15 +236,40 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	}
 	  
 	private void checkVersionAppAndDB(MemberModel memberSignedIn) {
-		try {
+		/*try {
 			PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			String versionName = pInfo.versionName;
 			int versionCode = pInfo.versionCode;
+			int versionDB = 0;
+			MemberModel member = SessionManager.getMember(getApplicationContext());
 			Log.e("versionName", versionName); 
 			Log.e("versionCode", String.valueOf(versionCode));
+			Log.e("versionDB", String.valueOf(versionDB));
+			
+			RequestParams params = new RequestParams();
+			params.put("versionName", versionName);
+			params.put("versionCode", versionCode);
+			params.put("versionDB", versionDB);
+			params.put("m_uid", member.getUid());
+			params.put("m_token", member.getToken());
+			params.put("time", new Date().getTime());
+			AsyncHttpClient client = new AsyncHttpClient();
+			client.post(getApplicationContext(), ControllParameter.MEMBER_CHECK_AND_UPDATE_URL, params, new AsyncHttpResponseHandler() {
+				
+				@Override
+				public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
+					String response = new String(arg2);
+					
+				}
+				
+				@Override
+				public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
+					
+				}
+			});
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 		gotoMainPage(memberSignedIn);
 	}
@@ -296,7 +321,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_USER, member.getUser()));
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_PASS, member.getPass()));
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_TYPE_LOGIN, member.getTypeLogin()));
-			
+
 			try {
 				String scope = "oauth2:" + SCOPE;
 				String token = GoogleAuthUtil.getToken(getApplicationContext(), member.getUser(), scope);

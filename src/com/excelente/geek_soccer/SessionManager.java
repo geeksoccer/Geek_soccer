@@ -10,8 +10,6 @@ import org.json.JSONException;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.TeamModel;
 import com.excelente.geek_soccer.model.ThemeModel;
-import com.excelente.geek_soccer.pic_download.DownChatPic;
-import com.excelente.geek_soccer.pic_download.DownLiveScorePic;
 import com.excelente.geek_soccer.utils.SecurePreferences;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -21,8 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory; 
-import android.os.AsyncTask;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
  
@@ -106,6 +103,11 @@ public class SessionManager {
 		else
 			member.setRole(0);
 		
+		if(memberFile.getString(MemberModel.MEMBER_VERSION_DB) != null)
+			member.setVersionDB(Integer.valueOf(memberFile.getString(MemberModel.MEMBER_VERSION_DB)));
+		else
+			member.setVersionDB(0);
+		
 		if(memberFile.getString(MemberModel.MEMBER_THEME_ID) != null){
 			member.setThemeId(Integer.valueOf(memberFile.getString(MemberModel.MEMBER_THEME_ID)));
 			if(member.getThemeId()>-1){
@@ -151,6 +153,11 @@ public class SessionManager {
 			team.setTeamShortName(memberFile.getString(TeamModel.TEAM_SHORT_NAME));
 		else
 			team.setTeamShortName("");
+		
+		if(memberFile.getString(TeamModel.TEAM_PORT) != null)
+			team.setTeamPort(memberFile.getString(TeamModel.TEAM_PORT));
+		else
+			team.setTeamPort("");
 		
 		return team;
 	}
@@ -211,6 +218,8 @@ public class SessionManager {
 			memberFile.put(MemberModel.MEMBER_TYPE_LOGIN, member.getTypeLogin());
 			memberFile.put(MemberModel.MEMBER_ROLE, String.valueOf(member.getRole()));
 			memberFile.put(MemberModel.MEMBER_THEME_ID, String.valueOf(member.getThemeId()));
+			memberFile.put(MemberModel.MEMBER_VERSION_DB, String.valueOf(member.getVersionDB()));
+			
 			if(member.getThemeId()>-1){
 				setThemeMember(context, member.getTheme(), memberFile);
 			}
@@ -228,6 +237,7 @@ public class SessionManager {
 			memberFile.put(TeamModel.TEAM_NAME_FIND, team.getTeamNameFind());
 			memberFile.put(TeamModel.TEAM_LEAGUE, team.getTeamLeague());
 			memberFile.put(TeamModel.TEAM_SHORT_NAME, team.getTeamShortName());
+			memberFile.put(TeamModel.TEAM_PORT, team.getTeamPort());
 		}
 	} 
 
@@ -297,6 +307,14 @@ public class SessionManager {
 	public static boolean hasTeamMember(Activity context) {
 		MemberModel member = SessionManager.getMember(context);
 		if(member.getTeamId()>-1 && member.getTeamId() == member.getTeam().getTeamId()){
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean hasNewMemberVersionDB(Activity context) {
+		MemberModel member = SessionManager.getMember(context);
+		if(member.getVersionDB() >= 100){
 			return true;
 		}
 		return false;
@@ -475,4 +493,5 @@ public class SessionManager {
 		memberFile.removeValue(MemberModel.MEMBER_TYPE_LOGIN);
 		memberFile.removeValue(MemberModel.MEMBER_ROLE);
 	}
+
 }
