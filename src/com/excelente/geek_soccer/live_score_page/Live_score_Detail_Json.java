@@ -92,20 +92,7 @@ public class Live_score_Detail_Json extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setUpHeaderView();
-
-		if(!score_t.equals("vs")){
-			new OptaID_Loader().execute();
-		}else{
-			list_layout.removeAllViews();
-			TextView txt_T = new TextView(this);
-			txt_T.setLayoutParams(new LinearLayout.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-			txt_T.setGravity(Gravity.CENTER);
-			txt_T.setTextColor(Color.BLACK);
-			txt_T.setPadding(0, 0, 10, 0);
-			txt_T.setText("ยังไม่มีข้อมูลอัพเดทในขณะนี้");
-			list_layout.addView(txt_T);
-		}
+		new OptaID_Loader().execute();
 	}
 	
 	public void setUpHeaderView(){
