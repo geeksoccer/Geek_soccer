@@ -34,24 +34,13 @@
             android:id="@+id/Title_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/Menu_btn"
+            android:layout_toLeftOf="@+id/Save_Mode_btn"
             android:layout_toRightOf="@+id/Up_btn"
             android:gravity="center"
             android:textSize="20dp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:text="@string/title_bar_news" />
-         
-        <ImageView
-            android:id="@+id/Menu_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_toLeftOf="@+id/Save_Mode_btn"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:visibility="invisible"
-            android:src="@drawable/menu_btn"
-            android:background="@drawable/bg_press" />
         
         <ImageView
             android:id="@+id/Save_Mode_btn"

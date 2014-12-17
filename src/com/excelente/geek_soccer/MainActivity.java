@@ -64,7 +64,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 	public static Button news_tab, live_tab, chat_tab, score_board_tab, game_tab;
 	
-	ImageView menu_btn;  
 	ImageView logout_btn;
 	ImageView news_btn;
 	LinearLayout TeamLogo;
@@ -263,25 +262,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	
 	private void menu_setting() {
 		Header_Layout = (RelativeLayout) findViewById(R.id.Header_Layout);
-		menu_btn = (ImageView) findViewById(R.id.Menu_btn);
-		
-		
-		if(SessionManager.getMember(MainActivity.this).getRole() == 1 || SessionManager.getMember(MainActivity.this).getTeamId() == 0){
-			menu_btn.setVisibility(View.VISIBLE);
-		}else{
-			menu_btn.setVisibility(View.GONE);
-		}
-		
-		menu_btn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if(SessionManager.getMember(MainActivity.this).getRole() == 1){
-					Intent selectTeamIntent = new Intent(MainActivity.this, SelectTeamPage.class);
-					startActivityForResult(selectTeamIntent, Sign_In_Page.REQUEST_CODE_SELECT_TEAM);
-				}
-			}
-		});
 		 
 		title_bar = (TextView)findViewById(R.id.Title_bar);
 		

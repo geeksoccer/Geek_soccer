@@ -37,8 +37,10 @@ import com.excelente.geek_soccer.GetdipSize;
 import com.excelente.geek_soccer.MainActivity;
 import com.excelente.geek_soccer.Profile_Page;
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.SelectTeamPage;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.Setting_Page;
+import com.excelente.geek_soccer.Sign_In_Page;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
@@ -50,13 +52,14 @@ import com.nineoldandroids.animation.Animator.AnimatorListener;
 
 public class SideMenuMain extends MainActivity implements OnClickListener {
 	Activity mContext;
-	private ImageView menuBtn;
 	LinearLayout newsBtn, LivscoreBtn, ChatBtn, scoreBoardBtn, HilightBtn;
 	LinearLayout profileBtn, rateBtn, shareBtn, settingBtn, logoutBtn;
 	ImageView newsBtnIcon, LivscoreBtnIcon, ChatBtnIcon, scoreBoardBtnIcon,
 			HilightBtnIcon, saveMode_btn;
 	private LinearLayout FixturesBtn;
 	private View FixturesLine;
+	private LinearLayout SelectTeamBtn;
+	private View SelectTeamLine;
 
 	private static ControllParameter data;
 
@@ -91,20 +94,6 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 			}
 		});
 
-		menuBtn = (ImageView) mContext.findViewById(R.id.Menu_btnMenu);
-		if (SessionManager.getMember(mContext).getRole() == 2) {
-			menuBtn.setVisibility(View.GONE);
-		} else {
-			menuBtn.setVisibility(View.VISIBLE);
-		}
-		menuBtn.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				//hideMenu(mContext);
-			}
-		});
-
 		saveMode_btn = (ImageView) mContext
 				.findViewById(R.id.Save_Mode_btnMenu);
 		String saveMode = SessionManager.getSetting(mContext,
@@ -126,6 +115,8 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 		HilightBtn = (LinearLayout) data.Menu_View.findViewById(R.id.Hilight);
 		FixturesBtn = (LinearLayout) data.Menu_View.findViewById(R.id.Fixtures);
 		FixturesLine = data.Menu_View.findViewById(R.id.Fixtures_Line);
+		SelectTeamBtn = (LinearLayout) data.Menu_View.findViewById(R.id.SelectTeamLayout);
+		SelectTeamLine = data.Menu_View.findViewById(R.id.SelectTeam_Line);
 
 		newsBtnIcon = (ImageView) data.Menu_View.findViewById(R.id.NewsIcon);
 		LivscoreBtnIcon = (ImageView) data.Menu_View
@@ -142,6 +133,7 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 		scoreBoardBtn.setOnClickListener(this);
 		HilightBtn.setOnClickListener(this);
 		FixturesBtn.setOnClickListener(this);
+		SelectTeamBtn.setOnClickListener(this);
 
 		profileBtn = (LinearLayout) data.Menu_View.findViewById(R.id.Profile);
 		rateBtn = (LinearLayout) data.Menu_View.findViewById(R.id.Rate);
@@ -158,6 +150,14 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 		if (SessionManager.getMember(mContext).getTeamId() == 0) {
 			FixturesBtn.setVisibility(View.GONE);
 			FixturesLine.setVisibility(View.GONE);
+		}
+		
+		if(SessionManager.getMember(mContext).getRole() == 1 || SessionManager.getMember(mContext).getTeamId() == 0){
+			SelectTeamBtn.setVisibility(View.VISIBLE);
+			SelectTeamLine.setVisibility(View.VISIBLE);
+		}else{
+			SelectTeamBtn.setVisibility(View.GONE);
+			SelectTeamLine.setVisibility(View.GONE);
 		}
 
 		SetCurTab();
@@ -389,6 +389,16 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 			mContext.startActivity(gotoFixtures);
 			hideMenuNoAni();
 			break;
+		}
+		case R.id.SelectTeamLayout: {
+			
+			if(SessionManager.getMember(mContext).getRole() == 1 || SessionManager.getMember(mContext).getTeamId() == 0){
+				Intent selectTeamIntent = new Intent(mContext, SelectTeamPage.class);
+				mContext.startActivityForResult(selectTeamIntent, Sign_In_Page.REQUEST_CODE_SELECT_TEAM);
+				hideMenuNoAni();
+			}
+			break;
+			
 		}
 		case R.id.Profile: {
 

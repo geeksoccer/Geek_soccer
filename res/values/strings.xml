@@ -47,6 +47,7 @@
     <string name="title_bar_sticker_shop">STICKER SHOP</string>
     <string name="title_bar_config">CONFIGURATION</string>
     <string name="title_bar_fixtures">FIXTURES</string>
+    <string name="title_bar_selecteam">SELECT TEAM</string>
     
     <string name="table_head_seq">#</string>
     <string name="table_head_team">Team</string>

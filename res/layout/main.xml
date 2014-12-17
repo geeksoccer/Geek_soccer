@@ -39,24 +39,13 @@
                 android:id="@+id/Title_bar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/Menu_btn"
+                android:layout_toLeftOf="@+id/Save_Mode_btn"
                 android:layout_toRightOf="@+id/Up_btn"
                 android:gravity="center"
                 android:text="@string/title_bar_news"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/Menu_btn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/Save_Mode_btn"
-                android:background="@drawable/bg_press"
-                android:src="@drawable/menu_btn"
-                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/Save_Mode_btn"
@@ -162,24 +151,13 @@
                 android:id="@+id/Title_barMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/Menu_btnMenu"
+                android:layout_toLeftOf="@+id/Save_Mode_btnMenu"
                 android:layout_toRightOf="@+id/Up_btnMenu"
                 android:gravity="center"
                 android:text="@string/title_bar_news"
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/Menu_btnMenu"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/Save_Mode_btnMenu"
-                android:background="@drawable/bg_press"
-                android:src="@drawable/menu_btn"
-                android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/Save_Mode_btnMenu"

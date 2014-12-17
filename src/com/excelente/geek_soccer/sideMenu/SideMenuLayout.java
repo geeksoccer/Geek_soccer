@@ -59,8 +59,6 @@ public class SideMenuLayout implements OnClickListener{
 
 	private Button settingBtn;
 
-	private ImageView menuBtn;
-
 	private ImageView saveMode_btn;
 	
 	private static ControllParameter data;
@@ -94,19 +92,6 @@ public class SideMenuLayout implements OnClickListener{
 			}
 		});
 		
-		menuBtn = (ImageView) data.Menu_Layout.findViewById(R.id.Menu_btn);
-		if(SessionManager.getMember(mContext).getRole() == 2){
-			menuBtn.setVisibility(View.GONE);
-		}else{
-			menuBtn.setVisibility(View.VISIBLE);
-		}
-		menuBtn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				hideMenu(mContext);
-			}
-		});
 		
 		saveMode_btn = (ImageView)MenuLayV.findViewById(R.id.Save_Mode_btn);
 		String saveMode = SessionManager.getSetting(mContext, SessionManager.setting_save_mode);
