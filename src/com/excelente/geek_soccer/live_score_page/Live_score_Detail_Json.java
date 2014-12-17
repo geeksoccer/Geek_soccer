@@ -76,6 +76,9 @@ public class Live_score_Detail_Json extends Activity {
 	View LiveDetailView;
 	android.widget.LinearLayout.LayoutParams childParam;
 	String optaID="";
+	private RelativeLayout Header_Layout;
+	private ImageView Team_Logo;
+	private TextView Title_bar;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +105,6 @@ public class Live_score_Detail_Json extends Activity {
 		data = ControllParameter.getInstance(this);
 
 		data.fragement_Section_set(0);
-		ThemeUtils.setThemeByTeamId(this, SessionManager.getMember(this)
-				.getTeamId());
 		LayoutInflater factory = LayoutInflater.from(this);
 		View myView = factory.inflate(R.layout.live_score_detail_json, null);
 		setContentView(myView);
@@ -233,8 +234,20 @@ public class Live_score_Detail_Json extends Activity {
 				LiveScoreReloadCallBack.SelectReload(type, Live_score_Detail_Json.this);
 			}
 		});
+		
+		Header_Layout = (RelativeLayout) myView.findViewById(R.id.Header_Layout);
+		Team_Logo = (ImageView) myView.findViewById(R.id.Team_Logo);
+		Title_bar = (TextView) myView.findViewById(R.id.Title_bar);
+		
+		setThemeToView();
 	}
 	
+	private void setThemeToView() {
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, Header_Layout);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_LOGO, Team_Logo);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_LOGO, Title_bar);
+	}
+
 	private void setupTab(final String name, String label, Integer iconId,
 			boolean selected) {
 

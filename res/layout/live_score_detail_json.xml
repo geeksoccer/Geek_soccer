@@ -7,7 +7,6 @@
 
     <RelativeLayout
         android:id="@+id/Header_Layout"
-        style="?backgroundTheme"
         android:layout_width="match_parent"
         android:layout_height="50dp" >
 
@@ -38,7 +37,6 @@
 
             <ImageView
                 android:id="@+id/Team_Logo"
-                style="?logoTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
