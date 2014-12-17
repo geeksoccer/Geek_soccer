@@ -61,7 +61,7 @@ public class Live_score_Detail_Json extends Activity {
 	String score_t = "";
 	Boolean loading = false;
 	Boolean FirstLoad = true;
-	String id_t = "", Home_name_t = "", Away_name_t = "", score_ag_t = "", detail_t = "";
+	String id_t = "", opta_id_t = "", Home_name_t = "", Away_name_t = "", score_ag_t = "", detail_t = "";
 	public static String Home_img_t = "", Away_img_t = "";
 	
 	LinearLayout MenuLayout;
@@ -145,6 +145,7 @@ public class Live_score_Detail_Json extends Activity {
 
 		try {
 			id_t = getValue.getString("id");
+			opta_id_t = getValue.getString("opta_id");
 			Time_t = getValue.getString("Time").substring(3);
 			link_t = getValue.getString("link").replace("/en/", "/th/")
 					+ "/live-commentary/main-events";
@@ -420,24 +421,35 @@ public class Live_score_Detail_Json extends Activity {
 			Live_score_Detail_Json.this.runOnUiThread(new Runnable() {
 				public void run() {
 					list_layout.removeAllViews();
-					StatisticDetailView = new Live_score_detail_statistic().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
-					LineUpView = new Live_score_detail_LineUpView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
-					LiveDetailView = new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
-					
-					setupTab("s", "Statistics", 0, false);
-					setupTab("d", "Events", 0, false);
-					setupTab("l", "Lineups", 0, false);
-					
-					childParam = new LinearLayout.LayoutParams(
-							LinearLayout.LayoutParams.MATCH_PARENT,
-							LinearLayout.LayoutParams.MATCH_PARENT);
-					
-					list_layout.addView(StatisticDetailView, childParam);
-					list_layout.addView(LiveDetailView, childParam);
-					list_layout.addView(LineUpView, childParam);
-					LiveDetailView.setVisibility(RelativeLayout.GONE);
-					LineUpView.setVisibility(RelativeLayout.GONE);
-					setCurrentTab(0);
+					if(MatchData_ob!=null && Team_Arr!=null){
+						StatisticDetailView = new Live_score_detail_statistic().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
+						LineUpView = new Live_score_detail_LineUpView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
+						LiveDetailView = new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
+						
+						setupTab("s", "Statistics", 0, false);
+						setupTab("d", "Events", 0, false);
+						setupTab("l", "Lineups", 0, false);
+						
+						childParam = new LinearLayout.LayoutParams(
+								LinearLayout.LayoutParams.MATCH_PARENT,
+								LinearLayout.LayoutParams.MATCH_PARENT);
+						
+						list_layout.addView(StatisticDetailView, childParam);
+						list_layout.addView(LiveDetailView, childParam);
+						list_layout.addView(LineUpView, childParam);
+						LiveDetailView.setVisibility(RelativeLayout.GONE);
+						LineUpView.setVisibility(RelativeLayout.GONE);
+						setCurrentTab(0);
+					}else{
+						TextView txt_T = new TextView(Live_score_Detail_Json.this);
+						txt_T.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+						txt_T.setGravity(Gravity.CENTER);
+						txt_T.setTextColor(Color.BLACK);
+						txt_T.setPadding(0, 0, 10, 0);
+						txt_T.setText("ยังไม่มีข้อมูลอัพเดทในขณะนี้");
+						list_layout.addView(txt_T);
+					}
 				}
 			});
 		}
