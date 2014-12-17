@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,16 +36,21 @@ public class Live_score_Detail_LiveView {
 	JSONArray Team_Arr;
 	JSONObject MatchData_ob;
 
-	ArrayList<JSONObject> LiveDetail_List = new ArrayList<JSONObject>();
+	List<JSONObject> LiveDetail_List = new ArrayList<JSONObject>();
 	HashMap<String, String> Player_Map = new HashMap<String, String>();
 
 	public View getView(Activity activity, JSONArray Team_Arr,
-			JSONObject MatchData_ob) {
+			JSONObject MatchData_ob, List<JSONObject> listDetail ) {
 		this.Team_Arr = Team_Arr;
 		this.MatchData_ob = MatchData_ob;
+		
 		mActivity = activity;
-
-		prepareData();
+		if(MatchData_ob!=null){
+			prepareData();
+		}else{
+			LiveDetail_List = listDetail;
+		}
+		
 
 		lstView = new ListView(mActivity);
 		lstView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -238,127 +244,233 @@ public class Live_score_Detail_LiveView {
 				txt_T.setText("ยังไม่มีข้อมูลอัพเดทในขณะนี้");
 				retval.addView(txt_T);
 			} else {
-				try {
-					JSONObject txt_Item = LiveDetail_List.get(position);
+				if(MatchData_ob!=null){
+					try {
+						JSONObject txt_Item = LiveDetail_List.get(position);
 
-					ImageView img_Team = new ImageView(mContext);
-					img_Team.setLayoutParams(new LayoutParams(30, 30));
-					String TeamID = txt_Item.getString("TeamID");
-					if (TeamID.equals("H")) {
-						if (Live_score_Detail_Json.data
-								.get_HomeMap(Live_score_Detail_Json.Home_img_t) != null) {
-							img_Team.setImageBitmap(Live_score_Detail_Json.data
-									.get_HomeMap(Live_score_Detail_Json.Home_img_t));
+						ImageView img_Team = new ImageView(mContext);
+						img_Team.setLayoutParams(new LayoutParams(30, 30));
+						String TeamID = txt_Item.getString("TeamID");
+						if (TeamID.equals("H")) {
+							if (Live_score_Detail_Json.data
+									.get_HomeMap(Live_score_Detail_Json.Home_img_t) != null) {
+								img_Team.setImageBitmap(Live_score_Detail_Json.data
+										.get_HomeMap(Live_score_Detail_Json.Home_img_t));
+							}
+						} else if (TeamID.equals("A")) {
+							if (Live_score_Detail_Json.data
+									.get_AwayMap(Live_score_Detail_Json.Away_img_t) != null) {
+								img_Team.setImageBitmap(Live_score_Detail_Json.data
+										.get_AwayMap(Live_score_Detail_Json.Away_img_t));
+							}
 						}
-					} else if (TeamID.equals("A")) {
-						if (Live_score_Detail_Json.data
-								.get_AwayMap(Live_score_Detail_Json.Away_img_t) != null) {
-							img_Team.setImageBitmap(Live_score_Detail_Json.data
-									.get_AwayMap(Live_score_Detail_Json.Away_img_t));
-						}
-					}
 
-					TextView txt_T = new TextView(mContext);
-					txt_T.setLayoutParams(new LinearLayout.LayoutParams(
-							LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT));
-					// txt.setGravity(Gravity.CENTER);
-					txt_T.setTextColor(colors);
-					txt_T.setPadding(10, 0, 10, 0);
-
-					TextView txt_N = new TextView(mContext);
-					txt_N.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 1));
-					txt_N.setTextColor(colors);
-
-					ImageView img_E = new ImageView(mContext);
-					img_E.setLayoutParams(new LayoutParams(30, 30));
-
-					String Time = txt_Item.getString("Time");
-
-					txt_T.setText(Time + "'");
-
-					retval.addView(img_Team);
-					retval.addView(txt_T);
-					if (txt_Item.getString("eventType").equals("substitution")) {
-						TextView txt_Sub = new TextView(mContext);
-						txt_Sub.setLayoutParams(new LinearLayout.LayoutParams(
-								0, LayoutParams.WRAP_CONTENT, 1));
-						txt_Sub.setTextColor(colors);
-						txt_N.setLayoutParams(new LinearLayout.LayoutParams(
+						TextView txt_T = new TextView(mContext);
+						txt_T.setLayoutParams(new LinearLayout.LayoutParams(
 								LayoutParams.WRAP_CONTENT,
 								LayoutParams.WRAP_CONTENT));
-						img_E.setImageResource(R.drawable.substitution);
+						// txt.setGravity(Gravity.CENTER);
+						txt_T.setTextColor(colors);
+						txt_T.setPadding(10, 0, 10, 0);
 
-						String subOut = txt_Item.getString("SubOff");
-						subOut = Player_Map.get(subOut);
+						TextView txt_N = new TextView(mContext);
+						txt_N.setLayoutParams(new LinearLayout.LayoutParams(0,
+								LayoutParams.WRAP_CONTENT, 1));
+						txt_N.setTextColor(colors);
 
-						txt_N.setText(subOut);
-						ImageView img_SubIn = new ImageView(mContext);
-						img_SubIn.setLayoutParams(new LayoutParams(30, 30));
-						img_SubIn.setImageResource(R.drawable.substitution_in);
+						ImageView img_E = new ImageView(mContext);
+						img_E.setLayoutParams(new LayoutParams(30, 30));
 
-						String subIn = txt_Item.getString("SubOn");
-						subIn = Player_Map.get(subIn);
-						txt_Sub.setText(subIn);
+						String Time = txt_Item.getString("Time");
 
-						retval.addView(img_E);
-						retval.addView(txt_N);
-						retval.addView(img_SubIn);
-						retval.addView(txt_Sub);
-					} else {
-						String Event = "";
-						String msgText = txt_Item.getString("PlayerRef");
-						msgText = Player_Map.get(msgText);
-						if (txt_Item.getString("eventType").contains("Yellow")) {
-							img_E.setImageResource(R.drawable.yellow);
-						} else if (txt_Item.getString("eventType").contains(
-								"Red")) {
-							img_E.setImageResource(R.drawable.red);
-						} else if (txt_Item.getString("eventType").contains(
-								"SeccondYellow")) {
-							ImageView img_EY = new ImageView(mContext);
-							img_EY.setLayoutParams(new LayoutParams(30, 30));
-							img_EY.setImageResource(R.drawable.yellow);
-							retval.addView(img_EY);
-							img_E.setImageResource(R.drawable.red);
-						} else if (txt_Item.getString("eventType").contains(
-								"yellow-red")) {
-							ImageView img_EY = new ImageView(mContext);
-							img_EY.setLayoutParams(new LayoutParams(30, 30));
-							img_EY.setImageResource(R.drawable.yellow);
-							retval.addView(img_EY);
-							img_E.setImageResource(R.drawable.red);
-						} else if (txt_Item.getString("eventType").contains(
-								"Penalty")) {
-							Event = "(PG)";
-							img_E.setImageResource(R.drawable.p_goal);
-						} else if (txt_Item.getString("eventType").contains(
-								"pen-so-goal")) {
-							Event = "(PG)";
-							img_E.setImageResource(R.drawable.p_goal);
-						} else if (txt_Item.getString("eventType").contains(
-								"Own")) {
-							Event = "(OG)";
-							img_E.setImageResource(R.drawable.ow_goal);
-						} else if (txt_Item.getString("eventType").contains(
-								"Goal")) {
-							Event = "(G)";
-							img_E.setImageResource(R.drawable.goal);
-						} else if (txt_Item.getString("eventType").contains(
-								"Assist")) {
-							Event = "(A)";
-							img_E.setImageResource(R.drawable.assist);
+						txt_T.setText(Time + "'");
+
+						retval.addView(img_Team);
+						retval.addView(txt_T);
+						if (txt_Item.getString("eventType").equals("substitution")) {
+							TextView txt_Sub = new TextView(mContext);
+							txt_Sub.setLayoutParams(new LinearLayout.LayoutParams(
+									0, LayoutParams.WRAP_CONTENT, 1));
+							txt_Sub.setTextColor(colors);
+							txt_N.setLayoutParams(new LinearLayout.LayoutParams(
+									LayoutParams.WRAP_CONTENT,
+									LayoutParams.WRAP_CONTENT));
+							img_E.setImageResource(R.drawable.substitution);
+
+							String subOut = txt_Item.getString("SubOff");
+							subOut = Player_Map.get(subOut);
+
+							txt_N.setText(subOut);
+							ImageView img_SubIn = new ImageView(mContext);
+							img_SubIn.setLayoutParams(new LayoutParams(30, 30));
+							img_SubIn.setImageResource(R.drawable.substitution_in);
+
+							String subIn = txt_Item.getString("SubOn");
+							subIn = Player_Map.get(subIn);
+							txt_Sub.setText(subIn);
+
+							retval.addView(img_E);
+							retval.addView(txt_N);
+							retval.addView(img_SubIn);
+							retval.addView(txt_Sub);
+						} else {
+							String Event = "";
+							String msgText = txt_Item.getString("PlayerRef");
+							msgText = Player_Map.get(msgText);
+							if (txt_Item.getString("eventType").contains("Yellow")) {
+								img_E.setImageResource(R.drawable.yellow);
+							} else if (txt_Item.getString("eventType").contains(
+									"Red")) {
+								img_E.setImageResource(R.drawable.red);
+							} else if (txt_Item.getString("eventType").contains(
+									"SeccondYellow")) {
+								ImageView img_EY = new ImageView(mContext);
+								img_EY.setLayoutParams(new LayoutParams(30, 30));
+								img_EY.setImageResource(R.drawable.yellow);
+								retval.addView(img_EY);
+								img_E.setImageResource(R.drawable.red);
+							} else if (txt_Item.getString("eventType").contains(
+									"yellow-red")) {
+								ImageView img_EY = new ImageView(mContext);
+								img_EY.setLayoutParams(new LayoutParams(30, 30));
+								img_EY.setImageResource(R.drawable.yellow);
+								retval.addView(img_EY);
+								img_E.setImageResource(R.drawable.red);
+							} else if (txt_Item.getString("eventType").contains(
+									"Penalty")) {
+								Event = "(PG)";
+								img_E.setImageResource(R.drawable.p_goal);
+							} else if (txt_Item.getString("eventType").contains(
+									"pen-so-goal")) {
+								Event = "(PG)";
+								img_E.setImageResource(R.drawable.p_goal);
+							} else if (txt_Item.getString("eventType").contains(
+									"Own")) {
+								Event = "(OG)";
+								img_E.setImageResource(R.drawable.ow_goal);
+							} else if (txt_Item.getString("eventType").contains(
+									"Goal")) {
+								Event = "(G)";
+								img_E.setImageResource(R.drawable.goal);
+							} else if (txt_Item.getString("eventType").contains(
+									"Assist")) {
+								Event = "(A)";
+								img_E.setImageResource(R.drawable.assist);
+							}
+
+							txt_N.setText(Event + msgText);
+							retval.addView(img_E);
+							retval.addView(txt_N);
 						}
 
-						txt_N.setText(Event + msgText);
-						retval.addView(img_E);
-						retval.addView(txt_N);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+				}else{
+					try {
+						JSONObject txt_Item = LiveDetail_List.get(position);
+						TextView txt_T = new TextView(mContext);
+						txt_T.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+						// txt.setGravity(Gravity.CENTER);
+						txt_T.setTextColor(colors);
+						txt_T.setPadding(0, 0, 10, 0);
 
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+						TextView txt_N = new TextView(mContext);
+						txt_N.setLayoutParams(new LinearLayout.LayoutParams(0,
+								LayoutParams.WRAP_CONTENT, 1));
+						txt_N.setTextColor(colors);
+
+						ImageView img_E = new ImageView(mContext);
+						img_E.setLayoutParams(new LayoutParams(30, 30));
+
+						txt_T.setText(txt_Item.getString("time"));
+						retval.addView(txt_T);
+						if (txt_Item.getString("eventType").equals("substitution")) {
+							TextView txt_Sub = new TextView(mContext);
+							txt_Sub.setLayoutParams(new LinearLayout.LayoutParams(
+									0, LayoutParams.WRAP_CONTENT, 1));
+							txt_Sub.setTextColor(colors);
+							txt_N.setLayoutParams(new LinearLayout.LayoutParams(
+									LayoutParams.WRAP_CONTENT,
+									LayoutParams.WRAP_CONTENT));
+							img_E.setImageResource(R.drawable.substitution);
+							txt_N.setText(txt_Item.getString("subOut"));
+							ImageView img_SubIn = new ImageView(mContext);
+							img_SubIn.setLayoutParams(new LayoutParams(30, 30));
+							img_SubIn.setImageResource(R.drawable.substitution_in);
+
+							txt_Sub.setText(txt_Item.getString("subIn"));
+
+							retval.addView(img_E);
+							retval.addView(txt_N);
+							retval.addView(img_SubIn);
+							retval.addView(txt_Sub);
+						} else {
+
+							String Event = "";
+							String msgText = txt_Item.getString("text");
+							if (txt_Item.getString("eventType").contains(
+									"yellow-card")) {
+								img_E.setImageResource(R.drawable.yellow);
+								msgText.replace("ใบเหลือง", "");
+							} else if (txt_Item.getString("eventType").contains(
+									"red-card")) {
+								img_E.setImageResource(R.drawable.red);
+								msgText.replace("ใบเแดง", "");
+							} else if (txt_Item.getString("eventType").contains(
+									"yellow/red-card")) {
+								ImageView img_EY = new ImageView(mContext);
+								img_EY.setLayoutParams(new LayoutParams(30, 30));
+								img_EY.setImageResource(R.drawable.yellow);
+								retval.addView(img_EY);
+								img_E.setImageResource(R.drawable.red);
+								msgText.replace("Yellow/Red", "");
+							} else if (txt_Item.getString("eventType").contains(
+									"yellow-red")) {
+								ImageView img_EY = new ImageView(mContext);
+								img_EY.setLayoutParams(new LayoutParams(30, 30));
+								img_EY.setImageResource(R.drawable.yellow);
+								retval.addView(img_EY);
+								img_E.setImageResource(R.drawable.red);
+								msgText.replace("Yellow/Red", "");
+							} else if (txt_Item.getString("eventType").contains(
+									"penalty-goal")) {
+								Event = "(PG)";
+								img_E.setImageResource(R.drawable.p_goal);
+							} else if (txt_Item.getString("eventType").contains(
+									"pen-so-goal")) {
+								Event = "(PG)";
+								img_E.setImageResource(R.drawable.p_goal);
+								msgText.replace("Pen So Goal", "");
+							} else if (txt_Item.getString("eventType").contains(
+									"own-goal")) {
+								Event = "(OG)";
+								img_E.setImageResource(R.drawable.ow_goal);
+								msgText.replace("Own Goal", "");
+							} else if (txt_Item.getString("eventType").contains(
+									"goal")) {
+								Event = "(G)";
+								img_E.setImageResource(R.drawable.goal);
+								msgText.replace("ประตู", "");
+							} else if (txt_Item.getString("eventType").contains(
+									"assist")) {
+								Event = "(A)";
+								img_E.setImageResource(R.drawable.assist);
+								msgText.replace("แอสซิสต์", "");
+							}
+							
+							txt_N.setText(Event + msgText);
+							retval.addView(img_E);
+							retval.addView(txt_N);
+						}
+
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 

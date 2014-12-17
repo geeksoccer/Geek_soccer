@@ -1,9 +1,13 @@
 package com.excelente.geek_soccer.live_score_page;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +29,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +45,7 @@ public class Live_score_Detail_Json extends Activity {
 	JSONParser jParser = new JSONParser();
 	JSONObject products = null;
 	
+	String URL = "http://www.goal.com";
 	int Detail_positon;
 	TextView Time, Score, Home_name, Away_name, Detail;
 	ImageView Home_Pic, Away_Pic;
@@ -53,6 +59,7 @@ public class Live_score_Detail_Json extends Activity {
 	public static ControllParameter data;
 	// String player_Detail[];
 	ArrayList<String> player_Detail = new ArrayList<String>();
+	List<JSONObject> ListDetail = new ArrayList<JSONObject>();
 	int position;
 	String type;
 	TextView txt_Aggregate;
@@ -161,6 +168,7 @@ public class Live_score_Detail_Json extends Activity {
 			e.printStackTrace();
 		}
 
+		URL += link_t;
 		Time.setText(Time_t);
 		String saveModeGet = SessionManager.getSetting(this,
 				SessionManager.setting_save_mode);
@@ -405,10 +413,12 @@ public class Live_score_Detail_Json extends Activity {
 				
 				if (products!=null) {
 					
-					JSONObject SoccerFeed_ob = products.getJSONObject("SoccerFeed");
-					JSONObject SoccerDocument_ob = SoccerFeed_ob.getJSONObject("SoccerDocument");
-					MatchData_ob = SoccerDocument_ob.getJSONObject("MatchData");
-					Team_Arr = SoccerDocument_ob.getJSONArray("Team");
+					JSONObject SoccerFeed_ob = products.optJSONObject("SoccerFeed");
+					if(SoccerFeed_ob!=null){
+						JSONObject SoccerDocument_ob = SoccerFeed_ob.optJSONObject("SoccerDocument");
+						MatchData_ob = SoccerDocument_ob.optJSONObject("MatchData");
+						Team_Arr = SoccerDocument_ob.optJSONArray("Team");
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -423,19 +433,20 @@ public class Live_score_Detail_Json extends Activity {
 		protected void onPostExecute(String file_url) {
 			Live_score_Detail_Json.this.runOnUiThread(new Runnable() {
 				public void run() {
-					list_layout.removeAllViews();
+					
+					childParam = new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.MATCH_PARENT,
+							LinearLayout.LayoutParams.MATCH_PARENT);
+					
 					if(MatchData_ob!=null && Team_Arr!=null){
+						list_layout.removeAllViews();
 						StatisticDetailView = new Live_score_detail_statistic().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
 						LineUpView = new Live_score_detail_LineUpView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
-						LiveDetailView = new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
+						LiveDetailView = new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob, null);
 						
 						setupTab("s", "Statistics", 0, false);
 						setupTab("d", "Events", 0, false);
 						setupTab("l", "Lineups", 0, false);
-						
-						childParam = new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.MATCH_PARENT,
-								LinearLayout.LayoutParams.MATCH_PARENT);
 						
 						list_layout.addView(StatisticDetailView, childParam);
 						list_layout.addView(LiveDetailView, childParam);
@@ -444,6 +455,48 @@ public class Live_score_Detail_Json extends Activity {
 						LineUpView.setVisibility(RelativeLayout.GONE);
 						setCurrentTab(0);
 					}else{
+						new Live_score_Loader_Old().execute();
+					}
+				}
+			});
+		}
+	}
+	
+	class Live_score_Loader_Old extends AsyncTask<String, String, String> {
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		protected String doInBackground(String... args) {
+			try {
+				loading = true;
+				player_Detail.clear();
+				ListDetail.clear();
+				if(!score_t.equals("vs")){
+					HtmlHelper_LiveScore live = new HtmlHelper_LiveScore(new URL(
+							URL));
+					live.getLinksByID("play-by-play");
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		protected void onProgressUpdate(String... progress) {
+
+		}
+
+		protected void onPostExecute(String file_url) {
+			Live_score_Detail_Json.this.runOnUiThread(new Runnable() {
+				public void run() {
+					list_layout.removeAllViews();
+					if (ListDetail.size() <= 0) {
 						TextView txt_T = new TextView(Live_score_Detail_Json.this);
 						txt_T.setLayoutParams(new LinearLayout.LayoutParams(
 								LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -452,9 +505,92 @@ public class Live_score_Detail_Json extends Activity {
 						txt_T.setPadding(0, 0, 10, 0);
 						txt_T.setText("ยังไม่มีข้อมูลอัพเดทในขณะนี้");
 						list_layout.addView(txt_T);
+					}else{
+						LiveDetailView = new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, null, null, ListDetail);
+						list_layout.addView(LiveDetailView, childParam);
 					}
 				}
 			});
+		}
+	}
+	
+	public class HtmlHelper_LiveScore {
+		TagNode rootNode;
+
+		public HtmlHelper_LiveScore(URL htmlPage) throws IOException {
+			HtmlCleaner cleaner = new HtmlCleaner();
+			rootNode = cleaner.clean(htmlPage);
+		}
+
+		List<TagNode> getLinksByID(String CSSIDname) throws JSONException {
+
+			List<TagNode> linkList = new ArrayList<TagNode>();
+
+			TagNode mainElement[] = rootNode.getElementsByName("ul", true);
+			for (int i = 0; mainElement != null && i < mainElement.length; i++) {
+				String AttValue = mainElement[i].getAttributeByName("class");
+				if (AttValue != null && AttValue.contains("commentaries")) {
+					TagNode liElement[] = mainElement[i].getElementsByName(
+							"li", true);
+					for (int j = 0; liElement != null && j < liElement.length; j++) {
+						String eAttValue = liElement[j]
+								.getAttributeByName("data-event-type");
+						if (eAttValue != null) {
+							if (!eAttValue.equals("action")) {
+								JSONObject jObOut = new JSONObject();
+								jObOut.put("eventType", eAttValue);
+
+								TagNode divElement[] = liElement[j]
+										.getElementsByName("div", true);
+								for (int k = 0; divElement != null
+										&& k < divElement.length; k++) {
+									AttValue = divElement[k]
+											.getAttributeByName("class");
+									if (AttValue != null) {
+										if (AttValue.equals("time")) {
+											jObOut.put("time", divElement[k]
+													.getText().toString()
+													.replace("\n", ""));
+										} else if (AttValue.equals("text")) {
+											if (eAttValue
+													.equals("substitution")) {
+												TagNode Outtag[] = divElement[k]
+														.getElementsByAttValue(
+																"class",
+																"sub-out",
+																true, true);
+												TagNode Intag[] = divElement[k]
+														.getElementsByAttValue(
+																"class",
+																"sub-in", true,
+																true);
+												jObOut.put("subOut", Outtag[0]
+														.getText().toString()
+														.replace("\n", ""));
+												jObOut.put("subIn", Intag[0]
+														.getText().toString()
+														.replace("\n", ""));
+											} else {
+												jObOut.put(
+														"text",
+														divElement[k]
+																.getText()
+																.toString()
+																.replace("\n",
+																		""));
+											}
+										}
+									}
+								}
+								Log.d("TEST", "jObOut::" + jObOut);
+								ListDetail.add(jObOut);
+							}
+
+						}
+					}
+				}
+			}
+			return linkList;
 		}
 	}
 	
