@@ -245,7 +245,7 @@ public class Live_score_Detail_Json extends Activity {
 	private void setThemeToView() {
 		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, Header_Layout);
 		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_LOGO, Team_Logo);
-		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_LOGO, Title_bar);
+		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, Title_bar);
 	}
 
 	private void setupTab(final String name, String label, Integer iconId,
