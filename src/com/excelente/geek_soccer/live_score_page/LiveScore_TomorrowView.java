@@ -37,7 +37,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.GetdipSize;
 import com.excelente.geek_soccer.JSONParser;
-import com.excelente.geek_soccer.Live_Score_Detail;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.pic_download.DownLiveScorePic;
@@ -85,7 +84,7 @@ public class LiveScore_TomorrowView {
 					int position, long id) {
 				if (!data.Match_list_t_JSON.get(position).isNull("score")) {
 					Intent Detail_Page = new Intent(mActivity,
-							Live_Score_Detail.class);
+							Live_score_Detail_Json.class);
 					Detail_Page.putExtra("URL", position);
 					Detail_Page.putExtra("TYPE", "t");
 					mActivity.startActivity(Detail_Page);

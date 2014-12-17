@@ -25,6 +25,7 @@ public class ControllParameter {
 	public static String CHECK_CHAT_MEMBER_PERMIT_URL = "http://"+ SERVER_URL + "/gs_member_permission/check_chat_permission.php";
 	public static String CHAT_MEMBER_PERMIT_URL = "http://"+ SERVER_URL + "/gs_member_permission/chat_permission.php";
 	public static String GET_LIVESCORE_URL = "http://"+ SERVER_URL + "//get-livescore/ajax/goal-livescore.php";
+	public static String GET_OPTA_ID_URL = "http://"+ SERVER_URL + "//get-livescore/ajax/get_opta_id.php";
 	public static String GET_STK_PER_LIST = "http://"+ SERVER_URL + "/gs_stk_permission/get_stk_list.php";
 	public static String SET_STK_PERMIT_ONE = "http://"+ SERVER_URL + "/gs_stk_permission/stk_permission_set_one.php";
 	public static String DEL_STK_PERMIT_ONE = "http://"+ SERVER_URL + "/gs_stk_permission/stk_permission_del_one.php";
@@ -148,7 +149,7 @@ public class ControllParameter {
 	public Boolean chat_on_Team = false;
 	public Boolean liveScore_on = null;
 	public Boolean liveScore_ChkHavePlaying = false;
-	Boolean detailPageOpenning = false;
+	public Boolean detailPageOpenning = false;
 	public int liveScore_Cur = 1;
 	public int chat_Cur = 0;
 	public SocketIO socket_All = null;
