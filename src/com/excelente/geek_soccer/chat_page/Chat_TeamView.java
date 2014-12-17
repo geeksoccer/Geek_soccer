@@ -257,7 +257,7 @@ public class Chat_TeamView{
 								.valueOf(StickPosition), StickSet_1);
 						if (String.valueOf(StickPosition).equals(Stick_Set)) {
 							StickSet_1.setEnabled(false);
-							StickSet_1.setBackgroundResource(SessionManager.getTeamColor(mActivity));
+							StickSet_1.setBackgroundColor(Color.parseColor(SessionManager.getMember(mActivity).getTheme().getThemeColor()));
 						} else {
 							StickSet_1.setEnabled(true);
 							StickSet_1.setBackgroundResource(R.color.tran);
@@ -275,8 +275,7 @@ public class Chat_TeamView{
 											if (String.valueOf(j + 1).equals(
 													Stick_Set)) {
 												Sticker_ButVSet.get(
-														String.valueOf(j))
-														.setBackgroundResource(SessionManager.getTeamColor(mActivity));
+														String.valueOf(j)).setBackgroundColor(Color.parseColor(SessionManager.getMember(mActivity).getTheme().getThemeColor()));
 												Sticker_ButVSet.get(
 														String.valueOf(j))
 														.setEnabled(false);

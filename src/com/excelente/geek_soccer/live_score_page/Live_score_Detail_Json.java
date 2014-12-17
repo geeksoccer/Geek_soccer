@@ -248,7 +248,7 @@ public class Live_score_Detail_Json extends Activity {
 		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_LOGO, Team_Logo);
 		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, Title_bar);
 	}
-
+	
 	private void setupTab(final String name, String label, Integer iconId,
 			boolean selected) {
 
@@ -256,11 +256,15 @@ public class Live_score_Detail_Json extends Activity {
 				R.layout.custom_tab, null);
 		ImageView image = (ImageView) tab.findViewById(R.id.icon);
 		TextView text = (TextView) tab.findViewById(R.id.text);
+		View viewSelected = tab.findViewById(R.id.selected);
+		View viewLine = tab.findViewById(R.id.view_line);
+	    ThemeUtils.setThemeToView(this, ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);
+	    ThemeUtils.setThemeToView(this, ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
 		text.setTypeface(null, Typeface.BOLD);
 		if (label.equals("")) {
 			text.setVisibility(View.GONE);
 
-			final float scale = this.getResources()
+			final float scale = getResources()
 					.getDisplayMetrics().density;
 			int pixels = (int) (40 * scale + 0.5f);
 			image.getLayoutParams().width = pixels;
@@ -270,13 +274,12 @@ public class Live_score_Detail_Json extends Activity {
 		if (iconId == 0) {
 			image.setVisibility(View.GONE);
 
-			final float scale = this.getResources()
+			final float scale = getResources()
 					.getDisplayMetrics().density;
 			int pixels = (int) (40 * scale + 0.5f);
 			text.getLayoutParams().height = pixels;
 		}
 
-		View viewSelected = tab.findViewById(R.id.selected);
 		if (selected)
 			viewSelected.setVisibility(View.VISIBLE);
 

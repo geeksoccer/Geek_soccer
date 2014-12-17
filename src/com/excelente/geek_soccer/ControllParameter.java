@@ -84,7 +84,7 @@ public class ControllParameter {
     		ProFile_pic = SessionManager.getMember(mContext).getPhoto();
     		Name_Send = SessionManager.getMember(mContext).getNickname();
     		int teamID = SessionManager.getMember(mContext).getTeamId();
-    		if(teamID < SessionManager.TOTAL_TEAM){
+    		if(teamID > 0){
     			if(teamID == 1){
         			TeamSelect = "Arsenal";
         		}else if(teamID == 2){

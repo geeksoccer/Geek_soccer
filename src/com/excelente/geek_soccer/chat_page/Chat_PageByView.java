@@ -55,7 +55,7 @@ public class Chat_PageByView extends Fragment {
 
 		chatMenu = (LinearLayout) myView.findViewById(R.id.chatMenuLayout);
 
-		if (teamID != 5) {
+		if (teamID > 0) {
 			String teamName = "";
 			if (teamID == 1) {
 				teamName = getResources().getString(R.string.chat_arsenal);
@@ -84,6 +84,7 @@ public class Chat_PageByView extends Fragment {
 
 		ChatContainV.addView(chatTeamV, childParam);
 		ChatContainV.addView(chatAllV, childParam);
+		
 		setCurrentTab(data.chat_Cur);
 	}
 
@@ -153,12 +154,17 @@ public class Chat_PageByView extends Fragment {
 				.setVisibility(View.INVISIBLE);
 			}
 		}
-		if (index == 0) {
-			chatTeamV.setVisibility(RelativeLayout.ABOVE);
-			chatAllV.setVisibility(RelativeLayout.GONE);
-		} else {
-			chatAllV.setVisibility(RelativeLayout.ABOVE);
+		if(teamID>0){
+			if (index == 0) {
+				chatTeamV.setVisibility(RelativeLayout.ABOVE);
+				chatAllV.setVisibility(RelativeLayout.GONE);
+			} else {
+				chatAllV.setVisibility(RelativeLayout.ABOVE);
+				chatTeamV.setVisibility(RelativeLayout.GONE);
+			}
+		}else{
 			chatTeamV.setVisibility(RelativeLayout.GONE);
+			chatAllV.setVisibility(RelativeLayout.ABOVE);
 		}
 	}
 }
