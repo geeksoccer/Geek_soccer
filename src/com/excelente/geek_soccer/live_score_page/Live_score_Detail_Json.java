@@ -302,9 +302,9 @@ public class Live_score_Detail_Json extends Activity {
 		tab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (name.equals("s")) {
+				if (name.equals("d")) {
 					setCurrentTab(0);
-				} else if (name.equals("d")) {
+				} else if (name.equals("s")) {
 					setCurrentTab(1);
 				} else if (name.equals("l")) {
 					setCurrentTab(2);
@@ -326,31 +326,31 @@ public class Live_score_Detail_Json extends Activity {
 			}
 		}
 		if (index == 0) {
-			if(StatisticDetailView!=null){
-				StatisticDetailView.setVisibility(RelativeLayout.ABOVE);
-			}
 			if(LiveDetailView!=null){
-				LiveDetailView.setVisibility(RelativeLayout.GONE);
+				LiveDetailView.setVisibility(RelativeLayout.ABOVE);
+			}
+			if(StatisticDetailView!=null){
+				StatisticDetailView.setVisibility(RelativeLayout.GONE);
 			}
 			if(LineUpView!=null){
 				LineUpView.setVisibility(RelativeLayout.GONE);
 			}
 		} else if (index == 1) {
-			if(StatisticDetailView!=null){
-				StatisticDetailView.setVisibility(RelativeLayout.GONE);
-			}
 			if(LiveDetailView!=null){
-				LiveDetailView.setVisibility(RelativeLayout.ABOVE);
+				LiveDetailView.setVisibility(RelativeLayout.GONE);
+			}
+			if(StatisticDetailView!=null){
+				StatisticDetailView.setVisibility(RelativeLayout.ABOVE);
 			}
 			if(LineUpView!=null){
 				LineUpView.setVisibility(RelativeLayout.GONE);
 			}
 		} else if (index == 2) {
-			if(StatisticDetailView!=null){
-				StatisticDetailView.setVisibility(RelativeLayout.GONE);
-			}
 			if(LiveDetailView!=null){
 				LiveDetailView.setVisibility(RelativeLayout.GONE);
+			}
+			if(StatisticDetailView!=null){
+				StatisticDetailView.setVisibility(RelativeLayout.GONE);
 			}
 			if(LineUpView!=null){
 				LineUpView.setVisibility(RelativeLayout.ABOVE);
@@ -444,12 +444,12 @@ public class Live_score_Detail_Json extends Activity {
 						LineUpView = new Live_score_detail_LineUpView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob);
 						LiveDetailView = new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, Team_Arr, MatchData_ob, null);
 						
-						setupTab("s", "Statistics", 0, false);
 						setupTab("d", "Events", 0, false);
+						setupTab("s", "Statistics", 0, false);
 						setupTab("l", "Lineups", 0, false);
 						
-						list_layout.addView(StatisticDetailView, childParam);
 						list_layout.addView(LiveDetailView, childParam);
+						list_layout.addView(StatisticDetailView, childParam);
 						list_layout.addView(LineUpView, childParam);
 						LiveDetailView.setVisibility(RelativeLayout.GONE);
 						LineUpView.setVisibility(RelativeLayout.GONE);
@@ -508,6 +508,7 @@ public class Live_score_Detail_Json extends Activity {
 					}else{
 						LiveDetailView = new Live_score_Detail_LiveView().getView(Live_score_Detail_Json.this, null, null, ListDetail);
 						list_layout.addView(LiveDetailView, childParam);
+						setupTab("d", "Events", 0, false);
 					}
 				}
 			});
