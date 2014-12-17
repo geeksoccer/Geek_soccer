@@ -86,15 +86,7 @@ public class ControllParameter {
     		Name_Send = SessionManager.getMember(mContext).getNickname();
     		int teamID = SessionManager.getMember(mContext).getTeamId();
     		if(teamID > 0){
-    			if(teamID == 1){
-        			TeamSelect = "Arsenal";
-        		}else if(teamID == 2){
-        			TeamSelect = "Chelsea";
-        		}else if(teamID == 3){
-        			TeamSelect = "Liverpool";
-        		}else if(teamID == 4){
-        			TeamSelect = "Manchester United";
-        		}
+    			TeamSelect = SessionManager.getMember(mContext).getTeam().getTeamName();
     		}else{
     			TeamSelect = "OtherTeam";
     		}

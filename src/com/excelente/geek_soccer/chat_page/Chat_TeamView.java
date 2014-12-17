@@ -142,16 +142,8 @@ public class Chat_TeamView{
 						return false;
 					}
 				});
-
-		if (SessionManager.getMember(mActivity).getTeamId() == 1) {
-			data.SocketSelect = "5001";
-		} else if (SessionManager.getMember(mActivity).getTeamId() == 2) {
-			data.SocketSelect = "5002";
-		} else if (SessionManager.getMember(mActivity).getTeamId() == 3) {
-			data.SocketSelect = "5003";
-		} else if (SessionManager.getMember(mActivity).getTeamId() == 4) {
-			data.SocketSelect = "5004";
-		}
+		data.SocketSelect = SessionManager.getMember(mActivity).getTeam().getTeamPort();
+		
 		if (data.Chat_Item_list_Team.size() > 0) {
 			if (data.Chat_list_LayOut_Team.getChildCount() > 1) {
 				data.Chat_list_LayOut_Team.removeViewAt(0);
