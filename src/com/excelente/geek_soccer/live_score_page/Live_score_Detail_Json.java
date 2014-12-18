@@ -92,7 +92,13 @@ public class Live_score_Detail_Json extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setUpHeaderView();
-		new OptaID_Loader().execute();
+		if(opta_id_t.equals("0")){
+			new OptaID_Loader().execute();
+		}else{
+			optaID = opta_id_t;
+			new Live_score_Loader().execute();
+		}
+		
 	}
 	
 	public void setUpHeaderView(){
