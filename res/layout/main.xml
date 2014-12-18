@@ -39,13 +39,24 @@
                 android:id="@+id/Title_bar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/Save_Mode_btn"
+                android:layout_toLeftOf="@+id/Update_App_btn"
                 android:layout_toRightOf="@+id/Up_btn"
                 android:gravity="center"
                 android:text="@string/title_bar_news"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+            
+            <ImageView
+                android:id="@+id/Update_App_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_toLeftOf="@+id/Save_Mode_btn"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/bg_press"
+                android:padding="3dp"
+                android:src="@drawable/logo_gs_new" />
 
             <ImageView
                 android:id="@+id/Save_Mode_btn"
@@ -151,13 +162,23 @@
                 android:id="@+id/Title_barMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/Save_Mode_btnMenu"
+                android:layout_toLeftOf="@+id/Update_App_btnMenu"
                 android:layout_toRightOf="@+id/Up_btnMenu"
                 android:gravity="center"
                 android:text="@string/title_bar_news"
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 android:textStyle="bold" />
+            
+            <ImageView
+                android:id="@+id/Update_App_btnMenu"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_toLeftOf="@+id/Save_Mode_btnMenu"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:padding="3dp"
+                android:src="@drawable/logo_gs_new" />
 
             <ImageView
                 android:id="@+id/Save_Mode_btnMenu"

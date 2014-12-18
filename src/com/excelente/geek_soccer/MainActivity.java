@@ -2,12 +2,15 @@ package com.excelente.geek_soccer;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.excelente.geek_soccer.chat_page.Chat_AllView;
 import com.excelente.geek_soccer.chat_page.Chat_PageByView;
@@ -32,6 +35,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -88,6 +92,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	private RelativeLayout Header_Layout;
 	private ImageView Team_Logo;
 	private LinearLayout Tab_Layout;
+	private ImageView Update_App_btn;
+	private ImageView Update_App_btnMenu;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +112,71 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}else{
 			askMode();
 		}
+		
+		if(NetworkUtils.isNetworkAvailable(mContext)){
+			doCheckVersionApp();
+		}
 	}
 	
+	private void doCheckVersionApp() {
+		try {
+			PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			String versionName = pInfo.versionName;
+			final int versionCode = pInfo.versionCode;
+			MemberModel member = SessionManager.getMember(getApplicationContext());
+			
+			RequestParams params = new RequestParams();
+			params.put("versionName", versionName);
+			params.put("versionCode", versionCode);
+			params.put("m_uid", member.getUid());
+			params.put("m_token", member.getToken());
+			params.put("time", new Date().getTime());
+			AsyncHttpClient client = new AsyncHttpClient();
+			client.post(getApplicationContext(), ControllParameter.MEMBER_CHECK_VERSION_APP_URL, params, new AsyncHttpResponseHandler() {
+				
+				@Override
+				public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
+					String response = new String(arg2);
+					try {
+						JSONObject res = new JSONObject(response);
+						String result = res.getString("result");
+						int lastVersionCode = res.getInt("last_version_code");
+						if(result.equals("old version")){
+							if(SessionManager.hasKey(mContext, "old_version_code")){
+								int oldVersionCode = Integer.valueOf(SessionManager.getSetting(mContext, "old_version_code"));
+								if(oldVersionCode == lastVersionCode){
+									Update_App_btn.setVisibility(View.GONE);
+									Update_App_btnMenu.setVisibility(View.GONE);
+								}else{
+									Update_App_btn.setVisibility(View.VISIBLE);
+									Update_App_btnMenu.setVisibility(View.VISIBLE);
+								}
+							}else{
+								Update_App_btn.setVisibility(View.VISIBLE);
+								Update_App_btnMenu.setVisibility(View.VISIBLE);
+								SessionManager.setSetting(mContext, "old_version_code", String.valueOf(versionCode));
+								DialogUtil.showUpdateAppDialog(mContext);
+							}
+						}else{
+							Update_App_btn.setVisibility(View.GONE);
+							Update_App_btnMenu.setVisibility(View.GONE);
+						}
+					} catch (JSONException e) {
+						Update_App_btn.setVisibility(View.GONE);
+						Update_App_btnMenu.setVisibility(View.GONE);
+					}
+				}
+				
+				@Override
+				public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
+					
+				}
+			});
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -258,6 +327,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		Header_LayoutMenu = (RelativeLayout) findViewById(R.id.Header_LayoutMenu);
 		Team_LogoMenu = (ImageView) findViewById(R.id.Team_LogoMenu);
 		Title_barMenu = (TextView) findViewById(R.id.Title_barMenu);
+		Update_App_btnMenu = (ImageView) findViewById(R.id.Update_App_btnMenu);
+		Update_App_btnMenu.setVisibility(View.GONE);
 	}
 	
 	private void menu_setting() {
@@ -278,6 +349,16 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			@Override
 			public void onClick(View v) {
 				DialogUtil.showSaveModeAppDialog(mContext, v);
+			}
+		});
+		
+		Update_App_btn = (ImageView) findViewById(R.id.Update_App_btn);
+		Update_App_btn.setVisibility(View.GONE);
+		Update_App_btn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DialogUtil.showUpdateAppDialog(mContext);
 			}
 		});
 	}

@@ -34,7 +34,6 @@ import android.content.IntentSender.SendIntentException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -226,8 +225,6 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	}
 	 
 	private void gotoMainPage(MemberModel memberSignedIn) {
-		Log.e("VersionDB",  ""+SessionManager.getMember(getApplicationContext()).getVersionDB());
-		Log.e("Port",  SessionManager.getMember(getApplicationContext()).getTeam().getTeamPort());
         Intent intent = new Intent(Sign_In_Page.this, MainActivity.class);
         intent.putExtra(NewsModel.NEWS_ID+"tag", getIntent().getIntExtra(NewsModel.NEWS_ID+"tag", 0));
         intent.putExtra(UpdateService.NOTIFY_INTENT, getIntent().getIntExtra(UpdateService.NOTIFY_INTENT, 1000));

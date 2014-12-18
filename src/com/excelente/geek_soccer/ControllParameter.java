@@ -29,6 +29,9 @@ public class ControllParameter {
 	public static String GET_STK_PER_LIST = "http://"+ SERVER_URL + "/gs_stk_permission/get_stk_list.php";
 	public static String SET_STK_PERMIT_ONE = "http://"+ SERVER_URL + "/gs_stk_permission/stk_permission_set_one.php";
 	public static String DEL_STK_PERMIT_ONE = "http://"+ SERVER_URL + "/gs_stk_permission/stk_permission_del_one.php";
+	
+	//Main Page
+	public static String MEMBER_CHECK_VERSION_APP_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_version/check_version_app.php";
 
 	//News Page
 	public static String GET_NEWS_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news/get_news.php";

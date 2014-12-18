@@ -4,6 +4,9 @@
     <string name="app_name">Geek_soccer</string>
     <string name="action_team">Team</string>
     
+    <string name="update_app_title">Please update app!</string>
+    <string name="update_app_question">This version app is old version. \n Do you want to update app to last version?</string>
+    
     <string name="restarting_app">Restarting App...</string>
     <string name="no_permission">You do not permission in change team.</string>
     
