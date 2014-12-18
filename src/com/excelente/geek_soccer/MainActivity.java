@@ -144,12 +144,17 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 						if(result.equals("old version")){
 							if(SessionManager.hasKey(mContext, "old_version_code")){
 								int oldVersionCode = Integer.valueOf(SessionManager.getSetting(mContext, "old_version_code"));
-								if(oldVersionCode == lastVersionCode){
+								if(versionCode == lastVersionCode){
 									Update_App_btn.setVisibility(View.GONE);
 									Update_App_btnMenu.setVisibility(View.GONE);
+								}else if(oldVersionCode == versionCode){
+									Update_App_btn.setVisibility(View.VISIBLE);
+									Update_App_btnMenu.setVisibility(View.VISIBLE);
 								}else{
 									Update_App_btn.setVisibility(View.VISIBLE);
 									Update_App_btnMenu.setVisibility(View.VISIBLE);
+									SessionManager.setSetting(mContext, "old_version_code", String.valueOf(versionCode));
+									DialogUtil.showUpdateAppDialog(mContext);
 								}
 							}else{
 								Update_App_btn.setVisibility(View.VISIBLE);
