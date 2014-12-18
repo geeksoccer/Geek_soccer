@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -25,6 +26,7 @@ import com.excelente.geek_soccer.News_Item_Page;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.CommentModel;
+import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.NewsModel;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
@@ -32,6 +34,9 @@ import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.IntentVideoViewUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.CustomWebView;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -355,8 +360,9 @@ public class NewsItemsAdapter extends PagerAdapter{
         });
 		
 		String htmlData = getHtml(newsModel);
-
 		newsItemView.newsContentWebview.loadData( htmlData, "text/html; charset=UTF-8", null);
+		
+		doLoadNewsItem(newsItemView.newsContentWebview, newsModel);
         
         newsItemView.newsLikeImageview.setOnClickListener(new View.OnClickListener() {
 
@@ -405,6 +411,31 @@ public class NewsItemsAdapter extends PagerAdapter{
 		}
 	}
 	
+	private void doLoadNewsItem(final CustomWebView newsContentWebview, final NewsModel newsModel) {
+		MemberModel member = SessionManager.getMember(mContext);
+		RequestParams params = new RequestParams();
+		params.put("news_id", newsModel.getNewsId());
+		params.put("member_id", member.getUid());
+		params.put("m_token", member.getToken());
+		
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.get(mContext, ControllParameter.GET_NEWS_ITEM_URL, params, new AsyncHttpResponseHandler() {
+			
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
+				String response = new String(arg2);
+				newsModel.setNewsContent(response);
+				String htmlData = getHtml(newsModel);
+				newsContentWebview.loadData( htmlData, "text/html; charset=UTF-8", null);
+			}
+			
+			@Override
+			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
+				
+			}
+		});
+	}
+
 	private void doPushImage(WebView view, String urls) {
 		String javascripts = "javascript:" +
 	            "var as = document.getElementsByTagName('a');" +

@@ -40,7 +40,8 @@ public class ControllParameter {
 	
 	//News Item Page
 	public static String NEWS_POST_COMMENTS_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news_comments/post_news_comments.php";
-	public static String NEWS_GET_COMMENT_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news_comments/get_news_comments.php?"; 
+	public static String NEWS_GET_COMMENT_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news_comments/get_news_comments.php?";
+	public static String GET_NEWS_ITEM_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_news/get_news_item.php";
 	
 	//Score Board Page
 	public static String TABLE_URL = "http://"+ SERVER_URL + "/gs_api_v2/gs_table/get_table.php";
