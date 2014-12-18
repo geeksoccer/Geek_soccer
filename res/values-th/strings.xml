@@ -158,14 +158,6 @@
     <string name="fixtures_nextmatch">นัดต่อไป</string>
     <string name="fixtures_season">ฤดูกาล</string>
     
-    <string-array name="team_list">
-        <item>อาร์เซนอล</item>
-        <item>เชลซี</item>
-        <item>ลิเวอร์พูล</item>
-        <item>แมนเชสเตอร์ ยูไนเต็ด</item>
-        <item>ทีมอื่น</item>
-    </string-array>
-    
     <string-array name="lang_list">
         <item>อังกฤษ</item>
         <item>ไทย</item>

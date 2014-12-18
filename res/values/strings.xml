@@ -169,21 +169,6 @@
     <string name="fixtures_nextmatch">Next Match</string>
     <string name="fixtures_season">Season</string>
     
-    <string-array name="team_list">
-        <item>Arsenal</item>
-        <item>Chelsea</item>
-        <item>Liverpool</item>
-        <item>Manchester United</item>
-        <item>Other</item>
-    </string-array>
-    
-    <string-array name="team_list_th">
-        <item>อาร์เซนอล</item>
-        <item>เชลซี</item>
-        <item>ลิเวอร์พูล</item>
-        <item>แมนยู</item>
-    </string-array>
-    
     <string-array name="lang_list">
         <item>English</item>
         <item>Thai</item>

@@ -42,7 +42,6 @@ public class SessionManager {
 	
 	static MemberModel member;
 	static boolean globalNews = false;
-	private static String[] teamName = {"Arsenal", "Chelsea", "Liverpool", "Manchester United"};
 	
 	public static MemberModel getMember(Context context) {
 		if(context == null){
@@ -454,15 +453,6 @@ public class SessionManager {
     	}
     	
     	return R.color.news_default;
-	}
-    
-    public static String getTeamName(Context context) {
-    	
-    	if(hasMember(context)){
-			return teamName[getMember(context).getTeamId() - 1];
-    	}
-    	
-    	return "";
 	}
 
 	public static String getLang(Context context) {

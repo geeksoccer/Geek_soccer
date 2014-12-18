@@ -139,7 +139,16 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		memberEmail.setText(SessionManager.getMember(Profile_Page.this).getEmail());
 		
 		memberFT = (TextView) findViewById(R.id.profile_favorit_team);
-		memberFT.setText(getResources().getStringArray(R.array.team_list)[SessionManager.getMember(Profile_Page.this).getTeamId()-1]);
+		
+		if(SessionManager.getMember(Profile_Page.this).getTeam().getTeamId() == 0){
+			memberFT.setText(getResources().getString(R.string.no_favorite_team));
+		}else{
+			if(SessionManager.getLang(getApplicationContext()).equals("en")){
+				memberFT.setText(SessionManager.getMember(getApplicationContext()).getTeam().getTeamName());
+			}else if(SessionManager.getLang(getApplicationContext()).equals("th")){
+				memberFT.setText(SessionManager.getMember(getApplicationContext()).getTeam().getTeamNameTH());
+			}
+		}
 		
 		saveBtn = (RelativeLayout) findViewById(R.id.Footer_Layout); 
 		saveBtn.setOnClickListener(this);
