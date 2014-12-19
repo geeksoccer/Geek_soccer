@@ -57,7 +57,7 @@ public class NetWorkChageReceiver extends BroadcastReceiver{
 			int newsIdTag1 = sharePre.getInt(NewsModel.NEWS_ID+"tag1", 0);
 			int hilightId = sharePre.getInt(HilightModel.HILIGHT_ID, 0);
 			String url = getURLbyTag(SessionManager.getMember(context), newsIdTag0, "tag0");
-			if(!SessionManager.getSetting(mContext, SessionManager.setting_notify_team_news).equals("false"))
+			if(!SessionManager.getSetting(mContext, SessionManager.setting_notify_team_news).equals("false") && SessionManager.getMember(context).getTeamId() != 0)
 					new LoadLastNewsTask("tag0").execute(url);
 			
 			url = getURLbyTag(SessionManager.getMember(context), newsIdTag1, "tag1");

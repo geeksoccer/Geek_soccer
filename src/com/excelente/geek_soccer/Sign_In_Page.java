@@ -34,6 +34,7 @@ import android.content.IntentSender.SendIntentException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -233,41 +234,6 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	}
 	  
 	private void checkVersionAppAndDB(MemberModel memberSignedIn) {
-		/*try {
-			PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-			String versionName = pInfo.versionName;
-			int versionCode = pInfo.versionCode;
-			int versionDB = 0;
-			MemberModel member = SessionManager.getMember(getApplicationContext());
-			Log.e("versionName", versionName); 
-			Log.e("versionCode", String.valueOf(versionCode));
-			Log.e("versionDB", String.valueOf(versionDB));
-			
-			RequestParams params = new RequestParams();
-			params.put("versionName", versionName);
-			params.put("versionCode", versionCode);
-			params.put("versionDB", versionDB);
-			params.put("m_uid", member.getUid());
-			params.put("m_token", member.getToken());
-			params.put("time", new Date().getTime());
-			AsyncHttpClient client = new AsyncHttpClient();
-			client.post(getApplicationContext(), ControllParameter.MEMBER_CHECK_AND_UPDATE_URL, params, new AsyncHttpResponseHandler() {
-				
-				@Override
-				public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-					String response = new String(arg2);
-					
-				}
-				
-				@Override
-				public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-					
-				}
-			});
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}*/
-		
 		gotoMainPage(memberSignedIn);
 	}
 
@@ -332,6 +298,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 			}
 			
 			String dev_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
+			Log.e("dev_id", dev_id);
 			memberParam.add(new BasicNameValuePair(MemberModel.MEMBER_DEVID, dev_id));
 			
 			String memberStr = HttpConnectUtils.getStrHttpPostConnect(ControllParameter.MEMBER_SIGN_IN_URL, memberParam);

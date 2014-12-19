@@ -33,10 +33,12 @@ import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.IntentVideoViewUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.excelente.geek_soccer.view.Boast;
 import com.excelente.geek_soccer.view.CustomWebView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.nineoldandroids.view.ViewHelper;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -103,6 +105,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		TextView newsCommentsTextview;
 		LinearLayout newsHead;
 		RelativeLayout news_head;
+		ProgressBar progressBar;
 	}
 
 	@Override
@@ -131,6 +134,8 @@ public class NewsItemsAdapter extends PagerAdapter{
 		newsItemView.newsCommentImageview = (ImageView) convertView.findViewById(R.id.news_comment_imageView);
 		newsItemView.newsCommentsTextview = (TextView) convertView.findViewById(R.id.news_comments_textview);
 		newsItemView.newsHead = (LinearLayout) convertView.findViewById(R.id.news_header);
+		newsItemView.progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
+		newsItemView.progressBar.setVisibility(View.GONE);
 		
         NewsModel newsModel = (NewsModel) mNewList.get(position);
         doLoadNewsToViews(position, newsModel, newsItemView);
@@ -155,6 +160,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		TextView newsReadsTextview = (TextView) ((View) view).findViewById(R.id.news_reads_textview);
 		ImageView newsCommentImageview = (ImageView) ((View) view).findViewById(R.id.news_comment_imageView);
 		TextView newsCommentsTextview = (TextView) ((View) view).findViewById(R.id.news_comments_textview);
+		ProgressBar progressBar = (ProgressBar) ((View) view).findViewById(R.id.progressBar);
 		
 		((ViewPager) collection).removeView(news_head); 
 		((ViewPager) collection).removeView(newsTopicTextview); 
@@ -166,6 +172,7 @@ public class NewsItemsAdapter extends PagerAdapter{
 		((ViewPager) collection).removeView(newsReadsTextview);
 		((ViewPager) collection).removeView(newsCommentImageview);
 		((ViewPager) collection).removeView(newsCommentsTextview);
+		((ViewPager) collection).removeView(progressBar); 
         ((ViewPager) collection).removeView((View) view);
         newsItemViews.remove(position);
     }
@@ -362,7 +369,11 @@ public class NewsItemsAdapter extends PagerAdapter{
 		String htmlData = getHtml(newsModel);
 		newsItemView.newsContentWebview.loadData( htmlData, "text/html; charset=UTF-8", null);
 		
-		doLoadNewsItem(newsItemView.newsContentWebview, newsModel);
+		if(NetworkUtils.isNetworkAvailable(mContext)){
+			doLoadNewsItem(newsItemView, newsModel);
+		}else{ 
+			Boast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
+		}
         
         newsItemView.newsLikeImageview.setOnClickListener(new View.OnClickListener() {
 
@@ -411,7 +422,8 @@ public class NewsItemsAdapter extends PagerAdapter{
 		}
 	}
 	
-	private void doLoadNewsItem(final CustomWebView newsContentWebview, final NewsModel newsModel) {
+	private void doLoadNewsItem(final NewsItemView newsContentWebview, final NewsModel newsModel) {
+		newsContentWebview.progressBar.setVisibility(View.VISIBLE);
 		MemberModel member = SessionManager.getMember(mContext);
 		RequestParams params = new RequestParams();
 		params.put("news_id", newsModel.getNewsId());
@@ -426,12 +438,13 @@ public class NewsItemsAdapter extends PagerAdapter{
 				String response = new String(arg2);
 				newsModel.setNewsContent(response);
 				String htmlData = getHtml(newsModel);
-				newsContentWebview.loadData( htmlData, "text/html; charset=UTF-8", null);
+				newsContentWebview.newsContentWebview.loadData( htmlData, "text/html; charset=UTF-8", null);
+				newsContentWebview.progressBar.setVisibility(View.GONE);
 			}
 			
 			@Override
 			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-				
+				newsContentWebview.progressBar.setVisibility(View.GONE);
 			}
 		});
 	}
