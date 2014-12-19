@@ -674,7 +674,7 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 
 			mConnectionProgressDialog = new ProgressDialog(mActivity);
 			mConnectionProgressDialog.setCancelable(false);
-			mConnectionProgressDialog.setMessage("Signing out...");
+			mConnectionProgressDialog.setMessage(mActivity.getResources().getString(R.string.signout_app));
 			mConnectionProgressDialog.show();
 		}
 
