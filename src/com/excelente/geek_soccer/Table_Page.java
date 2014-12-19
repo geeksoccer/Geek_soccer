@@ -5,33 +5,27 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.excelente.geek_soccer.adapter.TableAdapter;
+import com.excelente.geek_soccer.adapter.TablePagerAdapter;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.TableModel;
-import com.excelente.geek_soccer.utils.HttpConnectUtils;
-import com.excelente.geek_soccer.utils.NetworkUtils;
+import com.excelente.geek_soccer.model.TablePagerModel;
 import com.excelente.geek_soccer.utils.ThemeUtils;
-import com.excelente.geek_soccer.view.Boast;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
-import android.widget.Toast;
 
-public class Table_Page extends Fragment implements OnTabChangeListener, OnItemClickListener, OnClickListener{
+public class Table_Page extends Fragment implements OnTabChangeListener, OnPageChangeListener, OnTouchListener{
 	
 	
 	public static final String TABLE_TYPE_ALL = "All";
@@ -44,32 +38,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	public static final String THAI_PREMIER_LEAGUE = "Thai Premier League";
 	
 	View tableView;
-	private ListView tablePLLayout;
-	private ListView tableBLLayout;
-	private ListView tableLLLayout;
-	private ListView tableGLLayout;
-	private ListView tableFLLayout;
-	private ListView tableTPLLayout;
-
-	private TableAdapter plAdapter;
-	private TableAdapter blAdapter;
-	private TableAdapter llAdapter;
-	private TableAdapter glAdapter;
-	private TableAdapter flAdapter;
-	private TableAdapter tplAdapter;
-
-	private boolean flagtplAdapter = true;
-	private boolean flagflAdapter = true;
-	private boolean flagglAdapter = true;
-	private boolean flagllAdapter = true;
-	private boolean flagblAdapter = true;
-	private boolean flagplAdapter = true;
-
-	private ProgressBar tableWaitProcessbar;
 
 	private TabHost tabs;
 
-	private TextView textEmpty;
+	private CustomViewPager viewpager;
 	
 	public static List<String> stackTagLoading;
 	
@@ -105,12 +77,12 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 		tabs = (TabHost)tableView.findViewById(R.id.tabhost); 
 		tabs.setup();  
 		
-		setupTab(R.id.table_pl, "tag1", "", R.drawable.logo_premier_league, true);
-		setupTab(R.id.table_bl, "tag2", "", R.drawable.logo_bundesliga, false);
-		setupTab(R.id.table_ll, "tag3", "", R.drawable.logo_laliga, false);
-		setupTab(R.id.table_gl, "tag4", "", R.drawable.logo_calcio, false);
-		setupTab(R.id.table_fl, "tag5", "", R.drawable.logo_ligue1, false);
-		setupTab(R.id.table_tpl, "tag6", "", R.drawable.logo_tpl, false);
+		setupTab(R.id.content, "0", "", R.drawable.logo_premier_league, true);
+		setupTab(R.id.content, "1", "", R.drawable.logo_bundesliga, false);
+		setupTab(R.id.content, "2", "", R.drawable.logo_laliga, false);
+		setupTab(R.id.content, "3", "", R.drawable.logo_calcio, false);
+		setupTab(R.id.content, "4", "", R.drawable.logo_ligue1, false);
+		setupTab(R.id.content, "5", "", R.drawable.logo_tpl, false);
 		
 		tabs.setCurrentTab(0);
 		
@@ -150,173 +122,39 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 	}
 	
 	private void initSubView() {
-		
-		tableWaitProcessbar = (ProgressBar) tableView.findViewById(R.id.table_wait_processbar);
-		tableWaitProcessbar.setVisibility(View.GONE);
-		
-		tablePLLayout = (ListView) tableView.findViewById(R.id.table_pl);
-		tableBLLayout = (ListView) tableView.findViewById(R.id.table_bl);
-		tableLLLayout = (ListView) tableView.findViewById(R.id.table_ll);
-		tableGLLayout = (ListView) tableView.findViewById(R.id.table_gl);
-		tableFLLayout = (ListView) tableView.findViewById(R.id.table_fl);
-		tableTPLLayout = (ListView) tableView.findViewById(R.id.table_tpl); 
-		
-		textEmpty = (TextView) tableView.findViewById(R.id.empty);
-		textEmpty.setOnClickListener(this); 
-		
-		flagtplAdapter = true;
-		flagflAdapter = true;
-		flagglAdapter = true;
-		flagllAdapter = true;
-		flagblAdapter = true;
-		flagplAdapter = true;
-		
-		if(plAdapter == null){
-			try{ 
-				if(NetworkUtils.isNetworkAvailable(getActivity())){
-					new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(getTableUrl(PREMIER_LEAGUE, TABLE_TYPE_ALL));
-				}else{
-					Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-					setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-				setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
-			}
+		viewpager = (CustomViewPager)tableView.findViewById(R.id.viewpager);
+		viewpager.setPagingEnabled(false);
+		viewpager.setOnTouchListener(this);
+		try {
+			TablePagerAdapter tablePagerAdapter = new TablePagerAdapter(getActivity(), getTablePagerModelList());
+			viewpager.setAdapter(tablePagerAdapter);
+			viewpager.setOnPageChangeListener(this);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 	} 
 	
+	private List<TablePagerModel> getTablePagerModelList() throws UnsupportedEncodingException {
+		String[] league = {PREMIER_LEAGUE, LALIGA, BUNDESLIGA, CALCAIO_SERIE_A, LEAGUE_DE_LEAGUE1, THAI_PREMIER_LEAGUE};
+		List<TablePagerModel> tablePagerModelList = new ArrayList<TablePagerModel>();
+		for (String l : league) {
+			TablePagerModel tablePagerModel = new TablePagerModel();
+			tablePagerModel.setUrl(getTableUrl(l, TABLE_TYPE_ALL));
+			tablePagerModelList.add(tablePagerModel);
+		}
+		return tablePagerModelList;
+	}
+
 	private String getTableUrl(String league, String type) throws UnsupportedEncodingException {
 		MemberModel member = SessionManager.getMember(getActivity());
 		String url = ControllParameter.TABLE_URL + "?" + TableModel.TABLE_LEAGUE + "=" + URLEncoder.encode(league, "utf-8") + "&" + TableModel.TABLE_TYPE + "=" + type + "&m_uid=" + member.getUid() + "&m_token=" + member.getToken();
 		return url;
 	}
 
-	/*private void setListViewEvents(final ListView hilightListview, final String tags){
-		hilightListview.setOnRefreshListener(new OnRefreshListener() {
-			
-			String tag = tags;
-			
-			@Override
-			public void onRefresh() {
-				onTabChanged(tag);
-			}
-		});
-	}*/
-	
-	private void setMessageEmptyListView(TableAdapter tableAdapter, ListView tableListView, String tag) {
-		tableWaitProcessbar.setVisibility(View.GONE);
-		tableListView.setVisibility(View.GONE); 
-		
-		if(tableAdapter==null || tableAdapter.isEmpty())
-			textEmpty.setVisibility(View.VISIBLE);
-		else
-			textEmpty.setVisibility(View.GONE);
-	} 
-
 	@Override
 	public void onTabChanged(String tabId) {
-		tableWaitProcessbar.setVisibility(View.GONE);
-		textEmpty.setVisibility(View.GONE);
-		
-			if(tabId.equals("tag1")){
-				if(flagplAdapter){ 
-					if(NetworkUtils.isNetworkAvailable(getActivity())){
-						tableWaitProcessbar.setVisibility(View.VISIBLE); 
-						try {
-							new LoadTableTask(tablePLLayout, plAdapter, "tag1").execute(getTableUrl(PREMIER_LEAGUE, TABLE_TYPE_ALL));
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-					}else{
-						Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(plAdapter, tablePLLayout, "tag1");
-					}
-				}
-				
-				setSelectedTab(0);
-			}else if(tabId.equals("tag2")){
-				if(flagblAdapter){
-					if(NetworkUtils.isNetworkAvailable(getActivity())){
-						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						try {
-							new LoadTableTask(tableBLLayout, blAdapter, "tag2").execute(getTableUrl(BUNDESLIGA, TABLE_TYPE_ALL));
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-					}else{
-						Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(blAdapter, tableBLLayout, "tag2");
-					}
-				}
-				
-				setSelectedTab(1);
-			}else if(tabId.equals("tag3")){
-				if(flagllAdapter){ 
-					if(NetworkUtils.isNetworkAvailable(getActivity())){
-						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						try {
-							new LoadTableTask(tableLLLayout, llAdapter, "tag3").execute(getTableUrl(LALIGA, TABLE_TYPE_ALL));
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-					}else{
-						Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(llAdapter, tableLLLayout, "tag3");
-					}
-				}
-				
-				setSelectedTab(2);
-			}else if(tabId.equals("tag4")){
-				if(flagglAdapter){ 
-					if(NetworkUtils.isNetworkAvailable(getActivity())){
-						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						try {
-							new LoadTableTask(tableGLLayout, glAdapter, "tag4").execute(getTableUrl(CALCAIO_SERIE_A, TABLE_TYPE_ALL));
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-					}else{
-						Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(glAdapter, tableGLLayout, "tag4");
-					}
-				}
-				
-				setSelectedTab(3);
-			}else if(tabId.equals("tag5")){
-				if(flagflAdapter){ 
-					if(NetworkUtils.isNetworkAvailable(getActivity())){
-						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						try {
-							new LoadTableTask(tableFLLayout, flAdapter, "tag5").execute(getTableUrl(LEAGUE_DE_LEAGUE1, TABLE_TYPE_ALL));
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-					}else{
-						Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(flAdapter, tableFLLayout, "tag5");
-					}
-				}
-				
-				setSelectedTab(4);
-			}else if(tabId.equals("tag6")){
-				if(flagtplAdapter){
-					if(NetworkUtils.isNetworkAvailable(getActivity())){
-						tableWaitProcessbar.setVisibility(View.VISIBLE);
-						try {
-							new LoadTableTask(tableTPLLayout, tplAdapter, "tag6").execute(getTableUrl(THAI_PREMIER_LEAGUE, TABLE_TYPE_ALL));
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-					}else{
-						Boast.makeText(getActivity(), NetworkUtils.getConnectivityStatusString(getActivity()), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(tplAdapter, tableTPLLayout, "tag6");
-					}
-				}
-				
-				setSelectedTab(5);
-			}
-		
+		setSelectedTab(Integer.valueOf(tabId));
+		viewpager.setCurrentItem(Integer.valueOf(tabId), false);
 	}
 	 
 	public void setSelectedTab(int index){
@@ -329,125 +167,33 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnItemC
 			}
 		}
 	}
-	
-	public class LoadTableTask extends AsyncTask<String, Void, List<TableModel>>{
-		
-		ListView listview;
-		TableAdapter tableAdaptor;
-		String tag;
-		
-		public LoadTableTask(ListView listview, TableAdapter tableAdaptor, String tag) {
-			this.listview = listview; 
-			this.tableAdaptor = tableAdaptor;
-			this.tag = tag;
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			
-			if(tableAdaptor==null && tableWaitProcessbar!=null){
-				tableWaitProcessbar.setVisibility(View.VISIBLE);
-				stackTagLoading.add(tag);
-				textEmpty.setVisibility(View.GONE);
-			}
-		}
-		
-		@Override
-		protected List<TableModel> doInBackground(String... params) {
-			
-			String result = HttpConnectUtils.getStrHttpGetConnect(params[0]); 
-			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
-				return null;
-			}
-			//Log.e("000000000000000000", result);
-			List<TableModel> tableList = TableModel.convertTableStrToList(result); 
-			
-			return tableList;
-		}
 
-		@Override
-		protected void onPostExecute(List<TableModel> result) {
-			super.onPostExecute(result);
-			if(result != null){
-				tableAdaptor = new TableAdapter(getActivity(), result);
-				listview.setAdapter(tableAdaptor);
-				listview.setOnItemClickListener(Table_Page.this);
-				
-				if(tag.equals("tag1")){
-					flagplAdapter = false;
-				}else if(tag.equals("tag2")){
-					flagblAdapter = false;
-				}else if(tag.equals("tag3")){
-					flagllAdapter = false;
-				}else if(tag.equals("tag4")){
-					flagglAdapter = false;
-				}else if(tag.equals("tag5")){
-					flagflAdapter = false;
-				}else if(tag.equals("tag6")){
-					flagtplAdapter = false;
-				}
-				
-				stackTagLoading.remove(tag);
-				
-				if(stackTagLoading!=null && stackTagLoading.size() > 0 && !tag.equals(tabs.getCurrentTabTag())){
-					tableWaitProcessbar.setVisibility(View.VISIBLE);
-				}else{
-					tableWaitProcessbar.setVisibility(View.GONE);
-				}
-				//tabs.setCurrentTabByTag(tag);
-			}else{
-				if(getActivity()!=null){
-					Boast.makeText(getActivity(), getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
-				}
-				
-				if(tableAdaptor == null || tableAdaptor.isEmpty()){
-					textEmpty.setVisibility(View.VISIBLE);
-				}
-			} 
-			
-			//setListViewEvents(listview, tag);
-			//listview.onRefreshComplete();
-			tableWaitProcessbar.setVisibility(View.GONE);
-		}
-
+	@Override
+	public void onPageScrollStateChanged(int arg0) {
+		
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> adap, View view, int pos, long id) {
-		//pos++;
-		TableModel tm = (TableModel) adap.getAdapter().getItem(pos);
-		setToastSeq(tm);
-	}
-
-	private void setToastSeq(TableModel tableModel) { 
-		if(tableModel.getTableStatus().trim().equals("ucl") || tableModel.getTableStatus().trim().equals("afc")){
-			showToast(getResources().getString(R.string.table_ucl));
-		}else if(tableModel.getTableStatus().trim().equals("ucl_pf")){
-			showToast(getResources().getString(R.string.table_ucl_match));
-		}else if(tableModel.getTableStatus().trim().equals("urp")){
-			showToast(getResources().getString(R.string.table_upl));
-		}else if(tableModel.getTableStatus().trim().equals("fail_pf")){
-			showToast(getResources().getString(R.string.table_bundes_match));
-		}else if(tableModel.getTableStatus().trim().equals("fail")){
-			showToast(getResources().getString(R.string.table_fail));
-		}else{
-			showToast(getResources().getString(R.string.table_par));
-		}
-	}
-
-	private void showToast(String string) {
-		Boast.makeText(getActivity(), string, Toast.LENGTH_SHORT).show();
+	public void onPageScrolled(int arg0, float arg1, int arg2) {
+		
 	}
 
 	@Override
-	public void onClick(View v) {
+	public void onPageSelected(int position) {
+		setSelectedTab(Integer.valueOf(position));
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
 		switch (v.getId()) {
-			case R.id.empty:
-				v.setVisibility(View.GONE);
-				onTabChanged(tabs.getCurrentTabTag());
+			case R.id.viewpager:{
+				if(event.getAction() == MotionEvent.ACTION_MOVE && v instanceof ViewGroup) {
+					((ViewGroup) v).requestDisallowInterceptTouchEvent(true);
+				}
 				break;
+			}
 		}
+		return false;
 	}
 	
 }
