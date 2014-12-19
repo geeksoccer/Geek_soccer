@@ -16,6 +16,7 @@ import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.JSONParser;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
+import com.excelente.geek_soccer.gg_analytics.Google_analytics;
 import com.excelente.geek_soccer.live_score_page.detail_view.Live_score_Detail_LiveView;
 import com.excelente.geek_soccer.live_score_page.detail_view.Live_score_detail_LineUpView;
 import com.excelente.geek_soccer.live_score_page.detail_view.Live_score_detail_statistic;
@@ -23,6 +24,8 @@ import com.excelente.geek_soccer.livescore_noty.LiveScoreReload;
 import com.excelente.geek_soccer.livescore_noty.LiveScoreReload.LiveScoreCallbackClass;
 import com.excelente.geek_soccer.pic_download.DownLiveScorePic;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.google.analytics.tracking.android.GAServiceManager;
+import com.google.analytics.tracking.android.Tracker;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -98,7 +101,8 @@ public class Live_score_Detail_Json extends Activity {
 			optaID = opta_id_t;
 			new Live_score_Loader().execute();
 		}
-		
+		Tracker tracker = ((Google_analytics)getApplication()).getTracker();
+		tracker.sendView("/Live_score_Detail_Json");
 	}
 	
 	public void setUpHeaderView(){
@@ -226,6 +230,10 @@ public class Live_score_Detail_Json extends Activity {
 			@Override
 			public void onClick(View v) {
 				Fav_btn.setEnabled(false);
+				Tracker tracker = ((Google_analytics)getApplication()).getTracker();
+				tracker.sendEvent("Action Event","Action Button", "Fav_btn clicked",0L);
+				// Manually dispatch any queued hits.
+				GAServiceManager.getInstance().dispatch();
 				if (SessionManager.chkFavContain(Live_score_Detail_Json.this, id_t)) {
 					SessionManager.delFavTeam(Live_score_Detail_Json.this, id_t);
 					Fav_btn.setImageResource(R.drawable.favorite_icon_hole);

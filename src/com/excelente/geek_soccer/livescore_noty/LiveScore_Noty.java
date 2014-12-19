@@ -154,7 +154,6 @@ public class LiveScore_Noty {
 						Log.d("TEST", "continueUpdate::NO");
 					}else{
 						Log.d("TEST", "continueUpdate::YES");
-						Live_score_Loader(mContextG);
 						return "continueUpdate";
 					}
 				}
