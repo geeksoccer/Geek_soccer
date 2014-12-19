@@ -58,7 +58,7 @@ public class Sign_In_Page extends Activity implements View.OnClickListener, Conn
 	private Button signInGoogleAccountButton;
 
 	private AccountManager mAccountManager;
-
+ 
 	private AuthenGoogleAccount authenGoogleAccount;
 	
 	@Override
