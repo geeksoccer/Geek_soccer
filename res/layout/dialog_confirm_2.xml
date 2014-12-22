@@ -78,6 +78,7 @@
 	        	android:background="@drawable/bg_press"
 	        	android:gravity="center">
 		        <TextView 
+		            android:id="@+id/button_confirm_ok_txt"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:gravity="center"
@@ -107,7 +108,8 @@
 	        	android:layout_height="wrap_content"
 	        	android:background="@drawable/bg_press"
 	        	android:gravity="center">
-		        <TextView 
+		        <TextView
+		            android:id="@+id/button_confirm_no_txt" 
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:gravity="center"

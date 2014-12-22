@@ -113,9 +113,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			askMode();
 		}
 		
-		if(NetworkUtils.isNetworkAvailable(mContext)){
-			doCheckVersionApp();
-		}
 	}
 	
 	private void doCheckVersionApp() {
@@ -208,10 +205,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		
 		this.intialiseViewPager();
 		
-		//------------Ched: ��������� ���ͧ�� �٢��Ƿ����蹨ҡ����  (For View News Anyone)-----------------------------
-				menu_setting();
-		//------------Ched: ��������� ���ͧ�� �٢��Ƿ����蹨ҡ����  (For View News Anyone)-----------------------------
-				Team_LogoSetting();
+		menu_setting();
+		Team_LogoSetting();
 		tab_setting();
 		
 		Calendar c = Calendar.getInstance();
@@ -230,6 +225,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		SideMenuStandBy();
 		
 		setThemeToView();
+		
+		if(NetworkUtils.isNetworkAvailable(this)){
+			doCheckVersionApp();
+		}
 	}
 
 	private void askMode() {
