@@ -3,14 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     
-    <include
-    	android:id="@+id/table_header"
-    	android:layout_alignParentTop="true"
-        layout="@layout/table_header_item_page" />
-    
     <ListView
         android:id="@+id/table_listview"
-        android:layout_below="@+id/table_header"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/news_gray"
@@ -20,7 +15,7 @@
         android:id="@+id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/table_header"
+        android:layout_alignParentTop="true"
         android:gravity="center_horizontal"
         android:paddingTop="15dp"
         android:text="@string/pull_to_refresh_tap_label"

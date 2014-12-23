@@ -4,15 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <RelativeLayout
+    <RelativeLayout 
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent" > 
 
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true" />
+        
+        <include
+	    	android:id="@+id/table_header"
+	    	android:layout_below="@android:id/tabs"
+	        layout="@layout/table_header_item_page" />
 
         <FrameLayout
             android:id="@android:id/tabcontent"
@@ -24,11 +29,12 @@
                 android:layout_height="0dp"/>
         </FrameLayout>
         
-        <com.excelente.geek_soccer.CustomViewPager
-            android:layout_below="@android:id/tabs"
-	    	android:id="@+id/viewpager"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"/>
+       	<AdapterViewFlipper
+       	    android:id="@+id/table_viewpager"
+       	    android:layout_width="match_parent"
+       	    android:layout_height="match_parent"
+       	    android:layout_below="@+id/table_header"/>
+
     </RelativeLayout>
 
 </TabHost>

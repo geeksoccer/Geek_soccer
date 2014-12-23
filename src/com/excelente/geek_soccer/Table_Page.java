@@ -13,20 +13,17 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.AdapterViewFlipper;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
-public class Table_Page extends Fragment implements OnTabChangeListener, OnPageChangeListener, OnTouchListener{
-	
+public class Table_Page extends Fragment implements OnTabChangeListener{
 	
 	public static final String TABLE_TYPE_ALL = "All";
 	
@@ -41,10 +38,8 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnPageC
 
 	private TabHost tabs;
 
-	private CustomViewPager viewpager;
-	
-	public static List<String> stackTagLoading;
-	
+	private AdapterViewFlipper viewpager;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if (container == null) {
             return null;
@@ -71,8 +66,6 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnPageC
 
 	private void initView() {
 		tableView = getView();
-		
-		stackTagLoading = new ArrayList<String>();
 		
 		tabs = (TabHost)tableView.findViewById(R.id.tabhost); 
 		tabs.setup();  
@@ -122,13 +115,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnPageC
 	}
 	
 	private void initSubView() {
-		viewpager = (CustomViewPager)tableView.findViewById(R.id.viewpager);
-		viewpager.setPagingEnabled(false);
-		viewpager.setOnTouchListener(this);
+		viewpager = (AdapterViewFlipper) tableView.findViewById(R.id.table_viewpager);
 		try {
 			TablePagerAdapter tablePagerAdapter = new TablePagerAdapter(getActivity(), getTablePagerModelList());
 			viewpager.setAdapter(tablePagerAdapter);
-			viewpager.setOnPageChangeListener(this);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -153,8 +143,9 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnPageC
 
 	@Override
 	public void onTabChanged(String tabId) {
-		setSelectedTab(Integer.valueOf(tabId));
-		viewpager.setCurrentItem(Integer.valueOf(tabId), false);
+		int position = Integer.valueOf(tabId);
+		setSelectedTab(position);
+		viewpager.setSelection(position);
 	}
 	 
 	public void setSelectedTab(int index){
@@ -166,34 +157,6 @@ public class Table_Page extends Fragment implements OnTabChangeListener, OnPageC
 				v.setVisibility(View.INVISIBLE);
 			}
 		}
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int arg0) {
-		
-	}
-
-	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2) {
-		
-	}
-
-	@Override
-	public void onPageSelected(int position) {
-		setSelectedTab(Integer.valueOf(position));
-	}
-
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		switch (v.getId()) {
-			case R.id.viewpager:{
-				if(event.getAction() == MotionEvent.ACTION_MOVE && v instanceof ViewGroup) {
-					((ViewGroup) v).requestDisallowInterceptTouchEvent(true);
-				}
-				break;
-			}
-		}
-		return false;
 	}
 	
 }

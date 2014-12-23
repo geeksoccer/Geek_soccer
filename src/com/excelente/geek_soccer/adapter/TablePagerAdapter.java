@@ -1,8 +1,6 @@
 package com.excelente.geek_soccer.adapter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.model.TableModel;
@@ -11,27 +9,23 @@ import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.Boast;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-@SuppressLint("UseSparseArrays")
-public class TablePagerAdapter extends PagerAdapter implements OnItemClickListener{
+public class TablePagerAdapter extends BaseAdapter implements OnItemClickListener{
 	
 	Activity mContext;
-	Map<Integer, TableItemView> tableItemViews = new HashMap<Integer, TableItemView>();
 	List<TablePagerModel> tablePagerModelList;
 	
 	public TablePagerAdapter(Activity mContext, List<TablePagerModel> tablePagerModelList) {
@@ -49,41 +43,39 @@ public class TablePagerAdapter extends PagerAdapter implements OnItemClickListen
 		ProgressBar progressbar;
 		TextView emptyText;
 	}
-
-	@Override
-	public Object instantiateItem(ViewGroup container, int position) {
-		
-		LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View convertView = (View) mInflater.inflate(R.layout.table_page_item, null);
-		
-		TableItemView tableItemView = new TableItemView();
-		tableItemView.tableListView = (ListView) convertView.findViewById(R.id.table_listview);
-		tableItemView.progressbar = (ProgressBar) convertView.findViewById(R.id.table_wait_processbar);
-		tableItemView.emptyText = (TextView) convertView.findViewById(R.id.empty);
-		
-		TablePagerModel tablePagerModel = tablePagerModelList.get(position);
-		doInitViews(tableItemView, tablePagerModel);
-		
-		tableItemViews.put(position, tableItemView);
-		
-		((ViewPager) container).addView(convertView,0);
-		
-		return convertView;
-	}
 	
 	@Override
-	public void destroyItem(ViewGroup collection, int position, Object view) {
-		 
-		ListView tableListView = (ListView) ((View) view).findViewById(R.id.table_listview);
-		ProgressBar progressbar = (ProgressBar) ((View) view).findViewById(R.id.progressBar);
-		TextView emptyText = (TextView) ((View) view).findViewById(R.id.empty);
+	public Object getItem(int position) {
+		return tablePagerModelList.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return tablePagerModelList.indexOf(getItem(position));
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		TableItemView tableItemView = null;
 		
-		((ViewPager) collection).removeView(tableListView);
-		((ViewPager) collection).removeView(progressbar);
-		((ViewPager) collection).removeView(emptyText); 
-        ((ViewPager) collection).removeView((View) view);
-        
-        tableItemViews.remove(position);
+		if(convertView == null){
+			LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			convertView = (View) mInflater.inflate(R.layout.table_page_item, parent, false);
+			
+			tableItemView = new TableItemView();
+			tableItemView.tableListView = (ListView) convertView.findViewById(R.id.table_listview);
+			tableItemView.progressbar = (ProgressBar) convertView.findViewById(R.id.table_wait_processbar);
+			tableItemView.emptyText = (TextView) convertView.findViewById(R.id.empty);
+			
+			convertView.setTag(tableItemView);
+		}else{
+			tableItemView = (TableItemView) convertView.getTag();
+		}
+		
+		TablePagerModel tablePagerModel = (TablePagerModel) getItem(position);
+		doInitViews(tableItemView, tablePagerModel);
+		
+		return convertView;
 	}
 	
 	private void doInitViews(TableItemView tableItemView, TablePagerModel tablePagerModel) {
@@ -110,11 +102,6 @@ public class TablePagerAdapter extends PagerAdapter implements OnItemClickListen
 			tableItemView.emptyText.setVisibility(View.VISIBLE);
 		else
 			tableItemView.emptyText.setVisibility(View.GONE);
-	} 
-
-	@Override
-	public boolean isViewFromObject(View view, Object object) {
-		return view.equals( object );
 	}
 	
 	public class LoadTableTask extends AsyncTask<String, Void, List<TableModel>>{

@@ -28,19 +28,18 @@ public class CustomViewPager extends ViewPager {
     public boolean onTouchEvent(MotionEvent event) {
     	
         if (this.enabled) {
-        	//onTouchCallbackClass.onTouchcallbackReturn(event.getAction(), event.getX(), event.getY());//
-            return super.onTouchEvent(event);
+        	return super.onTouchEvent(event);
         }
-        return false;
+        return true;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (this.enabled) {
-        	return super.onInterceptTouchEvent(event);//onTouchCallbackClass.onTouchcallbackReturn(event.getAction(), event.getX(), event.getY());        
-        }
  
-        return false;
+    	if (this.enabled) {
+    	    return super.onInterceptTouchEvent(event);
+        }
+        return true;
     }
  
     public void setPagingEnabled(boolean enabled) {
