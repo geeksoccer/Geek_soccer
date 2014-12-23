@@ -29,6 +29,7 @@ import com.excelente.geek_soccer.date_convert.Date_Covert;
 import com.excelente.geek_soccer.pic_download.DownChatPic;
 import com.excelente.geek_soccer.user_rule.User_Rule;
 
+import android.R.color;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -272,21 +273,15 @@ public class Chat_AllView{
 										StickViewClear();
 										Stick_Set = String
 												.valueOf(StickPosition);
-										
+										arg0.setBackgroundColor(Color.parseColor(SessionManager.getMember(mActivity).getTheme().getThemeColor()));
+										arg0.setEnabled(false);
 										for (int j = 0; j < data.Sticker_Set
 												.size(); j++) {
-											if (String.valueOf(j + 1).equals(
+											if (!String.valueOf(j + 1).equals(
 													Stick_Set)) {
 												Sticker_ButVSet.get(
 														String.valueOf(j))
-														.setBackgroundColor(Color.parseColor(SessionManager.getMember(mActivity).getTheme().getThemeColor()));
-												Sticker_ButVSet.get(
-														String.valueOf(j))
-														.setEnabled(false);
-											} else {
-												Sticker_ButVSet.get(
-														String.valueOf(j))
-														.setBackgroundResource(R.color.tran);
+														.setBackgroundColor(color.transparent);
 												Sticker_ButVSet.get(
 														String.valueOf(j))
 														.setEnabled(true);
