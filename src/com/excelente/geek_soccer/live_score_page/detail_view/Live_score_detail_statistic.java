@@ -135,17 +135,23 @@ public class Live_score_detail_statistic {
 		float fk_foul_lost1_f = Float.parseFloat(fk_foul_lost1_S);
 		float possession_percentage1_f = Float.parseFloat(possession_percentage1_S);
 		
-		total_scoring_att0_f = total_scoring_att0_f/(total_scoring_att0_f+total_scoring_att1_f);
-		ontarget_scoring_att0_f = ontarget_scoring_att0_f/(ontarget_scoring_att0_f+ontarget_scoring_att1_f);
-		won_corners0_f = won_corners0_f/(won_corners0_f+won_corners1_f);
-		fk_foul_lost0_f = fk_foul_lost0_f/(fk_foul_lost0_f+fk_foul_lost1_f);
-		possession_percentage0_f = possession_percentage0_f/(possession_percentage0_f+possession_percentage1_f);
+		float total_total_scoring_att = (total_scoring_att0_f+total_scoring_att1_f);
+		float total_ontarget_scoring_att = (ontarget_scoring_att0_f+ontarget_scoring_att1_f);
+		float total_won_corners = (won_corners0_f+won_corners1_f);
+		float total_fk_foul_lost = (fk_foul_lost0_f+fk_foul_lost1_f);
+		float total_possession_percentage = (possession_percentage0_f+possession_percentage0_f);
 		
-		total_scoring_att1_f = total_scoring_att1_f/(total_scoring_att0_f+total_scoring_att1_f);
-		ontarget_scoring_att1_f = ontarget_scoring_att1_f/(ontarget_scoring_att0_f+ontarget_scoring_att1_f);
-		won_corners1_f = won_corners1_f/(won_corners0_f+won_corners1_f);
-		fk_foul_lost1_f = fk_foul_lost1_f/(fk_foul_lost0_f+fk_foul_lost1_f);
-		possession_percentage1_f = possession_percentage1_f/(possession_percentage0_f+possession_percentage1_f);
+		total_scoring_att0_f = total_scoring_att0_f/total_total_scoring_att;
+		ontarget_scoring_att0_f = ontarget_scoring_att0_f/total_ontarget_scoring_att;
+		won_corners0_f = won_corners0_f/total_won_corners;
+		fk_foul_lost0_f = fk_foul_lost0_f/total_fk_foul_lost;
+		possession_percentage0_f = possession_percentage0_f/total_possession_percentage;
+		
+		total_scoring_att1_f = total_scoring_att1_f/total_total_scoring_att;
+		ontarget_scoring_att1_f = ontarget_scoring_att1_f/total_ontarget_scoring_att;
+		won_corners1_f = won_corners1_f/total_won_corners;
+		fk_foul_lost1_f = fk_foul_lost1_f/total_fk_foul_lost;
+		possession_percentage1_f = possession_percentage1_f/total_possession_percentage;
 		
 		total_scoring_att0_f = (total_scoring_att0_f>0.1) ? total_scoring_att0_f : 0.1f;
 		ontarget_scoring_att0_f = (ontarget_scoring_att0_f>0.1) ? ontarget_scoring_att0_f : 0.1f;
@@ -170,5 +176,8 @@ public class Live_score_detail_statistic {
 		won_corners1.setLayoutParams(new LinearLayout.LayoutParams(0, TextH, won_corners1_f));
 		fk_foul_lost1.setLayoutParams(new LinearLayout.LayoutParams(0, TextH, fk_foul_lost1_f));
 		possession_percentage1.setLayoutParams(new LinearLayout.LayoutParams(0, TextH, possession_percentage1_f));
+		
+		
+		
 	}
 }
