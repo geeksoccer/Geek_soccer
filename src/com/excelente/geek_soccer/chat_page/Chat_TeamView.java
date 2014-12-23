@@ -94,6 +94,7 @@ public class Chat_TeamView{
 	ImageView Stick_1, Stick_2, Stick_3, Stick_4, Stick_5, Stick_6, Stick_7, Stick_8, Stick_9, Stick_10, Stick_11, Stick_12;
 	static HashMap<String, ImageView> Sticker_ImgVSet = new HashMap<String, ImageView>();
 	static HashMap<String, ImageView> Sticker_ButVSet = new HashMap<String, ImageView>();
+	static HashMap<String, LinearLayout> Sticker_ButLayoutVSet = new HashMap<String, LinearLayout>();
 	String root = Environment.getExternalStorageDirectory().toString();
 	ProgressBar progressBar;
 	String saveModeGet;
@@ -234,9 +235,10 @@ public class Chat_TeamView{
 					StickerPrepare();
 					StickViewCall(Stick_Set);
 					StickerSelectorLayout.removeAllViews();
-					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mActivity, 40), GetdipSize.dip(mActivity, 40));
+					LayoutParams paramsLayoutBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mActivity, 40), GetdipSize.dip(mActivity, 40));
+					LayoutParams paramsBtn = new LinearLayout.LayoutParams(GetdipSize.dip(mActivity, 35), GetdipSize.dip(mActivity, 35));
 					LayoutParams paramsLine = new LinearLayout.LayoutParams(GetdipSize.dip(mActivity, 1), LayoutParams.MATCH_PARENT);
-					((MarginLayoutParams) paramsBtn).setMargins(5, 0, 5, 0);
+					((MarginLayoutParams) paramsLayoutBtn).setMargins(5, 0, 5, 0);
 					View line = new View(mActivity);
 					line.setBackgroundColor(Color.GRAY);
 					line.getBackground().setAlpha(100);
@@ -248,13 +250,7 @@ public class Chat_TeamView{
 						final int StickPosition = i + 1;
 						StickBTNPrepare(String
 								.valueOf(StickPosition), StickSet_1);
-						if (String.valueOf(StickPosition).equals(Stick_Set)) {
-							StickSet_1.setEnabled(false);
-							StickSet_1.setBackgroundColor(Color.parseColor(SessionManager.getMember(mActivity).getTheme().getThemeColor()));
-						} else {
-							StickSet_1.setEnabled(true);
-							StickSet_1.setBackgroundColor(color.transparent);
-						}
+						
 						StickSet_1
 								.setOnClickListener(new View.OnClickListener() {
 									@Override
@@ -262,27 +258,42 @@ public class Chat_TeamView{
 										StickViewClear();
 										Stick_Set = String
 												.valueOf(StickPosition);
-										
-										arg0.setBackgroundColor(Color.parseColor(SessionManager.getMember(mActivity).getTheme().getThemeColor()));
 										arg0.setEnabled(false);
 										for (int j = 0; j < data.Sticker_Set
 												.size(); j++) {
 											if (!String.valueOf(j + 1).equals(
 													Stick_Set)) {
-												Sticker_ButVSet.get(
+												Sticker_ButLayoutVSet.get(
 														String.valueOf(j))
 														.setBackgroundColor(color.transparent);
 												Sticker_ButVSet.get(
 														String.valueOf(j))
 														.setEnabled(true);
+											}else{
+												Sticker_ButLayoutVSet.get(
+														String.valueOf(j)).setBackgroundColor(Color.parseColor(SessionManager.getMember(mActivity).getTheme().getThemeColor()));
 											}
 										}
+										
 										StickViewCall(Stick_Set);
 									}
 
 								});
 						Sticker_ButVSet.put(String.valueOf(i), StickSet_1);
-						StickerSelectorLayout.addView(StickSet_1);
+						
+						LinearLayout StickButLayout = new LinearLayout(mActivity);
+						StickButLayout.setLayoutParams(paramsLayoutBtn);
+						StickButLayout.setGravity(Gravity.CENTER);
+						StickButLayout.addView(StickSet_1);
+						Sticker_ButLayoutVSet.put(String.valueOf(i), StickButLayout);
+						if (String.valueOf(StickPosition).equals(Stick_Set)) {
+							StickSet_1.setEnabled(false);
+							StickButLayout.setBackgroundColor(Color.parseColor(SessionManager.getMember(mActivity).getTheme().getThemeColor()));
+						} else {
+							StickSet_1.setEnabled(true);
+							StickButLayout.setBackgroundColor(color.transparent);
+						}
+						StickerSelectorLayout.addView(StickButLayout);
 						line = new View(mActivity);
 						line.setBackgroundColor(Color.GRAY);
 						line.getBackground().setAlpha(100);
