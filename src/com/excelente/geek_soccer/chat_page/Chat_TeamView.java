@@ -277,6 +277,7 @@ public class Chat_TeamView{
 														.setEnabled(true);
 											}
 										}
+										StickViewCall(Stick_Set);
 									}
 
 								});

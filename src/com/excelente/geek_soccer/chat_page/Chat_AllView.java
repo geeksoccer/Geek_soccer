@@ -288,8 +288,7 @@ public class Chat_AllView{
 											}
 										}
 										
-										StickViewCall(String
-												.valueOf(StickPosition));
+										StickViewCall(Stick_Set);
 									}
 
 								});
