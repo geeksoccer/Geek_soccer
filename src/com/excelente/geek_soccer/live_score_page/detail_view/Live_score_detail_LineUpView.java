@@ -19,6 +19,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class Live_score_detail_LineUpView {
@@ -120,6 +121,7 @@ public class Live_score_detail_LineUpView {
 				ViewGroup parent) {
 			LayoutInflater factory = LayoutInflater.from(mActivity);
 			View myView = factory.inflate(R.layout.lineup_cell, null);
+			LinearLayout SubHeadView = (LinearLayout)myView.findViewById(R.id.SubHeadView);
 			TextView H_No = (TextView) myView.findViewById(R.id.H_No);
 			TextView H_Name = (TextView) myView.findViewById(R.id.H_Name);
 			TextView H_Position = (TextView) myView
@@ -167,8 +169,16 @@ public class Live_score_detail_LineUpView {
 				A_Position.setText("[" + Position + "]");
 				if (Position.equals("Substitute")) {
 					A_Name.setTextColor(Color.RED);
+					JSONObject OldPlayer_ob = Player_Arr_H.getJSONObject(position-1);
+					JSONObject Oldattributes_ob = OldPlayer_ob
+							.getJSONObject("@attributes");
+					String OldPosition = Oldattributes_ob.getString("Position");
+					if(Position.equals(OldPosition)){
+						SubHeadView.setVisibility(RelativeLayout.GONE);
+					}else{
+						SubHeadView.setVisibility(RelativeLayout.ABOVE);
+					}
 				}
-
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

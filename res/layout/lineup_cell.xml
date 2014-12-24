@@ -4,80 +4,108 @@
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:minHeight="30dp"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
+        android:id="@+id/SubHeadView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center"
         android:minHeight="30dp"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical" >
-
-            <TextView
-                android:id="@+id/H_No"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp" />
-
-            <TextView
-                android:id="@+id/H_Name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textStyle="bold" />
-        </LinearLayout>
+        android:visibility="gone"
+        android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/H_Position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:textSize="8sp"
-            android:textStyle="bold" />
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="Substitute"
+             />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical|right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:minHeight="30dp"
-        android:orientation="vertical" >
+        android:orientation="horizontal"
+        android:background="@drawable/card_background_white" >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|right" >
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:minHeight="30dp"
+            android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/A_Name"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:textStyle="bold" />
+                android:gravity="center_vertical" >
+
+                <TextView
+                    android:id="@+id/H_No"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp" />
+
+                <TextView
+                    android:id="@+id/H_Name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/A_No"
+                android:id="@+id/H_Position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="5dp" />
+                android:paddingLeft="5dp"
+                android:textSize="8sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/A_Position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:paddingRight="5dp"
-            android:textSize="8sp"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:minHeight="30dp"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|right" >
+
+                <TextView
+                    android:id="@+id/A_Name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/A_No"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="5dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/A_Position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:paddingRight="5dp"
+                android:textSize="8sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

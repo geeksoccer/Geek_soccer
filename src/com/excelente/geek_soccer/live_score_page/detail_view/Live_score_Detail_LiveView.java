@@ -293,8 +293,7 @@ public class Live_score_Detail_LiveView {
 									0, LayoutParams.WRAP_CONTENT, 1));
 							txt_Sub.setTextColor(colors);
 							txt_N.setLayoutParams(new LinearLayout.LayoutParams(
-									LayoutParams.WRAP_CONTENT,
-									LayoutParams.WRAP_CONTENT));
+									0, LayoutParams.WRAP_CONTENT, 1));
 							img_E.setImageResource(R.drawable.substitution);
 
 							String subOut = txt_Item.getString("SubOff");
@@ -473,12 +472,7 @@ public class Live_score_Detail_LiveView {
 					}
 				}
 			}
-
-			if (position % 2 == 0) {
-				retval.setBackgroundColor(Color.GRAY);
-				retval.getBackground().setAlpha(200);
-			}
-
+			retval.setBackgroundResource(R.drawable.card_background_white);
 			return retval;
 
 		}
