@@ -15,7 +15,6 @@ import com.excelente.geek_soccer.live_score_page.Live_score_Detail_Json;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
