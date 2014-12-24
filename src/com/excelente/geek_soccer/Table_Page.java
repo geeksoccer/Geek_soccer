@@ -8,7 +8,7 @@ import java.util.List;
 import com.excelente.geek_soccer.adapter.TablePagerAdapter;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.TableModel;
-import com.excelente.geek_soccer.model.TablePagerModel;
+import com.excelente.geek_soccer.model.TabModel;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.PageView;
 
@@ -117,11 +117,11 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 		}
 	} 
 	
-	private List<TablePagerModel> getTablePagerModelList() throws UnsupportedEncodingException {
-		String[] league = {PREMIER_LEAGUE, LALIGA, BUNDESLIGA, CALCAIO_SERIE_A, LEAGUE_DE_LEAGUE1, THAI_PREMIER_LEAGUE};
-		List<TablePagerModel> tablePagerModelList = new ArrayList<TablePagerModel>();
+	private List<TabModel> getTablePagerModelList() throws UnsupportedEncodingException {
+		String[] league = {PREMIER_LEAGUE, BUNDESLIGA, LALIGA, CALCAIO_SERIE_A, LEAGUE_DE_LEAGUE1, THAI_PREMIER_LEAGUE};
+		List<TabModel> tablePagerModelList = new ArrayList<TabModel>();
 		for (String l : league) {
-			TablePagerModel tablePagerModel = new TablePagerModel();
+			TabModel tablePagerModel = new TabModel();
 			tablePagerModel.setUrl(getTableUrl(l, TABLE_TYPE_ALL));
 			tablePagerModelList.add(tablePagerModel);
 		}
@@ -137,8 +137,8 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 	@Override
 	public void onTabChanged(String tabId) {
 		int position = Integer.valueOf(tabId);
-		setSelectedTab(position);
 		viewpager.setSelection(position);
+		setSelectedTab(position);
 	}
 	 
 	public void setSelectedTab(int index){

@@ -1,6 +1,6 @@
 package com.excelente.geek_soccer.model;
 
-public class TablePagerModel {
+public class TabModel {
 	
 	private String url;
 

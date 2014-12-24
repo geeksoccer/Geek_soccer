@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.model.TableModel;
-import com.excelente.geek_soccer.model.TablePagerModel;
+import com.excelente.geek_soccer.model.TabModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.Boast;
@@ -26,9 +26,9 @@ import android.widget.Toast;
 public class TablePagerAdapter extends BaseAdapter implements OnItemClickListener{
 	
 	Activity mContext;
-	List<TablePagerModel> tablePagerModelList;
+	List<TabModel> tablePagerModelList;
 	
-	public TablePagerAdapter(Activity mContext, List<TablePagerModel> tablePagerModelList) {
+	public TablePagerAdapter(Activity mContext, List<TabModel> tablePagerModelList) {
 		this.mContext = mContext;
 		this.tablePagerModelList = tablePagerModelList;
 	}
@@ -60,7 +60,7 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 		
 		if(convertView == null){
 			LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = (View) mInflater.inflate(R.layout.table_page_item, parent, false);
+			convertView = (View) mInflater.inflate(R.layout.table_pager_item, parent, false);
 			
 			tableItemView = new TableItemView();
 			tableItemView.tableListView = (ListView) convertView.findViewById(R.id.table_listview);
@@ -72,13 +72,13 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 			tableItemView = (TableItemView) convertView.getTag();
 		}
 		
-		TablePagerModel tablePagerModel = (TablePagerModel) getItem(position);
+		TabModel tablePagerModel = (TabModel) getItem(position);
 		doInitViews(tableItemView, tablePagerModel);
 		
 		return convertView;
 	}
 	
-	private void doInitViews(TableItemView tableItemView, TablePagerModel tablePagerModel) {
+	private void doInitViews(TableItemView tableItemView, TabModel tablePagerModel) {
 		TableAdapter tableAdapter = null;
 		
 		try{ 
