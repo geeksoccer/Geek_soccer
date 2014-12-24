@@ -165,8 +165,7 @@ public class Live_score_Detail_Json extends Activity {
 
 		URL += link_t;
 		Time.setText(Time_t);
-		String saveModeGet = SessionManager.getSetting(this,
-				SessionManager.setting_save_mode);
+		String saveModeGet = "false";//SessionManager.getSetting(this, SessionManager.setting_save_mode);
 
 		if (data.get_HomeMap(Home_img_t) != null) {
 			Home_Pic.setImageBitmap(data.get_HomeMap(Home_img_t));
