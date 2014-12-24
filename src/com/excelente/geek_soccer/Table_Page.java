@@ -10,13 +10,13 @@ import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.TableModel;
 import com.excelente.geek_soccer.model.TablePagerModel;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.excelente.geek_soccer.view.PageView;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterViewFlipper;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -38,7 +38,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 
 	private TabHost tabs;
 
-	private AdapterViewFlipper viewpager;
+	private PageView viewpager;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if (container == null) {
@@ -108,7 +108,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 	}
 	
 	private void initSubView() {
-		viewpager = (AdapterViewFlipper) tableView.findViewById(R.id.table_viewpager);
+		viewpager = (PageView) tableView.findViewById(R.id.table_viewpager);
 		try {
 			TablePagerAdapter tablePagerAdapter = new TablePagerAdapter(getActivity(), getTablePagerModelList());
 			viewpager.setAdapter(tablePagerAdapter);
