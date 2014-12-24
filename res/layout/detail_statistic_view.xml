@@ -15,7 +15,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_background_white" >
 
                 <TextView
                     android:id="@+id/total_scoring_att0"
@@ -63,7 +64,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_background_white" >
 
                 <TextView
                     android:id="@+id/ontarget_scoring_att0"
@@ -111,7 +113,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_background_white" >
 
                 <TextView
                     android:id="@+id/won_corners0"
@@ -159,7 +162,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_background_white" >
 
                 <TextView
                     android:id="@+id/fk_foul_lost0"
@@ -207,7 +211,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_background_white" >
 
                 <TextView
                     android:id="@+id/possession_percentage0"
