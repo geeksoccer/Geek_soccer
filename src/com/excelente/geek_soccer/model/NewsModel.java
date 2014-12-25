@@ -10,8 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class NewsModel implements Serializable{
+public class NewsModel implements Serializable, Parcelable{
 	
 	/**
 	 * 
@@ -53,6 +55,27 @@ public class NewsModel implements Serializable{
 	
 	Bitmap newsBitmapImage;
 	
+	public NewsModel() {
+	}
+	
+	public NewsModel(Parcel in) {
+		newsId = in.readInt();
+		newsLink = in.readString();
+		newsTeamId = in.readInt();
+		newsTopic = in.readString();
+		newsImage = in.readString();
+		newsContent = in.readString();
+		newsLikes = in.readInt();
+		newsComments = in.readInt();
+		newsCredit = in.readString();
+		newsLanguage = in.readString();
+		newsReads = in.readInt();
+		newsCreateTime = in.readString();
+		newsUpdateTime = in.readString();
+		
+		statusView = in.readInt();
+		statusLike = in.readInt();
+	}
 	public int getNewsId() {
 		return newsId;
 	}
@@ -188,5 +211,37 @@ public class NewsModel implements Serializable{
 		
 		return newsList;
 	}
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(newsId);
+		dest.writeString(newsLink);
+		dest.writeInt(newsTeamId);
+		dest.writeString(newsTopic);
+		dest.writeString(newsImage);
+		dest.writeString(newsContent);
+		dest.writeInt(newsLikes);
+		dest.writeInt(newsComments);
+		dest.writeString(newsCredit);
+		dest.writeString(newsLanguage);
+		dest.writeInt(newsReads);
+		dest.writeString(newsCreateTime);
+		dest.writeString(newsUpdateTime);
+		dest.writeInt(statusView);
+		dest.writeInt(statusLike);
+	}
+	
+	public static final Parcelable.Creator<NewsModel> CREATOR = new Parcelable.Creator<NewsModel>() {
+		public NewsModel createFromParcel(Parcel in) {
+			return new NewsModel(in);
+		}
+
+		public NewsModel[] newArray(int size) {
+			return new NewsModel[size];
+		}
+	};
 	
 }

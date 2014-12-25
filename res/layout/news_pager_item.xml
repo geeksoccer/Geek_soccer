@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/news_gray" >
+    
+    <com.excelente.geek_soccer.view.PullToRefreshListView
+        android:id="@+id/news_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/news_loading_footer_processbar"
+        android:layout_marginTop="0dp"
+        android:clipToPadding="false"
+        android:divider="@null"
+        android:dividerHeight="5dp"
+        android:fadingEdge="none"
+        android:padding="10dp"
+        android:scrollbarStyle="outsideOverlay" />
+
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal"
+        android:paddingTop="15dp"
+        android:text="@string/pull_to_refresh_tap_label"
+        android:textColor="@color/gray" />
+
+    <ProgressBar
+        android:id="@+id/news_wait_processbar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <ProgressBar
+        android:id="@+id/news_loading_footer_processbar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

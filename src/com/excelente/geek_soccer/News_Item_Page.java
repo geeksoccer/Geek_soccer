@@ -10,6 +10,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.excelente.geek_soccer.adapter.CommentAdapter;
 import com.excelente.geek_soccer.adapter.NewsItemsAdapter;
+import com.excelente.geek_soccer.adapter.NewsPagerAdapter;
 import com.excelente.geek_soccer.model.CommentModel;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.NewsModel;
@@ -80,7 +81,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	private NewsItemsAdapter newsItemAdaptor;
 	private String tag; 
 	
-	int newsItemPosition; 
+	int newsItemPosition;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +90,12 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		newsItemPosition = -100;
 		
 		if(savedInstanceState!=null){
-			if(News_Page.newsModelTeamList==null && savedInstanceState.containsKey("newsModelTeamList")){
-				String newsModelTeamstr = savedInstanceState.getString("newsModelTeamList");
-				News_Page.newsModelTeamList = NewsModel.convertNewsStrToList(newsModelTeamstr);
-			}
 			
-			if(News_Page.newsModelGlobalList==null && savedInstanceState.containsKey("newsModelGlobalList")){
-				String newsModelGlobalstr = savedInstanceState.getString("newsModelGlobalList");
-				News_Page.newsModelGlobalList = NewsModel.convertNewsStrToList(newsModelGlobalstr);
+			tag = savedInstanceState.getString(News_Page.NEWS_TAG);
+			
+			if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList==null && savedInstanceState.containsKey("newsModelList")){
+				String newsModelTeamstr = savedInstanceState.getString("newsModelList");
+				NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList = NewsModel.convertNewsStrToList(newsModelTeamstr);
 			}
 			
 			newsItemPosition = savedInstanceState.getInt("positionNewItemPage");
@@ -132,11 +131,11 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		newsWaitProcessbar = (ProgressBar) findViewById(R.id.news_wait_processbar);
 		
 		int position = intent.getIntExtra(News_Page.ITEM_INDEX, 0);
-		tag = intent.getStringExtra(News_Page.NEWS_TAG); 
+		tag = intent.getStringExtra(News_Page.NEWS_TAG);
 		
 		contentFlipView = (ViewPager) findViewById(R.id.Content_Pager);
 		
-		newsItemAdaptor = new NewsItemsAdapter(News_Item_Page.this, newsWaitProcessbar, News_Page.getNewsListbyTag(tag, this));
+		newsItemAdaptor = new NewsItemsAdapter(News_Item_Page.this, newsWaitProcessbar, NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList);
 		
 		contentFlipView.setAdapter(newsItemAdaptor);
 		contentFlipView.setCurrentItem(position);
@@ -173,7 +172,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 					//Toast.makeText(getApplicationContext(), "Enter", Toast.LENGTH_SHORT).show();
 					if(newsloaded && contentFlipView.getAdapter().getCount() < 100 && NetworkUtils.isNetworkAvailable(getApplicationContext())){
 						NewsModel newsModel = (NewsModel) newsItemAdaptor.getmNewList().get(contentFlipView.getAdapter().getCount()-1);
-						new LoadOldNewsTask(newsItemAdaptor, tag).execute(News_Page.getURLbyTag(News_Item_Page.this, newsModel.getNewsId(), tag));
+						new LoadOldNewsTask(newsItemAdaptor, tag).execute(NewsPagerAdapter.getURLbyTag(News_Item_Page.this, newsModel.getNewsId(), tag));
 						newsloaded = false;
 					}
 				}
@@ -525,14 +524,12 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		Log.e(">>>>>>>>>>>>>>onSaveInstanceState<<<<<<<<<<<<<<", ">>>>>>>>>>>>>>onSaveInstanceState<<<<<<<<<<<<<<");
 		super.onSaveInstanceState(savedInstanceState);
-		if(News_Page.newsModelTeamList!=null && !News_Page.newsModelTeamList.isEmpty()){
+		
+		savedInstanceState.putString(News_Page.NEWS_TAG, tag);
+		
+		if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList!=null && !NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList.isEmpty()){
 			Gson gson = new Gson();
-			savedInstanceState.putString("newsModelTeamList", gson.toJson(News_Page.newsModelTeamList));
-		}
-	  
-		if(News_Page.newsModelGlobalList!=null && !News_Page.newsModelGlobalList.isEmpty()){
-			Gson gson = new Gson();
-			savedInstanceState.putString("newsModelGlobalList", gson.toJson(News_Page.newsModelGlobalList));
+			savedInstanceState.putString("newsModelList", gson.toJson(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList));
 		}
 		
 		if(contentFlipView!=null)

@@ -40,7 +40,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class NewsAdapter extends BaseAdapter{
@@ -59,6 +58,10 @@ public class NewsAdapter extends BaseAdapter{
 		}
 		this.context = context;
 		this.newsList = newsList;
+	}
+	
+	public List<NewsModel> getNewsList() {
+		return newsList;
 	}
 
 	@SuppressLint("SimpleDateFormat")
@@ -101,7 +104,6 @@ public class NewsAdapter extends BaseAdapter{
         newsImageImageview.setImageResource(R.drawable.logo_gs);
         TextView newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
         TextView newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
-        final ProgressBar newsImageProgressBar = (ProgressBar) convertView.findViewById(R.id.news_image_processbar);
         ImageView newsNewImageview = (ImageView) convertView.findViewById(R.id.news_new);
         final LinearLayout saveModeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
         
@@ -131,10 +133,9 @@ public class NewsAdapter extends BaseAdapter{
         }else{ 
         	String saveMode = SessionManager.getSetting(context, SessionManager.setting_save_mode);
         	if(saveMode == null || saveMode.equals("false") || saveMode.equals("null")){
-	        	doloadImage(newsModel, newsImageImageview, newsImageProgressBar , saveModeTextview);
+	        	doloadImage(newsModel, newsImageImageview, saveModeTextview);
         	}else{
         		saveModeTextview.setVisibility(View.VISIBLE);
-        		newsImageProgressBar.setVisibility(View.GONE);
         		newsImageImageview.setVisibility(View.GONE);
         	}
         }
@@ -143,7 +144,7 @@ public class NewsAdapter extends BaseAdapter{
 			
 			@Override
 			public void onClick(View v) {
-				doloadImage(newsModel, newsImageImageview, newsImageProgressBar , saveModeTextview);
+				doloadImage(newsModel, newsImageImageview, saveModeTextview);
 			}
 		});
         
@@ -175,27 +176,24 @@ public class NewsAdapter extends BaseAdapter{
 		urlBitmap.put(replace, bm);
 	}
 	
-	private void doloadImage(final NewsModel newsModel, final ImageView newsImageImageview, final ProgressBar newsImageProgressBar, final LinearLayout saveModeTextview) { 
+	private void doloadImage(final NewsModel newsModel, final ImageView newsImageImageview, final LinearLayout saveModeTextview) { 
 		try{ 
 		    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
 				 
 		    	public void onLoadingStarted(String imageUri, View view) { 
 		    		saveModeTextview.setVisibility(View.GONE);
 		    		newsImageImageview.setVisibility(View.GONE);
-	        		newsImageProgressBar.setVisibility(View.VISIBLE);
 	        	};
 	        	 
 	        	@Override
 	        	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
 	        		saveModeTextview.setVisibility(View.GONE);
 	        		newsImageImageview.setVisibility(View.VISIBLE);
-	        		newsImageProgressBar.setVisibility(View.GONE);
 	        	}
 	        	
 	        	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 	        		saveModeTextview.setVisibility(View.GONE);
 	        		newsImageImageview.setVisibility(View.VISIBLE);
-	        		newsImageProgressBar.setVisibility(View.GONE);
 	        		cacheMemBitMap(newsModel.getNewsImage().replace(".gif", ".png"), loadedImage);
 	        	}
 
@@ -203,16 +201,13 @@ public class NewsAdapter extends BaseAdapter{
 				public void onLoadingCancelled(String arg0, View arg1) {
 					saveModeTextview.setVisibility(View.GONE);
 					newsImageImageview.setVisibility(View.VISIBLE);
-					newsImageProgressBar.setVisibility(View.GONE);
 				};
 			});
     	}catch(Exception e){
     		newsImageImageview.setVisibility(View.VISIBLE);
-    		newsImageProgressBar.setVisibility(View.GONE);
     		saveModeTextview.setVisibility(View.GONE);
     	}finally{
     		newsImageImageview.setVisibility(View.VISIBLE);
-    		newsImageProgressBar.setVisibility(View.GONE);
     		saveModeTextview.setVisibility(View.GONE);
     	}
 	}

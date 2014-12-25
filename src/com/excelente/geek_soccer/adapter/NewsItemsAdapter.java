@@ -38,7 +38,6 @@ import com.excelente.geek_soccer.view.CustomWebView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.nineoldandroids.view.ViewHelper;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -59,7 +58,6 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.PluginState;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
