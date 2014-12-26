@@ -8,6 +8,8 @@ import com.excelente.geek_soccer.model.TabModel;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.PageView;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -67,16 +69,19 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 		tabs = (TabHost)hilightPage.findViewById(R.id.tabhost); 
 		tabs.setup(); 
         
-		setupTab(R.id.content, "0", "", R.drawable.news_new, true);
-		setupTab(R.id.content, "1", "", R.drawable.logo_premier_league, false);
-		setupTab(R.id.content, "2", "", R.drawable.logo_bundesliga, false);
-		setupTab(R.id.content, "3", "", R.drawable.logo_laliga, false);
-		setupTab(R.id.content, "4", "", R.drawable.logo_calcio, false);
-		setupTab(R.id.content, "5", "", R.drawable.logo_ligue1, false);
-		setupTab(R.id.content, "6", "", R.drawable.logo_ucl, false);
-		setupTab(R.id.content, "7", "", R.drawable.logo_europa_league, false);
-		setupTab(R.id.content, "8", "", R.drawable.logo_championschip, false);
-		setupTab(R.id.content, "9", "", R.drawable.logo_capital_one_cup, false);
+		setupTab(R.id.content, "0", "", BitmapFactory.decodeResource(getResources(), R.drawable.news_new), true);
+		if(SessionManager.getMember(getActivity()).getTeamId() != 0){
+			setupTab(R.id.content, "1", "", SessionManager.getImageSession(getActivity(), SessionManager.getMember(getActivity()).getTheme().getThemeLogo()), false);
+		}
+		setupTab(R.id.content, "2", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_premier_league), false);
+		setupTab(R.id.content, "3", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_bundesliga), false);
+		setupTab(R.id.content, "4", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_laliga), false);
+		setupTab(R.id.content, "5", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_calcio), false);
+		setupTab(R.id.content, "6", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_ligue1), false);
+		setupTab(R.id.content, "7", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_ucl), false);
+		setupTab(R.id.content, "8", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_europa_league), false);
+		setupTab(R.id.content, "9", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_championschip), false);
+		setupTab(R.id.content, "10", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_capital_one_cup), false);
 		
 		tabs.setCurrentTab(0);
 		tabs.setOnTabChangedListener(this);
@@ -85,7 +90,7 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 		scrollTab.setSmoothScrollingEnabled(true);
 	}
 	
-	private void setupTab(Integer layoutId, String name, String label, Integer iconId, boolean selected) {
+	private void setupTab(Integer layoutId, String name, String label, Bitmap bm, boolean selected) {
 
 	    View tab = LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
 	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
@@ -107,8 +112,8 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 	    if(selected)
 	    	viewSelected.setVisibility(View.VISIBLE);
 	    
-	    if(iconId != null){
-	        image.setImageResource(iconId);
+	    if(bm != null){
+	        image.setImageBitmap(bm);
 	    }
 	    text.setText(label);
 
@@ -126,6 +131,9 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 	private List<TabModel> getTabModelList() {
 		List<String> urls = new ArrayList<String>();
 		urls.add(HILIGHT_TYPE_ALL);
+		if(SessionManager.getMember(getActivity()).getTeamId() != 0){
+			urls.add(SessionManager.getMember(getActivity()).getTeam().getTeamNameTH());
+		}
 		urls.add("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_PREMIER_LEAGUE));
 		urls.add("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_BUNDESLIGA));
 		urls.add("&nbsp;" + getActivity().getResources().getString(R.string.HILIGHT_TYPE_LALIGA));

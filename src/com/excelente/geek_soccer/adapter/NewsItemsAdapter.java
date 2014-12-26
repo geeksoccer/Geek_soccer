@@ -254,7 +254,7 @@ public class NewsItemsAdapter extends PagerAdapter{
                         if(NetworkUtils.isNetworkAvailable(mContext)){ 
         					Intent intent = new Intent(Intent.ACTION_VIEW);
         					intent.setData(Uri.parse(url));
-        					view.getContext().startActivity(intent);
+        					mContext.startActivity(intent);
         					return true;
         				}else{
         					Toast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
