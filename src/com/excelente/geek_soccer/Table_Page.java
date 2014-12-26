@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -39,6 +40,8 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 	private TabHost tabs;
 
 	private PageView viewpager;
+
+	private HorizontalScrollView scrollTab;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if (container == null) {
@@ -71,8 +74,10 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 		setupTab(R.id.content, "5", "", R.drawable.logo_tpl, false);
 		
 		tabs.setCurrentTab(0);
-		
 		tabs.setOnTabChangedListener(this);
+		
+		scrollTab = (HorizontalScrollView) tableView.findViewById(R.id.scroll_tab);
+		scrollTab.setSmoothScrollingEnabled(true);
 	}
 	
 	private void setupTab(Integer layoutId, String name, String label, Integer iconId, boolean selected) {
@@ -146,10 +151,20 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 			View v = tabs.getTabWidget().getChildAt(i).findViewById(R.id.selected);
 			if(i == index){
 				v.setVisibility(View.VISIBLE);
+	            focusAndScrollView(v, index);
 			}else{
 				v.setVisibility(View.INVISIBLE);
 			}
 		}
+	}
+	
+	private void focusAndScrollView(View v, int index) {
+		int width = v.getWidth();
+		int scollX = 0;
+		if(index > 2){
+        	scollX = (width/2) * (index+1);
+		}
+        scrollTab.smoothScrollTo(scollX, 0);
 	}
 	
 }

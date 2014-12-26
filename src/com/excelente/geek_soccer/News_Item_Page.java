@@ -83,6 +83,8 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	
 	int newsItemPosition;
 
+	private int index;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -90,12 +92,12 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		newsItemPosition = -100;
 		
 		if(savedInstanceState!=null){
+			 
+			index = savedInstanceState.getInt(News_Page.NEWS_POSITION, 0);
 			
-			tag = savedInstanceState.getString(News_Page.NEWS_TAG);
-			
-			if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList==null && savedInstanceState.containsKey("newsModelList")){
+			if(NewsPagerAdapter.tabModelList.get(index).newsList==null && savedInstanceState.containsKey("newsModelList")){
 				String newsModelTeamstr = savedInstanceState.getString("newsModelList");
-				NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList = NewsModel.convertNewsStrToList(newsModelTeamstr);
+				NewsPagerAdapter.tabModelList.get(index).newsList = NewsModel.convertNewsStrToList(newsModelTeamstr);
 			}
 			
 			newsItemPosition = savedInstanceState.getInt("positionNewItemPage");
@@ -109,6 +111,22 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		commentListview.setVisibility(View.GONE);
 		
 		overridePendingTransition(R.anim.in_trans_left_right, R.anim.out_trans_right_left);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		Log.e(">>>>>>>>>>>>>>onSaveInstanceState<<<<<<<<<<<<<<", ">>>>>>>>>>>>>>onSaveInstanceState<<<<<<<<<<<<<<");
+		super.onSaveInstanceState(savedInstanceState);
+		
+		savedInstanceState.putInt(News_Page.NEWS_TAG, index);
+		
+		if(NewsPagerAdapter.tabModelList.get(index).newsList!=null && !NewsPagerAdapter.tabModelList.get(index).newsList.isEmpty()){
+			Gson gson = new Gson();
+			savedInstanceState.putString("newsModelList", gson.toJson(NewsPagerAdapter.tabModelList.get(index).newsList));
+		}
+		
+		if(contentFlipView!=null)
+			savedInstanceState.putInt("positionNewItemPage", contentFlipView.getCurrentItem());
 	}
 
 	private void initView(Intent intent) {
@@ -132,10 +150,11 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 		
 		int position = intent.getIntExtra(News_Page.ITEM_INDEX, 0);
 		tag = intent.getStringExtra(News_Page.NEWS_TAG);
+		index = intent.getIntExtra(News_Page.NEWS_POSITION, 0);
 		
 		contentFlipView = (ViewPager) findViewById(R.id.Content_Pager);
 		
-		newsItemAdaptor = new NewsItemsAdapter(News_Item_Page.this, newsWaitProcessbar, NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList);
+		newsItemAdaptor = new NewsItemsAdapter(News_Item_Page.this, newsWaitProcessbar, NewsPagerAdapter.tabModelList.get(index).newsList);
 		
 		contentFlipView.setAdapter(newsItemAdaptor);
 		contentFlipView.setCurrentItem(position);
@@ -172,7 +191,7 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 					//Toast.makeText(getApplicationContext(), "Enter", Toast.LENGTH_SHORT).show();
 					if(newsloaded && contentFlipView.getAdapter().getCount() < 100 && NetworkUtils.isNetworkAvailable(getApplicationContext())){
 						NewsModel newsModel = (NewsModel) newsItemAdaptor.getmNewList().get(contentFlipView.getAdapter().getCount()-1);
-						new LoadOldNewsTask(newsItemAdaptor, tag).execute(NewsPagerAdapter.getURLbyTag(News_Item_Page.this, newsModel.getNewsId(), tag));
+						new LoadOldNewsTask(newsItemAdaptor).execute(NewsPagerAdapter.getURLbyTag(News_Item_Page.this, newsModel.getNewsId(), tag));
 						newsloaded = false;
 					}
 				}
@@ -487,11 +506,9 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 	public class LoadOldNewsTask extends AsyncTask<String, Void, List<NewsModel>>{
 		
 		NewsItemsAdapter newsAdapter;
-		String tag;
 		
-		public LoadOldNewsTask(NewsItemsAdapter newsItemAdaptor, String tag) {
+		public LoadOldNewsTask(NewsItemsAdapter newsItemAdaptor) {
 			this.newsAdapter = newsItemAdaptor;
-			this.tag = tag;
 		}
 		
 		@Override
@@ -518,22 +535,6 @@ public class News_Item_Page extends Activity implements View.OnClickListener, An
 			newsloaded = true;
 		}
 
-	}
-	
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		Log.e(">>>>>>>>>>>>>>onSaveInstanceState<<<<<<<<<<<<<<", ">>>>>>>>>>>>>>onSaveInstanceState<<<<<<<<<<<<<<");
-		super.onSaveInstanceState(savedInstanceState);
-		
-		savedInstanceState.putString(News_Page.NEWS_TAG, tag);
-		
-		if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList!=null && !NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList.isEmpty()){
-			Gson gson = new Gson();
-			savedInstanceState.putString("newsModelList", gson.toJson(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tag)).newsList));
-		}
-		
-		if(contentFlipView!=null)
-			savedInstanceState.putInt("positionNewItemPage", contentFlipView.getCurrentItem());
 	}
 
 }

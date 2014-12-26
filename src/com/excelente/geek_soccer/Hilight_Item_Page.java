@@ -12,6 +12,7 @@ import com.aphidmobile.flip.FlipViewController;
 import com.aphidmobile.flip.FlipViewController.ViewFlipListener;
 import com.excelente.geek_soccer.adapter.CommentAdapter;
 import com.excelente.geek_soccer.adapter.HilightItemsAdapter;
+import com.excelente.geek_soccer.adapter.HilightPagerAdapter;
 import com.excelente.geek_soccer.model.CommentModel;
 import com.excelente.geek_soccer.model.HilightModel;
 import com.excelente.geek_soccer.model.NewsModel;
@@ -74,6 +75,8 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 	private HilightItemsAdapter hilightItemAdaptor;
 	private String tag;
 
+	private int index;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,55 +94,11 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 	}
 	
 	private void doLoadSavedInstanceState(Bundle savedInstanceState) {
-		if(savedInstanceState!=null){ 
-			if(Hilight_Page.hilightListAll==null && savedInstanceState.containsKey("hilightListAll")){ 
-				String hilightModelstr = savedInstanceState.getString("hilightListAll");
-				Hilight_Page.hilightListAll = HilightModel.convertHilightStrToList(hilightModelstr);
-			}
-			
-			if(Hilight_Page.hilightListBl==null && savedInstanceState.containsKey("hilightListBl")){
-				String hilightModelstr = savedInstanceState.getString("hilightListBl");
-				Hilight_Page.hilightListBl = HilightModel.convertHilightStrToList(hilightModelstr);
-			}
-			
-			if(Hilight_Page.hilightListFl==null && savedInstanceState.containsKey("hilightListFl")){
-				String hilightModelstr = savedInstanceState.getString("hilightListFl");
-				Hilight_Page.hilightListFl = HilightModel.convertHilightStrToList(hilightModelstr);
-			}
-			
-			if(Hilight_Page.hilightListGl==null && savedInstanceState.containsKey("hilightListGl")){
-				String hilightModelstr = savedInstanceState.getString("hilightListGl");
-				Hilight_Page.hilightListGl = HilightModel.convertHilightStrToList(hilightModelstr);
-			}
-			
-			if(Hilight_Page.hilightListLl==null && savedInstanceState.containsKey("hilightListLl")){
-				String hilightModelstr = savedInstanceState.getString("hilightListLl");
-				Hilight_Page.hilightListLl = HilightModel.convertHilightStrToList(hilightModelstr);
-			}
-			
-			if(Hilight_Page.hilightListPl==null && savedInstanceState.containsKey("hilightListPl")){
-				String hilightModelstr = savedInstanceState.getString("hilightListPl");
-				Hilight_Page.hilightListPl = HilightModel.convertHilightStrToList(hilightModelstr);
-			}
-			
-			if(Hilight_Page.hilightListUcl==null && savedInstanceState.containsKey("hilightListUcl")){
-				String hilightModelstr = savedInstanceState.getString("hilightListUcl");
-				Hilight_Page.hilightListUcl = HilightModel.convertHilightStrToList(hilightModelstr);
-			}
-			
-			if(Hilight_Page.hilightListUpl==null && savedInstanceState.containsKey("hilightListUpl")){
-				String hilightModelstr = savedInstanceState.getString("hilightListUpl");
-				Hilight_Page.hilightListUpl = HilightModel.convertHilightStrToList(hilightModelstr);
-			}
-			
-			if(Hilight_Page.hilightListCapital==null && savedInstanceState.containsKey("hilightListCapital")){
-				String hilightModelstr = savedInstanceState.getString("hilightListCapital");
-				Hilight_Page.hilightListCapital = HilightModel.convertHilightStrToList(hilightModelstr);
-			}
-			
-			if(Hilight_Page.hilightListChamp==null && savedInstanceState.containsKey("hilightListChamp")){
-				String hilightModelstr = savedInstanceState.getString("hilightListChamp");
-				Hilight_Page.hilightListChamp = HilightModel.convertHilightStrToList(hilightModelstr);
+		if(savedInstanceState!=null){
+			index = savedInstanceState.getInt(Hilight_Page.HILIGHT_INDEX, 0); 
+			if(HilightPagerAdapter.tabModelList.get(index).hilightList==null && savedInstanceState.containsKey("hilightList")){ 
+				String hilightModelstr = savedInstanceState.getString("hilightList");
+				HilightPagerAdapter.tabModelList.get(index).hilightList = HilightModel.convertHilightStrToList(hilightModelstr);
 			}
 			
 		}
@@ -149,55 +108,12 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		
-		if(Hilight_Page.hilightListAll!=null && !Hilight_Page.hilightListAll.isEmpty()){
+		if(HilightPagerAdapter.tabModelList.get(index).hilightList!=null && !HilightPagerAdapter.tabModelList.get(index).hilightList.isEmpty()){
 			Gson gson = new Gson();
-			outState.putString("hilightListAll", gson.toJson(Hilight_Page.hilightListAll));
-		}
-	  
-		if(Hilight_Page.hilightListBl!=null && !Hilight_Page.hilightListBl.isEmpty()){
-			Gson gson = new Gson();
-			outState.putString("hilightListBl", gson.toJson(Hilight_Page.hilightListBl));
+			outState.putString("hilightList", gson.toJson(HilightPagerAdapter.tabModelList.get(index).hilightList));
 		}
 		
-		if(Hilight_Page.hilightListFl!=null && !Hilight_Page.hilightListFl.isEmpty()){
-			Gson gson = new Gson();
-			outState.putString("hilightListFl", gson.toJson(Hilight_Page.hilightListFl));
-		}
-		
-		if(Hilight_Page.hilightListGl!=null && !Hilight_Page.hilightListGl.isEmpty()){
-			Gson gson = new Gson();
-			outState.putString("hilightListGl", gson.toJson(Hilight_Page.hilightListGl));
-		}
-		
-		if(Hilight_Page.hilightListLl!=null && !Hilight_Page.hilightListLl.isEmpty()){
-			Gson gson = new Gson();
-			outState.putString("hilightListLl", gson.toJson(Hilight_Page.hilightListLl));
-		}
-		
-		if(Hilight_Page.hilightListPl!=null && !Hilight_Page.hilightListPl.isEmpty()){
-			Gson gson = new Gson();
-			outState.putString("hilightListPl", gson.toJson(Hilight_Page.hilightListPl));
-		}
-		
-		if(Hilight_Page.hilightListUcl !=null && !Hilight_Page.hilightListUcl.isEmpty()){
-			Gson gson = new Gson();
-			outState.putString("hilightListUcl", gson.toJson(Hilight_Page.hilightListUcl));
-		}
-		
-		if(Hilight_Page.hilightListUpl !=null && !Hilight_Page.hilightListUpl.isEmpty()){
-			Gson gson = new Gson();
-			outState.putString("hilightListUpl", gson.toJson(Hilight_Page.hilightListUpl));
-		}
-		
-		if(Hilight_Page.hilightListCapital !=null && !Hilight_Page.hilightListCapital.isEmpty()){
-			Gson gson = new Gson();
-			outState.putString("hilightListCapital", gson.toJson(Hilight_Page.hilightListCapital));
-		}
-		
-		if(Hilight_Page.hilightListChamp !=null && !Hilight_Page.hilightListChamp.isEmpty()){
-			Gson gson = new Gson();
-			outState.putString("hilightListChamp", gson.toJson(Hilight_Page.hilightListChamp));
-		}
+		outState.putInt(Hilight_Page.HILIGHT_INDEX, index);
 		
 		if(contentFlipView!=null)
 			outState.putInt("positionHilightItemPage", contentFlipView.getSelectedItemPosition());
@@ -224,6 +140,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		
 		int position = intent.getIntExtra(Hilight_Page.HILIGHT_ITEM_INDEX, 0);
 		tag = intent.getStringExtra(Hilight_Page.HILIGHT_TAG); 
+		index = intent.getIntExtra(Hilight_Page.HILIGHT_INDEX, 0); 
 		
 		contentFlipView = new FlipViewController(activity, FlipViewController.HORIZONTAL);
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -231,7 +148,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 		contentFlipView.setLayoutParams(params);
 		contentFlipView.setAnimationBitmapFormat(Bitmap.Config.RGB_565);
 		
-		hilightItemAdaptor = new HilightItemsAdapter(Hilight_Item_Page.this, hilightWaitProcessbar, Hilight_Page.getHilightListbyTag(tag)); 
+		hilightItemAdaptor = new HilightItemsAdapter(Hilight_Item_Page.this, hilightWaitProcessbar, HilightPagerAdapter.tabModelList.get(index).hilightList); 
 		  
 		contentFlipView.setAdapter(hilightItemAdaptor);
 		contentFlipView.setSelection(position);
@@ -276,7 +193,7 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 					//Toast.makeText(getApplicationContext(), "Enter", Toast.LENGTH_SHORT).show();
 					if(hilightloaded && contentFlipView.getAdapter().getCount() < 100 && NetworkUtils.isNetworkAvailable(getApplicationContext())){
 						HilightModel hilights = (HilightModel) contentFlipView.getAdapter().getItem(contentFlipView.getAdapter().getCount()-1);
-						new LoadOldHilightTask(hilightItemAdaptor, tag).execute(new Hilight_Page().getURLbyTag(hilights.getHilightId(), tag));
+						new LoadOldHilightTask(hilightItemAdaptor).execute(HilightPagerAdapter.getURLbyTag(Hilight_Item_Page.this, hilights.getHilightId(), tag));
 						hilightloaded = false;
 					}
 				}
@@ -628,11 +545,9 @@ public class Hilight_Item_Page extends Activity implements View.OnClickListener,
 	public class LoadOldHilightTask extends AsyncTask<String, Void, List<HilightModel>>{ 
 		
 		HilightItemsAdapter hilightAdapter;
-		String tag;
 		
-		public LoadOldHilightTask(HilightItemsAdapter hilightAdapter, String tag) {
-			this.hilightAdapter = hilightAdapter; 
-			this.tag = tag;
+		public LoadOldHilightTask(HilightItemsAdapter hilightAdapter) {
+			this.hilightAdapter = hilightAdapter;
 		}
 		
 		@Override

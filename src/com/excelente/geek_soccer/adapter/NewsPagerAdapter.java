@@ -85,7 +85,7 @@ public class NewsPagerAdapter extends BaseAdapter{
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewItem viewItem = new ViewItem();
+		ViewItem viewItem = null;
 		
 		if(convertView == null){
 			LayoutInflater mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -110,12 +110,12 @@ public class NewsPagerAdapter extends BaseAdapter{
 
 	private void doInitView(ViewItem viewItem, TabModel tabModel) {
 		viewItem.newsLoadingFooterProcessbar.setVisibility(View.GONE);
-		if (NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).adapter == null) {
+		if (NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter == null) {
 			if (NetworkUtils.isNetworkAvailable(activity)) {
-				new LoadOldNewsTask(viewItem, NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).adapter, tabModel).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
+				new LoadOldNewsTask(viewItem, (NewsAdapter) NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
 			} else {
 				Boast.makeText(activity, NetworkUtils.getConnectivityStatusString(activity), Toast.LENGTH_SHORT).show();
-				setMessageEmptyListView(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).adapter, viewItem);
+				setMessageEmptyListView((NewsAdapter) NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
 			}
 		}
 	}
@@ -213,7 +213,7 @@ public class NewsPagerAdapter extends BaseAdapter{
 			if(result.equals("") || result.equals("no news") || result.equals("no parameter")){
 				return null;
 			}
-			//Log.e("000000000000", result);
+			
 			List<NewsModel> newsList = NewsModel.convertNewsStrToList(result);
 			
 			return newsList;
@@ -238,37 +238,37 @@ public class NewsPagerAdapter extends BaseAdapter{
 		
 		if(newsList == null || newsList.isEmpty()){
 			//Toast.makeText(getActivity(), "No News", Toast.LENGTH_SHORT).show();
-			if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).newsList == null && activity!=null){  
-				NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).newsList = new ArrayList<NewsModel>(); 
+			if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).newsList == null && activity!=null){  
+				NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).newsList = new ArrayList<NewsModel>(); 
 				Boast.makeText(activity, activity.getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
 			}
 		}else{
-			if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).newsList == null || NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).newsList.isEmpty()){
-				NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).newsList = newsList;
+			if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).newsList == null || NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).newsList.isEmpty()){
+				NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).newsList = newsList;
 				loaded = true;
-				storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+"tag"+tabModel.getUrl());
+				storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+"tag"+tabModel.getIndex());
 				//intentNewsUpdate(newsList.get(0));
-			}else if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).newsList.get(0).getNewsId() < newsList.get(0).getNewsId()){
-				NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).newsList = newsList; 
+			}else if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).newsList.get(0).getNewsId() < newsList.get(0).getNewsId()){
+				NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).newsList = newsList; 
 				loaded = true;
-				storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+"tag"+tabModel.getUrl());
+				storeMaxIdToPerference(newsList.get(0), NewsModel.NEWS_ID+"tag"+tabModel.getIndex());
 				//intentNewsUpdate(newsList.get(0));
 			}else{
 				return;
 			}
 		}
 			
-			NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).adapter = new NewsAdapter(activity, NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).newsList);
-			viewItem.newsListView.setAdapter(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).adapter);
-			if(!NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).adapter.isEmpty()){
+			NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter = new NewsAdapter(activity, NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).newsList);
+			viewItem.newsListView.setAdapter(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter);
+			if(!NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter.isEmpty()){
 				viewItem.newsListView.setVisibility(View.VISIBLE);
 			}
 			
-			if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).adapter.isEmpty()){
+			if(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter.isEmpty()){
 				viewItem.textEmpty.setVisibility(View.VISIBLE);
 			}
 			
-			setListViewEvents(NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).adapter, viewItem, tabModel);
+			setListViewEvents((NewsAdapter) NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem, tabModel);
 		
 	}
 	
@@ -286,8 +286,8 @@ public class NewsPagerAdapter extends BaseAdapter{
 			oldNews=null; 
 			return;
 		}
-		
-		NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getUrl())).adapter.add(result);
+		 
+		((NewsAdapter) NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter).add(result);
 	}
 	 
 	private void setListViewEvents(final NewsAdapter newsAdapter, final ViewItem viewItem, final TabModel tabModel) {
@@ -305,6 +305,7 @@ public class NewsPagerAdapter extends BaseAdapter{
 				Intent newsItemPage = new Intent(activity, News_Item_Page.class);
 				newsItemPage.putExtra(News_Page.ITEM_INDEX, pos-1); 
 				newsItemPage.putExtra(News_Page.NEWS_TAG, tabModel.getUrl());
+				newsItemPage.putExtra(News_Page.NEWS_POSITION, tabModel.getIndex());
 				activity.startActivity(newsItemPage);
 			}
 		});

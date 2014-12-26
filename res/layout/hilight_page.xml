@@ -3,7 +3,8 @@
     <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/tabhost"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:background="@color/white" >
         
         <RelativeLayout
 		    android:layout_width="fill_parent"
@@ -14,15 +15,15 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:scrollbars="none"
-		            android:fillViewport="true">
+		            android:fillViewport="true" >
 		            
 				    <LinearLayout 
 				        android:orientation="horizontal"
-				        android:layout_width="fill_parent"
+				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content">
 			            <TabWidget 
 			                android:id="@android:id/tabs"
-			                android:layout_width="600dp"
+			                android:layout_width="wrap_content"
 			                android:layout_height="wrap_content"
 			                android:layout_gravity="center_vertical" />
 			        </LinearLayout>
@@ -32,153 +33,20 @@
 	            android:id="@android:id/tabcontent"
 	            android:layout_width="fill_parent"
 	            android:layout_height="fill_parent"
-	            android:layout_above="@+id/hilight_loading_footer_processbar"
 	            android:layout_below="@+id/scroll_tab" >
 				
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_all"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_pl"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_bl"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_ll"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_gl"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_fl"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_ucl"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_upl"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_champ"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
-	            <com.excelente.geek_soccer.view.PullToRefreshListView
-			        android:id="@+id/hilight_listview_capital"
-			        android:layout_width="fill_parent"
-			        android:layout_height="match_parent"
-			        android:layout_marginTop="0dp"
-			        android:background="@color/news_gray"
-			        android:clipToPadding="false"
-			        android:divider="@null"
-			        android:dividerHeight="5dp"
-			        android:fadingEdge="none"
-			        android:padding="10dp"
-			        android:scrollbarStyle="outsideOverlay" />
+	            <View 
+	                android:id="@+id/content"
+	                android:layout_width="match_parent"
+	                android:layout_height="0dp"/>
+	            
 	        </FrameLayout>
 	        
-	        <TextView android:id="@+id/empty"
-			    android:layout_below="@+id/scroll_tab"
-	        	android:paddingTop="15dp"
-	            android:textColor="@color/gray"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:gravity="center_horizontal"
-				android:text="@string/pull_to_refresh_tap_label" />
+	        <com.excelente.geek_soccer.view.PageView
+	       	    android:id="@+id/news_viewpager"
+	       	    android:layout_width="match_parent"
+	    		android:layout_height="match_parent"
+	       	    android:layout_below="@+id/scroll_tab" />
 	        
-	        <ProgressBar
-		        android:id="@+id/hilight_wait_processbar"
-		        style="?android:attr/progressBarStyle"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_centerInParent="true" />
-	        
-	        <ProgressBar
-		        android:id="@+id/hilight_loading_footer_processbar"
-		        style="?android:attr/progressBarStyle"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentBottom="true"
-		        android:background="@color/news_gray" />
         </RelativeLayout>
     </TabHost>

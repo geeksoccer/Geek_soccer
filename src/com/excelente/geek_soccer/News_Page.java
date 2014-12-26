@@ -30,6 +30,7 @@ public class News_Page extends Fragment implements OnTabChangeListener, OnClickL
 	
 	public static final String ITEM_INDEX = "NEWS_MODEL";
 	public static final String NEWS_LIST_MODEL = "NEWS_LIST_MODEL";
+	public static final String NEWS_POSITION = "NEWS_POSITION";
 	
 	View newsPage;
 	
@@ -37,6 +38,7 @@ public class News_Page extends Fragment implements OnTabChangeListener, OnClickL
 	private TabWidget tabWidget;
 	private PageView viewpager;
 	private NewsPagerAdapter newsPagerAdapter;
+	//private HorizontalScrollView scrollTab;
 	
 	public static String NEWS_TAG = "NEWS_TAG";
 	
@@ -81,9 +83,10 @@ public class News_Page extends Fragment implements OnTabChangeListener, OnClickL
 		
 		List<TabModel> tabList = new ArrayList<TabModel>();
 		
-		for (String url : urls) {
+		for (int i = 0; i < urls.size(); i++) {
 			TabModel tabModel = new TabModel();
-			tabModel.setUrl(url);
+			tabModel.setUrl(urls.get(i));
+			tabModel.setIndex(i);
 			tabList.add(tabModel);
 		}
 		
@@ -104,6 +107,8 @@ public class News_Page extends Fragment implements OnTabChangeListener, OnClickL
 		
 		tabWidget = (TabWidget) newsPage.findViewById(android.R.id.tabs); 
 		
+		//scrollTab = (HorizontalScrollView) newsPage.findViewById(R.id.scroll_tab);
+		//scrollTab.setSmoothScrollingEnabled(true);
 	}
 	
 	private void setupTab(Integer layoutId, String name, String label, Integer iconId, boolean selected) {
@@ -141,11 +146,21 @@ public class News_Page extends Fragment implements OnTabChangeListener, OnClickL
 			View v = tabs.getTabWidget().getChildAt(i).findViewById(R.id.selected);
 			if(i == index){
 				v.setVisibility(View.VISIBLE);
+	            //focusAndScrollView(v, index);
 			}else{
 				v.setVisibility(View.INVISIBLE);
 			}
 		}
 	}
+	
+	/*private void focusAndScrollView(View v, int index) {
+		int width = v.getWidth();
+		int scollX = 0;
+		if(index > 2){
+        	scollX = (width/2) * (index+1);
+		}
+        scrollTab.smoothScrollTo(scollX, 0);
+	}*/
 	
 	@Override
 	public void onResume() {
