@@ -69,19 +69,20 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 		tabs = (TabHost)hilightPage.findViewById(R.id.tabhost); 
 		tabs.setup(); 
         
-		setupTab(R.id.content, "0", "", BitmapFactory.decodeResource(getResources(), R.drawable.news_new), true);
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.news_new), true);
 		if(SessionManager.getMember(getActivity()).getTeamId() != 0){
-			setupTab(R.id.content, "1", "", SessionManager.getImageSession(getActivity(), SessionManager.getMember(getActivity()).getTheme().getThemeLogo()), false);
+			setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", SessionManager.getImageSession(getActivity(), SessionManager.getMember(getActivity()).getTheme().getThemeLogo()), false);
 		}
-		setupTab(R.id.content, "2", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_premier_league), false);
-		setupTab(R.id.content, "3", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_bundesliga), false);
-		setupTab(R.id.content, "4", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_laliga), false);
-		setupTab(R.id.content, "5", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_calcio), false);
-		setupTab(R.id.content, "6", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_ligue1), false);
-		setupTab(R.id.content, "7", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_ucl), false);
-		setupTab(R.id.content, "8", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_europa_league), false);
-		setupTab(R.id.content, "9", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_championschip), false);
-		setupTab(R.id.content, "10", "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_capital_one_cup), false);
+		
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_premier_league), false);
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_bundesliga), false);
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_laliga), false);
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_calcio), false);
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_ligue1), false);
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_ucl), false);
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_europa_league), false);
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_championschip), false);
+		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_capital_one_cup), false);
 		
 		tabs.setCurrentTab(0);
 		tabs.setOnTabChangedListener(this);
