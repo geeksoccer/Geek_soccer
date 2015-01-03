@@ -49,6 +49,7 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
+import com.nineoldandroids.view.ViewHelper;
 
 public class SideMenuMain extends MainActivity implements OnClickListener {
 	Activity mContext;
@@ -316,7 +317,7 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 	}
 	
 	public void showMenuWithPositionEnd(Context mContext){
-		final float curPosX = data.Menu_View.getX();//Math.abs(curPosX)
+		final float curPosX = ViewHelper.getX(data.Menu_View);//data.Menu_View.getX();//Math.abs(curPosX)
 		if(curPosX<0){
 			ObjectAnimator anim = ObjectAnimator.ofFloat(data.Menu_View, "translationX", 0);
 			anim.setDuration(300);
@@ -325,7 +326,7 @@ public class SideMenuMain extends MainActivity implements OnClickListener {
 	}
 	
 	public void hideMenuWithPositionEnd(Context mContext, Boolean isTap){
-		final float curPosX = data.Menu_View.getX();
+		final float curPosX = ViewHelper.getX(data.Menu_View);//data.Menu_View.getX();
 		if (curPosX < 0 || isTap) {
 			ObjectAnimator anim = ObjectAnimator.ofFloat(data.Menu_View,
 					"translationX", -GetdipSize.dip(mContext, 170));
