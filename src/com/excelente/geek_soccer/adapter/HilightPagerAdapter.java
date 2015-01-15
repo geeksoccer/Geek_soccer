@@ -30,6 +30,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -109,7 +110,26 @@ public class HilightPagerAdapter extends BaseAdapter{
 		return convertView;
 	}
 
-	private void doInitView(int position, ViewItem viewItem, TabModel tabModel) {
+	private void doInitView(final int position, final ViewItem viewItem, final TabModel tabModel) {
+		viewItem.hilightLoadingFooterProcessbar.setVisibility(View.GONE);
+		viewItem.textEmpty.setOnClickListener(new OnClickListener() {
+			 
+			@Override
+			public void onClick(View v) {
+				try{ 
+					if(NetworkUtils.isNetworkAvailable(activity)){
+						new LoadOldHilightTask(viewItem, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
+					}else{
+						Boast.makeText(activity, NetworkUtils.getConnectivityStatusString(activity), Toast.LENGTH_SHORT).show();
+						setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+					setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
+				}
+			}
+		});
+		
 		if(HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter == null){
 			try{ 
 				if(NetworkUtils.isNetworkAvailable(activity)){

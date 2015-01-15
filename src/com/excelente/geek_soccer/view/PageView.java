@@ -31,7 +31,7 @@ public class PageView extends ViewFlipper{
 	}
 	
 	public void setSelection(int position){
-		Log.e(""+position);
+		//Log.e(""+position);
 		if(!tempPosition.contains(position)){
 			View child = adapter.getView(position, null, this);
 			addView(child);

@@ -28,6 +28,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -108,8 +109,21 @@ public class NewsPagerAdapter extends BaseAdapter{
 		return convertView;
 	}
 
-	private void doInitView(ViewItem viewItem, TabModel tabModel) {
+	private void doInitView(final ViewItem viewItem, final TabModel tabModel) {
 		viewItem.newsLoadingFooterProcessbar.setVisibility(View.GONE);
+		viewItem.textEmpty.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if (NetworkUtils.isNetworkAvailable(activity)) {
+					new LoadOldNewsTask(viewItem, (NewsAdapter) NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
+				} else {
+					Boast.makeText(activity, NetworkUtils.getConnectivityStatusString(activity), Toast.LENGTH_SHORT).show();
+					setMessageEmptyListView((NewsAdapter) NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
+				}
+			}
+		});
+		
 		if (NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter == null) {
 			if (NetworkUtils.isNetworkAvailable(activity)) {
 				new LoadOldNewsTask(viewItem, (NewsAdapter) NewsPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel).execute(getURLbyTag(activity, 0, tabModel.getUrl()));

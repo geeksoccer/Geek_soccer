@@ -14,6 +14,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -78,8 +79,26 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 		return convertView;
 	}
 	
-	private void doInitViews(TableItemView tableItemView, TabModel tablePagerModel) {
-		TableAdapter tableAdapter = null;
+	private void doInitViews(final TableItemView tableItemView, final TabModel tablePagerModel) {
+		final TableAdapter tableAdapter = null;
+		
+		tableItemView.emptyText.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				try{ 
+					if(NetworkUtils.isNetworkAvailable(mContext)){
+						new LoadTableTask(tableItemView, tableAdapter).execute(tablePagerModel.getUrl());
+					}else{
+						Boast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
+						setMessageEmptyListView(tableAdapter, tableItemView);
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+					setMessageEmptyListView(tableAdapter, tableItemView);
+				}
+			}
+		});
 		
 		try{ 
 			if(NetworkUtils.isNetworkAvailable(mContext)){
@@ -118,7 +137,7 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 		protected void onPreExecute() {
 			super.onPreExecute();
 			
-			if(tableAdaptor==null && tableItemView.progressbar!=null){
+			if((tableAdaptor==null || tableAdaptor.isEmpty()) && tableItemView.progressbar!=null){
 				tableItemView.progressbar.setVisibility(View.VISIBLE);
 				tableItemView.emptyText.setVisibility(View.GONE);
 			}
@@ -146,6 +165,7 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 				tableItemView.tableListView.setOnItemClickListener(TablePagerAdapter.this);
 				tableItemView.emptyText.setVisibility(View.GONE);
 				tableItemView.progressbar.setVisibility(View.GONE);
+				tableItemView.tableListView.setVisibility(View.VISIBLE);
 			}else{
 				if(mContext!=null){
 					Boast.makeText(mContext, mContext.getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
