@@ -37,6 +37,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
@@ -175,6 +176,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 	@Override
 	protected void onResume() {
+		Log.e("onResume", "Main onResume");
 		super.onResume();
 		if(saveMode_btn!=null){ 
 			String saveMode = SessionManager.getSetting(this, SessionManager.setting_save_mode);
@@ -184,8 +186,42 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				saveMode_btn.setBackgroundResource(R.drawable.bg_save_mode);
 			}
 		}
+		
+		doDataChangeProfile();
 	}
 	
+	private void doDataChangeProfile() {
+		if(menu!=null){
+			LinearLayout profileBtn = (LinearLayout) menu.getMenu().findViewById(R.id.Profile);
+			TextView profileName = (TextView) menu.getMenu().findViewById(R.id.profile_name);
+			TextView profileEmail = (TextView) menu.getMenu().findViewById(R.id.profile_email);
+			ImageView profileIcon = (ImageView) menu.getMenu().findViewById(R.id.ProfileIcon);
+			
+			if(profileBtn!=null){
+				profileBtn = (LinearLayout) menu.getMenu().findViewById(R.id.Profile);
+				profileName = (TextView) menu.getMenu().findViewById(R.id.profile_name);
+				profileEmail = (TextView) menu.getMenu().findViewById(R.id.profile_email);
+				profileIcon = (ImageView) menu.getMenu().findViewById(R.id.ProfileIcon);
+				
+				if(SessionManager.hasMember(this)){
+					String name = SessionManager.getMember(this).getNickname();
+					String email = SessionManager.getMember(this).getEmail();
+					String photo = SessionManager.getMember(this).getPhoto();
+					profileName.setText(name);
+					profileEmail.setText(email);
+					if(SessionManager.hasKey(this, photo)){ 
+						Bitmap bitmapPhoto = SessionManager.getImageSession(this, photo);
+						profileIcon.setImageBitmap(Profile_Page.resizeBitMap(bitmapPhoto));
+					}else{
+						profileIcon.setImageResource(R.drawable.ic_action_person);
+					}
+				}else{
+					profileBtn.setVisibility(View.GONE);
+				}
+			}
+		}
+	}
+
 	private void doCreate() {
 		mContext = this;
 		data = ControllParameter.getInstance(this);

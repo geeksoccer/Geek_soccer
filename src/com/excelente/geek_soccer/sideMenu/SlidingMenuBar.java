@@ -12,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -42,6 +43,7 @@ import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.excelente.geek_soccer.utils.asynctask.GetImageUriTask;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class SlidingMenuBar implements OnClickListener{
@@ -58,16 +60,15 @@ public class SlidingMenuBar implements OnClickListener{
 	private View FixturesLine;
 	private LinearLayout SelectTeamBtn;
 	private View SelectTeamLine;
-	private ImageView newsBtnIcon;
-	private ImageView LivscoreBtnIcon;
-	private ImageView ChatBtnIcon;
-	private ImageView scoreBoardBtnIcon;
-	private ImageView HilightBtnIcon;
 	private LinearLayout profileBtn;
 	private LinearLayout rateBtn;
 	private LinearLayout shareBtn;
 	private LinearLayout settingBtn;
 	private LinearLayout logoutBtn;
+
+	private TextView profileName;
+	private TextView profileEmail;
+	private ImageView profileIcon;
 	
 	public SlidingMenuBar(Activity activity) {
 		this.activity = activity;
@@ -90,6 +91,28 @@ public class SlidingMenuBar implements OnClickListener{
 	}
 
 	private void initView() {
+		
+		profileBtn = (LinearLayout) menu.findViewById(R.id.Profile);
+		profileName = (TextView) menu.findViewById(R.id.profile_name);
+		profileEmail = (TextView) menu.findViewById(R.id.profile_email);
+		profileIcon = (ImageView) menu.findViewById(R.id.ProfileIcon);
+		if(SessionManager.hasMember(activity)){
+			String name = SessionManager.getMember(activity).getNickname();
+			String email = SessionManager.getMember(activity).getEmail();
+			String photo = SessionManager.getMember(activity).getPhoto();
+			profileName.setText(name);
+			profileEmail.setText(email);
+			if(SessionManager.hasKey(activity, photo)){ 
+				Bitmap bitmapPhoto = SessionManager.getImageSession(activity, photo);
+				profileIcon.setImageBitmap(Profile_Page.resizeBitMap(bitmapPhoto));
+			}else{
+				new GetImageUriTask(activity, profileIcon, photo).doLoadImage(true);
+			} 
+			ThemeUtils.setThemeToView(activity, ThemeUtils.TYPE_BACKGROUND_COLOR, profileBtn);
+		}else{
+			profileBtn.setVisibility(View.GONE);
+		}
+		
 		newsBtn = (LinearLayout) menu.findViewById(R.id.News);
 		LivscoreBtn = (LinearLayout) menu.findViewById(R.id.LiveScore);
 		ChatBtn = (LinearLayout) menu.findViewById(R.id.Chat);
@@ -100,12 +123,6 @@ public class SlidingMenuBar implements OnClickListener{
 		SelectTeamBtn = (LinearLayout) menu.findViewById(R.id.SelectTeamLayout);
 		SelectTeamLine = menu.findViewById(R.id.SelectTeam_Line);
 
-		newsBtnIcon = (ImageView) menu.findViewById(R.id.NewsIcon);
-		LivscoreBtnIcon = (ImageView) menu.findViewById(R.id.LiveScoreIcon);
-		ChatBtnIcon = (ImageView) menu.findViewById(R.id.ChatIcon);
-		scoreBoardBtnIcon = (ImageView) menu.findViewById(R.id.ScoreBoardIcon);
-		HilightBtnIcon = (ImageView) menu.findViewById(R.id.HilightIcon);
-
 		newsBtn.setOnClickListener(this);
 		LivscoreBtn.setOnClickListener(this);
 		ChatBtn.setOnClickListener(this);
@@ -114,7 +131,6 @@ public class SlidingMenuBar implements OnClickListener{
 		FixturesBtn.setOnClickListener(this);
 		SelectTeamBtn.setOnClickListener(this);
 
-		profileBtn = (LinearLayout) menu.findViewById(R.id.Profile);
 		rateBtn = (LinearLayout) menu.findViewById(R.id.Rate);
 		shareBtn = (LinearLayout) menu.findViewById(R.id.Share);
 		settingBtn = (LinearLayout) menu.findViewById(R.id.Setting);
@@ -222,8 +238,7 @@ public class SlidingMenuBar implements OnClickListener{
 	protected void showRateAppDialog() {
 		final Dialog confirmDialog = new Dialog(activity);
 
-		View view = LayoutInflater.from(activity).inflate(
-				R.layout.dialog_confirm, null);
+		View view = LayoutInflater.from(activity).inflate(R.layout.dialog_confirm, null);
 		RelativeLayout main_action_bar = (RelativeLayout) view.findViewById(R.id.main_action_bar);
 		ThemeUtils.setThemeToView(activity, ThemeUtils.TYPE_BACKGROUND_COLOR, main_action_bar);
 		

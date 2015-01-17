@@ -17,6 +17,7 @@ import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.excelente.geek_soccer.utils.asynctask.GetImageUriTask;
 import com.excelente.geek_soccer.view.SoftKeyboardHandledLinearLayout;
 import com.excelente.geek_soccer.view.SoftKeyboardHandledLinearLayout.OnSoftKeyboardListener;
 import com.kbeanie.imagechooser.api.ChooserType;
@@ -59,8 +60,6 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	private TextView memberFT;
 
 	private SoftKeyboardHandledLinearLayout layoutProfile;
-
-	private ProgressBar progressbar;
 
 	private LinearLayout layoutPhoto;
 
@@ -116,19 +115,17 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		
 		layoutPhoto = (LinearLayout) findViewById(R.id.layout_photo_);
 		layoutPhoto.setVisibility(View.VISIBLE); 
+		layoutPhoto.setOnClickListener(this);
 		  
 		memberPhoto = (ImageView) findViewById(R.id.member_photo);
-		memberPhoto.setOnClickListener(this);
 		memberPhoto.setVisibility(View.VISIBLE);
 		
-		progressbar = (ProgressBar) findViewById(R.id.member_progressbar);
-		progressbar.setVisibility(View.GONE);
 		//memberPhoto.getLayoutParams().height = (int) ConvertUtil.convertPixelsToDp(MAX_IMAGE, this);
 		if(SessionManager.hasKey(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto())){ 
 			Bitmap bitmapPhoto = SessionManager.getImageSession(Profile_Page.this, SessionManager.getMember(Profile_Page.this).getPhoto());
 			memberPhoto.setImageBitmap(resizeBitMap(bitmapPhoto));
 		}else{
-			new GetImageUriTask(this, memberPhoto, progressbar).execute(SessionManager.getMember(Profile_Page.this).getPhoto());
+			new GetImageUriTask(this, memberPhoto, SessionManager.getMember(Profile_Page.this).getPhoto()).doLoadImage(true);
 		} 
 		
 		memberName = (EditText) findViewById(R.id.member_name);
@@ -165,7 +162,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 		ThemeUtils.setThemeToView(getApplicationContext(), ThemeUtils.TYPE_TEXT_COLOR, saveBtnTxt);
 	}
 
-	private Bitmap resizeBitMap(Bitmap bitmapPhoto) {
+	public static Bitmap resizeBitMap(Bitmap bitmapPhoto) {
 		
 		float scale = (bitmapPhoto.getWidth()*1.0f)/(1.0f*bitmapPhoto.getHeight());
 		int width = MAX_IMAGE;
@@ -195,7 +192,7 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 				break;
 			}
 			
-			case R.id.member_photo:{
+			case R.id.layout_photo_:{
 				onSelectPhoto();
 				break;
 			}
@@ -396,89 +393,6 @@ public class Profile_Page extends Activity implements OnClickListener, ImageChoo
 	    		file.delete();
 	    	}
 	}
-	 
-	private class GetImageUriTask extends AsyncTask<String, Void, Bitmap> {
-		Activity activity;
-		ImageView imageView;
-		String imageUri;
-		
-		public GetImageUriTask(Activity activity, ImageView imageView, ProgressBar progressbar) {
-			this.activity = activity;
-			this.imageView = imageView;
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			
-			progressbar.setVisibility(View.VISIBLE);
-			imageView.setVisibility(View.GONE);
-		}
-		
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            Bitmap map = null;
-            for (String url : urls) {
-                map = downloadImage(url);
-            }
-            imageUri = urls[0];
-            return map;
-        }
- 
-        // Sets the Bitmap returned by doInBackground
-        @Override
-        protected void onPostExecute(final Bitmap result) {
-            imageView.setImageBitmap(result);
-            progressbar.setVisibility(View.GONE);
-            imageView.setVisibility(View.VISIBLE);
-            
-            if(result!=null){
-	       		new Thread(new Runnable() {
-					@Override 
-					public void run() {
-						SessionManager.createNewImageSession(activity, imageUri, result); 
-					}
-				});
-            }
-        }
- 
-        // Creates Bitmap from InputStream and returns it
-        private Bitmap downloadImage(String url) {
-            Bitmap bitmap = null;
-            InputStream stream = null;
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            bmOptions.inSampleSize = 1;
- 
-            try {
-                stream = getHttpConnection(url);
-                bitmap = BitmapFactory.decodeStream(stream, null, bmOptions);
-                stream.close();
-            } catch (IOException e1) {
-            	return bitmap;
-            }
-            return bitmap;
-        }
- 
-        // Makes HttpURLConnection and returns InputStream
-        private InputStream getHttpConnection(String urlString) throws IOException {
-            InputStream stream = null;
-            URL url = new URL(urlString);
-            URLConnection connection = url.openConnection();
- 
-            try {
-                HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                httpConnection.setRequestMethod("GET");
-                httpConnection.connect();
- 
-                if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    stream = httpConnection.getInputStream();
-                }
-            } catch (Exception ex) {
-            	return stream;
-            }
-            return stream;
-        }
-    }
 
 	@Override
 	public void onShown() { 
