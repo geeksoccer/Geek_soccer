@@ -73,10 +73,10 @@ public class SlidingMenuBar implements OnClickListener{
 		this.activity = activity;
 	}
 	
-	public void create() {
+	public void createMenu() {
 		menu = new SlidingMenu(activity);
         menu.setMode(SlidingMenu.LEFT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         menu.setShadowWidthRes(R.dimen.shadow_width);
         menu.setShadowDrawable(R.drawable.shadow); 
         menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
@@ -85,8 +85,8 @@ public class SlidingMenuBar implements OnClickListener{
         menu.setMenu(R.layout.sliding_menu_bar);
         menu.setBackgroundColor(Color.BLACK);
         menu.getBackground().setAlpha(150);
-        
         initView();
+        
 	}
 
 	private void initView() {
@@ -498,8 +498,7 @@ public class SlidingMenuBar implements OnClickListener{
 				mActivity.finish();
 				android.os.Process.killProcess(android.os.Process.myPid());
 			} else {
-				Toast.makeText(mActivity, "Sign Out Failed", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(mActivity, "Sign Out Failed", Toast.LENGTH_SHORT).show();
 			}
 		}
 

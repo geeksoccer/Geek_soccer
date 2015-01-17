@@ -46,7 +46,9 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -221,6 +223,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		if(NetworkUtils.isNetworkAvailable(this)){
 			doCheckVersionApp();
 		}
+		
 	}
 
 	private void askMode() {
@@ -307,7 +310,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	
 	public void SideMenuStandBy(){
 		menu = new SlidingMenuBar(this);
-		menu.create();
+		menu.createMenu();
 		data.Sliding_Menu_Bar = menu;
 	}
 	
@@ -512,10 +515,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	int OldState = 0;
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
-		if(OldState==1 
-				&& arg0==0
-				&& mViewPager.getCurrentItem()==0 ){
+		if(OldState==1 && arg0==0 && mViewPager.getCurrentItem()==0 ){
 			//new SideMenuMain().showMenu(mContext);
+			if(!data.Sliding_Menu_Bar.getMenu().isMenuShowing()){
+				data.Sliding_Menu_Bar.getMenu().toggle(true);
+			}
 		}
 		OldState = arg0;
 	}
