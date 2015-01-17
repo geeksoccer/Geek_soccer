@@ -23,9 +23,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +50,7 @@ import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.utils.asynctask.GetImageUriTask;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 
 public class SlidingMenuBar implements OnClickListener{
 	Activity activity;
@@ -69,9 +75,17 @@ public class SlidingMenuBar implements OnClickListener{
 	private TextView profileName;
 	private TextView profileEmail;
 	private ImageView profileIcon;
+
+	private LinearLayout sideMenu;
+
+	private ScrollView scrollView;
+	private boolean animFirst;
+
+	private ProgressBar progressbar;
 	
 	public SlidingMenuBar(Activity activity) {
 		this.activity = activity;
+		this.setAnimFirst(true);
 	}
 	
 	public void createMenu() {
@@ -89,13 +103,55 @@ public class SlidingMenuBar implements OnClickListener{
         initView();
         
 	}
+	
+	private void solveSideMenu() {
+		
+		
+		if(!menu.isMenuShowing()){
+			//sideMenu.setVisibility(View.INVISIBLE);
+			progressbar.setVisibility(View.VISIBLE);
+			scrollView.setVisibility(View.INVISIBLE);
+			profileName.setVisibility(View.INVISIBLE);
+			profileEmail.setVisibility(View.INVISIBLE);
+			profileIcon.setVisibility(View.INVISIBLE);
+		}
+		
+		final Animation fadeIn = new AlphaAnimation(0, 1);
+		fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+		fadeIn.setDuration(300);
+        menu.setOnOpenedListener(new OnOpenedListener() {
+			
+			@Override
+			public void onOpened() {
+				if(animFirst){
+					scrollView.startAnimation(fadeIn);
+					profileName.startAnimation(fadeIn);
+					profileEmail.startAnimation(fadeIn);
+					profileIcon.startAnimation(fadeIn);
+					//sideMenu.startAnimation(fadeIn);
+					setAnimFirst(false);
+				}
+				//sideMenu.setVisibility(View.VISIBLE);
+				scrollView.setVisibility(View.VISIBLE);
+				profileName.setVisibility(View.VISIBLE);
+				profileEmail.setVisibility(View.VISIBLE);
+				profileIcon.setVisibility(View.VISIBLE);
+				progressbar.setVisibility(View.INVISIBLE);
+			}
+		});
+		
+	}
 
 	private void initView() {
-		
-		profileBtn = (LinearLayout) menu.findViewById(R.id.Profile);
+		progressbar = (ProgressBar) menu.findViewById(R.id.ProgressBar);
+		sideMenu = (LinearLayout) menu.findViewById(R.id.SideMenu);
+		scrollView = (ScrollView) menu.findViewById(R.id.ScrollView);
 		profileName = (TextView) menu.findViewById(R.id.profile_name);
 		profileEmail = (TextView) menu.findViewById(R.id.profile_email);
 		profileIcon = (ImageView) menu.findViewById(R.id.ProfileIcon);
+		solveSideMenu();
+		
+		profileBtn = (LinearLayout) menu.findViewById(R.id.Profile);
 		if(SessionManager.hasMember(activity)){
 			String name = SessionManager.getMember(activity).getNickname();
 			String email = SessionManager.getMember(activity).getEmail();
@@ -155,8 +211,7 @@ public class SlidingMenuBar implements OnClickListener{
 			SelectTeamLine.setVisibility(View.GONE);
 		}
 	}
-	
-	
+
 	@Override
 	public void onClick(View v) {
 
@@ -525,6 +580,14 @@ public class SlidingMenuBar implements OnClickListener{
 
 	public void setMenu(SlidingMenu menu) {
 		this.menu = menu;
+	}
+
+	public boolean isAnimFirst() {
+		return animFirst;
+	}
+
+	public void setAnimFirst(boolean animFirst) {
+		this.animFirst = animFirst;
 	}
 
 }

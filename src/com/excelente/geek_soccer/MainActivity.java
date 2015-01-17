@@ -58,7 +58,9 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,7 +100,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	private ImageView menuImg;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if(!SessionManager.hasMember(MainActivity.this)){
 			finish();
@@ -192,10 +194,24 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	
 	private void doDataChangeProfile() {
 		if(menu!=null){
-			LinearLayout profileBtn = (LinearLayout) menu.getMenu().findViewById(R.id.Profile);
+			LinearLayout sideMenu = (LinearLayout) menu.getMenu().findViewById(R.id.SideMenu);
+			ProgressBar progressbar = (ProgressBar) menu.getMenu().findViewById(R.id.ProgressBar);
+			ScrollView scrollView = (ScrollView) menu.getMenu().findViewById(R.id.ScrollView);
+			
 			TextView profileName = (TextView) menu.getMenu().findViewById(R.id.profile_name);
 			TextView profileEmail = (TextView) menu.getMenu().findViewById(R.id.profile_email);
 			ImageView profileIcon = (ImageView) menu.getMenu().findViewById(R.id.ProfileIcon);
+			if(!menu.getMenu().isMenuShowing()){
+				//sideMenu.setVisibility(View.INVISIBLE);
+				scrollView.setVisibility(View.INVISIBLE);
+				profileName.setVisibility(View.INVISIBLE);
+				profileEmail.setVisibility(View.INVISIBLE);
+				profileIcon.setVisibility(View.INVISIBLE);
+				progressbar.setVisibility(View.VISIBLE);
+				menu.setAnimFirst(true);
+			}
+			
+			LinearLayout profileBtn = (LinearLayout) menu.getMenu().findViewById(R.id.Profile);
 			
 			if(profileBtn!=null){
 				profileBtn = (LinearLayout) menu.getMenu().findViewById(R.id.Profile);
@@ -408,7 +424,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 				super.getSupportFragmentManager(), fragments);
 		mViewPager = (CustomViewPager) super.findViewById(R.id.viewpager);
 		mViewPager.setAdapter(mPagerAdapter);
+		mViewPager.setPagingEnabled(true);
 		mViewPager.setOnPageChangeListener(this);
+		mViewPager.setOffscreenPageLimit(4);
 	}
 	
 	public void tab_setting(){
@@ -474,44 +492,44 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	public static void Page_Select(int index, boolean by_Selected, Context mContext){
 		//Content_view.removeAllViews();
 		data.fragement_Section_set(index);
-		mViewPager.setPagingEnabled(true);
-		mViewPager.setOffscreenPageLimit(4);
+		//mViewPager.setPagingEnabled(true);
+		//mViewPager.setOffscreenPageLimit(4);
 		
 		if(index==0){
 			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_news);
-			news_tab.setBackgroundResource(R.drawable.news_h);
-			live_tab.setBackgroundResource(R.drawable.livescore);
-			chat_tab.setBackgroundResource(R.drawable.chat);
-			score_board_tab.setBackgroundResource(R.drawable.board);
-			game_tab.setBackgroundResource(R.drawable.hilight_icon);
+			//news_tab.setBackgroundResource(R.drawable.news_h);
+			//live_tab.setBackgroundResource(R.drawable.livescore);
+			//chat_tab.setBackgroundResource(R.drawable.chat);
+			//score_board_tab.setBackgroundResource(R.drawable.board);
+			//game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==1){
 			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_live_score);
-			news_tab.setBackgroundResource(R.drawable.news);
-			live_tab.setBackgroundResource(R.drawable.livescore_h);
-			chat_tab.setBackgroundResource(R.drawable.chat);
-			score_board_tab.setBackgroundResource(R.drawable.board);
-			game_tab.setBackgroundResource(R.drawable.hilight_icon);
+			//news_tab.setBackgroundResource(R.drawable.news);
+			//live_tab.setBackgroundResource(R.drawable.livescore_h);
+			//chat_tab.setBackgroundResource(R.drawable.chat);
+			//score_board_tab.setBackgroundResource(R.drawable.board);
+			//game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==2){
 			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_chat);
-			news_tab.setBackgroundResource(R.drawable.news);
-			live_tab.setBackgroundResource(R.drawable.livescore);
-			chat_tab.setBackgroundResource(R.drawable.chat_h);
-			score_board_tab.setBackgroundResource(R.drawable.board);
-			game_tab.setBackgroundResource(R.drawable.hilight_icon);
+			//news_tab.setBackgroundResource(R.drawable.news);
+			//live_tab.setBackgroundResource(R.drawable.livescore);
+			//chat_tab.setBackgroundResource(R.drawable.chat_h);
+			//score_board_tab.setBackgroundResource(R.drawable.board);
+			//game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==3){
 			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_score_broads);
-			news_tab.setBackgroundResource(R.drawable.news);
-			live_tab.setBackgroundResource(R.drawable.livescore);
-			chat_tab.setBackgroundResource(R.drawable.chat);
-			score_board_tab.setBackgroundResource(R.drawable.board_h);
-			game_tab.setBackgroundResource(R.drawable.hilight_icon);
+			//news_tab.setBackgroundResource(R.drawable.news);
+			//live_tab.setBackgroundResource(R.drawable.livescore);
+			//chat_tab.setBackgroundResource(R.drawable.chat);
+			//score_board_tab.setBackgroundResource(R.drawable.board_h);
+			//game_tab.setBackgroundResource(R.drawable.hilight_icon);
 		}else if(index==4){
 			data.PageNameSelected = mContext.getResources().getString(R.string.title_bar_hilight);
-			news_tab.setBackgroundResource(R.drawable.news);
-			live_tab.setBackgroundResource(R.drawable.livescore);
-			chat_tab.setBackgroundResource(R.drawable.chat);
-			score_board_tab.setBackgroundResource(R.drawable.board);
-			game_tab.setBackgroundResource(R.drawable.hilight_icon_select);
+			//news_tab.setBackgroundResource(R.drawable.news);
+			//live_tab.setBackgroundResource(R.drawable.livescore);
+			//chat_tab.setBackgroundResource(R.drawable.chat);
+			//score_board_tab.setBackgroundResource(R.drawable.board);
+			//game_tab.setBackgroundResource(R.drawable.hilight_icon_select);
 		}
 		curPage = index;
 		if(index==2){
@@ -553,9 +571,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	public void onPageScrollStateChanged(int arg0) {
 		if(OldState==1 && arg0==0 && mViewPager.getCurrentItem()==0 ){
 			//new SideMenuMain().showMenu(mContext);
-			if(!data.Sliding_Menu_Bar.getMenu().isMenuShowing()){
-				data.Sliding_Menu_Bar.getMenu().toggle(true);
-			}
+			data.Sliding_Menu_Bar.getMenu().toggle(true);
 		}
 		OldState = arg0;
 	}

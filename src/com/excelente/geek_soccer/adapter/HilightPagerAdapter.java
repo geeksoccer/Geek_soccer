@@ -143,6 +143,7 @@ public class HilightPagerAdapter extends BaseAdapter{
 				setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
 			}
 		}
+		//setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
 	}
 	
 	public static String getURLbyTag(Context context, int id, String tag) {

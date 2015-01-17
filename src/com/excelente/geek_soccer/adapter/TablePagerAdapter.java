@@ -111,6 +111,8 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 			e.printStackTrace();
 			setMessageEmptyListView(tableAdapter, tableItemView);
 		}
+		
+		//setMessageEmptyListView(tableAdapter, tableItemView);
 	}
 	
 	private void setMessageEmptyListView(TableAdapter tableAdapter, TableItemView tableItemView) {

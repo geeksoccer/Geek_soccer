@@ -1,497 +1,512 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/black" >
     
-    <LinearLayout
-        android:id="@+id/Profile"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@drawable/bg_press"
-        android:gravity="center"
-        android:orientation="horizontal" >
-        
-        <LinearLayout
+	<LinearLayout 
+	    android:id="@+id/SideMenu"
+	    android:layout_alignParentTop="true"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical"
+	    android:background="@color/black" >
+	    
+	    <LinearLayout
+	        android:id="@+id/Profile"
 	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
+	        android:layout_height="70dp"
 	        android:background="@drawable/bg_press"
 	        android:gravity="center"
-	        android:padding="@dimen/menu_p"
 	        android:orientation="horizontal" >
-
-	        <ImageView
-	            android:id="@+id/ProfileIcon"
-	            android:layout_width="50dp"
-	            android:layout_height="50dp"
-	            android:layout_marginLeft="20dp"
-	            android:src="@drawable/ic_action_user" />
 	        
 	        <LinearLayout
 		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
+		        android:layout_height="match_parent"
+		        android:background="@drawable/bg_press"
 		        android:gravity="center"
-		        android:layout_marginLeft="5dp"
-		        android:paddingLeft="10dp"
-		        android:paddingRight="10dp"
 		        android:padding="@dimen/menu_p"
-		        android:orientation="vertical" >
+		        android:orientation="horizontal" >
+	
+		        <ImageView
+		            android:id="@+id/ProfileIcon"
+		            android:layout_width="50dp"
+		            android:layout_height="50dp"
+		            android:layout_marginLeft="20dp"
+		            android:src="@drawable/ic_action_user" />
 		        
-	            <TextView
-	                android:id="@+id/profile_name"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:text="@string/title_bar_profile"
-		            android:textColor="@color/white"
-		            android:textSize="16sp"
-		            android:textStyle="bold" />
+		        <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:gravity="center"
+			        android:layout_marginLeft="5dp"
+			        android:paddingLeft="10dp"
+			        android:paddingRight="10dp"
+			        android:padding="@dimen/menu_p"
+			        android:orientation="vertical" >
+			        
+		            <TextView
+		                android:id="@+id/profile_name"
+			            android:layout_width="match_parent"
+			            android:layout_height="wrap_content"
+			            android:text="@string/title_bar_profile"
+			            android:textColor="@color/white"
+			            android:textSize="16sp"
+			            android:textStyle="bold" />
+		            
+		            <TextView
+		                android:id="@+id/profile_email"
+			            android:layout_width="match_parent"
+			            android:layout_height="wrap_content"
+			            android:text="@string/title_bar_profile"
+			            android:textColor="@color/graylittle"
+			            android:textSize="14sp" />
+		            
+			    </LinearLayout>
+			</LinearLayout>
+	    </LinearLayout>
+	
+	    <View
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/group_view_line_h"
+	        android:background="@color/graylittle" />
+	
+		<ScrollView
+		    android:id="@+id/ScrollView"
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="1"
+	        android:alpha="0.7" >
+	
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical" >
+	
+	            <LinearLayout
+	                android:id="@+id/News"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/NewsIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/news_h" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/title_bar_news"
+	                    android:textColor="@color/white"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	
+	            <LinearLayout
+	                android:id="@+id/LiveScore"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/LiveScoreIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/livescore_h" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/title_bar_live_score"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	
+	            <LinearLayout
+	                android:id="@+id/Chat"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/ChatIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/chat_h" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/title_bar_chat"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	
+	            <LinearLayout
+	                android:id="@+id/ScoreBoard"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/ScoreBoardIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/board_h" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/title_bar_score_broads"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	
+	            <LinearLayout
+	                android:id="@+id/Hilight"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/HilightIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/hilight_icon_select" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/title_bar_hilight"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
 	            
+	            <LinearLayout
+	                android:id="@+id/Fixtures"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/FixturesIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/fixtures_icon" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/title_bar_fixtures"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:id="@+id/Fixtures_Line"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	
 	            <TextView
-	                android:id="@+id/profile_email"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:text="@string/title_bar_profile"
-		            android:textColor="@color/graylittle"
-		            android:textSize="14sp" />
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:paddingLeft="20dp"
+	                android:paddingRight="10dp"
+	                android:paddingTop="20dp"
+	                android:paddingBottom="5dp"
+	                android:textSize="14sp"
+	                android:text="@string/title_bar_config"
+	                android:textColor="@color/graylittle" />
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/group_view_line_h"
+	                android:background="@color/gray" />
 	            
-		    </LinearLayout>
-		</LinearLayout>
-    </LinearLayout>
+	            <LinearLayout
+	                android:id="@+id/SelectTeamLayout"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/SelectTeamIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/ic_action_group" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/title_bar_selecteam"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:id="@+id/SelectTeam_Line"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	
+	            <LinearLayout
+	                android:id="@+id/Rate"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/RateIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:padding="3dp"
+	                    android:src="@drawable/star_white" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/rate_app_title"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	
+	            <LinearLayout
+	                android:id="@+id/Share"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/ShareIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/ic_action_share" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/share_app_title"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	
+	            <LinearLayout
+	                android:id="@+id/help"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center"
+	                android:visibility="gone" >
+	
+	                <ImageView
+	                    android:id="@+id/helpIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/ic_action_help" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/title_bar_help"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray"
+	                android:visibility="gone" />
+	
+	            <LinearLayout
+	                android:id="@+id/Setting"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/SettingIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:src="@drawable/ic_action_settings" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:text="@string/title_bar_setting"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	
+	            <LinearLayout
+	                android:id="@+id/logINOUT"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/menu_h"
+	                android:padding="@dimen/menu_p"
+	                android:background="@drawable/bg_press"
+	                android:gravity="center" >
+	
+	                <ImageView
+	                    android:id="@+id/logINOUTIcon"
+	                    android:layout_width="30dp"
+	                    android:layout_height="30dp"
+	                    android:layout_marginLeft="@dimen/menu_img_ml"
+	                    android:padding="5dp"
+	                    android:src="@drawable/log_out" />
+	
+	                <TextView
+	                    android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:paddingLeft="10dp"
+	                    android:paddingRight="10dp"
+	                    android:text="@string/logout_app_title"
+	                    android:textSize="@dimen/menu_txt_size"
+	                    android:textColor="@color/white"
+	                    android:textStyle="bold" />
+	            </LinearLayout>
+	
+	            <View
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/view_line_h"
+	                android:layout_marginLeft="@dimen/view_line_ml"
+	                android:layout_marginRight="@dimen/view_line_mr"
+	                android:background="@color/gray_black" />
+	        </LinearLayout>
+	    </ScrollView>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/group_view_line_h"
-        android:background="@color/graylittle" />
+	</LinearLayout>
 
-	<ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:alpha="0.7"
-        android:scrollbars="none" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <LinearLayout
-                android:id="@+id/News"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/NewsIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/news_h" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/title_bar_news"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-
-            <LinearLayout
-                android:id="@+id/LiveScore"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/LiveScoreIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/livescore_h" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/title_bar_live_score"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-
-            <LinearLayout
-                android:id="@+id/Chat"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/ChatIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/chat_h" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/title_bar_chat"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-
-            <LinearLayout
-                android:id="@+id/ScoreBoard"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/ScoreBoardIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/board_h" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/title_bar_score_broads"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-
-            <LinearLayout
-                android:id="@+id/Hilight"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/HilightIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/hilight_icon_select" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/title_bar_hilight"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-            
-            <LinearLayout
-                android:id="@+id/Fixtures"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/FixturesIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/fixtures_icon" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/title_bar_fixtures"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:id="@+id/Fixtures_Line"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:paddingRight="10dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="5dp"
-                android:textSize="14sp"
-                android:text="@string/title_bar_config"
-                android:textColor="@color/graylittle" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/group_view_line_h"
-                android:background="@color/gray" />
-            
-            <LinearLayout
-                android:id="@+id/SelectTeamLayout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/SelectTeamIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/ic_action_group" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/title_bar_selecteam"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:id="@+id/SelectTeam_Line"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-
-            <LinearLayout
-                android:id="@+id/Rate"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/RateIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:padding="3dp"
-                    android:src="@drawable/star_white" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/rate_app_title"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-
-            <LinearLayout
-                android:id="@+id/Share"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/ShareIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/ic_action_share" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/share_app_title"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-
-            <LinearLayout
-                android:id="@+id/help"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center"
-                android:visibility="gone" >
-
-                <ImageView
-                    android:id="@+id/helpIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/ic_action_help" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/title_bar_help"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/Setting"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/SettingIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:src="@drawable/ic_action_settings" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:text="@string/title_bar_setting"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-
-            <LinearLayout
-                android:id="@+id/logINOUT"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/menu_h"
-                android:padding="@dimen/menu_p"
-                android:background="@drawable/bg_press"
-                android:gravity="center" >
-
-                <ImageView
-                    android:id="@+id/logINOUTIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/menu_img_ml"
-                    android:padding="5dp"
-                    android:src="@drawable/log_out" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/logout_app_title"
-                    android:textSize="@dimen/menu_txt_size"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_line_h"
-                android:layout_marginLeft="@dimen/view_line_ml"
-                android:layout_marginRight="@dimen/view_line_mr"
-                android:background="@color/gray_black" />
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+	<ProgressBar 
+        android:id="@+id/ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        style="@android:attr/progressBarStyleSmall"/>
+</RelativeLayout>
