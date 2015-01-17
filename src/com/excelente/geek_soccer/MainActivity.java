@@ -19,7 +19,7 @@ import com.excelente.geek_soccer.live_score_page.Live_Score_PageByView;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.TeamModel;
 import com.excelente.geek_soccer.service.UpdateService;
-import com.excelente.geek_soccer.sideMenu.SideMenuMain;
+import com.excelente.geek_soccer.sideMenu.SlidingMenuBar;
 import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
@@ -43,7 +43,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
-import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,14 +86,13 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	float originSideMenuX = 0;
 	float startTouchX = 0;
 	float startTouchY = 0;
-	private RelativeLayout Header_LayoutMenu;
-	private ImageView Team_LogoMenu;
-	private TextView Title_barMenu;
+	
 	private RelativeLayout Header_Layout;
 	private ImageView Team_Logo;
 	private LinearLayout Tab_Layout;
 	private ImageView Update_App_btn;
-	private ImageView Update_App_btnMenu;
+	private SlidingMenuBar menu;
+	private ImageView menuImg;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +111,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}else{
 			askMode();
 		}
-		
 	}
 	
 	private void doCheckVersionApp() {
@@ -143,29 +141,23 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 								int oldVersionCode = Integer.valueOf(SessionManager.getSetting(mContext, "old_version_code"));
 								if(versionCode >= lastVersionCode){
 									Update_App_btn.setVisibility(View.GONE);
-									Update_App_btnMenu.setVisibility(View.GONE);
 								}else if(oldVersionCode == versionCode){
 									Update_App_btn.setVisibility(View.VISIBLE);
-									Update_App_btnMenu.setVisibility(View.VISIBLE);
 								}else{
 									Update_App_btn.setVisibility(View.VISIBLE);
-									Update_App_btnMenu.setVisibility(View.VISIBLE);
 									SessionManager.setSetting(mContext, "old_version_code", String.valueOf(versionCode));
 									DialogUtil.showUpdateAppDialog(mContext);
 								}
 							}else{
 								Update_App_btn.setVisibility(View.VISIBLE);
-								Update_App_btnMenu.setVisibility(View.VISIBLE);
 								SessionManager.setSetting(mContext, "old_version_code", String.valueOf(versionCode));
 								DialogUtil.showUpdateAppDialog(mContext);
 							}
 						}else{
 							Update_App_btn.setVisibility(View.GONE);
-							Update_App_btnMenu.setVisibility(View.GONE);
 						}
 					} catch (JSONException e) {
 						Update_App_btn.setVisibility(View.GONE);
-						Update_App_btnMenu.setVisibility(View.GONE);
 					}
 				}
 				
@@ -206,7 +198,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		this.intialiseViewPager();
 		
 		menu_setting();
-		Team_LogoSetting();
 		tab_setting();
 		
 		Calendar c = Calendar.getInstance();
@@ -223,6 +214,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		//new Load_LiveScore_Data().data(mContext, Date_Select);
 	    setPageFromNotification();
 		SideMenuStandBy();
+		Team_LogoSetting();
 		
 		setThemeToView();
 		
@@ -294,45 +286,29 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
 	private void setThemeToView() {
 		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, Header_Layout);
-		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, Header_LayoutMenu);
 		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_BACKGROUND_COLOR, Tab_Layout);
 		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_LOGO, Team_Logo);
-		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_LOGO, Team_LogoMenu);
 		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, title_bar);
-		ThemeUtils.setThemeToView(mContext, ThemeUtils.TYPE_TEXT_COLOR, Title_barMenu);
 	}
 	
 	private void Team_LogoSetting(){
+		menuImg = (ImageView) findViewById(R.id.menu_img);
+		menuImg.setImageResource(R.drawable.ic_drawer);
 		Team_Logo = (ImageView) findViewById(R.id.Team_Logo);
 		TeamLogo = (LinearLayout)findViewById(R.id.Up_btn);
 		TeamLogo.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				new SideMenuMain().showMenu(MainActivity.this);
+				menu.getMenu().toggle(true);
 			}
 		});
 	}
 	
 	public void SideMenuStandBy(){
-		final RelativeLayout MainLayout = (RelativeLayout) findViewById(R.id.Main_Layout);
-		if(MainLayout!=null){
-			data._Menu_Layout = new SideMenuMain().CreateMenu(MainActivity.this);
-			data.Menu_Layout.setVisibility(RelativeLayout.GONE);
-			MenuWidth = GetdipSize.dip(mContext, 170);
-			new SideMenuMain().hideMenuNoAni();
-			
-			DisplayMetrics metrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(metrics);
-			float screenWidth = metrics.widthPixels;
-			TenPerScreenWidth = (float) (screenWidth*(5.0f/100.0f));
-		}
-		
-		Header_LayoutMenu = (RelativeLayout) findViewById(R.id.Header_LayoutMenu);
-		Team_LogoMenu = (ImageView) findViewById(R.id.Team_LogoMenu);
-		Title_barMenu = (TextView) findViewById(R.id.Title_barMenu);
-		Update_App_btnMenu = (ImageView) findViewById(R.id.Update_App_btnMenu);
-		Update_App_btnMenu.setVisibility(View.GONE);
+		menu = new SlidingMenuBar(this);
+		menu.create();
+		data.Sliding_Menu_Bar = menu;
 	}
 	
 	private void menu_setting() {
@@ -539,7 +515,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		if(OldState==1 
 				&& arg0==0
 				&& mViewPager.getCurrentItem()==0 ){
-			new SideMenuMain().showMenu(mContext);
+			//new SideMenuMain().showMenu(mContext);
 		}
 		OldState = arg0;
 	}
@@ -563,9 +539,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if(data.Menu_Layout!=null){
-				if(data.Menu_Layout.getVisibility()==0){
-					new SideMenuMain().hideMenu(mContext);
+			if(data.Sliding_Menu_Bar!=null){
+				Log.e("ttt","onKeyDown");
+				if(data.Sliding_Menu_Bar.getMenu().isMenuShowing()){
+					data.Sliding_Menu_Bar.getMenu().toggle(true);
 				}else{
 					if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
 						if(data.Sticker_Layout_Stat_team){
@@ -577,7 +554,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 						showCloseAppDialog(this);
 					}
 				}
-				
+				return false;
 			}else{
 				if((data.Sticker_Layout_Stat_team || data.Sticker_Layout_Stat_All) && data.fragement_Section_get()==2){
 					if(data.Sticker_Layout_Stat_team){
@@ -591,10 +568,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 					data.app_Status=false;
 					showCloseAppDialog(this);
 				}
+				return false;
 			}
 		}
 		
-		return true;
+		return false;
 	}
 	
 	public static void showCloseAppDialog(final Activity mContext) { 

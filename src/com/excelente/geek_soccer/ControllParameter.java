@@ -8,6 +8,8 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.excelente.geek_soccer.sideMenu.SlidingMenuBar;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
@@ -182,6 +184,7 @@ public class ControllParameter {
 	public static JSONObject jObLiveToday;
 	public static JSONObject jObLiveTomorrow;
 	
+	public SlidingMenuBar Sliding_Menu_Bar;
 	public LinearLayout _Menu_Layout;
 	public LinearLayout Menu_Layout;
 	public View Menu_View;
