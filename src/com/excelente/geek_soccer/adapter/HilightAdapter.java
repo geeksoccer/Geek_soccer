@@ -127,7 +127,6 @@ public class HilightAdapter extends BaseAdapter{
 	        	 }
 	    		
 	    		hilightHolder.hilightImageImageview = (ImageView) convertView.findViewById(R.id.hilight_image_imageview);
-		        hilightHolder.hilightImageImageview.setImageResource(R.drawable.logo_gs);
 		        hilightHolder.hilightTopicTextview = (TextView) convertView.findViewById(R.id.hilight_topic_textview);
 		        hilightHolder.hilightTypeTextview = (TextView) convertView.findViewById(R.id.hilight_type_textview);
 		        hilightHolder.hilightCreateTimeTextview = (TextView) convertView.findViewById(R.id.hilight_create_time_textview);
@@ -292,8 +291,8 @@ public class HilightAdapter extends BaseAdapter{
 		
 		DisplayImageOptions options = new DisplayImageOptions.Builder()
 	        //.showImageOnLoading(R.drawable.soccer_icon) // resource or drawable
-	        .showImageForEmptyUri(R.drawable.soccer_icon) // resource or drawable
-	        .showImageOnFail(R.drawable.soccer_icon) // resource or drawable
+	        //.showImageForEmptyUri(R.drawable.soccer_icon) // resource or drawable
+	        //.showImageOnFail(R.drawable.soccer_icon) // resource or drawable
 	        .resetViewBeforeLoading(false)  // default
 	        //.delayBeforeLoading(500)
 	        .cacheInMemory(false)
