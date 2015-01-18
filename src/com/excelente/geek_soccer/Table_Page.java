@@ -5,7 +5,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.excelente.geek_soccer.MainActivity.OnSelectPageListener;
 import com.excelente.geek_soccer.adapter.TablePagerAdapter;
+import com.excelente.geek_soccer.adapter.TablePagerAdapter.OnLoadDataListener;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.TableModel;
 import com.excelente.geek_soccer.model.TabModel;
@@ -14,9 +16,13 @@ import com.excelente.geek_soccer.view.PageView;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -78,6 +84,7 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 		
 		scrollTab = (HorizontalScrollView) tableView.findViewById(R.id.scroll_tab);
 		scrollTab.setSmoothScrollingEnabled(true);
+		
 	}
 	
 	private void setupTab(Integer layoutId, String name, String label, Integer iconId, boolean selected) {
@@ -114,12 +121,40 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 	
 	private void initSubView() {
 		viewpager = (PageView) tableView.findViewById(R.id.table_viewpager);
+		viewpager.setVisibility(View.VISIBLE);
 		try {
 			TablePagerAdapter tablePagerAdapter = new TablePagerAdapter(getActivity(), getTablePagerModelList());
 			viewpager.setAdapter(tablePagerAdapter);
+			tablePagerAdapter.setOnLoadDataListener(new TablePagerAdapter.OnLoadDataListener() {
+				
+				@Override
+				public void onLoaded(int position) {
+					Log.e("onLoaded", "Table_page onLoaded: " + position);
+					if(position == 0){
+						viewpager.setVisibility(View.INVISIBLE);
+					}
+				}
+			});
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		
+		final Animation fadeIn = new AlphaAnimation(0, 1);
+		fadeIn.setInterpolator(new DecelerateInterpolator());
+		fadeIn.setDuration(1000);
+		((MainActivity) getActivity()).setOnSelectPageListener(new OnSelectPageListener() {
+			
+			@Override
+			public void onSelect(int position) {
+				Log.e("onSelect", "Table_page onSelect: " + position);
+				if(position == 3){
+					if(viewpager.getVisibility() == View.INVISIBLE){
+						viewpager.setVisibility(View.VISIBLE);
+						viewpager.startAnimation(fadeIn);
+					}
+				}
+			}
+		});
 	} 
 	
 	private List<TabModel> getTablePagerModelList() throws UnsupportedEncodingException {

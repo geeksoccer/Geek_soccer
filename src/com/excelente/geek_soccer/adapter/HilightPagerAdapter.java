@@ -47,6 +47,10 @@ public class HilightPagerAdapter extends BaseAdapter{
 	public static List<TabModel> tabModelList;
 	HilightModel oldHilight; 
 	private boolean loaded;
+	public interface OnLoadDataListener{
+		public void onLoaded(int position);
+	}
+	OnLoadDataListener onLoadDataListener;
 	
 	public HilightPagerAdapter(Activity activity, List<TabModel> tabModelList) {
 		this.activity = activity;
@@ -118,7 +122,7 @@ public class HilightPagerAdapter extends BaseAdapter{
 			public void onClick(View v) {
 				try{ 
 					if(NetworkUtils.isNetworkAvailable(activity)){
-						new LoadOldHilightTask(viewItem, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
+						new LoadOldHilightTask(viewItem, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel, position).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
 					}else{
 						Boast.makeText(activity, NetworkUtils.getConnectivityStatusString(activity), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
@@ -133,7 +137,7 @@ public class HilightPagerAdapter extends BaseAdapter{
 		if(HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter == null){
 			try{ 
 				if(NetworkUtils.isNetworkAvailable(activity)){
-					new LoadOldHilightTask(viewItem, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
+					new LoadOldHilightTask(viewItem, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel, position).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
 				}else{
 					Boast.makeText(activity, NetworkUtils.getConnectivityStatusString(activity), Toast.LENGTH_SHORT).show();
 					setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
@@ -173,11 +177,12 @@ public class HilightPagerAdapter extends BaseAdapter{
 		ViewItem viewItem;
 		HilightAdapter hilightAdapter;
 		TabModel tabModel; 
-		  
-		public LoadOldHilightTask(ViewItem viewItem, BaseAdapter adapter, TabModel tabModel) {
+		int position;
+		public LoadOldHilightTask(ViewItem viewItem, BaseAdapter adapter, TabModel tabModel, int position) {
 			this.viewItem = viewItem;
 			this.hilightAdapter = (HilightAdapter) adapter; 
 			this.tabModel = tabModel;
+			this.position = position;
 		}
 		
 		@Override
@@ -221,7 +226,7 @@ public class HilightPagerAdapter extends BaseAdapter{
 			if(hilightAdapter!=null && hilightAdapter.getCount() > 0){
 				doLoadOldHilightToListView(result, tabModel);  
 			}else{
-				doLoadHilightToListView(result, viewItem, tabModel);
+				doLoadHilightToListView(result, viewItem, tabModel, position);
 			}
 			
 			if(hilightAdapter==null || hilightAdapter.getCount() < 100){
@@ -229,11 +234,12 @@ public class HilightPagerAdapter extends BaseAdapter{
 			}else{
 				loaded = false;
 			}
+			
 		}
 
 	}
 	
-	private void doLoadHilightToListView(List<HilightModel> hilightList, ViewItem viewItem, TabModel tabModel) {
+	private void doLoadHilightToListView(List<HilightModel> hilightList, ViewItem viewItem, TabModel tabModel,int position) {
 		
 			HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).hilightList = getListView(hilightList, tabModel, HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).hilightList);
 			
@@ -250,7 +256,13 @@ public class HilightPagerAdapter extends BaseAdapter{
 				viewItem.textEmpty.setVisibility(View.VISIBLE);
 			}
 			
-			setListViewEvents(viewItem, HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel);
+			if(hilightList!=null && hilightList.size()>0){
+				if(onLoadDataListener!=null){
+					onLoadDataListener.onLoaded(position);
+				}
+			}
+			
+			setListViewEvents(viewItem, HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel, position);
 		
 	}
 	
@@ -305,6 +317,7 @@ public class HilightPagerAdapter extends BaseAdapter{
 		
 		ViewItem viewItem;
 		TabModel tabModel;
+		int position;
 		
 		public LoadLastHilightTask(ViewItem viewItem, TabModel tabModel) { 
 			this.viewItem = viewItem;
@@ -329,7 +342,7 @@ public class HilightPagerAdapter extends BaseAdapter{
 		protected void onPostExecute(List<HilightModel> result) {
 			super.onPostExecute(result);
 			if(result!=null && !result.isEmpty()){
-				doLoadHilightToListView(result, viewItem, tabModel); 
+				doLoadHilightToListView(result, viewItem, tabModel, -1); 
 			}
 			
 			viewItem.hilightListView.onRefreshComplete();
@@ -337,7 +350,7 @@ public class HilightPagerAdapter extends BaseAdapter{
 
 	}
 	
-	private void setListViewEvents(final ViewItem viewItem, final BaseAdapter adapter, final TabModel tabModel) {
+	private void setListViewEvents(final ViewItem viewItem, final BaseAdapter adapter, final TabModel tabModel, final int position) {
 		
 		viewItem.hilightListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -375,7 +388,7 @@ public class HilightPagerAdapter extends BaseAdapter{
 						
 						if(NetworkUtils.isNetworkAvailable(activity)){
 							viewItem.hilightLoadingFooterProcessbar.setVisibility(View.VISIBLE);
-							new LoadOldHilightTask(viewItem, adapter, tabModel).execute(getURLbyTag(activity, hm.getHilightId(), tabModel.getUrl()));  
+							new LoadOldHilightTask(viewItem, adapter, tabModel, position).execute(getURLbyTag(activity, hm.getHilightId(), tabModel.getUrl()));  
 						}else
 							Boast.makeText(activity, NetworkUtils.getConnectivityStatusString(activity), Toast.LENGTH_SHORT).show();
 						//Toast.makeText(getActivity(), "Toast " + i++, Toast.LENGTH_SHORT).show();
@@ -419,6 +432,10 @@ public class HilightPagerAdapter extends BaseAdapter{
 			super.onPostExecute(result);
 		}
 
+	}
+
+	public void setOnLoadDataListener(OnLoadDataListener onLoadDataListener) {
+		this.onLoadDataListener = onLoadDataListener;
 	} 
 
 }

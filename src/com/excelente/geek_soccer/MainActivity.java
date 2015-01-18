@@ -1,6 +1,7 @@
 package com.excelente.geek_soccer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -427,6 +428,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		mViewPager.setPagingEnabled(true);
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(4);
+		onSelectPageListenerList = new ArrayList<MainActivity.OnSelectPageListener>();
 	}
 	
 	public void tab_setting(){
@@ -489,6 +491,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		
 	}
 	
+	public interface OnSelectPageListener{
+		public void onSelect(int position);
+	}
+	
+	List<OnSelectPageListener> onSelectPageListenerList;
+	
 	public static void Page_Select(int index, boolean by_Selected, Context mContext){
 		//Content_view.removeAllViews();
 		data.fragement_Section_set(index);
@@ -543,7 +551,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		}
 		
 	}
-	
+
+	public void setOnSelectPageListener(OnSelectPageListener onSelectPageListener) {
+		this.onSelectPageListenerList.add(onSelectPageListener);
+	}
+
 	public static RelativeLayout chatAlertV;
 	public static TextView chatAlertTextCount;
 	public static int curPage=0;
@@ -583,6 +595,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	@Override
 	public void onPageSelected(int arg0) {
 		Page_Select(arg0, false, this);
+		if(onSelectPageListenerList!=null&&onSelectPageListenerList.size()>0){
+			for (OnSelectPageListener onSelectPageListener : onSelectPageListenerList) {
+				onSelectPageListener.onSelect(arg0);
+			}
+		}
 	}
 	
 	public String  set_DateMonth_format(int value) {

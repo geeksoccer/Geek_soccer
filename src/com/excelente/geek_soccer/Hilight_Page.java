@@ -3,7 +3,9 @@ package com.excelente.geek_soccer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.excelente.geek_soccer.MainActivity.OnSelectPageListener;
 import com.excelente.geek_soccer.adapter.HilightPagerAdapter;
+import com.excelente.geek_soccer.adapter.HilightPagerAdapter.OnLoadDataListener;
 import com.excelente.geek_soccer.model.TabModel;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.PageView;
@@ -12,9 +14,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -125,8 +131,37 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 	
 	private void initSubView() { 
 		hilightPagerAdapter = new HilightPagerAdapter(getActivity(), getTabModelList());
+		hilightPagerAdapter.setOnLoadDataListener(new OnLoadDataListener() {
+			
+			@Override
+			public void onLoaded(int position) {
+				Log.e("onLoaded", "Hilight_page onLoaded: " + position);
+				if(position == 0){
+					viewpager.setVisibility(View.INVISIBLE);
+				}
+			}
+		});
+		
 		viewpager = (PageView) hilightPage.findViewById(R.id.news_viewpager);
+		viewpager.setVisibility(View.VISIBLE);
 		viewpager.setAdapter(hilightPagerAdapter);
+		
+		final Animation fadeIn = new AlphaAnimation(0, 1);
+		fadeIn.setInterpolator(new DecelerateInterpolator());
+		fadeIn.setDuration(1000);
+		((MainActivity) getActivity()).setOnSelectPageListener(new OnSelectPageListener() {
+			
+			@Override
+			public void onSelect(int position) {
+				Log.e("onSelect", "Hilight_Page onSelect: " + position);
+				if(position == 4){
+					if(viewpager.getVisibility() == View.INVISIBLE){
+						viewpager.setVisibility(View.VISIBLE);
+						viewpager.startAnimation(fadeIn);
+					}
+				}
+			}
+		});
 	}
 	
 	private List<TabModel> getTabModelList() {

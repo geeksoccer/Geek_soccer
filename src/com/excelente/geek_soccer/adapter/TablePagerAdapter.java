@@ -29,6 +29,12 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 	Activity mContext;
 	List<TabModel> tablePagerModelList;
 	
+	public interface OnLoadDataListener{
+		public void onLoaded(int position);
+	}
+	
+	OnLoadDataListener onLoadDataListener;
+	
 	public TablePagerAdapter(Activity mContext, List<TabModel> tablePagerModelList) {
 		this.mContext = mContext;
 		this.tablePagerModelList = tablePagerModelList;
@@ -74,12 +80,12 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 		}
 		
 		TabModel tablePagerModel = (TabModel) getItem(position);
-		doInitViews(tableItemView, tablePagerModel);
+		doInitViews(tableItemView, tablePagerModel, position);
 		
 		return convertView;
 	}
 	
-	private void doInitViews(final TableItemView tableItemView, final TabModel tablePagerModel) {
+	private void doInitViews(final TableItemView tableItemView, final TabModel tablePagerModel, final int position) {
 		final TableAdapter tableAdapter = null;
 		
 		tableItemView.emptyText.setOnClickListener(new OnClickListener() {
@@ -88,7 +94,7 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 			public void onClick(View v) {
 				try{ 
 					if(NetworkUtils.isNetworkAvailable(mContext)){
-						new LoadTableTask(tableItemView, tableAdapter).execute(tablePagerModel.getUrl());
+						new LoadTableTask(tableItemView, tableAdapter, position).execute(tablePagerModel.getUrl());
 					}else{
 						Boast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
 						setMessageEmptyListView(tableAdapter, tableItemView);
@@ -102,7 +108,7 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 		
 		try{ 
 			if(NetworkUtils.isNetworkAvailable(mContext)){
-				new LoadTableTask(tableItemView, tableAdapter).execute(tablePagerModel.getUrl());
+				new LoadTableTask(tableItemView, tableAdapter, position).execute(tablePagerModel.getUrl());
 			}else{
 				Boast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
 				setMessageEmptyListView(tableAdapter, tableItemView);
@@ -129,10 +135,12 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 		
 		TableItemView tableItemView;
 		TableAdapter tableAdaptor;
+		int position;
 		
-		public LoadTableTask(TableItemView tableItemView, TableAdapter tableAdaptor) {
+		public LoadTableTask(TableItemView tableItemView, TableAdapter tableAdaptor, int position) {
 			this.tableItemView = tableItemView; 
 			this.tableAdaptor = tableAdaptor;
+			this.position = position;
 		}
 		
 		@Override
@@ -168,6 +176,10 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 				tableItemView.emptyText.setVisibility(View.GONE);
 				tableItemView.progressbar.setVisibility(View.GONE);
 				tableItemView.tableListView.setVisibility(View.VISIBLE);
+				
+				if(onLoadDataListener!=null){
+					onLoadDataListener.onLoaded(position);
+				}
 			}else{
 				if(mContext!=null){
 					Boast.makeText(mContext, mContext.getResources().getString(R.string.warning_internet), Toast.LENGTH_SHORT).show();
@@ -207,6 +219,10 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 
 	private void showToast(String string) {
 		Boast.makeText(mContext, string, Toast.LENGTH_SHORT).show();
+	}
+
+	public void setOnLoadDataListener(OnLoadDataListener onLoadDataListener) {
+		this.onLoadDataListener = onLoadDataListener;
 	}
 
 }
