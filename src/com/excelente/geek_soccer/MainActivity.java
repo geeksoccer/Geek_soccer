@@ -38,7 +38,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
@@ -48,9 +47,7 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -59,9 +56,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -190,55 +185,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 			}
 		}
 		
-		doDataChangeProfile();
 	}
 	
-	private void doDataChangeProfile() {
-		if(menu!=null){
-			LinearLayout sideMenu = (LinearLayout) menu.getMenu().findViewById(R.id.SideMenu);
-			ProgressBar progressbar = (ProgressBar) menu.getMenu().findViewById(R.id.ProgressBar);
-			ScrollView scrollView = (ScrollView) menu.getMenu().findViewById(R.id.ScrollView);
-			
-			TextView profileName = (TextView) menu.getMenu().findViewById(R.id.profile_name);
-			TextView profileEmail = (TextView) menu.getMenu().findViewById(R.id.profile_email);
-			ImageView profileIcon = (ImageView) menu.getMenu().findViewById(R.id.ProfileIcon);
-			if(!menu.getMenu().isMenuShowing()){
-				//sideMenu.setVisibility(View.INVISIBLE);
-				scrollView.setVisibility(View.INVISIBLE);
-				profileName.setVisibility(View.INVISIBLE);
-				profileEmail.setVisibility(View.INVISIBLE);
-				profileIcon.setVisibility(View.INVISIBLE);
-				progressbar.setVisibility(View.VISIBLE);
-				menu.setAnimFirst(true);
-			}
-			
-			LinearLayout profileBtn = (LinearLayout) menu.getMenu().findViewById(R.id.Profile);
-			
-			if(profileBtn!=null){
-				profileBtn = (LinearLayout) menu.getMenu().findViewById(R.id.Profile);
-				profileName = (TextView) menu.getMenu().findViewById(R.id.profile_name);
-				profileEmail = (TextView) menu.getMenu().findViewById(R.id.profile_email);
-				profileIcon = (ImageView) menu.getMenu().findViewById(R.id.ProfileIcon);
-				
-				if(SessionManager.hasMember(this)){
-					String name = SessionManager.getMember(this).getNickname();
-					String email = SessionManager.getMember(this).getEmail();
-					String photo = SessionManager.getMember(this).getPhoto();
-					profileName.setText(name);
-					profileEmail.setText(email);
-					if(SessionManager.hasKey(this, photo)){ 
-						Bitmap bitmapPhoto = SessionManager.getImageSession(this, photo);
-						profileIcon.setImageBitmap(Profile_Page.resizeBitMap(bitmapPhoto));
-					}else{
-						profileIcon.setImageResource(R.drawable.ic_action_person);
-					}
-				}else{
-					profileBtn.setVisibility(View.GONE);
-				}
-			}
-		}
-	}
-
 	private void doCreate() {
 		mContext = this;
 		data = ControllParameter.getInstance(this);

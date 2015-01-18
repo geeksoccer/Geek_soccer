@@ -13,12 +13,15 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.Settings.Secure;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -28,6 +31,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -50,7 +54,9 @@ import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.utils.asynctask.GetImageUriTask;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SlidingMenuBar implements OnClickListener{
 	Activity activity;
@@ -76,12 +82,7 @@ public class SlidingMenuBar implements OnClickListener{
 	private TextView profileEmail;
 	private ImageView profileIcon;
 
-	private LinearLayout sideMenu;
-
-	private ScrollView scrollView;
 	private boolean animFirst;
-
-	private ProgressBar progressbar;
 	
 	public SlidingMenuBar(Activity activity) {
 		this.activity = activity;
@@ -101,55 +102,13 @@ public class SlidingMenuBar implements OnClickListener{
         menu.setBackgroundColor(Color.BLACK);
         menu.getBackground().setAlpha(150);
         initView();
-        
-	}
-	
-	private void solveSideMenu() {
-		
-		
-		if(!menu.isMenuShowing()){
-			//sideMenu.setVisibility(View.INVISIBLE);
-			progressbar.setVisibility(View.VISIBLE);
-			scrollView.setVisibility(View.INVISIBLE);
-			profileName.setVisibility(View.INVISIBLE);
-			profileEmail.setVisibility(View.INVISIBLE);
-			profileIcon.setVisibility(View.INVISIBLE);
-		}
-		
-		final Animation fadeIn = new AlphaAnimation(0, 1);
-		fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-		fadeIn.setDuration(300);
-        menu.setOnOpenedListener(new OnOpenedListener() {
-			
-			@Override
-			public void onOpened() {
-				if(animFirst){
-					scrollView.startAnimation(fadeIn);
-					profileName.startAnimation(fadeIn);
-					profileEmail.startAnimation(fadeIn);
-					profileIcon.startAnimation(fadeIn);
-					//sideMenu.startAnimation(fadeIn);
-					setAnimFirst(false);
-				}
-				//sideMenu.setVisibility(View.VISIBLE);
-				scrollView.setVisibility(View.VISIBLE);
-				profileName.setVisibility(View.VISIBLE);
-				profileEmail.setVisibility(View.VISIBLE);
-				profileIcon.setVisibility(View.VISIBLE);
-				progressbar.setVisibility(View.INVISIBLE);
-			}
-		});
-		
+ 
 	}
 
 	private void initView() {
-		progressbar = (ProgressBar) menu.findViewById(R.id.ProgressBar);
-		sideMenu = (LinearLayout) menu.findViewById(R.id.SideMenu);
-		scrollView = (ScrollView) menu.findViewById(R.id.ScrollView);
 		profileName = (TextView) menu.findViewById(R.id.profile_name);
 		profileEmail = (TextView) menu.findViewById(R.id.profile_email);
 		profileIcon = (ImageView) menu.findViewById(R.id.ProfileIcon);
-		solveSideMenu();
 		
 		profileBtn = (LinearLayout) menu.findViewById(R.id.Profile);
 		if(SessionManager.hasMember(activity)){

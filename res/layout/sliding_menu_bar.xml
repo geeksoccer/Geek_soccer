@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/SideMenuLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black" >
@@ -31,17 +32,15 @@
 		            android:id="@+id/ProfileIcon"
 		            android:layout_width="50dp"
 		            android:layout_height="50dp"
-		            android:layout_marginLeft="20dp"
+		            android:layout_marginLeft="15dp"
 		            android:src="@drawable/ic_action_user" />
 		        
 		        <LinearLayout
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"
 			        android:gravity="center"
-			        android:layout_marginLeft="5dp"
-			        android:paddingLeft="10dp"
 			        android:paddingRight="10dp"
-			        android:padding="@dimen/menu_p"
+			        android:layout_marginLeft="5dp"
 			        android:orientation="vertical" >
 			        
 		            <TextView
@@ -502,11 +501,4 @@
 	    </ScrollView>
 
 	</LinearLayout>
-
-	<ProgressBar 
-        android:id="@+id/ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        style="@android:attr/progressBarStyleSmall"/>
 </RelativeLayout>
