@@ -183,30 +183,41 @@ public class SlidingMenuBar implements OnClickListener, OnClosedListener{
 			SelectTeamLine.setVisibility(View.GONE);
 		}
 	}
+	
+	public void doSelectPage(int position){
+		if(ControllParameter.getInstance(activity).mViewPager.getCurrentItem() == position){
+			menu.toggle(true);
+		}
+	}
 
 	@Override
 	public void onClick(View v) {
 
 		switch (v.getId()) {
 		case R.id.News: {
+			doSelectPage(0);
 			MainActivity.Page_Select(0, true, activity);
 			break;
 
 		}
 		case R.id.LiveScore: {
+			doSelectPage(1);
 			MainActivity.Page_Select(1, true, activity);
 			break;
 
 		}
 		case R.id.Chat: {
+			doSelectPage(2);
 			MainActivity.Page_Select(2, true, activity);
 			break;
 		}
 		case R.id.ScoreBoard: {
+			doSelectPage(3);
 			MainActivity.Page_Select(3, true, activity);
 			break;
 		}
 		case R.id.Hilight: {
+			doSelectPage(4);
 			MainActivity.Page_Select(4, true, activity);
 			break;
 		}
