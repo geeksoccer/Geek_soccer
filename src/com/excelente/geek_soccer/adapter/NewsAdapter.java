@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
+import com.excelente.geek_soccer.adapter.FixturesAdapter.ViewHoleder;
 import com.excelente.geek_soccer.model.NewsModel; 
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -40,6 +41,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class NewsAdapter extends BaseAdapter{
@@ -50,6 +52,10 @@ public class NewsAdapter extends BaseAdapter{
     
     boolean showHead; 
 	
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_FIRST = 1;
+    private static final int TYPE_MAX_COUNT = TYPE_FIRST + 1;
+    
     HashMap<String, Bitmap> urlBitmap;
     
 	public NewsAdapter(Activity context, List<NewsModel> newsList) {
@@ -63,6 +69,32 @@ public class NewsAdapter extends BaseAdapter{
 	public List<NewsModel> getNewsList() {
 		return newsList;
 	}
+	
+	@Override
+	public int getViewTypeCount() {
+		return TYPE_MAX_COUNT;
+	}
+	
+	@Override
+	public int getItemViewType(int position) {
+		if(position == 0){
+			return TYPE_FIRST;
+		}
+		return TYPE_ITEM;
+	}
+	
+	class ViewHoleder {
+		TextView newsLikesTextview;
+		TextView newsReadsTextview;
+		TextView newsCommentsTextview;
+		ImageView newsview;
+		ImageView newslike;
+		ImageView newsImageImageview;
+		TextView newsTopicTextview;
+        TextView newsCreateTimeTextview;
+        ImageView newsNewImageview;
+        LinearLayout saveModeTextview;
+	}
 
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -70,47 +102,73 @@ public class NewsAdapter extends BaseAdapter{
 		
 		//Log.e("POSITION+++++++++++++++++", ""+urlBitmap.size());
 		final NewsModel newsModel = (NewsModel) getItem(position);
-		 
-        LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        
-        if(position==0){ 
-        	doConfigImageLoader(200,200);
-    		convertView = mInflater.inflate(R.layout.news_page_last, parent, false);
-    	}else{
-    		doConfigImageLoader(200,200); 
-    		convertView = mInflater.inflate(R.layout.news_page_item, parent, false);
+        ViewHoleder viewHoleder = null;
+		int type = getItemViewType(position);
+		
+        if(convertView==null){
+        	 LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        	 doConfigImageLoader(200,200);
+        	 viewHoleder = new ViewHoleder();
+        	 switch (type) {
+	            case TYPE_ITEM:{
+	            	convertView = mInflater.inflate(R.layout.news_page_item, parent, false);
+	            	viewHoleder.newsLikesTextview = (TextView) convertView.findViewById(R.id.news_likes_textview);
+	            	viewHoleder.newsReadsTextview = (TextView) convertView.findViewById(R.id.news_reads_textview);
+	            	viewHoleder.newsCommentsTextview = (TextView) convertView.findViewById(R.id.news_comments_textview);
+	                
+	            	viewHoleder.newsview = (ImageView) convertView.findViewById(R.id.news_view);
+	            	viewHoleder.newslike = (ImageView) convertView.findViewById(R.id.news_likes);
+	        		
+	                break;
+	            }case TYPE_FIRST:{
+	            	convertView = mInflater.inflate(R.layout.news_page_last, parent, false);
+	                break;
+	            }
+        	 }
     		
-    		TextView newsLikesTextview = (TextView) convertView.findViewById(R.id.news_likes_textview);
-            TextView newsReadsTextview = (TextView) convertView.findViewById(R.id.news_reads_textview);
-            TextView newsCommentsTextview = (TextView) convertView.findViewById(R.id.news_comments_textview);
-            
-            ImageView newsview = (ImageView) convertView.findViewById(R.id.news_view);
-            ImageView newslike = (ImageView) convertView.findViewById(R.id.news_likes);
-            
-            if(newsModel.getStatusView()==1){
-            	newsview.setImageResource(R.drawable.news_view_selected);
+        	 viewHoleder.newsImageImageview = (ImageView) convertView.findViewById(R.id.news_image_imageview);
+        	 viewHoleder.newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
+        	 viewHoleder.newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
+        	 viewHoleder.newsNewImageview = (ImageView) convertView.findViewById(R.id.news_new);
+        	 viewHoleder.saveModeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
+        	 
+        	 convertView.setTag(viewHoleder);
+    	}else{
+    		viewHoleder = (ViewHoleder) convertView.getTag();
+    	}
+        
+        doSetDataToViews(viewHoleder, newsModel, type);
+		
+        if(count_ani<position){
+        	convertView.setAnimation(AnimationUtils.loadAnimation(context, R.drawable.listview_anim));
+        	count_ani=position;
+        }
+        
+        return convertView;
+        
+	}
+	
+	private void doSetDataToViews(final ViewHoleder viewHoleder, final NewsModel newsModel, int type) {
+		if(type == TYPE_ITEM){
+			if(newsModel.getStatusView()==1){
+            	viewHoleder.newsview.setImageResource(R.drawable.news_view_selected);
             }
             
             if(newsModel.getStatusLike()==1){
-            	newslike.setImageResource(R.drawable.news_likes_selected);
+            	viewHoleder.newslike.setImageResource(R.drawable.news_likes_selected);
             }
             
-    		newsLikesTextview.setText(String.valueOf(newsModel.getNewsLikes())); 
-    		newsReadsTextview.setText(String.valueOf(newsModel.getNewsReads())); 
-    		newsCommentsTextview.setText(String.valueOf(newsModel.getNewsComments()));
-    	}
-        
-        final ImageView newsImageImageview = (ImageView) convertView.findViewById(R.id.news_image_imageview);
-        newsImageImageview.setImageResource(R.drawable.logo_gs);
-        TextView newsTopicTextview = (TextView) convertView.findViewById(R.id.news_topic_textview);
-        TextView newsCreateTimeTextview = (TextView) convertView.findViewById(R.id.news_create_time_textview);
-        ImageView newsNewImageview = (ImageView) convertView.findViewById(R.id.news_new);
-        final LinearLayout saveModeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
+            viewHoleder.newsLikesTextview.setText(String.valueOf(newsModel.getNewsLikes())); 
+            viewHoleder.newsReadsTextview.setText(String.valueOf(newsModel.getNewsReads())); 
+            viewHoleder.newsCommentsTextview.setText(String.valueOf(newsModel.getNewsComments()));
+		}
+		
+		viewHoleder.newsImageImageview.setImageResource(R.drawable.logo_gs);
         
         final File cacheFile = ImageLoader.getInstance().getDiscCache().get(newsModel.getNewsImage().replace(".gif", ".png"));
         if(urlBitmap.containsKey(newsModel.getNewsImage().replace(".gif", ".png"))){
-        	newsImageImageview.setImageBitmap(urlBitmap.get(newsModel.getNewsImage().replace(".gif", ".png")));
-        	saveModeTextview.setVisibility(View.GONE);
+        	viewHoleder.newsImageImageview.setImageBitmap(urlBitmap.get(newsModel.getNewsImage().replace(".gif", ".png")));
+        	viewHoleder.saveModeTextview.setVisibility(View.GONE);
         }else if(cacheFile.exists()){
         	new Thread(new Runnable() {
 				
@@ -123,49 +181,41 @@ public class NewsAdapter extends BaseAdapter{
 						
 						@Override
 						public void run() {
-							newsImageImageview.setImageBitmap(bm);  
+							viewHoleder.newsImageImageview.setImageBitmap(bm);  
 						}
 					});
 				}
 
 			}).start();
-        	saveModeTextview.setVisibility(View.GONE);
+        	viewHoleder.saveModeTextview.setVisibility(View.GONE);
         }else{ 
         	String saveMode = SessionManager.getSetting(context, SessionManager.setting_save_mode);
         	if(saveMode == null || saveMode.equals("false") || saveMode.equals("null")){
-	        	doloadImage(newsModel, newsImageImageview, saveModeTextview);
+	        	doloadImage(newsModel, viewHoleder.newsImageImageview, viewHoleder.saveModeTextview);
         	}else{
-        		saveModeTextview.setVisibility(View.VISIBLE);
-        		newsImageImageview.setVisibility(View.GONE);
+        		viewHoleder.saveModeTextview.setVisibility(View.VISIBLE);
+        		viewHoleder.newsImageImageview.setVisibility(View.GONE);
         	}
         }
         
-        saveModeTextview.setOnClickListener(new OnClickListener() {
+        viewHoleder.saveModeTextview.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				doloadImage(newsModel, newsImageImageview, saveModeTextview);
+				doloadImage(newsModel, viewHoleder.newsImageImageview, viewHoleder.saveModeTextview);
 			}
 		});
         
-        newsTopicTextview.setText(newsModel.getNewsTopic());
-		newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(context, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime())));
+        viewHoleder.newsTopicTextview.setText(newsModel.getNewsTopic());
+        viewHoleder.newsCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(context, DateNewsUtils.convertStrDateTimeDate(newsModel.getNewsCreateTime())));
 		
-		if(newsCreateTimeTextview.getText().toString().contains(context.getResources().getString(R.string.str_today_news)) && newsModel.getStatusView()==0){
-			newsNewImageview.setVisibility(View.VISIBLE);
+		if(viewHoleder.newsCreateTimeTextview.getText().toString().contains(context.getResources().getString(R.string.str_today_news)) && newsModel.getStatusView()==0){
+			viewHoleder.newsNewImageview.setVisibility(View.VISIBLE);
 		}else{ 
-			newsNewImageview.setVisibility(View.GONE);
+			viewHoleder.newsNewImageview.setVisibility(View.GONE);
 		}
-		
-        if(count_ani<position){
-        	convertView.setAnimation(AnimationUtils.loadAnimation(context, R.drawable.listview_anim));
-        	count_ani=position;
-        }
-        
-        return convertView;
-        
 	}
-	
+
 	private void cacheMemBitMap(String replace, Bitmap bm) {
 		if(urlBitmap.size() == 20){
 			for (String key : urlBitmap.keySet()) {

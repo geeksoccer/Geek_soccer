@@ -52,6 +52,10 @@ public class HilightAdapter extends BaseAdapter{
     boolean showHead; 
     
     HashMap<String, Bitmap> urlBitmap;
+    
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_FIRST = 1;
+    private static final int TYPE_MAX_COUNT = TYPE_FIRST + 1;
 	
 	public HilightAdapter(Activity context, List<HilightModel> hilightList) {
 		if(urlBitmap == null){
@@ -59,6 +63,16 @@ public class HilightAdapter extends BaseAdapter{
 		}
 		this.context = context;
 		this.hilightList = hilightList; 
+	}
+	
+	@Override
+	public int getItemViewType(int position) {
+		return position==0?TYPE_FIRST:TYPE_ITEM;
+	}
+	
+	@Override
+	public int getViewTypeCount() {
+		return TYPE_MAX_COUNT;
 	}
 	
 	class HilightHolder{
@@ -83,104 +97,50 @@ public class HilightAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		//Log.e("POSITION+++++++++++++++++", String.valueOf(position));
-		final HilightHolder hilightHolder; 
+		HilightHolder hilightHolder = null; 
+		
+		int type = getItemViewType(position);
 		
 		final HilightModel hilightModel = (HilightModel) getItem(position); 
-		 
-        LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
-        hilightHolder = new HilightHolder(); 
-        
-	        if(position==0){
+	        if(convertView==null){
 	        	doConfigImageLoader(200,200);
-	    		convertView = mInflater.inflate(R.layout.hilight_page_last, parent, false);
+	    		hilightHolder = new HilightHolder(); 
+	    		LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	    		
+	    		switch (type) {
+		            case TYPE_ITEM:{
+		            	convertView = mInflater.inflate(R.layout.hilight_page_item, parent, false);
+		            	hilightHolder.hilightLikesTextview = (TextView) convertView.findViewById(R.id.hilight_likes_textview);
+			    		hilightHolder.hilightReadsTextview = (TextView) convertView.findViewById(R.id.hilight_reads_textview);
+			    		hilightHolder.hilightCommentsTextview = (TextView) convertView.findViewById(R.id.hilight_comments_textview);
+			    		
+			    		hilightHolder.hilightLikes = (ImageView) convertView.findViewById(R.id.hilight_likes);
+			    		hilightHolder.hilightView = (ImageView) convertView.findViewById(R.id.hilight_view);
+			    		
+		                break;
+		            }case TYPE_FIRST:{
+		            	convertView = mInflater.inflate(R.layout.hilight_page_last, parent, false);
+		                break;
+		            }
+	        	 }
+	    		
+	    		hilightHolder.hilightImageImageview = (ImageView) convertView.findViewById(R.id.hilight_image_imageview);
+		        hilightHolder.hilightImageImageview.setImageResource(R.drawable.logo_gs);
+		        hilightHolder.hilightTopicTextview = (TextView) convertView.findViewById(R.id.hilight_topic_textview);
+		        hilightHolder.hilightTypeTextview = (TextView) convertView.findViewById(R.id.hilight_type_textview);
+		        hilightHolder.hilightCreateTimeTextview = (TextView) convertView.findViewById(R.id.hilight_create_time_textview);
+		        hilightHolder.hilightImageProgressBar = (ProgressBar) convertView.findViewById(R.id.hilight_image_processbar);
+		        hilightHolder.hilightNew = (ImageView) convertView.findViewById(R.id.hilight_new);
+		        hilightHolder.savemodeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
+		        
+		        convertView.setTag(hilightHolder);
+	    		
 	    	}else{
-	    		doConfigImageLoader(200,200); 
-	    		convertView = mInflater.inflate(R.layout.hilight_page_item, parent, false);
-	    		
-	    		hilightHolder.hilightLikesTextview = (TextView) convertView.findViewById(R.id.hilight_likes_textview);
-	    		hilightHolder.hilightReadsTextview = (TextView) convertView.findViewById(R.id.hilight_reads_textview);
-	    		hilightHolder.hilightCommentsTextview = (TextView) convertView.findViewById(R.id.hilight_comments_textview);
-	    		
-	    		hilightHolder.hilightLikes = (ImageView) convertView.findViewById(R.id.hilight_likes);
-	    		hilightHolder.hilightView = (ImageView) convertView.findViewById(R.id.hilight_view);
-	    		
-	    		hilightHolder.hilightLikesTextview.setText(String.valueOf(hilightModel.getHilightLikes())); 
-	    		hilightHolder.hilightReadsTextview.setText(String.valueOf(hilightModel.getHilightViews())); 
-	    		hilightHolder.hilightCommentsTextview.setText(String.valueOf(hilightModel.getHilightComments()));
-	    		
-	    		if(hilightModel.getStatusLike()==1){
-	    			hilightHolder.hilightLikes.setImageResource(R.drawable.news_likes_selected);
-	    		}
-	    		
-	    		if(hilightModel.getStatusView()==1){
-	    			hilightHolder.hilightView.setImageResource(R.drawable.news_view_selected);
-	    		}
-	    		
+	    		hilightHolder = (HilightHolder) convertView.getTag();
 	    	}
 	        
-	        hilightHolder.hilightImageImageview = (ImageView) convertView.findViewById(R.id.hilight_image_imageview);
-	        hilightHolder.hilightImageImageview.setImageResource(R.drawable.logo_gs);
-	        hilightHolder.hilightTopicTextview = (TextView) convertView.findViewById(R.id.hilight_topic_textview);
-	        hilightHolder.hilightTypeTextview = (TextView) convertView.findViewById(R.id.hilight_type_textview);
-	        hilightHolder.hilightCreateTimeTextview = (TextView) convertView.findViewById(R.id.hilight_create_time_textview);
-	        hilightHolder.hilightImageProgressBar = (ProgressBar) convertView.findViewById(R.id.hilight_image_processbar);
-	        
-	        hilightHolder.hilightNew = (ImageView) convertView.findViewById(R.id.hilight_new);
-	        
-	        hilightHolder.savemodeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
-        
-	        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(hilightModel.getHilightImage().replace(".gif", ".png"));
-	        if(urlBitmap.containsKey(hilightModel.getHilightImage().replace(".gif", ".png"))){
-	        	hilightHolder.hilightImageImageview.setImageBitmap(urlBitmap.get(hilightModel.getHilightImage().replace(".gif", ".png")));
-	        	hilightHolder.savemodeTextview.setVisibility(View.GONE);
-	        }else if(cacheFile.exists()){
-	        	new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getPath());
-						cacheMemBitMap(hilightModel.getHilightImage().replace(".gif", ".png"), bm);
-						context.runOnUiThread(new Runnable() {
-							
-							@Override 
-							public void run() {
-								hilightHolder.hilightImageImageview.setImageBitmap(bm);
-							}
-						});
-						
-					}
-				}).start();
-	        	hilightHolder.savemodeTextview.setVisibility(View.GONE); 
-	        }else{
-	        	String saveMode = SessionManager.getSetting(context, SessionManager.setting_save_mode);
-	        	if(saveMode == null || saveMode.equals("false") || saveMode.equals("null")){
-	        		doLoadImage(hilightModel, hilightHolder);
-	        	}else{
-	        		hilightHolder.savemodeTextview.setVisibility(View.VISIBLE);
-	        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
-	        		hilightHolder.hilightImageImageview.setVisibility(View.GONE);
-	        	}
-	        
-	        }
-	        
-	        hilightHolder.savemodeTextview.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View arg0) {
-					doLoadImage(hilightModel, hilightHolder);
-				}
-			});
-        
-        	hilightHolder.hilightTopicTextview.setText(hilightModel.getHilightTopic().trim());
-        	hilightHolder.hilightTypeTextview.setText(hilightModel.getHilightType().replace("&nbsp;", "").trim());
-        	hilightHolder.hilightCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(context, DateNewsUtils.convertStrDateTimeDate(hilightModel.getHilightCreateTime())));
-		
-        	if(hilightHolder.hilightCreateTimeTextview.getText().toString().contains(context.getResources().getString(R.string.str_today_news)) && hilightModel.getStatusView()==0){
-        		hilightHolder.hilightNew.setVisibility(View.VISIBLE);
-    		}else{ 
-    			hilightHolder.hilightNew.setVisibility(View.GONE);
-    		}
+	        doSetDataTOViews(hilightHolder, hilightModel, type);
         	
         if(count_ani<position){
         	convertView.setAnimation(AnimationUtils.loadAnimation(context, R.drawable.listview_anim));
@@ -191,6 +151,75 @@ public class HilightAdapter extends BaseAdapter{
         
 	} 
 	
+	private void doSetDataTOViews(final HilightHolder hilightHolder, final HilightModel hilightModel, int type) {
+		if(type == TYPE_ITEM){
+        	
+	        if(hilightModel.getStatusLike()==1){
+    			hilightHolder.hilightLikes.setImageResource(R.drawable.news_likes_selected);
+    		}
+    		
+    		if(hilightModel.getStatusView()==1){
+    			hilightHolder.hilightView.setImageResource(R.drawable.news_view_selected);
+    		}
+    		hilightHolder.hilightLikesTextview.setText(String.valueOf(hilightModel.getHilightLikes())); 
+    		hilightHolder.hilightReadsTextview.setText(String.valueOf(hilightModel.getHilightViews())); 
+    		hilightHolder.hilightCommentsTextview.setText(String.valueOf(hilightModel.getHilightComments()));
+    		
+        }
+    
+        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(hilightModel.getHilightImage().replace(".gif", ".png"));
+        if(urlBitmap.containsKey(hilightModel.getHilightImage().replace(".gif", ".png"))){
+        	hilightHolder.hilightImageImageview.setImageBitmap(urlBitmap.get(hilightModel.getHilightImage().replace(".gif", ".png")));
+        	hilightHolder.savemodeTextview.setVisibility(View.GONE);
+        }else if(cacheFile.exists()){
+        	new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getPath());
+					cacheMemBitMap(hilightModel.getHilightImage().replace(".gif", ".png"), bm);
+					context.runOnUiThread(new Runnable() {
+						
+						@Override 
+						public void run() {
+							hilightHolder.hilightImageImageview.setImageBitmap(bm);
+						}
+					});
+					
+				}
+			}).start();
+        	hilightHolder.savemodeTextview.setVisibility(View.GONE); 
+        }else{
+        	String saveMode = SessionManager.getSetting(context, SessionManager.setting_save_mode);
+        	if(saveMode == null || saveMode.equals("false") || saveMode.equals("null")){
+        		doLoadImage(hilightModel, hilightHolder);
+        	}else{
+        		hilightHolder.savemodeTextview.setVisibility(View.VISIBLE);
+        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
+        		hilightHolder.hilightImageImageview.setVisibility(View.GONE);
+        	}
+        
+        }
+        
+        hilightHolder.savemodeTextview.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				doLoadImage(hilightModel, hilightHolder);
+			}
+		});
+    
+    	hilightHolder.hilightTopicTextview.setText(hilightModel.getHilightTopic().trim());
+    	hilightHolder.hilightTypeTextview.setText(hilightModel.getHilightType().replace("&nbsp;", "").trim());
+    	hilightHolder.hilightCreateTimeTextview.setText(DateNewsUtils.convertDateToUpdateNewsStr(context, DateNewsUtils.convertStrDateTimeDate(hilightModel.getHilightCreateTime())));
+	
+    	if(hilightHolder.hilightCreateTimeTextview.getText().toString().contains(context.getResources().getString(R.string.str_today_news)) && hilightModel.getStatusView()==0){
+    		hilightHolder.hilightNew.setVisibility(View.VISIBLE);
+		}else{ 
+			hilightHolder.hilightNew.setVisibility(View.GONE);
+		}
+	}
+
 	private void cacheMemBitMap(String replace, Bitmap bm) {
 		if(urlBitmap.size() == 20){
 			for (String key : urlBitmap.keySet()) {
