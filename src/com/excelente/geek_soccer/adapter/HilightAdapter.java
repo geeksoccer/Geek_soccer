@@ -84,7 +84,6 @@ public class HilightAdapter extends BaseAdapter{
 		TextView hilightTopicTextview;
         TextView hilightTypeTextview;
         TextView hilightCreateTimeTextview;
-        ProgressBar hilightImageProgressBar; 
         
         ImageView hilightLikes;
         ImageView hilightView;
@@ -130,7 +129,6 @@ public class HilightAdapter extends BaseAdapter{
 		        hilightHolder.hilightTopicTextview = (TextView) convertView.findViewById(R.id.hilight_topic_textview);
 		        hilightHolder.hilightTypeTextview = (TextView) convertView.findViewById(R.id.hilight_type_textview);
 		        hilightHolder.hilightCreateTimeTextview = (TextView) convertView.findViewById(R.id.hilight_create_time_textview);
-		        hilightHolder.hilightImageProgressBar = (ProgressBar) convertView.findViewById(R.id.hilight_image_processbar);
 		        hilightHolder.hilightNew = (ImageView) convertView.findViewById(R.id.hilight_new);
 		        hilightHolder.savemodeTextview = (LinearLayout) convertView.findViewById(R.id.save_mode);
 		        
@@ -195,7 +193,6 @@ public class HilightAdapter extends BaseAdapter{
         		doLoadImage(hilightModel, hilightHolder);
         	}else{
         		hilightHolder.savemodeTextview.setVisibility(View.VISIBLE);
-        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
         		hilightHolder.hilightImageImageview.setVisibility(View.GONE);
         	}
         
@@ -236,20 +233,17 @@ public class HilightAdapter extends BaseAdapter{
         	public void onLoadingStarted(String imageUri, View view) { 
         		hilightHolder.savemodeTextview.setVisibility(View.GONE);
         		hilightHolder.hilightImageImageview.setVisibility(View.GONE);
-        		hilightHolder.hilightImageProgressBar.setVisibility(View.VISIBLE);
         	};
         	
         	@Override
         	public void onLoadingFailed(String imageUri, View view,FailReason failReason) {
         		hilightHolder.savemodeTextview.setVisibility(View.GONE);
         		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
-        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
         	}
         	
         	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
         		hilightHolder.savemodeTextview.setVisibility(View.GONE);
         		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
-        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
         		cacheMemBitMap(hilightModel.getHilightImage().replace(".gif", ".png"), loadedImage);
         	}
 
@@ -257,7 +251,6 @@ public class HilightAdapter extends BaseAdapter{
 			public void onLoadingCancelled(String arg0, View arg1) {
 				hilightHolder.savemodeTextview.setVisibility(View.GONE);
 				hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
-        		hilightHolder.hilightImageProgressBar.setVisibility(View.GONE);
 			};
         }); 
 	}

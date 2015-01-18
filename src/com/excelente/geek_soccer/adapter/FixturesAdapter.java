@@ -239,7 +239,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 		headers.put("Referer", "http://localhost");
 		
 		DisplayImageOptions options = new DisplayImageOptions.Builder()
-	        .showImageOnLoading(R.drawable.soccer_icon) // resource or drawable
+	        //.showImageOnLoading(R.drawable.soccer_icon) // resource or drawable
 	        .resetViewBeforeLoading(true)  // default
 	        //.delayBeforeLoading(500)
 	        .cacheInMemory(false)

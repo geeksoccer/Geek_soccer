@@ -163,7 +163,7 @@ public class NewsAdapter extends BaseAdapter{
             viewHoleder.newsCommentsTextview.setText(String.valueOf(newsModel.getNewsComments()));
 		}
 		
-		viewHoleder.newsImageImageview.setImageResource(R.drawable.logo_gs);
+		viewHoleder.newsImageImageview.setImageBitmap(null);
         
         final File cacheFile = ImageLoader.getInstance().getDiscCache().get(newsModel.getNewsImage().replace(".gif", ".png"));
         if(urlBitmap.containsKey(newsModel.getNewsImage().replace(".gif", ".png"))){
