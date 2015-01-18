@@ -189,7 +189,7 @@ public class HilightPagerAdapter extends BaseAdapter{
 		protected void onPreExecute() {
 			super.onPreExecute();
 			
-			if(hilightAdapter==null && viewItem.hilightWaitProgressBar!=null){
+			if((hilightAdapter==null || hilightAdapter.isEmpty()) && viewItem.hilightWaitProgressBar!=null){
 				viewItem.hilightLoadingFooterProcessbar.setVisibility(View.GONE);
 				viewItem.hilightWaitProgressBar.setVisibility(View.VISIBLE);
 				viewItem.textEmpty.setVisibility(View.GONE);
