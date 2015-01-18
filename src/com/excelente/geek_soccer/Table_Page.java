@@ -62,7 +62,16 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
         super.onActivityCreated(savedInstanceState);
         if(getView() != null){
         	initView();
-        	initSubView();
+        	((MainActivity) getActivity()).setOnSelectPageListener(new OnSelectPageListener() {
+    			
+    			@Override
+    			public void onSelect(int position) {
+    				Log.e("onSelect", "Table_page onSelect: " + position);
+    				if(position == 3){
+    					initSubView();
+    				}
+    			}
+    		});
         }
 	}
 
@@ -119,9 +128,14 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 
 	}
 	
-	private void initSubView() {
+	protected void initSubView() {
+		if(viewpager!=null && viewpager.hasAdapter()){
+			return;
+		}
+		
 		viewpager = (PageView) tableView.findViewById(R.id.table_viewpager);
 		viewpager.setVisibility(View.VISIBLE);
+		
 		try {
 			TablePagerAdapter tablePagerAdapter = new TablePagerAdapter(getActivity(), getTablePagerModelList());
 			viewpager.setAdapter(tablePagerAdapter);
@@ -129,38 +143,15 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 				
 				@Override
 				public void onLoaded(int position) {
-					int curPage = 0;
-					if(ControllParameter.getInstance(getActivity()).mViewPager!=null){
-						curPage = ControllParameter.getInstance(getActivity()).mViewPager.getCurrentItem();
-					}
-					Log.e("onLoaded", "Table_page onLoaded: " + position + ", curPage:" + curPage);
-					if(position == 0 && curPage != 3){
-						viewpager.setVisibility(View.INVISIBLE);
-					}
+					viewpager.setVisibility(View.VISIBLE);
 				}
 			});
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		
-		final Animation fadeIn = new AlphaAnimation(0, 1);
-		fadeIn.setInterpolator(new DecelerateInterpolator());
-		fadeIn.setDuration(1000);
-		((MainActivity) getActivity()).setOnSelectPageListener(new OnSelectPageListener() {
-			
-			@Override
-			public void onSelect(int position) {
-				Log.e("onSelect", "Table_page onSelect: " + position);
-				if(position == 3){
-					if(viewpager.getVisibility() == View.INVISIBLE){
-						viewpager.setVisibility(View.VISIBLE);
-						viewpager.startAnimation(fadeIn);
-					}
-				}
-			}
-		});
-	} 
-	
+	}
+
 	private List<TabModel> getTablePagerModelList() throws UnsupportedEncodingException {
 		String[] league = {PREMIER_LEAGUE, BUNDESLIGA, LALIGA, CALCAIO_SERIE_A, LEAGUE_DE_LEAGUE1, THAI_PREMIER_LEAGUE};
 		List<TabModel> tablePagerModelList = new ArrayList<TabModel>();

@@ -13,7 +13,7 @@ import android.widget.ViewFlipper;
 
 public class PageView extends ViewFlipper{
 	
-	Adapter adapter;
+	private Adapter adapter;
 	private List<Integer> tempPosition;
 
 	public PageView(Context context, AttributeSet attrs) {
@@ -28,6 +28,17 @@ public class PageView extends ViewFlipper{
 			addView(child);
 			tempPosition.add(0);
 		}
+	}
+	
+	public Adapter getAdapter() {
+		return adapter;
+	}
+	
+	public boolean hasAdapter() {
+		if(adapter!=null && !adapter.isEmpty()){
+			return true;
+		}
+		return false;
 	}
 	
 	public void setSelection(int position){

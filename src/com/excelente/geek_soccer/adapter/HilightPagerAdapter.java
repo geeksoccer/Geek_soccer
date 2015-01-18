@@ -15,6 +15,7 @@ import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.HilightModel;
 import com.excelente.geek_soccer.model.TabModel;
 import com.excelente.geek_soccer.service.UpdateService;
+import com.excelente.geek_soccer.utils.AnimUtil;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.Boast;
@@ -31,6 +32,7 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -120,36 +122,30 @@ public class HilightPagerAdapter extends BaseAdapter{
 			 
 			@Override
 			public void onClick(View v) {
-				try{ 
-					if(NetworkUtils.isNetworkAvailable(activity)){
-						new LoadOldHilightTask(viewItem, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel, position).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
-					}else{
-						Boast.makeText(activity, NetworkUtils.getConnectivityStatusString(activity), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
-					}
-				}catch(Exception e){
-					e.printStackTrace();
-					setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
-				}
+				doLoadData(position, viewItem, tabModel);
 			}
 		});
 		
 		if(HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter == null){
-			try{ 
-				if(NetworkUtils.isNetworkAvailable(activity)){
-					new LoadOldHilightTask(viewItem, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel, position).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
-				}else{
-					Boast.makeText(activity, NetworkUtils.getConnectivityStatusString(activity), Toast.LENGTH_SHORT).show();
-					setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-				setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
-			}
+			doLoadData(position, viewItem, tabModel);
 		}
 		//setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
 	}
 	
+	protected void doLoadData(final int position, final ViewItem viewItem, final TabModel tabModel) {
+		try{ 
+			if(NetworkUtils.isNetworkAvailable(activity)){
+				new LoadOldHilightTask(viewItem, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, tabModel, position).execute(getURLbyTag(activity, 0, tabModel.getUrl()));
+			}else{
+				Boast.makeText(activity, NetworkUtils.getConnectivityStatusString(activity), Toast.LENGTH_SHORT).show();
+				setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			setMessageEmptyListView(HilightPagerAdapter.tabModelList.get(position).hilightList, (HilightAdapter) HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter, viewItem);
+		}
+	}
+
 	public static String getURLbyTag(Context context, int id, String tag) {
 		String url = ""; 
 		 
@@ -249,8 +245,12 @@ public class HilightPagerAdapter extends BaseAdapter{
 			HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter = new HilightAdapter(activity, HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).hilightList);
 			viewItem.hilightListView.setAdapter(HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter);
 			
-			if(!HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter.isEmpty())
+			if(!HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter.isEmpty()){
 				viewItem.hilightListView.setVisibility(View.VISIBLE);
+				Animation fadeIn = AnimUtil.getFadeIn();
+				fadeIn.setDuration(1000);
+				viewItem.hilightListView.startAnimation(fadeIn);
+			}
 			
 			if(HilightPagerAdapter.tabModelList.get(Integer.valueOf(tabModel.getIndex())).adapter.isEmpty()){
 				viewItem.textEmpty.setVisibility(View.VISIBLE);

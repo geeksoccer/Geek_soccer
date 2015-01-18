@@ -5,6 +5,7 @@ import java.util.List;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.model.TableModel;
 import com.excelente.geek_soccer.model.TabModel;
+import com.excelente.geek_soccer.utils.AnimUtil;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
 import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.view.Boast;
@@ -15,6 +16,9 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -86,26 +90,21 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 	}
 	
 	private void doInitViews(final TableItemView tableItemView, final TabModel tablePagerModel, final int position) {
-		final TableAdapter tableAdapter = null;
 		
 		tableItemView.emptyText.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				try{ 
-					if(NetworkUtils.isNetworkAvailable(mContext)){
-						new LoadTableTask(tableItemView, tableAdapter, position).execute(tablePagerModel.getUrl());
-					}else{
-						Boast.makeText(mContext, NetworkUtils.getConnectivityStatusString(mContext), Toast.LENGTH_SHORT).show();
-						setMessageEmptyListView(tableAdapter, tableItemView);
-					}
-				}catch(Exception e){
-					e.printStackTrace();
-					setMessageEmptyListView(tableAdapter, tableItemView);
-				}
+				doLoadData(tableItemView, tablePagerModel, position);
 			}
 		});
 		
+		doLoadData(tableItemView, tablePagerModel, position);
+		//setMessageEmptyListView(tableAdapter, tableItemView);
+	}
+	
+	private void doLoadData(final TableItemView tableItemView, final TabModel tablePagerModel, final int position){
+		final TableAdapter tableAdapter = null;
 		try{ 
 			if(NetworkUtils.isNetworkAvailable(mContext)){
 				new LoadTableTask(tableItemView, tableAdapter, position).execute(tablePagerModel.getUrl());
@@ -117,8 +116,6 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 			e.printStackTrace();
 			setMessageEmptyListView(tableAdapter, tableItemView);
 		}
-		
-		//setMessageEmptyListView(tableAdapter, tableItemView);
 	}
 	
 	private void setMessageEmptyListView(TableAdapter tableAdapter, TableItemView tableItemView) {
@@ -170,12 +167,15 @@ public class TablePagerAdapter extends BaseAdapter implements OnItemClickListene
 		protected void onPostExecute(List<TableModel> result) {
 			super.onPostExecute(result);
 			if(result != null){
+				Animation fadeIn = AnimUtil.getFadeIn();
+				fadeIn.setDuration(1000);
 				tableAdaptor = new TableAdapter(mContext, result);
 				tableItemView.tableListView.setAdapter(tableAdaptor);
 				tableItemView.tableListView.setOnItemClickListener(TablePagerAdapter.this);
 				tableItemView.emptyText.setVisibility(View.GONE);
 				tableItemView.progressbar.setVisibility(View.GONE);
 				tableItemView.tableListView.setVisibility(View.VISIBLE);
+				tableItemView.tableListView.startAnimation(fadeIn);
 				
 				if(onLoadDataListener!=null){
 					onLoadDataListener.onLoaded(position);

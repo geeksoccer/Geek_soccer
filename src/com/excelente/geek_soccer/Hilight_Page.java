@@ -62,7 +62,16 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 		super.onActivityCreated(savedInstanceState);
 		if(getView() != null){
 			initView();
-			initSubView();
+			((MainActivity) getActivity()).setOnSelectPageListener(new OnSelectPageListener() {
+				
+				@Override
+				public void onSelect(int position) {
+					Log.e("onSelect", "Hilight_Page onSelect: " + position);
+					if(position == 4){
+						initSubView();
+					}
+				}
+			});
 		}
 	}
 
@@ -126,46 +135,26 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 
 	    TabSpec spec = tabs.newTabSpec(name).setIndicator(tab).setContent(layoutId);
 	    tabs.addTab(spec);
-
 	}
 	
-	private void initSubView() { 
+	private void initSubView() {
+		if(viewpager!=null && viewpager.hasAdapter()){
+			return;
+		}
+		
+		viewpager = (PageView) hilightPage.findViewById(R.id.news_viewpager);
+		viewpager.setVisibility(View.VISIBLE);
+		
 		hilightPagerAdapter = new HilightPagerAdapter(getActivity(), getTabModelList());
 		hilightPagerAdapter.setOnLoadDataListener(new OnLoadDataListener() {
 			
 			@Override
 			public void onLoaded(int position) {
-				int curPage = 0;
-				if(ControllParameter.getInstance(getActivity()).mViewPager!=null){
-					curPage = ControllParameter.getInstance(getActivity()).mViewPager.getCurrentItem();
-				}
-				Log.e("onLoaded", "Hilight_page onLoaded: " + position + ", curPage:" + curPage);
-				if(position == 0 && curPage != 4){
-					viewpager.setVisibility(View.INVISIBLE);
-				}
+				viewpager.setVisibility(View.VISIBLE);
 			}
 		});
 		
-		viewpager = (PageView) hilightPage.findViewById(R.id.news_viewpager);
-		viewpager.setVisibility(View.VISIBLE);
 		viewpager.setAdapter(hilightPagerAdapter);
-		
-		final Animation fadeIn = new AlphaAnimation(0, 1);
-		fadeIn.setInterpolator(new DecelerateInterpolator());
-		fadeIn.setDuration(1000);
-		((MainActivity) getActivity()).setOnSelectPageListener(new OnSelectPageListener() {
-			
-			@Override
-			public void onSelect(int position) {
-				Log.e("onSelect", "Hilight_Page onSelect: " + position);
-				if(position == 4){
-					if(viewpager.getVisibility() == View.INVISIBLE){
-						viewpager.setVisibility(View.VISIBLE);
-						viewpager.startAnimation(fadeIn);
-					}
-				}
-			}
-		});
 	}
 	
 	private List<TabModel> getTabModelList() {
