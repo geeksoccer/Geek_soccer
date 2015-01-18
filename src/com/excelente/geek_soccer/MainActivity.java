@@ -429,6 +429,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(4);
 		onSelectPageListenerList = new ArrayList<MainActivity.OnSelectPageListener>();
+		data.mViewPager = mViewPager;
 	}
 	
 	public void tab_setting(){

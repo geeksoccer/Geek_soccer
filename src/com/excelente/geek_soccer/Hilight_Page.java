@@ -135,8 +135,12 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 			
 			@Override
 			public void onLoaded(int position) {
-				Log.e("onLoaded", "Hilight_page onLoaded: " + position);
-				if(position == 0){
+				int curPage = 0;
+				if(ControllParameter.getInstance(getActivity()).mViewPager!=null){
+					curPage = ControllParameter.getInstance(getActivity()).mViewPager.getCurrentItem();
+				}
+				Log.e("onLoaded", "Hilight_page onLoaded: " + position + ", curPage:" + curPage);
+				if(position == 0 && curPage != 4){
 					viewpager.setVisibility(View.INVISIBLE);
 				}
 			}

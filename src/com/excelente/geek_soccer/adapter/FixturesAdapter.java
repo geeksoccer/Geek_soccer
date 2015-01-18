@@ -10,6 +10,7 @@ import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.FixturesGroupList;
 import com.excelente.geek_soccer.model.FixturesGroupLists;
 import com.excelente.geek_soccer.model.FixturesModel;
+import com.excelente.geek_soccer.utils.AnimUtil;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -35,6 +36,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -178,7 +180,7 @@ public class FixturesAdapter extends BaseExpandableListAdapter {
 				}
 
 			}).start();
-        }*/else{ 
+        }*/else{
         	ImageLoader.getInstance().displayImage(url, imgView, getOptionImageLoader(url), new ImageLoadingListener() {
 				 
 		    	public void onLoadingStarted(String imageUri, View view) {

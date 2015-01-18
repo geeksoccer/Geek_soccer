@@ -129,8 +129,12 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 				
 				@Override
 				public void onLoaded(int position) {
-					Log.e("onLoaded", "Table_page onLoaded: " + position);
-					if(position == 0){
+					int curPage = 0;
+					if(ControllParameter.getInstance(getActivity()).mViewPager!=null){
+						curPage = ControllParameter.getInstance(getActivity()).mViewPager.getCurrentItem();
+					}
+					Log.e("onLoaded", "Table_page onLoaded: " + position + ", curPage:" + curPage);
+					if(position == 0 && curPage != 3){
 						viewpager.setVisibility(View.INVISIBLE);
 					}
 				}

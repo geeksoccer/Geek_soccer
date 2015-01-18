@@ -11,6 +11,7 @@ import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.adapter.FixturesAdapter.ViewHoleder;
 import com.excelente.geek_soccer.model.NewsModel; 
+import com.excelente.geek_soccer.utils.AnimUtil;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -37,6 +38,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -164,7 +166,7 @@ public class NewsAdapter extends BaseAdapter{
 		}
 		
 		viewHoleder.newsImageImageview.setImageBitmap(null);
-        
+    	
         final File cacheFile = ImageLoader.getInstance().getDiscCache().get(newsModel.getNewsImage().replace(".gif", ".png"));
         if(urlBitmap.containsKey(newsModel.getNewsImage().replace(".gif", ".png"))){
         	viewHoleder.newsImageImageview.setImageBitmap(urlBitmap.get(newsModel.getNewsImage().replace(".gif", ".png")));
@@ -181,7 +183,7 @@ public class NewsAdapter extends BaseAdapter{
 						
 						@Override
 						public void run() {
-							viewHoleder.newsImageImageview.setImageBitmap(bm);  
+							viewHoleder.newsImageImageview.setImageBitmap(bm);
 						}
 					});
 				}
@@ -228,6 +230,9 @@ public class NewsAdapter extends BaseAdapter{
 	
 	private void doloadImage(final NewsModel newsModel, final ImageView newsImageImageview, final LinearLayout saveModeTextview) { 
 		try{ 
+			final Animation fadeIn = AnimUtil.getFadeIn();
+	    	fadeIn.setDuration(500);
+	    	
 		    ImageLoader.getInstance().displayImage(newsModel.getNewsImage().replace(".gif", ".png"), newsImageImageview, getOptionImageLoader(newsModel.getNewsImage().replace(".gif", ".png")), new ImageLoadingListener() {
 				 
 		    	public void onLoadingStarted(String imageUri, View view) { 
@@ -244,6 +249,7 @@ public class NewsAdapter extends BaseAdapter{
 	        	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 	        		saveModeTextview.setVisibility(View.GONE);
 	        		newsImageImageview.setVisibility(View.VISIBLE);
+	        		newsImageImageview.startAnimation(fadeIn);
 	        		cacheMemBitMap(newsModel.getNewsImage().replace(".gif", ".png"), loadedImage);
 	        	}
 

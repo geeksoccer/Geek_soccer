@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.HilightModel;
+import com.excelente.geek_soccer.utils.AnimUtil;
 import com.excelente.geek_soccer.utils.DateNewsUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -228,6 +230,9 @@ public class HilightAdapter extends BaseAdapter{
 	}
 	
 	private void doLoadImage(final HilightModel hilightModel, final HilightHolder hilightHolder) {
+		final Animation fadeIn = AnimUtil.getFadeIn();
+    	fadeIn.setDuration(500);
+    	
 		ImageLoader.getInstance().displayImage(hilightModel.getHilightImage().replace(".gif", ".png"), hilightHolder.hilightImageImageview, getOptionImageLoader(hilightModel.getHilightImage()), new ImageLoadingListener(){
         	
         	public void onLoadingStarted(String imageUri, View view) { 
@@ -244,6 +249,7 @@ public class HilightAdapter extends BaseAdapter{
         	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
         		hilightHolder.savemodeTextview.setVisibility(View.GONE);
         		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
+        		hilightHolder.hilightImageImageview.startAnimation(fadeIn);
         		cacheMemBitMap(hilightModel.getHilightImage().replace(".gif", ".png"), loadedImage);
         	}
 
