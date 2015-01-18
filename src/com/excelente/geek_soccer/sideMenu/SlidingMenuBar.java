@@ -47,6 +47,7 @@ import com.excelente.geek_soccer.SelectTeamPage;
 import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.Setting_Page;
 import com.excelente.geek_soccer.Sign_In_Page;
+import com.excelente.geek_soccer.MainActivity.OnSelectPageListener;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.utils.DialogUtil;
 import com.excelente.geek_soccer.utils.HttpConnectUtils;
@@ -54,11 +55,13 @@ import com.excelente.geek_soccer.utils.NetworkUtils;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.utils.asynctask.GetImageUriTask;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnCloseListener;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class SlidingMenuBar implements OnClickListener{
+public class SlidingMenuBar implements OnClickListener, OnClosedListener{
 	Activity activity;
 	
 	private SlidingMenu menu;
@@ -103,6 +106,16 @@ public class SlidingMenuBar implements OnClickListener{
         menu.getBackground().setAlpha(150);
         initView();
  
+        ((MainActivity) activity).setOnSelectPageListener(new OnSelectPageListener() {
+			
+			@Override
+			public void onSelect(int position) {
+				Log.e("onSelect", "SideBar onSelect: " + position);
+				if(menu.isMenuShowing()){
+					menu.toggle(true);
+				}
+			}
+		});
 	}
 
 	private void initView() {
@@ -177,29 +190,24 @@ public class SlidingMenuBar implements OnClickListener{
 		switch (v.getId()) {
 		case R.id.News: {
 			MainActivity.Page_Select(0, true, activity);
-			menu.toggle(true);
 			break;
 
 		}
 		case R.id.LiveScore: {
 			MainActivity.Page_Select(1, true, activity);
-			menu.toggle(true);
 			break;
 
 		}
 		case R.id.Chat: {
 			MainActivity.Page_Select(2, true, activity);
-			menu.toggle(true);
 			break;
 		}
 		case R.id.ScoreBoard: {
 			MainActivity.Page_Select(3, true, activity);
-			menu.toggle(true);
 			break;
 		}
 		case R.id.Hilight: {
 			MainActivity.Page_Select(4, true, activity);
-			menu.toggle(true);
 			break;
 		}
 		case R.id.Fixtures: {
@@ -212,7 +220,6 @@ public class SlidingMenuBar implements OnClickListener{
 			if(SessionManager.getMember(activity).getRole() == 1 || SessionManager.getMember(activity).getTeamId() == 0){
 				Intent selectTeamIntent = new Intent(activity, SelectTeamPage.class);
 				activity.startActivityForResult(selectTeamIntent, Sign_In_Page.REQUEST_CODE_SELECT_TEAM);
-				//menu.toggle(false);
 			}
 			break;
 			
@@ -547,6 +554,11 @@ public class SlidingMenuBar implements OnClickListener{
 
 	public void setAnimFirst(boolean animFirst) {
 		this.animFirst = animFirst;
+	}
+
+	@Override
+	public void onClosed() {
+		
 	}
 
 }
