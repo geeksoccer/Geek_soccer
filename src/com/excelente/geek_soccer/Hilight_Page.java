@@ -102,8 +102,11 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 		tabs.setCurrentTab(0);
 		tabs.setOnTabChangedListener(this);
 		
-		scrollTab = (HorizontalScrollView) hilightPage.findViewById(R.id.scroll_tab);
+		scrollTab = (HorizontalScrollView) hilightPage.findViewById(R.id.horizoltal_scroll_tab);
 		scrollTab.setSmoothScrollingEnabled(true);
+		
+		View viewLine = hilightPage.findViewById(R.id.line);
+		ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
 	}
 	
 	private void setupTab(Integer layoutId, String name, String label, Bitmap bm, boolean selected) {

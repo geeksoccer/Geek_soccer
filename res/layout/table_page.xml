@@ -7,32 +7,45 @@
 
     <RelativeLayout 
         android:layout_width="match_parent"
-        android:layout_height="match_parent" > 
-
-        <HorizontalScrollView
+        android:layout_height="match_parent" >
+        
+        <LinearLayout 
             android:id="@+id/scroll_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:fillViewport="true"
-            android:scrollbars="none" >
+            android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TabWidget
-                    android:id="@android:id/tabs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical" />
-            </LinearLayout>
-        </HorizontalScrollView>
+	        <HorizontalScrollView
+	            android:id="@+id/horizoltal_scroll_tab"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:fillViewport="true"
+	            android:scrollbars="none" >
+	
+	            <LinearLayout
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:orientation="horizontal" >
+	
+	                <TabWidget
+	                    android:id="@android:id/tabs"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_gravity="center_vertical" />
+	            </LinearLayout>
+	        </HorizontalScrollView>
+	       
+	        <View
+		        android:id="@+id/line"
+		        android:layout_marginTop="-2dp"
+		        android:layout_width="match_parent"
+		        android:layout_height="2dp"
+		        android:layout_gravity="bottom" />
+        </LinearLayout>
         
    		<include
 	    	android:id="@+id/table_header"
-	    	android:layout_below="@+id/scroll_tab"
 	        layout="@layout/table_header_item_page" />
 
         <FrameLayout

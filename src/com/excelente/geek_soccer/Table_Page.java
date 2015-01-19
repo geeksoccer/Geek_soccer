@@ -91,9 +91,11 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 		tabs.setCurrentTab(0);
 		tabs.setOnTabChangedListener(this);
 		
-		scrollTab = (HorizontalScrollView) tableView.findViewById(R.id.scroll_tab);
+		scrollTab = (HorizontalScrollView) tableView.findViewById(R.id.horizoltal_scroll_tab);
 		scrollTab.setSmoothScrollingEnabled(true);
 		
+		View viewLine = tableView.findViewById(R.id.line);
+		ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
 	}
 	
 	private void setupTab(Integer layoutId, String name, String label, Integer iconId, boolean selected) {

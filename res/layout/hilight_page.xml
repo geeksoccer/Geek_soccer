@@ -9,9 +9,16 @@
         <RelativeLayout
 		    android:layout_width="fill_parent"
 		    android:layout_height="fill_parent">
+		    
+            <LinearLayout 
+	            android:id="@+id/scroll_tab"
+	            android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentTop="true"
+		        android:orientation="vertical">
                
 				<HorizontalScrollView
-				    android:id="@+id/scroll_tab"
+				    android:id="@+id/horizoltal_scroll_tab"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:scrollbars="none"
@@ -28,6 +35,14 @@
 			                android:layout_gravity="center_vertical" />
 			        </LinearLayout>
 		        </HorizontalScrollView>
+		        
+				<View
+			        android:id="@+id/line"
+			        android:layout_marginTop="-2dp"
+			        android:layout_width="match_parent"
+			        android:layout_height="2dp"
+			        android:layout_gravity="bottom" />
+			</LinearLayout>
 	        
 	        <FrameLayout
 	            android:id="@android:id/tabcontent"
