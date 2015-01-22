@@ -32,7 +32,7 @@
 		            android:id="@+id/ProfileIcon"
 		            android:layout_width="50dp"
 		            android:layout_height="50dp"
-		            android:layout_marginLeft="15dp"
+		            android:layout_marginLeft="5dp"
 		            android:src="@drawable/ic_action_user" />
 		        
 		        <LinearLayout
@@ -49,6 +49,7 @@
 			            android:layout_height="wrap_content"
 			            android:text="@string/title_bar_profile"
 			            android:textColor="@color/white"
+			            android:singleLine="true"
 			            android:textSize="16sp"
 			            android:textStyle="bold" />
 		            
@@ -58,6 +59,7 @@
 			            android:layout_height="wrap_content"
 			            android:text="@string/title_bar_profile"
 			            android:textColor="@color/graylittle"
+			            android:singleLine="true"
 			            android:textSize="14sp" />
 		            
 			    </LinearLayout>
@@ -85,6 +87,7 @@
 	                android:id="@+id/News"
 	                android:layout_width="match_parent"
 	                android:layout_height="@dimen/menu_h"
+	                android:layout_marginTop="10dp"
 	                android:padding="@dimen/menu_p"
 	                android:background="@drawable/bg_press"
 	                android:gravity="center" >

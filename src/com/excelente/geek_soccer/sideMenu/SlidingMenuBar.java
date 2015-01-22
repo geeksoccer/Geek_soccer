@@ -12,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.Settings.Secure;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,12 +95,18 @@ public class SlidingMenuBar implements OnClickListener, OnClosedListener{
 	}
 	
 	public void createMenu() {
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		int widthScreen = displaymetrics.widthPixels;
+		int widthSideMenu = (int) convertDpToPixel(230, activity);
+		int widthOffset = widthScreen - widthSideMenu;
+		
 		menu = new SlidingMenu(activity);
         menu.setMode(SlidingMenu.LEFT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
         menu.setShadowWidthRes(R.dimen.shadow_width);
-        menu.setShadowDrawable(R.drawable.shadow); 
-        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        menu.setShadowDrawable(R.drawable.shadow);
+        menu.setBehindOffset(widthOffset);
         menu.setFadeDegree(0.35f);
         menu.attachToActivity(activity, SlidingMenu.SLIDING_CONTENT);
         menu.setMenu(R.layout.sliding_menu_bar);
@@ -116,6 +124,13 @@ public class SlidingMenuBar implements OnClickListener, OnClosedListener{
 				}
 			}
 		});
+	}
+	
+	public static float convertDpToPixel(float dp, Context context){
+	    Resources resources = context.getResources();
+	    DisplayMetrics metrics = resources.getDisplayMetrics();
+	    float px = dp * (metrics.densityDpi / 160f);
+	    return px;
 	}
 
 	private void initView() {

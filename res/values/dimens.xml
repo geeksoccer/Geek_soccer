@@ -4,12 +4,12 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="shadow_width">30dp</dimen>
-    <dimen name="slidingmenu_offset">60dp</dimen>
+    <dimen name="slidingmenu_offset">100dp</dimen>
     <dimen name="view_line_h">0.1dp</dimen>
     <dimen name="view_line_ml">5dp</dimen>
     <dimen name="view_line_mr">5dp</dimen>
     <dimen name="group_view_line_h">3dp</dimen>
-    <dimen name="menu_img_ml">20dp</dimen>
+    <dimen name="menu_img_ml">15dp</dimen>
     <dimen name="menu_txt_size">16sp</dimen>
     <dimen name="menu_p">5dp</dimen>
     <dimen name="menu_h">45dp</dimen>
