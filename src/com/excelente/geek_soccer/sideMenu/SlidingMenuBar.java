@@ -98,7 +98,7 @@ public class SlidingMenuBar implements OnClickListener, OnClosedListener{
 		DisplayMetrics displaymetrics = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		int widthScreen = displaymetrics.widthPixels;
-		int widthSideMenu = (int) convertDpToPixel(230, activity);
+		int widthSideMenu = (int) convertDpToPixel(240, activity);
 		int widthOffset = widthScreen - widthSideMenu;
 		
 		menu = new SlidingMenu(activity);
