@@ -99,6 +99,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if(onSelectPageListenerList==null){
+			onSelectPageListenerList = new ArrayList<MainActivity.OnSelectPageListener>();
+		}
+		
 		if(!SessionManager.hasMember(MainActivity.this)){
 			finish();
 		}
@@ -412,7 +417,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		mViewPager.setPagingEnabled(true);
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(4);
-		onSelectPageListenerList = new ArrayList<MainActivity.OnSelectPageListener>();
 		data.mViewPager = mViewPager;
 	}
 	
@@ -480,7 +484,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 		public void onSelect(int position);
 	}
 	
-	List<OnSelectPageListener> onSelectPageListenerList;
+	List<OnSelectPageListener> onSelectPageListenerList = new ArrayList<MainActivity.OnSelectPageListener>();;
 	
 	public static void Page_Select(int index, boolean by_Selected, Context mContext){
 		//Content_view.removeAllViews();
