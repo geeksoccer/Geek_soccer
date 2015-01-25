@@ -1,41 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/tabhost"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/white" >
         
-        <RelativeLayout
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center_vertical" />
+            android:layout_height="fill_parent"
+            android:background="@color/white" >
             
-            <FrameLayout
-	            android:id="@android:id/tabcontent"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_below="@android:id/tabs"
-	            android:background="@color/news_gray" >
-	            
-                <View 
-	                android:id="@+id/content"
-	                android:layout_width="match_parent"
-	                android:layout_height="0dp"/>
-                
-           </FrameLayout>
+            <com.excelente.geek_soccer.view.TabView 
+				android:id="@+id/tab"
+				android:layout_alignParentTop="true"
+				android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical"/>
            
             <com.excelente.geek_soccer.view.PageView
 	       	    android:id="@+id/news_viewpager"
 	       	    android:layout_width="match_parent"
 	    		android:layout_height="match_parent"
-	       	    android:layout_below="@android:id/tabs" />
+	       	    android:layout_below="@+id/tab" />
 
         </RelativeLayout>
-
-</TabHost>

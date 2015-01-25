@@ -7,12 +7,13 @@ import java.util.List;
 
 import com.excelente.geek_soccer.MainActivity.OnSelectPageListener;
 import com.excelente.geek_soccer.adapter.TablePagerAdapter;
-import com.excelente.geek_soccer.adapter.TablePagerAdapter.OnLoadDataListener;
 import com.excelente.geek_soccer.model.MemberModel;
 import com.excelente.geek_soccer.model.TableModel;
 import com.excelente.geek_soccer.model.TabModel;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.PageView;
+import com.excelente.geek_soccer.view.TabView;
+import com.excelente.geek_soccer.view.TabView.OnTabChangedListener;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,17 +21,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
-import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabSpec;
 
-public class Table_Page extends Fragment implements OnTabChangeListener{
+public class Table_Page extends Fragment implements OnTabChangedListener{
 	
 	public static final String TABLE_TYPE_ALL = "All";
 	
@@ -43,11 +35,9 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 	
 	View tableView;
 
-	private TabHost tabs;
+	private TabView tabs;
 
 	private PageView viewpager;
-
-	private HorizontalScrollView scrollTab;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if (container == null) {
@@ -78,56 +68,24 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 	private void initView() {
 		tableView = getView();
 		
-		tabs = (TabHost)tableView.findViewById(R.id.tabhost); 
-		tabs.setup();  
+		tabs = (TabView)tableView.findViewById(R.id.tab);
 		
-		setupTab(R.id.content, "0", "", R.drawable.logo_premier_league, true);
-		setupTab(R.id.content, "1", "", R.drawable.logo_bundesliga, false);
-		setupTab(R.id.content, "2", "", R.drawable.logo_laliga, false);
-		setupTab(R.id.content, "3", "", R.drawable.logo_calcio, false);
-		setupTab(R.id.content, "4", "", R.drawable.logo_ligue1, false);
-		setupTab(R.id.content, "5", "", R.drawable.logo_tpl, false);
+		/*setupTab(R.id.content, "0", "พรีเมียร์ลีก", R.drawable.logo_premier_league, true);
+		setupTab(R.id.content, "1", "บุนเดสลิก้า", R.drawable.logo_bundesliga, false);
+		setupTab(R.id.content, "2", "ลาลีก้า", R.drawable.logo_laliga, false);
+		setupTab(R.id.content, "3", "กัลโช่", R.drawable.logo_calcio, false);
+		setupTab(R.id.content, "4", "ลีกเดอ", R.drawable.logo_ligue1, false);
+		setupTab(R.id.content, "5", "ไทยแลนด์ พรีเมียร์ลีก", R.drawable.logo_tpl, false);*/
 		
-		tabs.setCurrentTab(0);
+		tabs.addTab(R.id.content, 0, "พรีเมียร์ลีก", true);
+		tabs.addTab(R.id.content, 1, "บุนเดสลิก้า", false);
+		tabs.addTab(R.id.content, 2, "ลาลีก้า", false);
+		tabs.addTab(R.id.content, 3, "กัลโช่ซีรีเอ", false);
+		tabs.addTab(R.id.content, 4, "ลีกเดอ", false);
+		tabs.addTab(R.id.content, 5, "ไทยพรีเมียร์ลีก", false);
+		
+		tabs.setCurrentTab(0); 
 		tabs.setOnTabChangedListener(this);
-		
-		scrollTab = (HorizontalScrollView) tableView.findViewById(R.id.horizoltal_scroll_tab);
-		scrollTab.setSmoothScrollingEnabled(true);
-		
-		View viewLine = tableView.findViewById(R.id.line);
-		ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
-	}
-	
-	private void setupTab(Integer layoutId, String name, String label, Integer iconId, boolean selected) {
-
-	    View tab = LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
-	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
-	    TextView text = (TextView) tab.findViewById(R.id.text);
-	    View viewSelected = tab.findViewById(R.id.selected);
-	    View viewLine = tab.findViewById(R.id.view_line);
-	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);
-	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
-	    
-	    if(label.equals("")){
-	    	text.setVisibility(View.GONE);
-	    	
-	    	final float scale = getActivity().getResources().getDisplayMetrics().density;
-	    	int pixels = (int) (40 * scale + 0.5f);
-	    	image.getLayoutParams().width=pixels;
-	    	image.getLayoutParams().height=pixels;
-	    }
-	    
-	    if(selected)
-	    	viewSelected.setVisibility(View.VISIBLE);
-	    
-	    if(iconId != null){
-	        image.setImageResource(iconId);
-	    }
-	    text.setText(label);
-
-	    TabSpec spec = tabs.newTabSpec(name).setIndicator(tab).setContent(layoutId);
-	    tabs.addTab(spec);
-
 	}
 	
 	protected void initSubView() {
@@ -172,31 +130,8 @@ public class Table_Page extends Fragment implements OnTabChangeListener{
 	}
 
 	@Override
-	public void onTabChanged(String tabId) {
-		int position = Integer.valueOf(tabId);
+	public void onTabChanged(int position) {
 		viewpager.setSelection(position);
-		setSelectedTab(position);
-	}
-	 
-	public void setSelectedTab(int index){
-		for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
-			View v = tabs.getTabWidget().getChildAt(i).findViewById(R.id.selected);
-			if(i == index){
-				v.setVisibility(View.VISIBLE);
-	            focusAndScrollView(v, index);
-			}else{
-				v.setVisibility(View.INVISIBLE);
-			}
-		}
-	}
-	
-	private void focusAndScrollView(View v, int index) {
-		int width = v.getWidth();
-		int scollX = 0;
-		if(index > 2){
-        	scollX = (width/2) * (index+1);
-		}
-        scrollTab.smoothScrollTo(scollX, 0);
 	}
 	
 }

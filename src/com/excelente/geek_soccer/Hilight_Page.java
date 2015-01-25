@@ -12,6 +12,7 @@ import com.excelente.geek_soccer.view.PageView;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -101,6 +102,7 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 		
 		tabs.setCurrentTab(0);
 		tabs.setOnTabChangedListener(this);
+		tabs.getTabWidget().setDividerDrawable(null);
 		
 		scrollTab = (HorizontalScrollView) hilightPage.findViewById(R.id.horizoltal_scroll_tab);
 		scrollTab.setSmoothScrollingEnabled(true);
@@ -114,6 +116,7 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 	    View tab = LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
 	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
 	    TextView text = (TextView) tab.findViewById(R.id.text);
+	    text.setTypeface(Typeface.DEFAULT_BOLD);
 	    View viewSelected = tab.findViewById(R.id.selected);
 	    View viewLine = tab.findViewById(R.id.view_line);
 	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);

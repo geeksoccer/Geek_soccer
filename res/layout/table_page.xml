@@ -1,62 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tabhost"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white" >
 
     <RelativeLayout 
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:background="@color/white" >
         
-        <LinearLayout 
-            android:id="@+id/scroll_tab"
-            android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentTop="true"
-	        android:orientation="vertical">
-
-	        <HorizontalScrollView
-	            android:id="@+id/horizoltal_scroll_tab"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:fillViewport="true"
-	            android:scrollbars="none" >
-	
-	            <LinearLayout
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:orientation="horizontal" >
-	
-	                <TabWidget
-	                    android:id="@android:id/tabs"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="wrap_content"
-	                    android:layout_gravity="center_vertical" />
-	            </LinearLayout>
-	        </HorizontalScrollView>
-	       
-	        <View
-		        android:id="@+id/line"
-		        android:layout_marginTop="-2.5dp"
-		        android:layout_width="match_parent"
-		        android:layout_height="2.5dp"
-		        android:layout_gravity="bottom" />
-        </LinearLayout>
+        <com.excelente.geek_soccer.view.TabView 
+			android:id="@+id/tab"
+			android:layout_alignParentTop="true"
+			android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical"/>
         
    		<include
 	    	android:id="@+id/table_header"
 	        layout="@layout/table_header_item_page" />
-
-        <FrameLayout
-            android:id="@android:id/tabcontent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-            <View 
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"/>
-        </FrameLayout>
         
        	<com.excelente.geek_soccer.view.PageView
        	    android:id="@+id/table_viewpager"
@@ -65,5 +24,3 @@
        	    android:layout_below="@+id/table_header" />
 
     </RelativeLayout>
-
-</TabHost>

@@ -296,7 +296,7 @@ public class HilightAdapter extends BaseAdapter{
 	        .resetViewBeforeLoading(false)  // default
 	        //.delayBeforeLoading(500)
 	        .cacheInMemory(false)
-	        .cacheOnDisc(true)
+	        .cacheOnDisc(false)
 	        .considerExifParams(false) // default
 	        .imageScaleType(ImageScaleType.NONE) // default
 	        .bitmapConfig(Bitmap.Config.RGB_565) // default
