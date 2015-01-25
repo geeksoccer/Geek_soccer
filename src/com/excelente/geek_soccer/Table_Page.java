@@ -70,19 +70,10 @@ public class Table_Page extends Fragment implements OnTabChangedListener{
 		
 		tabs = (TabView)tableView.findViewById(R.id.tab);
 		
-		/*setupTab(R.id.content, "0", "พรีเมียร์ลีก", R.drawable.logo_premier_league, true);
-		setupTab(R.id.content, "1", "บุนเดสลิก้า", R.drawable.logo_bundesliga, false);
-		setupTab(R.id.content, "2", "ลาลีก้า", R.drawable.logo_laliga, false);
-		setupTab(R.id.content, "3", "กัลโช่", R.drawable.logo_calcio, false);
-		setupTab(R.id.content, "4", "ลีกเดอ", R.drawable.logo_ligue1, false);
-		setupTab(R.id.content, "5", "ไทยแลนด์ พรีเมียร์ลีก", R.drawable.logo_tpl, false);*/
-		
-		tabs.addTab(R.id.content, 0, "พรีเมียร์ลีก", true);
-		tabs.addTab(R.id.content, 1, "บุนเดสลิก้า", false);
-		tabs.addTab(R.id.content, 2, "ลาลีก้า", false);
-		tabs.addTab(R.id.content, 3, "กัลโช่ซีรีเอ", false);
-		tabs.addTab(R.id.content, 4, "ลีกเดอ", false);
-		tabs.addTab(R.id.content, 5, "ไทยพรีเมียร์ลีก", false);
+		String[] titleTabs = getActivity().getResources().getStringArray(R.array.titles_tabs_table_page);
+		for (int i = 0; i < titleTabs.length; i++) {
+			tabs.addTab(titleTabs[i]);
+		}
 		
 		tabs.setCurrentTab(0); 
 		tabs.setOnTabChangedListener(this);

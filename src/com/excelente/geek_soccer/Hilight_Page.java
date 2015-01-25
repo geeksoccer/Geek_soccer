@@ -9,6 +9,8 @@ import com.excelente.geek_soccer.adapter.HilightPagerAdapter.OnLoadDataListener;
 import com.excelente.geek_soccer.model.TabModel;
 import com.excelente.geek_soccer.utils.ThemeUtils;
 import com.excelente.geek_soccer.view.PageView;
+import com.excelente.geek_soccer.view.TabView;
+import com.excelente.geek_soccer.view.TabView.OnTabChangedListener;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,11 +29,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
 
-public class Hilight_Page extends Fragment implements OnTabChangeListener, OnClickListener{
+public class Hilight_Page extends Fragment implements OnTabChangedListener, OnClickListener{
 
 	public static final String HILIGHT_ITEM_INDEX = "HILIGHT_ITEM_INDEX"; 
 	public static final String HILIGHT_TAG = "HILIGHT_TAG"; 
@@ -43,9 +44,8 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 	
 	public static List<String> stackTagLoading;
 
-	private TabHost tabs;
+	private TabView tabs;
 
-	private HorizontalScrollView scrollTab;
 	private HilightPagerAdapter hilightPagerAdapter;
 	private PageView viewpager;
 	
@@ -82,65 +82,24 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 		
 		stackTagLoading = new ArrayList<String>();
 		
-		tabs = (TabHost)hilightPage.findViewById(R.id.tabhost); 
-		tabs.setup(); 
-        
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.news_new), true);
-		if(SessionManager.getMember(getActivity()).getTeamId() != 0){
-			setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", SessionManager.getImageSession(getActivity(), SessionManager.getMember(getActivity()).getTheme().getThemeLogo()), false);
+		tabs = (TabView)hilightPage.findViewById(R.id.tab);
+		
+		String[] titleTabs = getActivity().getResources().getStringArray(R.array.titles_tabs_hilight_page);
+		for (int i = 0; i < titleTabs.length; i++) {
+			if(SessionManager.getMember(getActivity()).getTeamId() != 0 && i==1){
+				if(SessionManager.getLang(getActivity()).equalsIgnoreCase("en")){
+					tabs.addTab(SessionManager.getMember(getActivity()).getTeam().getTeamName());
+				}else{
+					tabs.addTab(SessionManager.getMember(getActivity()).getTeam().getTeamNameTH());
+				}
+			}
+			
+			tabs.addTab(titleTabs[i]);
 		}
 		
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_premier_league), false);
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_bundesliga), false);
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_laliga), false);
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_calcio), false);
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_ligue1), false);
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_ucl), false);
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_europa_league), false);
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_championschip), false);
-		setupTab(R.id.content, String.valueOf(tabs.getTabWidget().getTabCount()), "", BitmapFactory.decodeResource(getResources(), R.drawable.logo_capital_one_cup), false);
 		
 		tabs.setCurrentTab(0);
 		tabs.setOnTabChangedListener(this);
-		tabs.getTabWidget().setDividerDrawable(null);
-		
-		scrollTab = (HorizontalScrollView) hilightPage.findViewById(R.id.horizoltal_scroll_tab);
-		scrollTab.setSmoothScrollingEnabled(true);
-		
-		View viewLine = hilightPage.findViewById(R.id.line);
-		ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
-	}
-	
-	private void setupTab(Integer layoutId, String name, String label, Bitmap bm, boolean selected) {
-
-	    View tab = LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
-	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
-	    TextView text = (TextView) tab.findViewById(R.id.text);
-	    text.setTypeface(Typeface.DEFAULT_BOLD);
-	    View viewSelected = tab.findViewById(R.id.selected);
-	    View viewLine = tab.findViewById(R.id.view_line);
-	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);
-	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
-	    
-	    if(label.equals("")){
-	    	text.setVisibility(View.GONE);
-	    	
-	    	final float scale = getActivity().getResources().getDisplayMetrics().density;
-	    	int pixels = (int) (40 * scale + 0.5f);
-	    	image.getLayoutParams().width=pixels;
-	    	image.getLayoutParams().height=pixels;
-	    }
-	    
-	    if(selected)
-	    	viewSelected.setVisibility(View.VISIBLE);
-	    
-	    if(bm != null){
-	        image.setImageBitmap(bm);
-	    }
-	    text.setText(label);
-
-	    TabSpec spec = tabs.newTabSpec(name).setIndicator(tab).setContent(layoutId);
-	    tabs.addTab(spec);
 	}
 	
 	private void initSubView() {
@@ -192,31 +151,8 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 	}
 
 	@Override
-	public void onTabChanged(String tag) {
-		int position = Integer.valueOf(tag);
-		setSelectedTab(position);
+	public void onTabChanged(int position) {
 		viewpager.setSelection(position);
-	}
-	
-	public void setSelectedTab(int index){
-		for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
-			View v = tabs.getTabWidget().getChildAt(i).findViewById(R.id.selected);
-			if(i == index){
-				v.setVisibility(View.VISIBLE);
-	            focusAndScrollView(v, index);
-			}else{
-				v.setVisibility(View.INVISIBLE);
-			}
-		}
-	}
-	
-	private void focusAndScrollView(View v, int index) {
-		int width = v.getWidth();
-		int scollX = 0;
-		if(index > 2){
-        	scollX = (width/2) * (index+1);
-		}
-        scrollTab.smoothScrollTo(scollX, 0);
 	}
 
 	@Override
@@ -232,7 +168,7 @@ public class Hilight_Page extends Fragment implements OnTabChangeListener, OnCli
 		switch (v.getId()) {
 			case R.id.empty:
 				v.setVisibility(View.GONE);
-				onTabChanged(tabs.getCurrentTabTag());
+				onTabChanged(tabs.getCurrentTab());
 				break;
 		}
 	}

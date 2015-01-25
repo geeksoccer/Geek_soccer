@@ -178,4 +178,26 @@
         <item>English</item>
         <item>Thai</item>
     </string-array>
+    
+    <string-array name="titles_tabs_table_page">
+        <item>Premier League</item>
+        <item>Bundesliga</item>
+        <item>Laliga</item>
+        <item>Calcio Seria A</item>
+        <item>Ligue 1</item>
+        <item>Thai Premier League</item>
+    </string-array>
+    
+    <string-array name="titles_tabs_hilight_page">
+        <item>New</item>
+        <item>Premier League</item>
+        <item>Bundesliga</item>
+        <item>Laliga</item>
+        <item>Calcio Seria A</item>
+        <item>Ligue 1</item>
+        <item>UEFA Champions League</item>
+        <item>UEFA Europa League</item>
+        <item>Championship</item>
+        <item>Capital One Cup</item>
+    </string-array>
 </resources>

@@ -167,4 +167,26 @@
         <item>อังกฤษ</item>
         <item>ไทย</item>
     </string-array>
+    
+    <string-array name="titles_tabs_table_page">
+        <item>พรีเมียร์ลีก</item>
+        <item>บุนเดสลีกา</item>
+        <item>ลาลีกา</item>
+        <item>กัลโช่ เซเรีย อา</item>
+        <item>ลีกเดอ</item>
+        <item>ไทยพรีเมียร์ลีก</item>
+    </string-array>
+    
+    <string-array name="titles_tabs_hilight_page">
+        <item>มาใหม่</item>
+        <item>พรีเมียร์ลีก</item>
+        <item>บุนเดสลีกา</item>
+        <item>ลาลีกา</item>
+        <item>กัลโช่ เซเรีย อา</item>
+        <item>ลีกเอิง</item>
+        <item>ยูฟ่า แชมป์เปียนส์ ลีก</item>
+        <item>ยูฟ่า ยูโรป้า ลีก</item>
+        <item>แชมเปี้ยนส์ชิพ</item>
+        <item>แคปิตอล วัน คัพ</item>
+    </string-array>
 </resources>

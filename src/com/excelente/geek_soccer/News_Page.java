@@ -95,8 +95,8 @@ public class News_Page extends Fragment implements OnTabChangedListener, OnClick
 		//setupTab(R.id.content,  "0", getResources().getString(R.string.team_news), R.drawable.news_likes_selected, true);
 		//setupTab(R.id.content,  "1", getResources().getString(R.string.global_news), R.drawable.world, false);
 		
-		tabs.addTab(R.id.content,  0, getResources().getString(R.string.team_news), true);
-		tabs.addTab(R.id.content,  1, getResources().getString(R.string.global_news), false);
+		tabs.addTab(getResources().getString(R.string.team_news));
+		tabs.addTab(getResources().getString(R.string.global_news));
 		
 		tabs.setCurrentTab(0); 
 		tabs.setOnTabChangedListener(this);

@@ -27,7 +27,7 @@ public class TabView extends LinearLayout{
 	private OnTabChangedListener onTabChangedListener;
 	private int currentTab;
 	private LinearLayout tabLinearHorizontal;
-	private HorizontalScrollView horizontalScrollView; 
+	private HorizontalScrollView horizontalScrollView;
 	
 	public interface OnTabChangedListener{
 		public void onTabChanged(int position);
@@ -39,7 +39,6 @@ public class TabView extends LinearLayout{
 		createLinearHoriZontal(context);
 		Log.e("TabView", "TabView");
 	}
-	
 	
 	private void createLinearHoriZontal(Context context) {
 	    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -71,7 +70,9 @@ public class TabView extends LinearLayout{
 	}
 
 	@SuppressLint("InflateParams") 
-	public void addTab(Integer layoutId, final int position, String label, boolean selected){
+	public void addTab(String label){
+		final int position = itemList.size();
+		
 		View tab = LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
 	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
 	    TextView text = (TextView) tab.findViewById(R.id.text);
@@ -91,11 +92,6 @@ public class TabView extends LinearLayout{
 	    	image.getLayoutParams().height=pixels;
 	    }
 	    
-	    if(selected){
-	    	viewSelected.setVisibility(View.VISIBLE);
-	    	text.setTextColor(Color.parseColor(getContext().getResources().getString(R.color.black)));
-	    }
-	    
 	    viewLine.setVisibility(View.GONE);
 	    image.setVisibility(View.GONE);
 	    text.setText(label);
@@ -105,14 +101,13 @@ public class TabView extends LinearLayout{
 			public void onClick(View v) {
 				if(onTabChangedListener!=null){
 					onTabChangedListener.onTabChanged(position);
-					setSelectedTab(position);
 				}
+				setSelectedTab(position);
 			}
 		});
 	    
 	    tabLinearHorizontal.addView(tab, position);
 	    itemList.add(tab);
-
 	}
 	
 	public void setSelectedTab(int index){
@@ -144,8 +139,8 @@ public class TabView extends LinearLayout{
 		currentTab = position;
 		if(onTabChangedListener!=null){
 			onTabChangedListener.onTabChanged(position);
-			setSelectedTab(position);
 		}
+		setSelectedTab(position);
 	}
 	
 	public int getCurrentTab() {
