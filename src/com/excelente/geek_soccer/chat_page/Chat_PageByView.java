@@ -7,6 +7,7 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -92,7 +93,7 @@ public class Chat_PageByView extends Fragment {
 			boolean selected) {
 
 		View tab = LayoutInflater.from(getActivity()).inflate(
-				R.layout.custom_tab, null);
+				R.layout.custom_tab_livechat, null);
 		ImageView image = (ImageView) tab.findViewById(R.id.icon);
 		TextView text = (TextView) tab.findViewById(R.id.text);
 		View viewLine = tab.findViewById(R.id.view_line);
@@ -105,7 +106,7 @@ public class Chat_PageByView extends Fragment {
 
 			final float scale = getActivity().getResources()
 					.getDisplayMetrics().density;
-			int pixels = (int) (40 * scale + 0.5f);
+			int pixels = (int) (35 * scale + 0.5f);
 			image.getLayoutParams().width = pixels;
 			image.getLayoutParams().height = pixels;
 		}
@@ -115,12 +116,16 @@ public class Chat_PageByView extends Fragment {
 
 			final float scale = getActivity().getResources()
 					.getDisplayMetrics().density;
-			int pixels = (int) (40 * scale + 0.5f);
+			int pixels = (int) (35 * scale + 0.5f);
 			text.getLayoutParams().height = pixels;
 		}
 
-		if (selected)
+		if (selected){
 			viewSelected.setVisibility(View.VISIBLE);
+			text.setTextColor(Color.BLACK);
+		}else{
+			text.setTextColor(Color.GRAY);
+		}
 
 		if (iconId != null) {
 			image.setImageResource(iconId);
@@ -149,9 +154,11 @@ public class Chat_PageByView extends Fragment {
 			if (i == index) {
 				chatMenu.getChildAt(i).findViewById(R.id.selected)
 				.setVisibility(View.VISIBLE);
+				((TextView)chatMenu.getChildAt(i).findViewById(R.id.text)).setTextColor(Color.BLACK);
 			} else {
 				chatMenu.getChildAt(i).findViewById(R.id.selected)
 				.setVisibility(View.INVISIBLE);
+				((TextView)chatMenu.getChildAt(i).findViewById(R.id.text)).setTextColor(Color.GRAY);
 			}
 		}
 		if(teamID>0){
