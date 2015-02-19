@@ -90,14 +90,14 @@
     <string name="profile_username">ชื่อผู้ใช้</string>
     
     <string name="button_confirm_ok">ตกลง</string>
-    <string name="rate_app_title">ให้คะแนนแอพฯ</string>
+    <string name="rate_app_title">ให้คะแนน</string>
     <string name="rate_app_question">คุณต้องการให้คะแนนแอพปลิเคชันนี้ \n เพื่อสนับสนุนนักพัฒนาหรือไม่?</string>
     
-    <string name="share_app_title">แชร์แอพฯ</string>
+    <string name="share_app_title">แชร์</string>
     <string name="share_app_question">คุณต้องการแชร์แอพปลิเคชันนี้ \n เพื่อให้เพื่อนของคุณรับทราบหรือไม่?</string>
-    <string name="share_by">แชร์กับ...</string>
+    <string name="share_by">แชร์โดย...</string>
     
-    <string name="close_app_title">ปิดแอพฯ</string>
+    <string name="close_app_title">ปิดแอพปลิเคชัน</string>
     <string name="close_app_question">คุณต้องการปิดแอพปลิเคชันนี้หรือไม่?</string>
     
     <string name="logout_app_title">ออกจากระบบ</string>

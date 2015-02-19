@@ -101,17 +101,17 @@
     <string name="profile_username">Username</string>
     
     <string name="button_confirm_ok">OK</string>
-    <string name="rate_app_title">RATE APP</string>
+    <string name="rate_app_title">RATE</string>
     <string name="rate_app_question">Do you want to rate app \n for support developer?</string>
     
-    <string name="share_app_title">SHARE APP</string>
+    <string name="share_app_title">SHARE</string>
     <string name="share_app_question">Do you want to share app \n for friend\'s known this app?</string>
     <string name="share_by">Share By...</string>
     
     <string name="close_app_title">CLOSE APP</string>
     <string name="close_app_question">Do you want to close this app?</string>
     
-    <string name="logout_app_title">LOGOUT APP</string>
+    <string name="logout_app_title">LOGOUT</string>
     <string name="logout_app_question">Do you want to logout this app?</string>
     
     <string name="change_lang_title">Change Language</string>
