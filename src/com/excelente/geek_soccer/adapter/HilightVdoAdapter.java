@@ -1,14 +1,17 @@
 package com.excelente.geek_soccer.adapter;
 
-import java.io.File;
 import java.util.List;
 
+import com.excelente.geek_soccer.Hilight_Item_Page;
 import com.excelente.geek_soccer.R;
+import com.excelente.geek_soccer.SessionManager;
 import com.excelente.geek_soccer.model.HilightItemModel;
 import com.excelente.geek_soccer.model.HilightModel;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,17 +22,17 @@ import android.widget.TextView;
 
 public class HilightVdoAdapter extends BaseAdapter{
 	
-	Context context;
+	Hilight_Item_Page context;
 	List<HilightItemModel> hilightItemList;
 	HilightModel hilight;
 	
-	public HilightVdoAdapter(Context context, List<HilightItemModel> hilightItemList, HilightModel hilight) {
+	public HilightVdoAdapter(Hilight_Item_Page context, List<HilightItemModel> hilightItemList, HilightModel hilight) {
 		this.context = context;
 		this.hilightItemList = hilightItemList;
 		this.hilight = hilight;
 	}
 	
-	@SuppressWarnings("deprecation")
+	@SuppressLint("ViewHolder") 
 	@Override
 	public View getView(int pos, View convertView, ViewGroup parent) {
 		HilightItemModel hilightItem = (HilightItemModel) getItem(pos);
@@ -37,10 +40,24 @@ public class HilightVdoAdapter extends BaseAdapter{
 		LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		convertView = mInflater.inflate(R.layout.hilight_vdo, parent, false);
 		
-		File cachImage = ImageLoader.getInstance().getDiscCache().get(hilight.getHilightImage());
-		ImageView hilightVdoImageview = (ImageView) convertView.findViewById(R.id.hilight_vdo_imageview);
-		Drawable drawImage = Drawable.createFromPath(cachImage.getAbsolutePath());
-		hilightVdoImageview.setBackgroundDrawable(drawImage);
+		final ImageView hilightVdoImageview = (ImageView) convertView.findViewById(R.id.hilight_vdo_imageview);
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				final Bitmap bm = SessionManager.getImageSession(context, hilight.getHilightImage().replace(".gif", ".png"));
+				context.runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						if(bm!=null){
+							Drawable drawable = new BitmapDrawable(bm);
+							hilightVdoImageview.setBackgroundDrawable(drawable);
+						}
+					}
+				});
+			}
+		}).start();
 		
 		TextView hilightVdoTextview = (TextView) convertView.findViewById(R.id.hilight_vdo_textview);
 		hilightVdoTextview.setText(hilightItem.getHilightItemTopic());

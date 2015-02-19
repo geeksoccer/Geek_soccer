@@ -166,16 +166,16 @@ public class HilightAdapter extends BaseAdapter{
     		
         }
     
-        final File cacheFile = ImageLoader.getInstance().getDiscCache().get(hilightModel.getHilightImage().replace(".gif", ".png"));
+        //final File cacheFile = ImageLoader.getInstance().getDiscCache().get(hilightModel.getHilightImage().replace(".gif", ".png"));
         if(urlBitmap.containsKey(hilightModel.getHilightImage().replace(".gif", ".png"))){
         	hilightHolder.hilightImageImageview.setImageBitmap(urlBitmap.get(hilightModel.getHilightImage().replace(".gif", ".png")));
-        	hilightHolder.savemodeTextview.setVisibility(View.GONE);
-        }else if(cacheFile.exists()){
+        	hilightHolder.savemodeTextview.setVisibility(View.GONE); 
+        }else if(SessionManager.hasKey(context, hilightModel.getHilightImage().replace(".gif", ".png"))){
         	new Thread(new Runnable() {
 				
 				@Override
 				public void run() {
-					final Bitmap bm = BitmapFactory.decodeFile(cacheFile.getPath());
+					final Bitmap bm = SessionManager.getImageSession(context, hilightModel.getHilightImage().replace(".gif", ".png"));
 					cacheMemBitMap(hilightModel.getHilightImage().replace(".gif", ".png"), bm);
 					context.runOnUiThread(new Runnable() {
 						
@@ -245,11 +245,19 @@ public class HilightAdapter extends BaseAdapter{
         		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
         	}
         	
-        	public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+        	public void onLoadingComplete(String imageUri, View view, final Bitmap loadedImage) {
         		hilightHolder.savemodeTextview.setVisibility(View.GONE);
         		hilightHolder.hilightImageImageview.setVisibility(View.VISIBLE);
         		hilightHolder.hilightImageImageview.startAnimation(fadeIn);
         		cacheMemBitMap(hilightModel.getHilightImage().replace(".gif", ".png"), loadedImage);
+        		new Thread(new Runnable() {
+        			
+        			@Override
+        			public void run() {
+        				SessionManager.createNewImageSession(context, hilightModel.getHilightImage().replace(".gif", ".png"), loadedImage);
+        			}
+        		}).start();
+        		
         	}
 
 			@Override

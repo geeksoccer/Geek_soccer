@@ -41,7 +41,7 @@ import com.excelente.geek_soccer.utils.ThemeUtils;
 
 public class HilightItemsAdapter extends BaseAdapter{
 	
-	Context mContext;
+	Hilight_Item_Page mContext;
 	List<HilightModel> mHilightList;  
 	ProgressBar hilightWaitProcessbar;
 	
