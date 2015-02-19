@@ -14,9 +14,11 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,7 +32,6 @@ public class TabView extends LinearLayout{
 	private LinearLayout tabLinearHorizontal;
 	private LinearLayout tabLinearHorizontal2;
 	private HorizontalScrollView horizontalScrollView;
-	private HorizontalScrollView horizontalScrollView2;
 	
 	public interface OnTabChangedListener{
 		public void onTabChanged(int position);
@@ -45,20 +46,20 @@ public class TabView extends LinearLayout{
 	
 	private void createHorizontalScroll(Context context) {
 		removeAllViews();
-		
+		 
 	    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-	    horizontalScrollView2 = new HorizontalScrollView(context); 
-	    horizontalScrollView2.setLayoutParams(params);
-	    horizontalScrollView2.setFillViewport(true);
-	    horizontalScrollView2.setSmoothScrollingEnabled(true);
-	    horizontalScrollView2.setHorizontalScrollBarEnabled(false);
-		addView(horizontalScrollView2);
+	    horizontalScrollView = new HorizontalScrollView(context); 
+	    horizontalScrollView.setLayoutParams(params);
+	    horizontalScrollView.setFillViewport(true);
+	    horizontalScrollView.setSmoothScrollingEnabled(true);
+	    horizontalScrollView.setHorizontalScrollBarEnabled(false);
+		addView(horizontalScrollView);
 	
 		params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		tabLinearHorizontal2 = new LinearLayout(context);
 		tabLinearHorizontal2.setLayoutParams(params);
 		tabLinearHorizontal2.setOrientation(LinearLayout.HORIZONTAL);
-		horizontalScrollView2.addView(tabLinearHorizontal2);
+		horizontalScrollView.addView(tabLinearHorizontal2);
 		
 		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) convertDpToPixel(1.5f, context));
 		View line = new View(context);
@@ -175,12 +176,63 @@ public class TabView extends LinearLayout{
 	}
 	
 	private void focusAndScrollView(View v, int index) {
-		int width = v.getWidth();
+		WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay(); 
+		int widthScreen = display.getWidth();
+		int widthHorizontalScrollView = horizontalScrollView.getWidth();
 		int scollX = 0;
-		if(index > 2){
-        	scollX = (width/2) * (index+1);
+		if(index < 1){
+			scollX = 0;
+		}else if(index > (getCountItem()-1)-1){
+        	scollX = getRightXIndex(index);
+		}else{
+			int halfScreen = widthScreen/2;
+			int halfXIndex = getHalfXIndex(index);
+			if(halfXIndex > halfScreen){
+				scollX = getHalfXIndex(index) - halfScreen;
+			}else{
+				if(halfXIndex > (widthHorizontalScrollView/2)){
+					scollX = getRightXIndex(index);
+				}else{
+					scollX = 0;
+				}
+			}
+        	
 		}
-		horizontalScrollView2.smoothScrollTo(scollX, 0);
+		horizontalScrollView.smoothScrollTo(scollX, 0);
+	}
+	
+	public int getHalfXIndex(int position) {
+		int width = 0;
+		for (int i = 0; i < position+1; i++) {
+			View v = getItemList().get(i).findViewById(R.id.selected);
+			if(i==position){
+				width += (v.getWidth()/2);
+			}else{
+				width += v.getWidth();
+			}
+		}
+		return width;
+	}
+	
+	public int getRightXIndex(int position) {
+		int width = 0;
+		for (int i = 0; i < position+1; i++) {
+			View v = getItemList().get(i).findViewById(R.id.selected);
+			width += v.getWidth();
+		}
+		return width;
+	}
+	
+	public int getLeftXIndex(int position) {
+		int width = 0;
+		for (int i = 0; i < position+1; i++) {
+			View v = getItemList().get(i).findViewById(R.id.selected);
+			if(i!=position){
+				width += v.getWidth();
+			}
+		}
+		return width;
 	}
 	
 	public void setCurrentTab(int position) {
