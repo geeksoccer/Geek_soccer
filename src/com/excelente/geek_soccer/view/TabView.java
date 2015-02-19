@@ -28,7 +28,9 @@ public class TabView extends LinearLayout{
 	private OnTabChangedListener onTabChangedListener;
 	private int currentTab;
 	private LinearLayout tabLinearHorizontal;
+	private LinearLayout tabLinearHorizontal2;
 	private HorizontalScrollView horizontalScrollView;
+	private HorizontalScrollView horizontalScrollView2;
 	
 	public interface OnTabChangedListener{
 		public void onTabChanged(int position);
@@ -45,18 +47,18 @@ public class TabView extends LinearLayout{
 		removeAllViews();
 		
 	    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-	    horizontalScrollView = new HorizontalScrollView(context); 
-	    horizontalScrollView.setLayoutParams(params);
-	    horizontalScrollView.setFillViewport(true);
-	    horizontalScrollView.setSmoothScrollingEnabled(true);
-	    horizontalScrollView.setHorizontalScrollBarEnabled(false);
-		addView(horizontalScrollView);
+	    horizontalScrollView2 = new HorizontalScrollView(context); 
+	    horizontalScrollView2.setLayoutParams(params);
+	    horizontalScrollView2.setFillViewport(true);
+	    horizontalScrollView2.setSmoothScrollingEnabled(true);
+	    horizontalScrollView2.setHorizontalScrollBarEnabled(false);
+		addView(horizontalScrollView2);
 	
 		params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		tabLinearHorizontal = new LinearLayout(context);
-		tabLinearHorizontal.setLayoutParams(params);
-		tabLinearHorizontal.setOrientation(LinearLayout.HORIZONTAL);
-		horizontalScrollView.addView(tabLinearHorizontal);
+		tabLinearHorizontal2 = new LinearLayout(context);
+		tabLinearHorizontal2.setLayoutParams(params);
+		tabLinearHorizontal2.setOrientation(LinearLayout.HORIZONTAL);
+		horizontalScrollView2.addView(tabLinearHorizontal2);
 		
 		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) convertDpToPixel(1.5f, context));
 		View line = new View(context);
@@ -68,6 +70,8 @@ public class TabView extends LinearLayout{
 		for (int i = 0; i < getItemList().size(); i++) {
 			View view = getItemList().get(i);
 			view.setLayoutParams(params);
+			tabLinearHorizontal.removeView(view);
+			tabLinearHorizontal2.addView(view);
 		}
 	}
 	
@@ -136,7 +140,12 @@ public class TabView extends LinearLayout{
 			}
 		});
 	    
-	    tabLinearHorizontal.addView(tab);
+	    if(getCountItem() > 4){
+	    	tabLinearHorizontal2.addView(tab);
+	    }else{
+	    	tabLinearHorizontal.addView(tab);
+	    }
+	    
 	    itemList.add(tab);
 	    chkMoreItem();
 	}
@@ -171,7 +180,7 @@ public class TabView extends LinearLayout{
 		if(index > 2){
         	scollX = (width/2) * (index+1);
 		}
-		horizontalScrollView.smoothScrollTo(scollX, 0);
+		horizontalScrollView2.smoothScrollTo(scollX, 0);
 	}
 	
 	public void setCurrentTab(int position) {
