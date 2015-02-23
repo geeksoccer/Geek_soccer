@@ -98,8 +98,8 @@ public class Hilight_Page extends Fragment implements OnTabChangedListener, OnCl
 		}
 		
 		
-		tabs.setCurrentTab(0);
 		tabs.setOnTabChangedListener(this);
+		tabs.setCurrentTab(0);
 	}
 	
 	private void initSubView() {
@@ -152,6 +152,10 @@ public class Hilight_Page extends Fragment implements OnTabChangedListener, OnCl
 
 	@Override
 	public void onTabChanged(int position) {
+		if(viewpager==null || !viewpager.hasAdapter()){
+			return;
+		}
+		
 		viewpager.setSelection(position);
 	}
 

@@ -27,10 +27,11 @@ import android.widget.TextView;
 public class TabView extends LinearLayout{
 	
 	private List<View> itemList;
+	private List<View> itemList2;
 	private OnTabChangedListener onTabChangedListener;
 	private int currentTab;
 	private LinearLayout tabLinearHorizontal;
-	private LinearLayout tabLinearHorizontal2;
+	private LinearLayout tabLinearHorizontalInHScroll;
 	private HorizontalScrollView horizontalScrollView;
 	
 	public interface OnTabChangedListener{
@@ -40,12 +41,14 @@ public class TabView extends LinearLayout{
 	public TabView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		itemList = new ArrayList<View>();
+		itemList2 = new ArrayList<View>();
 		createLinearHoriZontal(context);
+		createHorizontalScroll(context);
+		createLine(context);
 		Log.e("TabView", "TabView");
 	}
-	
+
 	private void createHorizontalScroll(Context context) {
-		removeAllViews();
 		 
 	    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 	    horizontalScrollView = new HorizontalScrollView(context); 
@@ -56,24 +59,10 @@ public class TabView extends LinearLayout{
 		addView(horizontalScrollView);
 	
 		params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		tabLinearHorizontal2 = new LinearLayout(context);
-		tabLinearHorizontal2.setLayoutParams(params);
-		tabLinearHorizontal2.setOrientation(LinearLayout.HORIZONTAL);
-		horizontalScrollView.addView(tabLinearHorizontal2);
-		
-		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) convertDpToPixel(1.5f, context));
-		View line = new View(context);
-		line.setLayoutParams(params);
-		ThemeUtils.setThemeToView(context, ThemeUtils.TYPE_BACKGROUND_COLOR, line);
-		addView(line);
-		
-		params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		for (int i = 0; i < getItemList().size(); i++) {
-			View view = getItemList().get(i);
-			view.setLayoutParams(params);
-			tabLinearHorizontal.removeView(view);
-			tabLinearHorizontal2.addView(view);
-		}
+		tabLinearHorizontalInHScroll = new LinearLayout(context);
+		tabLinearHorizontalInHScroll.setLayoutParams(params);
+		tabLinearHorizontalInHScroll.setOrientation(LinearLayout.HORIZONTAL);
+		horizontalScrollView.addView(tabLinearHorizontalInHScroll);
 	}
 	
 	private void createLinearHoriZontal(Context context) {
@@ -83,8 +72,10 @@ public class TabView extends LinearLayout{
 		tabLinearHorizontal.setLayoutParams(params);
 		tabLinearHorizontal.setOrientation(LinearLayout.HORIZONTAL);
 		addView(tabLinearHorizontal);
-		
-		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) convertDpToPixel(1.5f, context));
+	}
+	
+	private void createLine(Context context) {
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) convertDpToPixel(1.5f, context));
 		View line = new View(context);
 		line.setLayoutParams(params);
 		ThemeUtils.setThemeToView(context, ThemeUtils.TYPE_BACKGROUND_COLOR, line);
@@ -98,15 +89,40 @@ public class TabView extends LinearLayout{
 	    return px;
 	}
 
-	@SuppressLint("InflateParams") 
 	public void addTab(String label){
 		final int position = itemList.size();
 		
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		params.weight = 1;
-		if(getCountItem() == 4){
-			params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		View tab1 = createViewTab(position, label, params);
+		tabLinearHorizontal.addView(tab1);
+		itemList2.add(tab1);
+		
+		LinearLayout.LayoutParams paramsInHScroll = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		View tab = createViewTab(position, label, paramsInHScroll);
+	    tabLinearHorizontalInHScroll.addView(tab);
+	    itemList.add(tab);
+	
+	}
+	
+	@Override
+	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+		super.onLayout(changed, l, t, r, b);
+		if(changed){
+			if(isWidthMoreScreen()){
+				horizontalScrollView.setVisibility(View.VISIBLE);
+				tabLinearHorizontal.setVisibility(View.GONE);
+			}else{
+				horizontalScrollView.setVisibility(View.GONE);
+	    		tabLinearHorizontal.setVisibility(View.VISIBLE);
+			}
+			
+			setSelectedTab(getCurrentTab());
 		}
+	}
+	
+	@SuppressLint("InflateParams") 
+	private View createViewTab(final int position, String label, LayoutParams params) {
 		View tab = LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
 		tab.setLayoutParams(params);
 	    ImageView image = (ImageView) tab.findViewById(R.id.icon);
@@ -118,7 +134,7 @@ public class TabView extends LinearLayout{
 	    ThemeUtils.setThemeToView(getContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);
 	    ThemeUtils.setThemeToView(getContext(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
 	    
-	    if(label.equals("")){
+	    if(label.equals("")){ 
 	    	text.setVisibility(View.GONE);
 	    	
 	    	final float scale = getContext().getResources().getDisplayMetrics().density;
@@ -141,31 +157,38 @@ public class TabView extends LinearLayout{
 			}
 		});
 	    
-	    if(getCountItem() > 4){
-	    	tabLinearHorizontal2.addView(tab);
-	    }else{
-	    	tabLinearHorizontal.addView(tab);
-	    }
-	    
-	    itemList.add(tab);
-	    chkMoreItem();
+	    return tab;
 	}
-	
-	private void chkMoreItem() {
-		if(getCountItem() == 4){
-			createHorizontalScroll(getContext());
+
+	private boolean isWidthMoreScreen() {
+		WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay(); 
+		int widthScreen = display.getWidth();
+		int widthHorizontalScrollView = getRightXIndex(getCountItem()-1);
+		Log.e("widthScreen", widthScreen + " " + widthHorizontalScrollView);
+		if(widthHorizontalScrollView > widthScreen){
+			return true;
 		}
+		
+		return false;
 	}
 
 	public void setSelectedTab(int index){
-		for (int i = 0; i < getItemList().size(); i++) {
-			View v = getItemList().get(i).findViewById(R.id.selected);
-			TextView text = (TextView) getItemList().get(i).findViewById(R.id.text);
+		List<View> viewList = new ArrayList<View>();
+		if(isWidthMoreScreen()){
+			viewList = itemList;
+		}else{
+			viewList = itemList2;
+		}
+		
+		for (int i = 0; i < viewList.size(); i++) {
+			View v = viewList.get(i).findViewById(R.id.selected);
+			TextView text = (TextView) viewList.get(i).findViewById(R.id.text);
 			
 			if(i == index){
 				text.setTextColor(Color.parseColor(getContext().getResources().getString(R.color.black)));
 				v.setVisibility(View.VISIBLE);
-				if(getCountItem() > 3){
+				if(isWidthMoreScreen()){
 					focusAndScrollView(v, index);
 				}
 			}else{

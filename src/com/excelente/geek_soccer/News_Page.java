@@ -98,12 +98,16 @@ public class News_Page extends Fragment implements OnTabChangedListener, OnClick
 		tabs.addTab(getResources().getString(R.string.team_news));
 		tabs.addTab(getResources().getString(R.string.global_news));
 		
-		tabs.setCurrentTab(0); 
 		tabs.setOnTabChangedListener(this);
+		tabs.setCurrentTab(0);
 	}
 
 	@Override
 	public void onTabChanged(int position) {
+		if(viewpager==null || !viewpager.hasAdapter()){
+			return;
+		}
+		
 		viewpager.setSelection(position);
 	}
 	

@@ -74,9 +74,9 @@ public class Table_Page extends Fragment implements OnTabChangedListener{
 		for (int i = 0; i < titleTabs.length; i++) {
 			tabs.addTab(titleTabs[i]);
 		}
-		
-		tabs.setCurrentTab(0); 
+		 
 		tabs.setOnTabChangedListener(this);
+		tabs.setCurrentTab(0);
 	}
 	
 	protected void initSubView() {
@@ -122,6 +122,10 @@ public class Table_Page extends Fragment implements OnTabChangedListener{
 
 	@Override
 	public void onTabChanged(int position) {
+		if(viewpager==null || !viewpager.hasAdapter()){
+			return;
+		}
+		
 		viewpager.setSelection(position);
 	}
 	
