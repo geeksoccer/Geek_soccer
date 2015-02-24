@@ -163,181 +163,184 @@ public class LiveScore_TodayView {
 				if (data.Match_list_c_JSON.size() - 1 >= position) {
 					txt_Item = data.Match_list_c_JSON.get(position);
 				}
+				if(txt_Item!=null){
 
-				int colors = Integer.parseInt("000000", 16) + (0xFF000000);
-				TextView txt = new TextView(mActivity);
-				txt.setTextColor(colors);
-				txt.setTypeface(Typeface.DEFAULT_BOLD);
-				if (!txt_Item.isNull("score")) {
-					bg.setLayoutParams(new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT));
-					bg.setBackgroundResource(R.drawable.card_background_white);
-					txt.setLayoutParams(new LayoutParams(
-							LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT));
-					txt.setGravity(Gravity.CENTER);
-					// String text_Sprite[] = txt_Item.split("\n");
+					int colors = Integer.parseInt("000000", 16) + (0xFF000000);
+					TextView txt = new TextView(mActivity);
+					txt.setTextColor(colors);
+					txt.setTypeface(Typeface.DEFAULT_BOLD);
+					
+					if (!txt_Item.isNull("score")) {
+						bg.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.MATCH_PARENT,
+								LayoutParams.WRAP_CONTENT));
+						bg.setBackgroundResource(R.drawable.card_background_white);
+						txt.setLayoutParams(new LayoutParams(
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+						txt.setGravity(Gravity.CENTER);
+						// String text_Sprite[] = txt_Item.split("\n");
 
-					LinearLayout layOut_Detail = new LinearLayout(mActivity);
-					layOut_Detail.setOrientation(LinearLayout.HORIZONTAL);
-					layOut_Detail.setLayoutParams(new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT));
+						LinearLayout layOut_Detail = new LinearLayout(mActivity);
+						layOut_Detail.setOrientation(LinearLayout.HORIZONTAL);
+						layOut_Detail.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.MATCH_PARENT,
+								LayoutParams.WRAP_CONTENT));
 
-					txt.setTextSize(14);
-					txt.setText(" " + txt_Item.getString("Time").substring(3));
-					txt.setPadding(5, 0, 5, 0);
-					txt.setGravity(Gravity.LEFT);
+						txt.setTextSize(14);
+						txt.setText(" " + txt_Item.getString("Time").substring(3));
+						txt.setPadding(5, 0, 5, 0);
+						txt.setGravity(Gravity.LEFT);
 
-					TextView txt_Home = new TextView(mActivity);
-					txt_Home.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 1f));
-					txt_Home.setTextSize(16);
-					txt_Home.setText(txt_Item.getString("Home"));
-					txt_Home.setTextColor(Color.DKGRAY);
+						TextView txt_Home = new TextView(mActivity);
+						txt_Home.setLayoutParams(new LinearLayout.LayoutParams(0,
+								LayoutParams.WRAP_CONTENT, 1f));
+						txt_Home.setTextSize(16);
+						txt_Home.setText(txt_Item.getString("Home"));
+						txt_Home.setTextColor(Color.DKGRAY);
 
-					TextView txt_Score = new TextView(mActivity);
-					txt_Score.setLayoutParams(new LayoutParams(GetdipSize.dip(mActivity, 50), GetdipSize.dip(mActivity, 25)));
-					txt_Score.setTextSize(14);
-					txt_Score.setTypeface(Typeface.DEFAULT_BOLD);
-					txt_Score.setText(txt_Item.getString("score").replaceAll(
-							"&nbsp;", " "));
-					txt_Score.setGravity(Gravity.CENTER);
-					txt_Score.setBackgroundResource(R.drawable.score_bg_layer);
-					if (!txt_Item.getString("score").replaceAll("&nbsp;", " ")
-							.equals("vs")) {
-						txt_Score.setTextColor(Color.WHITE);
-					}
-
-					TextView txt_Away = new TextView(mActivity);
-					txt_Away.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 1f));
-					txt_Away.setTextSize(16);
-					txt_Away.setGravity(Gravity.RIGHT);
-					txt_Away.setText(txt_Item.getString("Away"));
-					txt_Away.setTextColor(Color.DKGRAY);
-
-					final ImageView image_Home = new ImageView(mActivity);
-					image_Home.setLayoutParams(new LayoutParams(GetdipSize.dip(mActivity, 35), GetdipSize.dip(mActivity, 35)));
-					final ImageView image_Away = new ImageView(mActivity);
-					image_Away.setLayoutParams(new LayoutParams(GetdipSize.dip(mActivity, 35), GetdipSize.dip(mActivity, 35)));
-					if (data.get_HomeMap(txt_Item.getString("Home_img")) != null) {
-						image_Home.setImageBitmap(data.get_HomeMap(txt_Item
-								.getString("Home_img")));
-					} else {
-						if(saveModeGet.equals("true")){
-							image_Home.setImageResource(R.drawable.ic_menu_view);
-						}else{
-							image_Home.setImageResource(R.drawable.soccer_icon);
+						TextView txt_Score = new TextView(mActivity);
+						txt_Score.setLayoutParams(new LayoutParams(GetdipSize.dip(mActivity, 50), GetdipSize.dip(mActivity, 25)));
+						txt_Score.setTextSize(14);
+						txt_Score.setTypeface(Typeface.DEFAULT_BOLD);
+						txt_Score.setText(txt_Item.getString("score").replaceAll(
+								"&nbsp;", " "));
+						txt_Score.setGravity(Gravity.CENTER);
+						txt_Score.setBackgroundResource(R.drawable.score_bg_layer);
+						if (!txt_Item.getString("score").replaceAll("&nbsp;", " ")
+								.equals("vs")) {
+							txt_Score.setTextColor(Color.WHITE);
 						}
-						new DownLiveScorePic().startDownload_Home(data.Match_list_c_JSON.get(position).getString("Home_img"), image_Home, saveModeGet, data);
-					}
-					if (data.get_AwayMap(txt_Item.getString("Away_img")) != null) {
-						image_Away.setImageBitmap(data.get_AwayMap(txt_Item
-								.getString("Away_img")));
-					} else {
-						if(saveModeGet.equals("true")){
-							image_Away.setImageResource(R.drawable.ic_menu_view);
-						}else{
-							image_Away.setImageResource(R.drawable.soccer_icon);
+
+						TextView txt_Away = new TextView(mActivity);
+						txt_Away.setLayoutParams(new LinearLayout.LayoutParams(0,
+								LayoutParams.WRAP_CONTENT, 1f));
+						txt_Away.setTextSize(16);
+						txt_Away.setGravity(Gravity.RIGHT);
+						txt_Away.setText(txt_Item.getString("Away"));
+						txt_Away.setTextColor(Color.DKGRAY);
+
+						final ImageView image_Home = new ImageView(mActivity);
+						image_Home.setLayoutParams(new LayoutParams(GetdipSize.dip(mActivity, 35), GetdipSize.dip(mActivity, 35)));
+						final ImageView image_Away = new ImageView(mActivity);
+						image_Away.setLayoutParams(new LayoutParams(GetdipSize.dip(mActivity, 35), GetdipSize.dip(mActivity, 35)));
+						if (data.get_HomeMap(txt_Item.getString("Home_img")) != null) {
+							image_Home.setImageBitmap(data.get_HomeMap(txt_Item
+									.getString("Home_img")));
+						} else {
+							if(saveModeGet.equals("true")){
+								image_Home.setImageResource(R.drawable.ic_menu_view);
+							}else{
+								image_Home.setImageResource(R.drawable.soccer_icon);
+							}
+							new DownLiveScorePic().startDownload_Home(data.Match_list_c_JSON.get(position).getString("Home_img"), image_Home, saveModeGet, data);
 						}
-						new DownLiveScorePic().startDownload_Away(data.Match_list_c_JSON.get(position).getString("Away_img"), image_Away, saveModeGet, data);
+						if (data.get_AwayMap(txt_Item.getString("Away_img")) != null) {
+							image_Away.setImageBitmap(data.get_AwayMap(txt_Item
+									.getString("Away_img")));
+						} else {
+							if(saveModeGet.equals("true")){
+								image_Away.setImageResource(R.drawable.ic_menu_view);
+							}else{
+								image_Away.setImageResource(R.drawable.soccer_icon);
+							}
+							new DownLiveScorePic().startDownload_Away(data.Match_list_c_JSON.get(position).getString("Away_img"), image_Away, saveModeGet, data);
+						}
+
+						LinearLayout layOut_1 = new LinearLayout(mActivity);
+						layOut_1.setLayoutParams(new LinearLayout.LayoutParams(0,
+								LayoutParams.WRAP_CONTENT, 1f));
+						layOut_1.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+						layOut_1.setOrientation(LinearLayout.HORIZONTAL);
+
+						LinearLayout layOut_2 = new LinearLayout(mActivity);
+						layOut_2.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+						layOut_2.setGravity(Gravity.CENTER);
+
+						LinearLayout layOut_3 = new LinearLayout(mActivity);
+						layOut_3.setLayoutParams(new LinearLayout.LayoutParams(0,
+								LayoutParams.WRAP_CONTENT, 1f));
+						layOut_3.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+						layOut_3.setOrientation(LinearLayout.HORIZONTAL);
+
+						layOut_1.setPadding(5, 0, 5, 0);
+						image_Home.setPadding(5, 0, 5, 0);
+						txt_Home.setPadding(5, 0, 5, 0);
+						layOut_1.addView(image_Home);
+						layOut_1.addView(txt_Home);
+
+						layOut_2.setPadding(5, 0, 5, 0);
+						txt_Score.setPadding(5, 0, 5, 0);
+						layOut_2.addView(txt_Score);
+
+						layOut_3.setPadding(5, 0, 5, 0);
+						txt_Away.setPadding(5, 0, 5, 0);
+						image_Away.setPadding(5, 0, 5, 0);
+						layOut_3.addView(txt_Away);
+						layOut_3.addView(image_Away);
+
+						LinearLayout layOut_time = new LinearLayout(mActivity);
+						layOut_time.setOrientation(LinearLayout.HORIZONTAL);
+						layOut_time.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.MATCH_PARENT,
+								LayoutParams.WRAP_CONTENT));
+						layOut_time.addView(txt);
+
+						if (txt_Item.getString("details").length() > 0) {
+							TextView txt_Aggregate = new TextView(mActivity);
+							txt_Aggregate
+									.setLayoutParams(new LinearLayout.LayoutParams(
+											0, LayoutParams.WRAP_CONTENT, 1f));
+							txt_Aggregate.setTextSize(14);
+							txt_Aggregate.setTextColor(Color.GRAY);
+							txt_Aggregate.setGravity(Gravity.RIGHT);
+							txt_Aggregate.setText(txt_Item.getString("details") + " ");
+							layOut_time.addView(txt_Aggregate);
+						}
+
+						layOut_Detail.addView(layOut_1);
+						layOut_Detail.addView(layOut_2);
+						layOut_Detail.addView(layOut_3);
+						bg.addView(layOut_time);
+						bg.addView(layOut_Detail);
+						if (chk_ani && last_ItemView - 1 < position) {
+							layOut_time.setAnimation(AnimationUtils.loadAnimation(
+									mActivity, R.drawable.listview_anim));
+							layOut_Detail.setAnimation(AnimationUtils
+									.loadAnimation(mActivity,
+											R.drawable.listview_anim));
+						}
+						// retval.setBackgroundColor(Color.GRAY);
+						// retval.getBackground().setAlpha(200);
+					} else {
+						retval.setPadding(5, 5, 5, 5);
+						bg.setLayoutParams(new LinearLayout.LayoutParams(
+								LayoutParams.MATCH_PARENT,
+								LayoutParams.WRAP_CONTENT));
+						txt.setLayoutParams(new LayoutParams(
+								LayoutParams.MATCH_PARENT,
+								LayoutParams.WRAP_CONTENT));
+						txt.setGravity(Gravity.CENTER);
+
+						txt.setText(txt_Item
+								.getString("League")
+								.substring(
+										txt_Item.getString("League").lastIndexOf(
+												"]") + 1).replaceAll("&lrm;", " "));
+
+						txt.setTextSize(24);
+						bg.addView(txt);
+						if (chk_ani && last_ItemView - 1 < position) {
+							txt.setAnimation(AnimationUtils.loadAnimation(mActivity,
+									R.drawable.listview_anim));
+						}
+						bg.setBackgroundColor(Color.DKGRAY);
+						bg.getBackground().setAlpha(200);
 					}
-
-					LinearLayout layOut_1 = new LinearLayout(mActivity);
-					layOut_1.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 1f));
-					layOut_1.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-					layOut_1.setOrientation(LinearLayout.HORIZONTAL);
-
-					LinearLayout layOut_2 = new LinearLayout(mActivity);
-					layOut_2.setLayoutParams(new LinearLayout.LayoutParams(
-							LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT));
-					layOut_2.setGravity(Gravity.CENTER);
-
-					LinearLayout layOut_3 = new LinearLayout(mActivity);
-					layOut_3.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 1f));
-					layOut_3.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
-					layOut_3.setOrientation(LinearLayout.HORIZONTAL);
-
-					layOut_1.setPadding(5, 0, 5, 0);
-					image_Home.setPadding(5, 0, 5, 0);
-					txt_Home.setPadding(5, 0, 5, 0);
-					layOut_1.addView(image_Home);
-					layOut_1.addView(txt_Home);
-
-					layOut_2.setPadding(5, 0, 5, 0);
-					txt_Score.setPadding(5, 0, 5, 0);
-					layOut_2.addView(txt_Score);
-
-					layOut_3.setPadding(5, 0, 5, 0);
-					txt_Away.setPadding(5, 0, 5, 0);
-					image_Away.setPadding(5, 0, 5, 0);
-					layOut_3.addView(txt_Away);
-					layOut_3.addView(image_Away);
-
-					LinearLayout layOut_time = new LinearLayout(mActivity);
-					layOut_time.setOrientation(LinearLayout.HORIZONTAL);
-					layOut_time.setLayoutParams(new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT));
-					layOut_time.addView(txt);
-
-					if (txt_Item.getString("details").length() > 0) {
-						TextView txt_Aggregate = new TextView(mActivity);
-						txt_Aggregate
-								.setLayoutParams(new LinearLayout.LayoutParams(
-										0, LayoutParams.WRAP_CONTENT, 1f));
-						txt_Aggregate.setTextSize(14);
-						txt_Aggregate.setTextColor(Color.GRAY);
-						txt_Aggregate.setGravity(Gravity.RIGHT);
-						txt_Aggregate.setText(txt_Item.getString("details") + " ");
-						layOut_time.addView(txt_Aggregate);
-					}
-
-					layOut_Detail.addView(layOut_1);
-					layOut_Detail.addView(layOut_2);
-					layOut_Detail.addView(layOut_3);
-					bg.addView(layOut_time);
-					bg.addView(layOut_Detail);
-					if (chk_ani && last_ItemView - 1 < position) {
-						layOut_time.setAnimation(AnimationUtils.loadAnimation(
-								mActivity, R.drawable.listview_anim));
-						layOut_Detail.setAnimation(AnimationUtils
-								.loadAnimation(mActivity,
-										R.drawable.listview_anim));
-					}
-					// retval.setBackgroundColor(Color.GRAY);
-					// retval.getBackground().setAlpha(200);
-				} else {
-					retval.setPadding(5, 5, 5, 5);
-					bg.setLayoutParams(new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT));
-					txt.setLayoutParams(new LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT));
-					txt.setGravity(Gravity.CENTER);
-
-					txt.setText(txt_Item
-							.getString("League")
-							.substring(
-									txt_Item.getString("League").lastIndexOf(
-											"]") + 1).replaceAll("&lrm;", " "));
-
-					txt.setTextSize(24);
-					bg.addView(txt);
-					if (chk_ani && last_ItemView - 1 < position) {
-						txt.setAnimation(AnimationUtils.loadAnimation(mActivity,
-								R.drawable.listview_anim));
-					}
-					bg.setBackgroundColor(Color.DKGRAY);
-					bg.getBackground().setAlpha(200);
+					retval.addView(bg);
 				}
-				retval.addView(bg);
 				return retval;
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

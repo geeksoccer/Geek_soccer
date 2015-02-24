@@ -3,24 +3,21 @@ package com.excelente.geek_soccer.chat_page;
 import com.excelente.geek_soccer.ControllParameter;
 import com.excelente.geek_soccer.R;
 import com.excelente.geek_soccer.SessionManager;
-import com.excelente.geek_soccer.utils.ThemeUtils;
+import com.excelente.geek_soccer.view.TabView;
+import com.excelente.geek_soccer.view.TabView.OnTabChangedListener;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-public class Chat_PageByView extends Fragment {
+public class Chat_PageByView extends Fragment implements OnTabChangedListener{
 	Context mContext;
 	View myView;
 	int teamID;
@@ -30,6 +27,10 @@ public class Chat_PageByView extends Fragment {
 	LinearLayout chatMenu;
 	View chatTeamV;
 	View chatAllV;
+	
+	View tableView;
+
+	private TabView tabs;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -54,25 +55,6 @@ public class Chat_PageByView extends Fragment {
 		myView = getView();
 		mContext = myView.getContext();
 
-		chatMenu = (LinearLayout) myView.findViewById(R.id.chatMenuLayout);
-
-		if (teamID > 0) {
-			String teamName = "";
-			if (teamID == 1) {
-				teamName = getResources().getString(R.string.chat_arsenal);
-			} else if (teamID == 2) {
-				teamName = getResources().getString(R.string.chat_chelsea);
-			} else if (teamID == 3) {
-				teamName = getResources().getString(R.string.chat_liverpool);
-			} else if (teamID == 4) {
-				teamName = getResources().getString(R.string.chat_manu);
-			}
-			setupTab("Team", teamName, 0, true);
-		}
-
-		setupTab("All", getResources().getString(R.string.chat_global), 0,
-				false);
-
 		LinearLayout ChatContainV = (LinearLayout) myView
 				.findViewById(R.id.ContainV);
 
@@ -86,83 +68,36 @@ public class Chat_PageByView extends Fragment {
 		ChatContainV.addView(chatTeamV, childParam);
 		ChatContainV.addView(chatAllV, childParam);
 		
-		setCurrentTab(data.chat_Cur);
+		initView();
 	}
-
-	private void setupTab(final String name, String label, Integer iconId,
-			boolean selected) {
-
-		View tab = LayoutInflater.from(getActivity()).inflate(
-				R.layout.custom_tab_livechat, null);
-		ImageView image = (ImageView) tab.findViewById(R.id.icon);
-		TextView text = (TextView) tab.findViewById(R.id.text);
-		View viewLine = tab.findViewById(R.id.view_line);
-		View viewSelected = tab.findViewById(R.id.selected);
-	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewSelected);
-	    ThemeUtils.setThemeToView(getActivity(), ThemeUtils.TYPE_BACKGROUND_COLOR, viewLine);
-		text.setTypeface(null, Typeface.BOLD);
-		if (label.equals("")) {
-			text.setVisibility(View.GONE);
-
-			final float scale = getActivity().getResources()
-					.getDisplayMetrics().density;
-			int pixels = (int) (35 * scale + 0.5f);
-			image.getLayoutParams().width = pixels;
-			image.getLayoutParams().height = pixels;
-		}
-
-		if (iconId == 0) {
-			image.setVisibility(View.GONE);
-
-			final float scale = getActivity().getResources()
-					.getDisplayMetrics().density;
-			int pixels = (int) (35 * scale + 0.5f);
-			text.getLayoutParams().height = pixels;
-		}
-
-		if (selected){
-			viewSelected.setVisibility(View.VISIBLE);
-			text.setTextColor(Color.BLACK);
-		}else{
-			text.setTextColor(Color.GRAY);
-		}
-
-		if (iconId != null) {
-			image.setImageResource(iconId);
-		}
-		text.setText(label);
-
-		LayoutParams childParam = new LinearLayout.LayoutParams(0,
-				LinearLayout.LayoutParams.MATCH_PARENT, 1);
-
-		tab.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (name.equals("Team")) {
-					setCurrentTab(0);
-				} else {
-					setCurrentTab(1);
-				}
+	
+	private void initView() {
+		tableView = getView();
+		
+		tabs = (TabView)tableView.findViewById(R.id.tab);
+		
+		if (teamID > 0) {
+			String teamName = "";
+			if (teamID == 1) {
+				teamName = getResources().getString(R.string.chat_arsenal);
+			} else if (teamID == 2) {
+				teamName = getResources().getString(R.string.chat_chelsea);
+			} else if (teamID == 3) {
+				teamName = getResources().getString(R.string.chat_liverpool);
+			} else if (teamID == 4) {
+				teamName = getResources().getString(R.string.chat_manu);
 			}
-		});
-
-		chatMenu.addView(tab, childParam);
+			tabs.addTab(teamName);
+		}
+		tabs.addTab(getResources().getString(R.string.chat_global));
+		
+		tabs.setCurrentTab(data.chat_Cur); 
+		tabs.setOnTabChangedListener(this);
 	}
-
-	public void setCurrentTab(int index) {
-		for (int i = 0; i < chatMenu.getChildCount(); i++) {
-			if (i == index) {
-				chatMenu.getChildAt(i).findViewById(R.id.selected)
-				.setVisibility(View.VISIBLE);
-				((TextView)chatMenu.getChildAt(i).findViewById(R.id.text)).setTextColor(Color.BLACK);
-			} else {
-				chatMenu.getChildAt(i).findViewById(R.id.selected)
-				.setVisibility(View.INVISIBLE);
-				((TextView)chatMenu.getChildAt(i).findViewById(R.id.text)).setTextColor(Color.GRAY);
-			}
-		}
+	
+	public void onTabChanged(int position) {
 		if(teamID>0){
-			if (index == 0) {
+			if (position == 0) {
 				chatTeamV.setVisibility(RelativeLayout.ABOVE);
 				chatAllV.setVisibility(RelativeLayout.GONE);
 			} else {
