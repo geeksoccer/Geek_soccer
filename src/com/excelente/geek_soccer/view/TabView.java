@@ -45,7 +45,7 @@ public class TabView extends LinearLayout{
 		createLinearHoriZontal(context);
 		createHorizontalScroll(context);
 		createLine(context);
-		Log.e("TabView", "TabView");
+		//Log.e("TabView", "TabView");
 	}
 
 	private void createHorizontalScroll(Context context) {
@@ -165,7 +165,7 @@ public class TabView extends LinearLayout{
 		Display display = wm.getDefaultDisplay(); 
 		int widthScreen = display.getWidth();
 		int widthHorizontalScrollView = getRightXIndex(getCountItem()-1);
-		Log.e("widthScreen", widthScreen + " " + widthHorizontalScrollView);
+		//Log.e("widthScreen", widthScreen + " " + widthHorizontalScrollView);
 		if(widthHorizontalScrollView > widthScreen){
 			return true;
 		}
