@@ -14,6 +14,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -121,6 +122,11 @@ public class TabView extends LinearLayout{
 		}
 	}
 	
+	public float pixelsToSp(Context context, float px) {
+	    float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+	    return px/scaledDensity;
+	}
+
 	@SuppressLint("InflateParams") 
 	private View createViewTab(final int position, String label, LayoutParams params) {
 		View tab = LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
@@ -165,11 +171,21 @@ public class TabView extends LinearLayout{
 		Display display = wm.getDefaultDisplay(); 
 		int widthScreen = display.getWidth();
 		int widthHorizontalScrollView = getRightXIndex(getCountItem()-1);
-		//Log.e("widthScreen", widthScreen + " " + widthHorizontalScrollView);
+		
 		if(widthHorizontalScrollView > widthScreen){
 			return true;
 		}
 		
+		return false;
+	}
+	
+	public boolean hasMoreLine() {
+		for (int i = 0; i < itemList2.size(); i++) {
+			TextView v = (TextView) itemList2.get(i).findViewById(R.id.text);
+			if(v.getLineCount() > 1){
+				return true;
+			}
+		}
 		return false;
 	}
 

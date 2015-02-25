@@ -124,9 +124,9 @@
     <string name="profile_save_success">Data saved successfully.</string>
     <string name="update_profile">Updating Profile...</string>
     
-    <string name="str_today_livescore">TODAY</string>
-    <string name="str_yesterday_livescore">YESTERDAY</string>
-    <string name="str_tomorrow_livescore">TOMORROW</string>
+    <string name="str_today_livescore">Today</string>
+    <string name="str_yesterday_livescore">Yesterday</string>
+    <string name="str_tomorrow_livescore">Tomorrow</string>
     
    	<string name="chat_global">Global Room</string>
     <string name="chat_arsenal">Arsenal Room</string>
